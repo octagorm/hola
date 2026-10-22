@@ -737,7 +737,8 @@ body.q-body {
 
 .q-hero .head {
   position: relative;
-  z-index: 2;
+  /* above the page below, for the account's popover */
+  z-index: 3;
   max-width: 1040px;
   margin: 0 auto;
   padding: 34px 32px 0;
@@ -2398,10 +2399,24 @@ a.q-box:hover {
   gap: 8px 16px;
 }
 
+:is(.q-account-pop, .q-account-body) .q-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 :is(.q-account-pop, .q-account-body) .q-link svg {
   width: 16px;
   height: 16px;
-  vertical-align: -2px;
+}
+
+/* Four round buttons beside the title leave it no room on a phone: two
+   by two */
+@media (max-width: 440px) {
+  .q-hero .tools:has(.q-account) {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+  }
 }
 
 .q-note.bad {
