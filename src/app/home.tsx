@@ -39,7 +39,7 @@ import type { GameIconId, TocId } from './art'
 
 export default function Home() {
   const { bank, settings, setSettings } = useStore()
-  const { hear } = useVoices()
+  const { hear, recorded } = useVoices()
   const narrow = useMedia('(max-width: 860px)')
   const playing = useMusic()
   const account = useAccount()
@@ -331,7 +331,9 @@ export default function Home() {
           </nav>
           {hear === false
             ? 'Denne nettleseren har ingen spansk stemme, så ordene leses ikke høyt her. '
-            : 'Stemmene er nettleserens egne spanske. '}
+            : recorded
+              ? 'Stemmene er lest inn på forhånd med Googles Gemini. '
+              : 'Stemmene er nettleserens egne spanske. '}
           {account.me
             ? 'Fremgangen lagres i denne nettleseren og på kontoen din.'
             : account.on

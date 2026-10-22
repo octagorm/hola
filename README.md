@@ -19,6 +19,20 @@ npm run dev
 
 Nettlesertestene trenger Chromium én gang: `npx playwright install chromium`.
 
+## Stemmene
+
+Spansken leses av to stemmer laget med Gemini TTS fra en beskrivelse i `src/app/data/voices.ts`, begge fra Madrid: Profesora leser ordene, Narrador setningene i Don Quijote og Cadáver exquisito. Der et opptak mangler, leser nettleserens egen spanske stemme.
+
+Opptakene lages på Macen, der Gemini-nøkkelen (`GEMINI_API_KEY`) ligger i nøkkelringen, med [uv](https://docs.astral.sh/uv/) og ffmpeg (`brew install uv ffmpeg`):
+
+```bash
+mkdir -p .cache && node scripts/speech.ts > .cache/speech.json
+uv run scripts/audio.py .cache/speech.json --dry-run --job   # hva som vil bli bestilt
+uv run scripts/audio.py .cache/speech.json --job             # lag det som mangler
+```
+
+`--job` bruker Geminis batch-modus, til halv pris. Svaret kommer ofte i løpet av minutter, men kan ta opptil et døgn, og blir kjøringen avbrutt, henter neste kjøring jobbene som allerede er bestilt. Uten `--job` lages bare noen få, direkte, for å prøve en stemme, for eksempel med `--only "Hola, ¿qué tal? Poco a poco se va lejos."`. Til slutt nevner skriptet opptakene som er mye lengre eller kortere enn teksten sin; dem er det verdt å lytte til. Commit så `public/audio/`, `src/app/data/audio.json` og `scripts/voices.json`. Kjør det samme igjen når ord eller setninger endres: bare det som mangler, lages, og filer som ikke brukes lenger, slettes.
+
 ## Sjekk før push
 
 ```bash

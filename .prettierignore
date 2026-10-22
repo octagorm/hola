@@ -3,3 +3,5 @@ dist
 .wrangler
 public
 package-lock.json
+scripts/*.json
+src/app/data/audio.json

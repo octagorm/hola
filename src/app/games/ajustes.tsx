@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Download, Upload, Volume2 } from 'lucide-react'
 import { dayKey, merge } from '../lib/bank'
+import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
 import { startMusic, stopMusic } from '../lib/music'
 import { useStore } from '../lib/store'
@@ -11,15 +12,14 @@ import type { ReactNode } from 'react'
 import type { Bank } from '../lib/bank'
 
 // Settings: the account, the voice, how the practice goes, sound, and the
-// backup that moves the progress from this browser to another
-
-const SAMPLE = 'Hola, ¿qué tal? Poco a poco se va lejos.'
+// backup that moves the progress from this browser to another. The
+// browser's voices are offered only where there are no recordings.
 
 export default function Ajustes() {
   const { settings, setSettings, bank, absorb, reset } = useStore()
   const account = useAccount()
   const kept = !!account.me
-  const { voices, hear } = useVoices()
+  const { voices, hear, recorded } = useVoices()
   const [sure, setSure] = useState(false)
   const [note, setNote] = useState('')
   const file = useRef<HTMLInputElement>(null)
@@ -71,20 +71,22 @@ export default function Ajustes() {
             </p>
           ) : (
             <>
-              <label className="q-field">
-                <span>Stemme</span>
-                <select
-                  value={settings.voice}
-                  onChange={(e) => setSettings({ voice: e.target.value })}
-                >
-                  <option value="">Den beste som finnes</option>
-                  {voices.map((v) => (
-                    <option key={v.voiceURI} value={v.voiceURI}>
-                      {v.name} ({v.lang})
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {!recorded && (
+                <label className="q-field">
+                  <span>Stemme</span>
+                  <select
+                    value={settings.voice}
+                    onChange={(e) => setSettings({ voice: e.target.value })}
+                  >
+                    <option value="">Den beste som finnes</option>
+                    {voices.map((v) => (
+                      <option key={v.voiceURI} value={v.voiceURI}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               <label className="q-field">
                 <span>Fart: {Math.round(settings.rate * 100)} %</span>
                 <input

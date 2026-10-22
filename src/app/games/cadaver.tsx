@@ -22,10 +22,10 @@ import type { Sentence } from '../lib/cadaver'
 import './cadaver.css'
 
 // Cadáver exquisito: the surrealists' game of a sentence written in folds,
-// each part added without seeing the rest. The parts are drawn at random,
-// and the player makes them agree: the verb with whoever does it, the
-// adjective with the thing. Six sentences a round, in the colours of a
-// 1969 poster.
+// each part added without seeing the rest. The parts are drawn at random
+// (from a deck of sentences made so, lib/cadaver.ts), and the player makes
+// them agree: the verb with whoever does it, the adjective with the thing.
+// Six sentences a round, in the colours of a 1969 poster.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Shrikhand&family=Rubik:wght@400;500;700;800&display=swap'
@@ -44,8 +44,9 @@ interface Turn {
   got: Array<Part>
 }
 
-const turn = (): Turn => {
-  const s = draw()
+// A sentence not yet had this round
+const turn = (had: Array<Sentence> = []): Turn => {
+  const s = draw(Math.random, had)
   return {
     s,
     verbs: verbOptions(s),
@@ -92,7 +93,7 @@ export default function Cadaver() {
   const { record, points, played, setBest, levelOf, settings } = useStore()
   const { hear } = useVoices()
   const back = useBack('cadaver')
-  const [t, setT] = useState<Turn>(turn)
+  const [t, setT] = useState<Turn>(() => turn())
   const [done, setDone] = useState<Array<{ s: Sentence; clean: boolean }>>([])
   const [streak, setStreak] = useState(0)
   const [best, setBestHere] = useState(0)
@@ -150,7 +151,7 @@ export default function Cadaver() {
       setTimeout(() => blip('win'), 200)
       return
     }
-    setT(turn())
+    setT(turn(all.map((x) => x.s)))
   }
 
   const again = () => {

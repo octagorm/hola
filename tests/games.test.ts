@@ -4,17 +4,20 @@ import { ANSWERS, daily, marks } from '../src/app/lib/wordle'
 import { build, squares } from '../src/app/lib/crossword'
 import { isRight, ring } from '../src/app/lib/rosco'
 import {
+  DECK,
   adjectiveForm,
   adjectiveOptions,
+  deck,
   draw,
   norwegian,
   spanish,
   verbOptions,
 } from '../src/app/lib/cadaver'
-import { THINGS } from '../src/app/data/grammar'
+import { ADJECTIVES, SUBJECTS, THINGS, VERBS } from '../src/app/data/grammar'
 import { emptyBank, known, newCard } from '../src/app/lib/bank'
 import { judge, letters, plural } from '../src/app/lib/spanish'
 import { others, spanishChoices } from '../src/app/lib/choices'
+import type { Sentence } from '../src/app/lib/cadaver'
 
 const now = Date.UTC(2026, 9, 22, 12)
 
@@ -157,5 +160,81 @@ describe('Cadáver exquisito', () => {
     const opts = verbOptions(s)
     expect(opts).toHaveLength(4)
     expect(opts).toContain(s.verb.forms[s.subject.person])
+  })
+
+  it('deals from a deck that is the same every time', () => {
+    expect(DECK).toHaveLength(360)
+    expect(new Set(DECK.map(spanish)).size).toBe(360)
+    // (made without Math.random, so a build cannot change it)
+    const random = Math.random
+    Math.random = () => 0.5
+    try {
+      expect(deck().map(spanish)).toEqual(DECK.map(spanish))
+    } finally {
+      Math.random = random
+    }
+    expect(deck(360, 7).map(spanish)).not.toEqual(DECK.map(spanish))
+    // Every part comes round
+    expect(new Set(DECK.map((s) => s.subject))).toEqual(new Set(SUBJECTS))
+    expect(new Set(DECK.map((s) => s.verb))).toEqual(new Set(VERBS))
+    expect(new Set(DECK.map((s) => s.thing))).toEqual(new Set(THINGS))
+    expect(new Set(DECK.map((s) => s.adjective))).toEqual(new Set(ADJECTIVES))
+    const many = DECK.filter((s) => s.many).length / DECK.length
+    expect(many).toBeGreaterThan(0.3)
+    expect(many).toBeLessThan(0.5)
+  })
+
+  it('draws only from the deck, and none twice in a round', () => {
+    const random = seeded(3)
+    for (let i = 0; i < 50; i++) expect(DECK).toContain(draw(random))
+    const round: Array<Sentence> = []
+    for (let i = 0; i < 6; i++) round.push(draw(random, round))
+    expect(new Set(round).size).toBe(6)
+    expect(draw(random, DECK.slice(1))).toBe(DECK[0])
+  })
+
+  it('makes every sentence in the deck agree', () => {
+    const PERSON: Record<string, number> = {
+      Yo: 0,
+      Tú: 1,
+      Nosotros: 3,
+      Vosotros: 4,
+    }
+    // The endings of each person in the present
+    const ENDING = [/o$/, /s$/, /[ae]$/, /mos$/, /[ií]s$/, /n$/]
+    for (const s of DECK) {
+      const said = spanish(s)
+      expect(said, said).toMatch(/^[^ ].*[^ ]\.$/)
+      const subject = s.subject.es.split(' ')
+      const words = said.slice(0, -1).split(' ')
+      expect(words.slice(0, subject.length), said).toEqual(subject)
+      const [verb, article, noun, adjective, ...rest] = words.slice(
+        subject.length,
+      )
+      expect(rest, said).toEqual([])
+      // The verb agrees with whoever does it
+      const person =
+        PERSON[s.subject.es] ?? (/^(Los|Las) /.test(s.subject.es) ? 5 : 2)
+      expect(s.subject.person, said).toBe(person)
+      expect(verb, said).toBe(s.verb.forms[person])
+      expect(verb, said).toMatch(ENDING[person])
+      // The article and the noun with the thing's gender and number
+      const g = s.thing.g
+      expect(article, said).toBe(
+        s.many ? (g === 'm' ? 'unos' : 'unas') : g === 'm' ? 'un' : 'una',
+      )
+      if (s.many) expect(noun, said).toMatch(/s$/)
+      else expect(noun, said).toBe(s.thing.es)
+      // The adjective with them too
+      const a = s.adjective.es
+      if (a.endsWith('o'))
+        expect(adjective, said).toBe(
+          a.slice(0, -1) + (g === 'm' ? 'o' : 'a') + (s.many ? 's' : ''),
+        )
+      else if (!s.many) expect(adjective, said).toBe(a)
+      else if (a.endsWith('z'))
+        expect(adjective, said).toBe(`${a.slice(0, -1)}ces`)
+      else expect(adjective, said).toBe(/[aeiou]$/.test(a) ? `${a}s` : `${a}es`)
+    }
   })
 })

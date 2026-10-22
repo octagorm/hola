@@ -18,6 +18,7 @@ const TYPES = {
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.json': 'application/json',
+  '.mp3': 'audio/mpeg',
   '.webmanifest': 'application/manifest+json',
   '.txt': 'text/plain',
 }

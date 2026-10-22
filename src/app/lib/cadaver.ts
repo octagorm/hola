@@ -4,8 +4,9 @@ import { plural } from './spanish.ts'
 import type { Adjective, Subject, Thing, Verb } from '../data/grammar.ts'
 
 // One sentence of Cadáver exquisito: someone does something to a thing of
-// some kind, drawn at random. The verb has to agree with whoever does it,
-// and the adjective with the thing, in gender and number.
+// some kind, drawn from a deck made of random parts. The verb has to agree
+// with whoever does it, and the adjective with the thing, in gender and
+// number.
 
 export interface Sentence {
   subject: Subject
@@ -18,14 +19,13 @@ export interface Sentence {
 const pickOne = <T>(xs: Array<T>, random: () => number) =>
   xs[Math.floor(random() * xs.length)]
 
-export function draw(random: () => number = Math.random): Sentence {
-  return {
-    subject: pickOne(SUBJECTS, random),
-    verb: pickOne(VERBS, random),
-    thing: pickOne(THINGS, random),
-    many: random() < 0.4,
-    adjective: pickOne(ADJECTIVES, random),
-  }
+// A sentence from the deck (DECK, below), none of those in `not`
+export function draw(
+  random: () => number = Math.random,
+  not: Array<Sentence> = [],
+): Sentence {
+  const left = DECK.filter((s) => !not.includes(s))
+  return pickOne(left.length ? left : DECK, random)
 }
 
 // An adjective's four forms: masculine and feminine, singular and plural.
@@ -110,3 +110,51 @@ export function whyAdjective(s: Sentence): string {
   const n = s.many ? 'flertall' : 'entall'
   return `Det heter ${adjectiveForm(s)}: ${s.many ? plural(s.thing.es) : s.thing.es} er ${kind} og ${n}.`
 }
+
+// --- The deck ---
+
+// The same numbers every time (Park and Miller's generator)
+function seeded(seed: number): () => number {
+  let s = seed
+  return () => {
+    s = (s * 16807) % 2147483647
+    return (s - 1) / 2147483646
+  }
+}
+
+// The sentences the game can say: a fixed deck, the same on every build,
+// so that each has a recording (lib/spoken.ts lists them). Each part comes
+// from a bag of all of its kind, filled again when empty, so that every
+// subject, verb, thing and adjective comes round about as often as the
+// others. A change here means new recordings.
+export function deck(size = 360, seed = 1969): Array<Sentence> {
+  const random = seeded(seed)
+  const bag = <T>(xs: Array<T>) => {
+    let left: Array<T> = []
+    return (): T => {
+      if (!left.length) left = shuffle(xs, random)
+      return left.pop() as T
+    }
+  }
+  const subject = bag(SUBJECTS)
+  const verb = bag(VERBS)
+  const thing = bag(THINGS)
+  const adjective = bag(ADJECTIVES)
+  const out: Array<Sentence> = []
+  const seen = new Set<string>()
+  while (out.length < size) {
+    const s: Sentence = {
+      subject: subject(),
+      verb: verb(),
+      thing: thing(),
+      many: random() < 0.4,
+      adjective: adjective(),
+    }
+    if (seen.has(spanish(s))) continue
+    seen.add(spanish(s))
+    out.push(s)
+  }
+  return out
+}
+
+export const DECK: Array<Sentence> = deck()

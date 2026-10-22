@@ -1,11 +1,14 @@
 ---
 import Base from '~/layouts/Base.astro'
+import AUDIO from '~/app/data/audio.json'
 import '~/app/hola.css'
 
 // What Hola is, and the app's home page on Google's consent screen: keep it
 // saying what Hola is, with a link to /personvern. Signing in is told of
-// only where the page is built with accounts (src/app/lib/cloud.tsx).
+// only where the page is built with accounts (src/app/lib/cloud.tsx), and
+// the Gemini voices only once there are recordings (scripts/audio.py).
 const accounts = !!import.meta.env.PUBLIC_CONVEX_URL
+const recorded = Object.keys(AUDIO).length > 0
 ---
 
 <Base
@@ -72,12 +75,22 @@ const accounts = !!import.meta.env.PUBLIC_CONVEX_URL
       </p>
 
       <h2>Stemmene</h2>
-      <p>
-        Spansken er lest inn på forhånd med stemmer fra Googles Gemini, med
-        uttale fra Spania: ordene av en lærer, Don Quijote og setningene av en
-        forteller. Det som ennå ikke er lest inn, leses av nettleserens egen
-        spanske stemme. Under Innstillinger kan du velge fart.
-      </p>
+      {
+        recorded ? (
+          <p>
+            Spansken er lest inn på forhånd med stemmer fra Googles Gemini, med
+            uttale fra Spania: ordene av en lærer, Don Quijote og setningene av
+            en forteller. Det som ennå ikke er lest inn, leses av nettleserens
+            egen spanske stemme. Under Innstillinger kan du velge fart.
+          </p>
+        ) : (
+          <p>
+            Spansken leses av nettleserens egen spanske stemme, med uttale fra
+            Spania der nettleseren har en slik. Under Innstillinger kan du
+            velge stemme og fart.
+          </p>
+        )
+      }
 
       <h2>Hva som lagres</h2>
       {

@@ -30,7 +30,7 @@ Before committing, run `npm run lint && npm test && npm run format:check && npm 
 - **Words** (`data/words.ts`): lesson by lesson, one line per word, in the order they are met. `isClue` says whether a word can be a clue in the crossword and the ring (not greetings, phrases or articles); those two games wait until enough clue words are met (`NEEDS` in `lib/today.ts`).
 - **Today's chapter** (`lib/today.ts`, `games/hoy.tsx`): made once a day and kept in the bank, so it can be taken up where it was left: the words fading, a few new ones, a game or a chapter of Don Quijote, and a little listening. Each day finished is a stage of the Camino to Santiago and a stamp in the credential (`data/camino.ts`, `games/credencial.tsx`).
 - **Don Quijote** (`data/quijote.ts`, `games/quijote.tsx`): the start of the novel retold simply, in mixed text (`lib/text.ts`): words not met are in Norwegian in Spanish order, words being practised in Spanish with the Norwegian over, words known in Spanish alone. The markup is described at the top of `data/quijote.ts`, and the tests check that every word is in the bank.
-- **Speech** (`lib/speech.ts`) is the browser's own Spanish voices, Spain's first. `?mute` silences the page for tests: speech still takes its time but is not heard. Sounds (`lib/sound.ts`) and the guitar (`lib/music.ts`) are made with Web Audio, with no files.
+- **Speech** (`lib/speech.ts`): Spanish recorded ahead with Gemini TTS on the user's Mac (see The recordings, below), played in one audio element (Safari lets an element play by itself only once a touch has started it, so the first touch wakes it and a word a game says by itself is heard too), at Ajustes' speed and slower for the snail, between half and twice the normal speed. A text without a recording, or one that will not play, is said by the browser's own Spanish voice, Spain's first; Ajustes offers the browser's voices only while there are no recordings. One thing is said at a time, and `?mute` silences the page for tests: speech still takes its time but is not heard. The two voices are designed from a description in `data/voices.ts`, both from Madrid with distinción: Profesora says the words, their forms in the story (a tapped word's card) and the sample in Ajustes; Narrador says the story's lines and Cadáver's sentences, which come from a fixed deck of 360 made with a seeded generator (`DECK` in `lib/cadaver.ts`), so that each can have a recording. `lib/spoken.ts` lists everything said aloud, so anything new the page says must be listed there. Sounds (`lib/sound.ts`) and the guitar (`lib/music.ts`) are made with Web Audio, with no files.
 
 The games:
 
@@ -44,6 +44,18 @@ The games:
 | Tus palabras      | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 
 `data/games.ts` names the games for the home page and today's chapter; Palabras (Scrabble with Ñ, LL and RR) and Tapas (orders called across a bar) are there marked `soon`, shown faded until they are made.
+
+## The recordings
+
+They are made on the user's Mac, where the Gemini key is (`GEMINI_API_KEY` from the environment, `.env.local` or the Keychain, kept with `security add-generic-password -a "$USER" -s GEMINI_API_KEY -w`), with uv and ffmpeg. Nobody can call Gemini from elsewhere, so a change that needs new recordings is finished there:
+
+```bash
+mkdir -p .cache && node scripts/speech.ts > .cache/speech.json
+uv run scripts/audio.py .cache/speech.json --dry-run --job   # what would be asked for
+uv run scripts/audio.py .cache/speech.json --job             # make it
+```
+
+`scripts/audio.py` asks for each item on its own. With `--job` it uses Gemini's batch mode, at half the price, answered within a day and often within minutes; the jobs are noted in `.cache/jobs.json`, so a run cut short picks them up again. Without it, up to `--max` (10) are asked for directly, or those named with `--only "text"`, to try a voice; `--voice` keeps to one voice's items. Each answer is trimmed of its silence (the quiet edges, such as a final s, are kept) and becomes `public/audio/<id>.mp3`, named by a hash of the file itself, and `data/audio.json` maps `voice|text` to it; files no longer used are removed. `public/_headers` lets browsers keep `/audio/*` for a year as immutable, which is safe because a recording made again gets a new name. The designed voices' ids are kept in `scripts/voices.json`: delete one to design that voice again, then `--remake <name>` (or `--remake words`, `lines`) to read its items again. At the end it names the recordings far from the length of their text, to listen to. Commit `public/audio/`, `data/audio.json` and `scripts/voices.json`. Once `audio.json` has entries, `tests/speech.test.ts` fails while anything listed has no recording, or a file is left over or not named by its hash.
 
 ## The look
 
