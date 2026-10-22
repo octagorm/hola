@@ -1,0 +1,597 @@
+/* Cadáver exquisito: a pop poster of 1969, in ink and four bright colours */
+
+.c6 {
+  --k: #1a1a1a;
+  --pink: #ff4f8b;
+  --sun: #ffd23f;
+  --blue: #2b59ff;
+  --green: #19a974;
+  --cream: #fff8ec;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Rubik', system-ui, sans-serif;
+  color: var(--k);
+  background: var(--cream);
+}
+
+.c6 button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c6 :focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.c6-col {
+  max-width: 520px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 16px 16px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.c6-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.c6-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--k);
+  box-shadow: 3px 3px 0 var(--k);
+  color: var(--k) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.c6-round svg {
+  width: 19px;
+  height: 19px;
+}
+
+.c6-round.small {
+  width: 36px;
+  height: 36px;
+  background: var(--sun);
+  box-shadow: 2px 2px 0 var(--k);
+}
+
+.c6-round.small svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c6-round:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--k);
+}
+
+.c6-top h1 {
+  margin: 0;
+  font-family: 'Shrikhand', serif;
+  font-weight: 400;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.c6-top h1 small {
+  display: block;
+  margin-top: 5px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.c6-streak {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px 4px 6px;
+  border: 3px solid var(--k);
+  border-radius: 999px;
+  background: var(--sun);
+  box-shadow: 3px 3px 0 var(--k);
+  font-family: 'Shrikhand', serif;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.c6-streak svg {
+  width: 26px;
+  height: 26px;
+}
+
+.c6-play {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- The picture --- */
+
+.c6-pic {
+  margin-top: 16px;
+  aspect-ratio: 352 / 244;
+  max-height: 250px;
+  border: 3px solid var(--k);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 5px 5px 0 var(--k);
+  transition: background 0.3s;
+}
+
+.c6-pic svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.c6-ants {
+  animation: c6-march 5s ease-in-out infinite alternate;
+}
+
+@keyframes c6-march {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(10px);
+  }
+}
+
+.c6-count {
+  margin: 10px 0 0;
+  text-align: center;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+/* --- The folds of the sentence --- */
+
+.c6-folds {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.c6-fold {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 12px 0 0;
+  border: 3px solid var(--k);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--k);
+  overflow: hidden;
+  animation: c6-in 0.25s ease-out;
+}
+
+.c6-fold i {
+  align-self: stretch;
+  width: 84px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 3px solid var(--k);
+  background: rgba(255, 255, 255, 0.55);
+  font-style: normal;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.c6-fold b {
+  display: inline-block;
+  padding: 6px 0;
+  font-family: 'Shrikhand', serif;
+  font-weight: 400;
+  font-size: 23px;
+  line-height: 1.05;
+}
+
+.c6-fold .ok {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid var(--k);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  animation: c6-pop 0.3s ease-out;
+}
+
+.c6-fold .ok svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 4;
+}
+
+.c6-fold.f1 {
+  background: #ffa3c4;
+  transform: rotate(-1.2deg);
+}
+
+.c6-fold.f2 {
+  background: #9fd3ff;
+  transform: rotate(0.8deg);
+}
+
+.c6-fold.f3 {
+  background: var(--sun);
+  transform: rotate(-0.6deg);
+}
+
+.c6-fold.f4 {
+  background: #b8f0c6;
+  transform: rotate(0.9deg);
+}
+
+/* Not filled in yet: a fold still folded under */
+.c6-fold.open,
+.c6-fold.now {
+  background: #fff;
+  border-style: dashed;
+  box-shadow: none;
+  animation: none;
+}
+
+.c6-fold.open i,
+.c6-fold.now i {
+  background: transparent;
+  border-right-style: dashed;
+}
+
+.c6-fold.open b {
+  color: #b5ad9f;
+}
+
+.c6-fold.now {
+  border-color: var(--pink);
+}
+
+.c6-fold.now i {
+  border-right-color: var(--pink);
+  color: var(--pink);
+}
+
+.c6-fold.now b {
+  color: var(--pink);
+  animation: c6-wobble 1.6s ease-in-out infinite;
+}
+
+@keyframes c6-in {
+  from {
+    opacity: 0.4;
+    translate: 0 -6px;
+  }
+}
+
+@keyframes c6-pop {
+  0% {
+    transform: scale(0.4);
+  }
+  70% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes c6-wobble {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+/* --- Under the folds --- */
+
+.c6-gloss {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.c6-gloss em {
+  color: #3a3a3a;
+}
+
+.c6-hint {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 12px;
+  border: 3px solid var(--k);
+  border-radius: 16px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.c6-hint.no {
+  background: #ffe6ef;
+}
+
+.c6-hint svg {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+
+.c6-opts {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.c6-opts button {
+  position: relative;
+  height: 56px;
+  padding: 0 8px;
+  border: 3px solid var(--k);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--k);
+  font-family: 'Shrikhand', serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--k) !important;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+
+.c6-opts button:hover:not(:disabled) {
+  background: #fffbe6;
+}
+
+.c6-opts button:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--k);
+}
+
+.c6-opts button kbd {
+  display: none;
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #9a9284;
+}
+
+.c6-opts button.no {
+  background: #ece6da;
+  color: #9a9284 !important;
+  border-color: #9a9284;
+  box-shadow: none;
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  cursor: default;
+  animation: q-shake 0.35s ease-in-out;
+}
+
+.c6-next {
+  margin-top: 16px;
+}
+
+.c6-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 3px solid var(--k);
+  border-radius: 16px;
+  background: var(--pink);
+  box-shadow: 4px 4px 0 var(--k);
+  color: #fff !important;
+  font-family: 'Shrikhand', serif;
+  font-size: 20px;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.c6-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 3;
+}
+
+.c6-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--k);
+}
+
+.c6-btn.ghost {
+  background: #fff;
+  color: var(--k) !important;
+}
+
+.c6-link {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--k) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* --- The end of a round --- */
+
+.c6-card {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border: 3px solid var(--k);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 6px 6px 0 var(--k);
+  animation: q-rise 0.4s ease-out both;
+}
+
+.c6-card .kick {
+  margin: 0;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+
+.c6-card h2 {
+  margin: 6px 0 4px;
+  font-family: 'Shrikhand', serif;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.c6-card .sub {
+  margin: 0;
+  font-size: 15px;
+  color: #555;
+}
+
+.c6-card ol {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.c6-card li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 2px dashed #e5dccb;
+}
+
+.c6-card li b {
+  display: block;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.c6-card li em {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  color: #555;
+}
+
+.c6-card li.miss b {
+  text-decoration: underline wavy var(--pink);
+  text-underline-offset: 4px;
+}
+
+.c6-card .acts {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* On a wide screen, the picture beside the folds */
+@media (min-width: 900px) {
+  .c6-col {
+    max-width: 1040px;
+    padding: 28px 32px 32px;
+  }
+
+  .c6-top h1 {
+    font-size: 34px;
+  }
+
+  .c6-play {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .c6-pic {
+    max-height: none;
+  }
+
+  .c6-folds {
+    margin-top: 16px;
+    gap: 12px;
+  }
+
+  .c6-fold {
+    min-height: 58px;
+  }
+
+  .c6-fold b {
+    font-size: 28px;
+  }
+
+  .c6-opts button {
+    height: 64px;
+    font-size: 25px;
+  }
+
+  .c6-opts button kbd {
+    display: block;
+  }
+
+  .c6-card {
+    max-width: 760px;
+  }
+}
+
+@media (max-height: 720px) and (max-width: 600px) {
+  .c6-pic {
+    max-height: 170px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c6-ants,
+  .c6-fold,
+  .c6-fold .ok,
+  .c6-fold.now b,
+  .c6-opts button.no,
+  .c6-card {
+    animation: none;
+  }
+}

@@ -1,0 +1,16 @@
+---
+import Base from '~/layouts/Base.astro'
+import Hola from '~/app'
+---
+
+<Base>
+  <Fragment slot="head">
+    <!-- Installable as an app -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Hola" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  </Fragment>
+  <Hola client:only="react" />
+</Base>

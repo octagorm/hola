@@ -1,0 +1,55 @@
+---
+import '~/styles/app.css'
+
+// Every page's <html>, in Norwegian, on old paper
+interface Props {
+  // Shown as "<title> | Hola". Without it, "Hola".
+  title?: string
+  description?: string
+  noindex?: boolean
+  // For the page's background, so nothing flashes before its island renders
+  bodyClass?: string
+}
+
+const SITE = 'Hola'
+const { title, description, noindex = false, bodyClass } = Astro.props
+const documentTitle = title ? `${title} | ${SITE}` : SITE
+const metaDescription =
+  description ??
+  'Spansk litt etter litt: dagens kapittel på ti minutter, ordspill og Don Quijote fortalt enkelt, med ord som blir spanske etter hvert som du lærer dem.'
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{documentTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta name="theme-color" content="#f3e9d3" />
+    <link rel="icon" type="image/svg+xml" href="/app/icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/app/icon-192.png" />
+    <link rel="apple-touch-icon" href="/app/apple-touch-icon.png" />
+    <!-- IM Fell English for headings, as in an old printed book; EB
+         Garamond for text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+    />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass ?? 'q-body'}>
+    <slot />
+    <script>
+      // iOS hands a touch to pointer listeners only where it finds one on an
+      // element with a box. React listens on <astro-island>, which has none
+      // (display: contents). A listener on the window covers the whole page.
+      addEventListener('pointerdown', () => {}, { passive: true })
+    </script>
+  </body>
+</html>

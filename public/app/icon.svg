@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- A windmill of La Mancha in ink, before a red sun, on old paper -->
+  <defs>
+    <g id="blade">
+      <path d="M0 0V-178" stroke="#1b1611" stroke-width="11" stroke-linecap="round"/>
+      <path d="M8-56H50V-172H8" fill="#f3e9d3" stroke="#1b1611" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M8-85H50M8-114H50M8-143H50M29-56V-172" stroke="#1b1611" stroke-width="4"/>
+    </g>
+  </defs>
+  <rect class="bg" width="512" height="512" rx="112" fill="#f3e9d3"/>
+  <circle cx="350" cy="168" r="86" fill="#c2402c" opacity=".82"/>
+  <path d="M0 418C120 398 300 396 512 414V512H0Z" fill="#d29a2e" opacity=".55"/>
+  <path d="M206 432 224 262H288L306 432Z" fill="#1b1611"/>
+  <path d="M214 266 256 212 298 266Z" fill="#1b1611"/>
+  <path d="M244 432V402A12 12 0 0 1 268 402V432Z" fill="#f3e9d3"/>
+  <circle cx="256" cy="318" r="9" fill="#f3e9d3"/>
+  <g transform="translate(256 244) rotate(24)">
+    <use href="#blade"/>
+    <use href="#blade" transform="rotate(90)"/>
+    <use href="#blade" transform="rotate(180)"/>
+    <use href="#blade" transform="rotate(270)"/>
+  </g>
+  <circle cx="256" cy="244" r="15" fill="#1b1611"/>
+  <path d="M60 446C160 434 360 434 452 446" stroke="#1b1611" stroke-width="7" fill="none" stroke-linecap="round"/>
+</svg>

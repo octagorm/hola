@@ -1,0 +1,5 @@
+dist
+.astro
+.wrangler
+public
+package-lock.json
