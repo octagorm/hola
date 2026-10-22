@@ -2296,3 +2296,161 @@ a.q-box:hover {
 .q-about a {
   color: inherit;
 }
+
+/* --- The account (account.tsx) --- */
+
+.q-account {
+  position: relative;
+}
+
+.q-account .q-round b {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.q-account-pop {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 30;
+  width: min(330px, calc(100vw - 40px));
+  padding: 14px 18px 16px;
+  background: var(--paper-3);
+  box-shadow: 4px 4px 0 rgba(27, 22, 17, 0.12);
+  text-align: left;
+}
+
+.q-account-pop h2 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.q-account-pop h2 span {
+  margin-left: 8px;
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+:is(.q-account-pop, .q-account-body) p {
+  margin: 0 0 12px;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+:is(.q-account-pop, .q-account-body) .who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+:is(.q-account-pop, .q-account-body) .who b {
+  display: block;
+  font-weight: 600;
+}
+
+:is(.q-account-pop, .q-account-body) .who small {
+  display: block;
+  font-size: 15px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.q-initial {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--display);
+  font-size: 22px;
+}
+
+:is(.q-account-pop, .q-account-body) .synced {
+  display: flex;
+  gap: 8px;
+  color: var(--ink-2);
+}
+
+:is(.q-account-pop, .q-account-body) .synced svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 3px;
+  color: var(--blue);
+}
+
+:is(.q-account-pop, .q-account-body) .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+:is(.q-account-pop, .q-account-body) .q-link svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: -2px;
+}
+
+.q-note.bad {
+  color: var(--red);
+}
+
+/* --- /admin --- */
+
+.q-admin > * + * {
+  margin-top: 16px;
+}
+
+.q-admin p {
+  margin: 0;
+}
+
+.q-admin table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 17px;
+}
+
+.q-admin th {
+  text-align: left;
+  font-family: var(--sc);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  border-bottom: 2px solid var(--ink);
+  padding: 6px 8px;
+}
+
+.q-admin td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px;
+  overflow-wrap: anywhere;
+}
+
+.q-about ul {
+  margin: 8px 0 12px;
+  padding-left: 22px;
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+.q-about li + li {
+  margin-top: 6px;
+}
+
+.q-about p + p {
+  margin-top: 10px;
+}

@@ -4,17 +4,21 @@ import { dayKey, merge } from '../lib/bank'
 import { say, useVoices } from '../lib/speech'
 import { startMusic, stopMusic } from '../lib/music'
 import { useStore } from '../lib/store'
+import { useAccount } from '../lib/account'
+import { AccountSettings } from '../account'
 import { Page } from '../ui'
 import type { ReactNode } from 'react'
 import type { Bank } from '../lib/bank'
 
-// Settings: the voice, how the practice goes, sound, and the backup that
-// moves the progress from this browser to another
+// Settings: the account, the voice, how the practice goes, sound, and the
+// backup that moves the progress from this browser to another
 
 const SAMPLE = 'Hola, ¿qué tal? Poco a poco se va lejos.'
 
 export default function Ajustes() {
   const { settings, setSettings, bank, absorb, reset } = useStore()
+  const account = useAccount()
+  const kept = !!account.me
   const { voices, hear } = useVoices()
   const [sure, setSure] = useState(false)
   const [note, setNote] = useState('')
@@ -53,6 +57,12 @@ export default function Ajustes() {
   return (
     <Page es="Ajustes" title="Innstillinger">
       <div className="q-settings">
+        {account.on && (
+          <Group es="Cuenta" no="Konto">
+            <AccountSettings />
+          </Group>
+        )}
+
         <Group es="Voz" no="Stemme">
           {hear === false ? (
             <p className="q-muted">
@@ -155,10 +165,12 @@ export default function Ajustes() {
 
         <Group es="Copia de seguridad" no="Sikkerhetskopi">
           <p className="q-muted">
-            Fremgangen ligger bare i denne nettleseren. Last ned en
-            sikkerhetskopi for å ta den med til en annen nettleser eller maskin,
-            og les den inn der. Det som er lest inn, legges sammen med det som
-            er her.
+            {kept
+              ? 'Fremgangen ligger i denne nettleseren og på kontoen din. '
+              : 'Fremgangen ligger bare i denne nettleseren. '}
+            Last ned en sikkerhetskopi for å ta den med til en annen nettleser
+            eller maskin, og les den inn der. Det som er lest inn, legges sammen
+            med det som er her.
           </p>
           <div className="flex flex-wrap gap-3">
             <button type="button" className="q-btn small" onClick={download}>
@@ -189,7 +201,10 @@ export default function Ajustes() {
         <Group es="Empezar de nuevo" no="Begynne på nytt">
           {sure ? (
             <div className="flex flex-wrap items-center gap-3">
-              <span>Alt du har lært og alle stemplene slettes. Sikker?</span>
+              <span>
+                Alt du har lært og alle stemplene slettes
+                {kept ? ', også på kontoen' : ''}. Sikker?
+              </span>
               <button
                 type="button"
                 className="q-btn small danger"

@@ -5,15 +5,18 @@ Hola is Spanish for Norwegians, ten minutes a day, at https://hola.ymse.land. It
 ## The repo
 
 - Astro with one React island (`client:only`), Tailwind v4 and lucide-react, built to static files. The app is `src/app/`; paths below without a folder are in it. `src/pages/index.astro` holds it, `om.astro` says what Hola is and what it keeps, and `404.astro` is the page for a wrong address.
-- No backend and no account: the word bank and the settings live in the browser's localStorage (`hola:bank:v1`, `lib/store.tsx`), and a backup file under Innstillinger moves them to another browser (banks are merged, each link keeping its latest answer).
-- Hosting: the Cloudflare Worker `hola`, static assets only (`wrangler.jsonc`, no Worker code), built by Workers Builds on a push to `main` (build `npm run build`, deploy `npx wrangler deploy`), on the custom domain hola.ymse.land. Headers are in `public/_headers`. Pages build to `om.html`, so addresses have no trailing slash.
+- The word bank and the settings live in the browser's localStorage (`hola:bank:v1`, `lib/store.tsx`), and a backup file under Innstillinger moves them to another browser (banks are merged, each link keeping its latest answer).
+- An account is optional: anyone can sign in with Google, and Convex (project `hola`) then keeps the bank on the account too (`convex/bank.ts`, as the page's own JSON), merged with the browser's the same way on sign-in and saved two seconds after a change (`lib/account.tsx`). `convex/access.ts` keeps who has signed in, which `/admin` lists for the admin. Each new account is sent to the admin's inbox at admin.ymse.land, with the sender's token in `YMSELAND_NOTIFY_TOKEN` on production's Convex (without it, nothing is sent). Accounts stay off until `PUBLIC_CONVEX_URL` is set at build time (`lib/cloud.tsx`): without it the page shows no sign-in and asks nothing of Convex.
+- Hosting: the Cloudflare Worker `hola`, built by Workers Builds on a push to `main`, on the custom domain hola.ymse.land. The files are static assets; `worker/index.ts` runs only for `/api/auth/*`, passing Google's sign-in on to production's Convex site (`CONVEX_SITE` in `wrangler.jsonc`; empty, it passes nothing on), so that Google's page names hola.ymse.land (Convex's `CUSTOM_AUTH_SITE_URL`). Headers are in `public/_headers`. Pages build to `om.html`, so addresses have no trailing slash.
+- Changes in `convex/` go to production with the site: the deploy command is `npx convex deploy && npx wrangler deploy`, with a deploy key as the build secret `CONVEX_DEPLOY_KEY`. The backend goes first, so when removing a function, push the frontend that stops calling it in an earlier push.
+- Google sign-in has a Cloud project, client and brand of its own, «Hola», with `https://hola.ymse.land/api/auth/callback/google` as its redirect URI, so Google's page says «Hola». Its home page is `/om` and its privacy policy `/personvern`; keep `/personvern` in step with `convex/schema.ts`. Changing the app's name, home page or privacy link means verifying the brand again, and a logo means a full app review.
 
 Commands:
 
-- `npm run dev` – Astro's dev server (the user runs it; don't)
+- `npm run dev` – Convex and Astro (the user runs it; don't)
 - `npm run build` – type check and build to `dist/`
 - `npm run preview` – build and serve `dist/` with Wrangler, as Cloudflare will
-- `npm test` – Vitest: the bank and today's chapter, the data, the games' rules
+- `npm test` – Vitest: the bank and today's chapter, the data, the games' rules, the Convex functions (with `convex-test`) and the Worker
 - `npm run test:e2e` – the built site in Chromium (`scripts/smoke.mjs`): a new player's first day, every page on a desktop and a phone, and each game played through. Build first. On a new machine, `npx playwright install chromium` once
 - `npm run lint`, `npm run format`, `npm run format:check`
 
@@ -50,7 +53,7 @@ Astro puts the games' CSS before `hola.css`, so a rule in `hola.css` beats a gam
 
 ## Privacy
 
-Nothing leaves the browser: no account, no cookies, no analytics, no tracking. The fonts come from Google Fonts. `/om` says so; keep it in step if that ever changes.
+Without an account nothing leaves the browser. Signed in, the account keeps the name and address Google gives, and the word bank, in Convex in the EU (Ireland); the sign-in's own cookies last only while it is under way. No analytics and no tracking. The fonts come from Google Fonts. `/om` and `/personvern` say so; keep them in step with what is stored.
 
 ## Looking at a change
 

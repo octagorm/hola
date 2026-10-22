@@ -1,12 +1,22 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hola",
+  // Passes Google's sign-in on to Convex; nothing else runs it
+  "main": "worker/index.ts",
   "compatibility_date": "2026-10-10",
-  // Only static files: nothing runs on the server. Headers are in
-  // public/_headers.
+  "vars": {
+    // Production's Convex site (the project «hola»); empty, the Worker
+    // passes nothing on
+    "CONVEX_SITE": "",
+  },
+  // The built files. Headers are in public/_headers.
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "404-page",
     "html_handling": "drop-trailing-slash",
+    "run_worker_first": ["/api/auth/*"],
   },
+  // Branch builds deploy as Previews, which send nothing on to Convex
+  "previews": {},
 }

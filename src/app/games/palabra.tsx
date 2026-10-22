@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ChartColumn, Delete, X } from 'lucide-react'
 import { WORD, gloss } from '../data/words'
 import { dayKey } from '../lib/bank'
@@ -199,28 +199,35 @@ function Board({
     points,
   ])
 
+  // What is typed and guessed as of the last key, since keys can come
+  // faster than the page is drawn again (only onKey changes them)
+  const live = useRef({ typed: '', guesses: start })
+
   const onKey = (k: string) => {
-    if (over) return
-    if (k === 'Backspace') {
-      setTyped((t) => t.slice(0, -1))
-      return
+    const cur = live.current
+    if (cur.guesses.includes(answer) || cur.guesses.length >= TRIES) return
+    const type = (t: string) => {
+      live.current = { ...live.current, typed: t }
+      setTyped(t)
     }
+    if (k === 'Backspace') return type(cur.typed.slice(0, -1))
     if (k === 'Enter') {
-      if (typed.length < LENGTH) {
+      if (cur.typed.length < LENGTH) {
         setShake(true)
         setTimeout(() => setShake(false), 400)
         setToast('For få bokstaver')
         return
       }
-      const next = [...guesses, typed]
+      const next = [...cur.guesses, cur.typed]
+      live.current = { typed: '', guesses: next }
       setGuesses(next)
       setFresh(next.length - 1)
       setTyped('')
       if (isDaily) save({ day, id: w.id, guesses: next })
-      if (typed !== answer) blip('tap')
+      if (cur.typed !== answer) blip('tap')
       return
     }
-    if (typed.length < LENGTH) setTyped((t) => t + k)
+    if (cur.typed.length < LENGTH) type(cur.typed + k)
   }
   useLetterKeys(onKey, !over)
 

@@ -1,5 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { BankProvider, useStore } from './lib/store'
+import { AccountProvider } from './lib/account'
+import { WithAccounts } from './lib/cloud'
 import { startMusic, stopMusic } from './lib/music'
 import { InkDefs, PeekProvider } from './ui'
 import { Mend } from './mend'
@@ -10,8 +12,9 @@ import './hola.css'
 // Hola: Spanish for Norwegians, around one word bank. The page is kept in
 // the URL's hash (/#palabra, /#quijote/molinos); no hash is the home page
 // (home.tsx). Every page reads and writes the same bank (lib/bank.ts,
-// lib/store.tsx), so a word practised in one is known in all. The pages
-// are listed in registry.tsx.
+// lib/store.tsx), so a word practised in one is known in all; signed in,
+// the bank follows the account (lib/account.tsx). The pages are listed in
+// registry.tsx.
 
 interface Route {
   id: string | null
@@ -28,13 +31,17 @@ export default function Hola() {
   // Whatever breaks, the page says so rather than going blank (mend.tsx)
   return (
     <Mend>
-      <BankProvider>
-        <PeekProvider>
-          <InkDefs />
-          <Router />
-          <MusicKeeper />
-        </PeekProvider>
-      </BankProvider>
+      <WithAccounts>
+        <BankProvider>
+          <AccountProvider>
+            <PeekProvider>
+              <InkDefs />
+              <Router />
+              <MusicKeeper />
+            </PeekProvider>
+          </AccountProvider>
+        </BankProvider>
+      </WithAccounts>
     </Mend>
   )
 }

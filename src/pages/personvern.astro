@@ -1,0 +1,86 @@
+---
+import Base from '~/layouts/Base.astro'
+import '~/app/hola.css'
+
+// The privacy policy on Google's consent screen. Keep it in step with what
+// convex/schema.ts stores.
+---
+
+<Base
+  title="Personvern"
+  description="Hva Hola lagrer, og hvor: uten konto bare i nettleseren din, med Google-konto også ordbanken på kontoen."
+>
+  <div class="q-shell">
+    <header class="q-top">
+      <a class="q-round" href="/" aria-label="Til Hola">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          ><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg
+        >
+      </a>
+      <h1>Privacidad<small>Personvern i Hola</small></h1>
+    </header>
+    <main class="q-main q-about">
+      <p class="lead">
+        Hola er et sted for å lære spansk, laget av Gorm Rødder for familie og
+        venner. Det har ingen reklame, ingen sporing og ingen analyse.
+      </p>
+
+      <h2>Uten å logge inn</h2>
+      <p>
+        Ordbanken, fremgangen og innstillingene dine lagres bare i nettleseren
+        på enheten du bruker. Ingenting av det sendes til oss.
+      </p>
+
+      <h2>Når du logger inn med Google</h2>
+      <p>Da lagrer vi:</p>
+      <ul>
+        <li>
+          navnet ditt, e-postadressen og profilbildet fra Google, for å vite
+          hvem som er logget inn;
+        </li>
+        <li>
+          ordbanken din: ordene du har møtt og hvor godt du kan dem, dagens
+          kapittel, stemplene i pilegrimspasset og poengene.
+        </li>
+      </ul>
+      <p>
+        Vi bruker det bare til å vise deg fremgangen din på enhetene der du er
+        logget inn. Gorm ser navnet og e-postadressen til alle som har logget
+        inn, og første gang du logger inn, sendes navnet og e-postadressen din
+        som et varsel til Gorms innboks på admin.ymse.land, som også ligger hos
+        Convex. Vi deler ingenting med noen og bruker det ikke til noe annet.
+      </p>
+
+      <h2>Hvor det lagres</h2>
+      <p>
+        Hos <a href="https://www.convex.dev">Convex</a>, som driver databasen
+        for oss på servere i Irland, i EU. Selve innloggingen går gjennom
+        Google. Den bruker et par kortvarige informasjonskapsler mens den
+        pågår, og husker deg siden i nettleserens egen lagring. Siden henter
+        skriftene fra Google Fonts, som, i likhet med alle nettsteder, ser
+        IP-adressen din.
+      </p>
+
+      <h2>Sletting</h2>
+      <p>
+        Vil du ha kontoen din og alt som hører til den slettet, skriv til
+        <a href="mailto:gorm@ymse.land">gorm@ymse.land</a>, så sletter vi den.
+      </p>
+
+      <h2>Kontakt</h2>
+      <p>
+        Spørsmål om personvern:
+        <a href="mailto:gorm@ymse.land">gorm@ymse.land</a>.
+      </p>
+
+      <p class="q-muted foot"><a href="/om">Om Hola</a></p>
+    </main>
+  </div>
+</Base>

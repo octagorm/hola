@@ -18,6 +18,8 @@ import {
   todays,
 } from './lib/today'
 import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
+import { AccountButton } from './account'
+import { useAccount } from './lib/account'
 import {
   InkBar,
   LINK_NAME,
@@ -40,6 +42,7 @@ export default function Home() {
   const { hear } = useVoices()
   const narrow = useMedia('(max-width: 860px)')
   const playing = useMusic()
+  const account = useAccount()
   const now = Date.now()
 
   const today = todays(bank, now)
@@ -151,6 +154,7 @@ export default function Home() {
             <a className="q-round" href="#ajustes" aria-label="Innstillinger">
               <Settings2 />
             </a>
+            <AccountButton />
           </div>
         </div>
         {narrow && <Scene view="narrow" className="strip" />}
@@ -323,12 +327,16 @@ export default function Home() {
             <a href="#ordbank">Ordbank</a>
             <a href="#ajustes">Innstillinger</a>
             <a href="/om">Om</a>
+            {account.on && <a href="/personvern">Personvern</a>}
           </nav>
           {hear === false
             ? 'Denne nettleseren har ingen spansk stemme, så ordene leses ikke høyt her. '
             : 'Stemmene er nettleserens egne spanske. '}
-          Fremgangen lagres i denne nettleseren, og en sikkerhetskopi under
-          Innstillinger tar den med til en annen.
+          {account.me
+            ? 'Fremgangen lagres i denne nettleseren og på kontoen din.'
+            : account.on
+              ? 'Fremgangen lagres i denne nettleseren. Logg inn med Google for å ha den med overalt, eller ta den med i en sikkerhetskopi under Innstillinger.'
+              : 'Fremgangen lagres i denne nettleseren, og en sikkerhetskopi under Innstillinger tar den med til en annen.'}
         </footer>
       </main>
     </div>

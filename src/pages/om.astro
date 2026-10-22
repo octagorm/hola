@@ -1,6 +1,11 @@
 ---
 import Base from '~/layouts/Base.astro'
 import '~/app/hola.css'
+
+// What Hola is, and the app's home page on Google's consent screen: keep it
+// saying what Hola is, with a link to /personvern. Signing in is told of
+// only where the page is built with accounts (src/app/lib/cloud.tsx).
+const accounts = !!import.meta.env.PUBLIC_CONVEX_URL
 ---
 
 <Base
@@ -68,23 +73,41 @@ import '~/app/hola.css'
 
       <h2>Stemmene</h2>
       <p>
-        Spansken leses av nettleserens egne stemmer. På Mac og iPhone heter
-        den beste Mónica, og i Chrome finnes Google español. Under
-        Innstillinger kan du velge stemme og fart.
+        Spansken er lest inn på forhånd med stemmer fra Googles Gemini, med
+        uttale fra Spania: ordene av en lærer, Don Quijote og setningene av en
+        forteller. Det som ennå ikke er lest inn, leses av nettleserens egen
+        spanske stemme. Under Innstillinger kan du velge fart.
       </p>
 
       <h2>Hva som lagres</h2>
+      {
+        accounts ? (
+          <p>
+            Uten å logge inn lagres alt du lærer bare i denne nettleseren, og
+            ingenting sendes noe sted. Logger du inn med Google, ligger
+            ordbanken også på kontoen din og følger deg til alle enheter der du
+            logger inn. Hola har ingen reklame og ingen sporing. Fremgangen kan
+            også tas med til en annen nettleser med en sikkerhetskopi under
+            Innstillinger.
+          </p>
+        ) : (
+          <p>
+            Alt du lærer, lagres bare i denne nettleseren, på denne maskinen.
+            Ingenting sendes noe sted: Hola har ingen konto og ingen sporing.
+            For å ta fremgangen med til en annen nettleser laster du ned en
+            sikkerhetskopi under Innstillinger og leser den inn der.
+          </p>
+        )
+      }
       <p>
-        Alt du lærer, lagres bare i denne nettleseren, på denne maskinen.
-        Ingenting sendes noe sted: Hola har ingen konto, ingen
-        informasjonskapsler og ingen sporing. For å ta fremgangen med til en
-        annen nettleser laster du ned en sikkerhetskopi under Innstillinger og
-        leser den inn der. Skriftene hentes fra Google Fonts.
+        Skriftene hentes fra Google Fonts. Mer om dette under
+        <a href="/personvern">Personvern</a>.
       </p>
 
       <p class="q-muted foot">
         Don Quijote er Miguel de Cervantes' roman fra 1605, her fortalt enkelt.
         Hola er en del av <a href="https://ymse.land">ymse.land</a>.
+        <a href="/personvern">Personvern</a>.
       </p>
     </main>
   </div>

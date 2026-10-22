@@ -3,7 +3,7 @@
 // chapter; a learner some weeks in opens every page and plays every game.
 // Any error a page throws fails the test.
 //
-//   node scripts/smoke.mjs
+//   node scripts/smoke.mjs [part of a test's name, to run only those]
 import { chromium } from 'playwright'
 import { ORIGIN, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
@@ -24,7 +24,10 @@ function expect(ok, what) {
   if (!ok) throw new Error(what)
 }
 
+const only = process.argv[2]?.toLowerCase()
+
 async function test(name, fn, { phone = false, learner = false } = {}) {
+  if (only && !name.toLowerCase().includes(only)) return
   const context = await browser.newContext({
     ...(phone ? PHONE : DESK),
     acceptDownloads: true,
@@ -213,6 +216,8 @@ await test(
   'La palabra ends after six guesses',
   async (page) => {
     await go(page, '#palabra')
+    // (keys typed before the game is there are lost)
+    await page.waitForSelector('.g5-keys')
     for (let i = 0; i < 6; i++) {
       await page.keyboard.type('qqqqq')
       await page.keyboard.press('Enter')

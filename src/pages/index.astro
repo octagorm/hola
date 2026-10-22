@@ -11,6 +11,26 @@ import Hola from '~/app'
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Hola" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- A Google sign-in from the installed app that came back without a
+         code failed: marked so, the app tries once more by itself
+         (src/app/account.tsx) -->
+    <script is:inline>
+      try {
+        const p = JSON.parse(localStorage.getItem('hola:signin') || 'null')
+        const failed =
+          p &&
+          !p.failed &&
+          navigator.standalone &&
+          Date.now() - p.at < 300000 &&
+          !new URLSearchParams(location.search).has('code')
+        if (failed) {
+          const marked = JSON.stringify({ ...p, failed: true })
+          localStorage.setItem('hola:signin', marked)
+        }
+      } catch {
+        // no storage, no second try
+      }
+    </script>
   </Fragment>
   <Hola client:only="react" />
 </Base>
