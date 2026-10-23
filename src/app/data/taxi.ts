@@ -41,20 +41,23 @@ export interface Place {
   sign: string
 }
 
-// The places, each once in town. They stand in pairs along a street where
-// they can, and the pairs are near in sound (el banco and el bar, el hotel
-// and el hospital, el museo and el mercado), so that stopping in front of
-// the right one asks for an ear.
+// The places, each once in town. They stand together in three blocks, so
+// that nearly every one has another on the same side of the street just
+// before it, and the passenger can only be let off at the right door by ear:
+// el banco after la iglesia, el bar after el banco (near in sound), el cine
+// after el bar, la iglesia after el cine, round one block; el hotel after el
+// hospital, el hospital after la farmacia, in another; el museo after el
+// mercado, la estación after el museo, in the third.
 export const PLACES: Array<Place> = [
   { id: 'el banco', kind: 'bank', lot: { bx: 1, by: 1, q: 0 }, sign: 'BANCO' },
   { id: 'el bar', kind: 'bar', lot: { bx: 1, by: 1, q: 1 }, sign: 'BAR' },
   {
     id: 'la iglesia',
     kind: 'church',
-    lot: { bx: 0, by: 1, q: 1 },
+    lot: { bx: 1, by: 1, q: 2 },
     sign: 'IGLESIA',
   },
-  { id: 'el cine', kind: 'cinema', lot: { bx: 0, by: 1, q: 3 }, sign: 'CINE' },
+  { id: 'el cine', kind: 'cinema', lot: { bx: 1, by: 1, q: 3 }, sign: 'CINE' },
   {
     id: 'el hospital',
     kind: 'hospital',
@@ -63,22 +66,22 @@ export const PLACES: Array<Place> = [
   },
   { id: 'el hotel', kind: 'hotel', lot: { bx: 3, by: 1, q: 0 }, sign: 'HOTEL' },
   {
+    id: 'la farmacia',
+    kind: 'pharmacy',
+    lot: { bx: 3, by: 1, q: 3 },
+    sign: 'FARMACIA',
+  },
+  {
     id: 'el mercado',
     kind: 'market',
-    lot: { bx: 2, by: 2, q: 3 },
+    lot: { bx: 1, by: 3, q: 0 },
     sign: 'MERCADO',
   },
   {
     id: 'el museo',
     kind: 'museum',
-    lot: { bx: 2, by: 2, q: 2 },
+    lot: { bx: 1, by: 3, q: 1 },
     sign: 'MUSEO',
-  },
-  {
-    id: 'la farmacia',
-    kind: 'pharmacy',
-    lot: { bx: 2, by: 3, q: 2 },
-    sign: 'FARMACIA',
   },
   {
     id: 'la estación',

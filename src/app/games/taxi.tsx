@@ -45,7 +45,8 @@ import './taxi.css'
 // asked for). A wrong move gets a polite complaint and the instruction
 // again. A shift is five rides; each passenger gives up to five stars, one
 // fewer for each wrong move and one fewer if the words were shown rather
-// than heard. The town is lib/taxi.ts, its drawing taxiScene.ts: the Gran
+// than heard, and shows under their portrait what they would give as the
+// ride goes. The town is lib/taxi.ts, its drawing taxiScene.ts: the Gran
 // Vía at dusk, as on a poster of the thirties.
 
 const FONTS =
@@ -225,6 +226,8 @@ export default function Taxi() {
   const [before, setBefore] = useState(0)
   const [talking, setTalking] = useState(false)
   const [nudge, setNudge] = useState(0)
+  // the stars this passenger would give, as it stands
+  const [rating, setRating] = useState(5)
 
   const box = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -263,6 +266,14 @@ export default function Taxi() {
   // The latest of everything the loop and the timers call back into
   const latest = useRef({ store, phase, rideNo, results, captions, mute })
   latest.current = { store, phase, rideNo, results, captions, mute }
+
+  // Five, one fewer for each wrong move and one if the words were read,
+  // never none
+  const starsNow = () => {
+    const s = st.current
+    const read = s.read && !latest.current.mute
+    return Math.max(1, 5 - s.mistakes - (read ? 1 : 0))
+  }
 
   const later = (f: () => void, ms: number) => {
     timers.current.push(window.setTimeout(f, ms))
@@ -352,6 +363,7 @@ export default function Taxi() {
     setShown(s.shown)
     setComplaint(null)
     setThanks(null)
+    setRating(5)
     setPhase('ride')
     if (meterEl.current) meterEl.current.textContent = euros(fare(1))
     later(() => void open(r), me.ms + 250)
@@ -370,8 +382,7 @@ export default function Taxi() {
     const s = st.current
     const r = s.ride
     if (!r) return
-    const read = s.read && !latest.current.mute
-    const stars = Math.max(1, 5 - s.mistakes - (read ? 1 : 0))
+    const stars = starsNow()
     s.spot = endOf(r)
     s.aboard = null
     s.rider = walk(s.path, s.path.len, true, s.who)
@@ -430,6 +441,7 @@ export default function Taxi() {
       return
     }
     s.mistakes++
+    setRating(starsNow())
     s.quietUntil = performance.now() + 700
     blip('wrong')
     setNudge((n) => n + 1)
@@ -465,6 +477,7 @@ export default function Taxi() {
     st.current.shown = true
     st.current.read = true
     setShown(true)
+    setRating(starsNow())
   }
 
   // --- The loop: the taxi moves, the town is drawn round it ---
@@ -719,7 +732,10 @@ export default function Taxi() {
 
           {(phase === 'ride' || phase === 'paid') && ride && (
             <div className="tx-bubble" key={rideNo}>
-              <Portrait who={who} talking={talking} />
+              <div className="tx-who">
+                <Portrait who={who} talking={talking} />
+                {phase === 'ride' && <Stars n={rating} tiny />}
+              </div>
               <div className="tx-say">
                 {complaint && phase === 'ride' && (
                   <p className="tx-complaint" lang="es">
@@ -891,10 +907,18 @@ export default function Taxi() {
   )
 }
 
-function Stars({ n, small = false }: { n: number; small?: boolean }) {
+function Stars({
+  n,
+  small = false,
+  tiny = false,
+}: {
+  n: number
+  small?: boolean
+  tiny?: boolean
+}) {
   return (
     <span
-      className={`tx-stars ${small ? 'small' : ''}`}
+      className={`tx-stars ${small ? 'small' : ''} ${tiny ? 'tiny' : ''}`}
       aria-label={`${n} av 5 stjerner`}
     >
       {Array.from({ length: 5 }, (_, i) => (

@@ -7,6 +7,7 @@ import {
   NY,
   PLACES,
   SAY,
+  SIDE,
   TAXI_LINES,
 } from '../src/app/data/taxi'
 import { TAXI_VOICE, VOICES } from '../src/app/data/voices'
@@ -130,6 +131,38 @@ describe('a ride', () => {
     expect([...seen].sort()).toEqual(
       ['ahead', 'at', 'count', 'forward', 'stop', 'straight', 'turn'].sort(),
     )
+  })
+
+  it('asks more of the ear than izquierda and derecha', () => {
+    const rand = seeded(11)
+    let spot = spotAt(FIRST_STOP)
+    let last: Array<string> = []
+    let past = 0
+    let caught = 0
+    const N = 300
+    for (let n = 0; n < N; n++) {
+      const ride = plan(spot, rand, last)
+      const end = ride.instructions[ride.instructions.length - 1]
+      const lots = end.points.filter((p) => p.lot)
+      // another place on the right to drive past before the one asked for
+      if (lots[0].expect !== 'stop') past++
+      // a driver who only catches the side, and turns at once, or stops at
+      // the first place
+      const wrong = ride.instructions.some((ins) => {
+        if (ins.kind === 'stop') return lots[0].expect !== 'stop'
+        const side = ins.words.includes(SIDE.left)
+          ? 'left'
+          : ins.words.includes(SIDE.right)
+            ? 'right'
+            : 'straight'
+        return ins.points[0].expect !== side
+      })
+      if (wrong) caught++
+      last = [ride.to.id]
+      spot = endOf(ride)
+    }
+    expect(past / N).toBeGreaterThan(0.7)
+    expect(caught / N).toBeGreaterThan(0.9)
   })
 
   it('starts where the taxi stands, and goes somewhere else', () => {

@@ -155,15 +155,22 @@ export interface Route {
 const key = (i: number, j: number, h: number) => `${i},${j},${h}`
 
 // The shortest ways from a spot to a place on the right, by the number of
-// crossings, with no turning back
-export function routes(from: Spot, to: Lot, most = 8): Array<Route> {
+// crossings, with no turning back, and with `longer`, those up to so many
+// crossings longer too
+export function routes(
+  from: Spot,
+  to: Lot,
+  most = 8,
+  longer = 0,
+): Array<Route> {
   const targets = stopsFor(to)
   const isTarget = (e: Edge) =>
     targets.find(
       (t) => t.edge.i === e.i && t.edge.j === e.j && t.edge.h === e.h,
     )
+  const found: Array<Route> = []
+  let first = 0
   for (let depth = 1; depth <= most; depth++) {
-    const found: Array<Route> = []
     const walk = (
       edges: Array<Edge>,
       moves: Array<Step>,
@@ -193,9 +200,10 @@ export function routes(from: Spot, to: Lot, most = 8): Array<Route> {
       }
     }
     walk([from.edge], [], new Set([key(from.edge.i, from.edge.j, from.edge.h)]))
-    if (found.length) return found
+    if (found.length && !first) first = depth
+    if (first && depth >= first + longer) break
   }
-  return []
+  return found
 }
 
 export const turnsIn = (r: Route) =>
@@ -284,7 +292,7 @@ export function instruct(
     const options: Array<[Choice, number]> = []
     if (place) options.push(['at', 3])
     if (s === 0) options.push(['turn', 2], ['ahead', 2])
-    else if (s <= 2) options.push(['count', 3], ['split', 2])
+    else if (s <= 2) options.push(['count', 3], ['split', 1])
     else options.push(['split', place ? 1 : 3])
     const choice = pick(options, rand)
     if (choice === 'split') {
@@ -362,11 +370,32 @@ function lastStretch(route: Route, to: Place, last: number): Instruction {
 const lastTurn = (r: Route) =>
   r.moves.reduce((t, m, k) => (m === 'straight' ? t : k), -1)
 
+// How much of a route asks for more than the side heard: each crossing to
+// be driven straight on before a turn (up to two, as «en la tercera calle»
+// or «al llegar al cine» can count them), and a stop with another place on
+// the right to drive past first, which counts as two
+export function demands(route: Route, to: Place): number {
+  let d = 0
+  let run = 0
+  for (const m of route.moves.slice(0, lastTurn(route) + 1))
+    if (m === 'straight') run++
+    else {
+      d += Math.min(run, 2)
+      run = 0
+    }
+  const end = lastStretch(route, to, lastTurn(route))
+  if (end.points.some((p) => p.lot && p.expect !== 'stop')) d += 2
+  return d
+}
+
 // The next ride from where the taxi stands: a place that is neither here
 // nor just visited, two to six crossings away with a turn on the way, by
-// the shortest way, with no more turns than it needs and one more, and not
-// round a block. Places where the end is a choice, with another place to
-// drive past first, come up more often.
+// the shortest way or one two crossings longer, with no more turns than it
+// needs and one more, and not round a block. Of these, the ways that ask
+// the most of the ear come up far more often (demands): a turn after a
+// crossing or two straight on, and another place to drive past before the
+// one to stop at, so that a driver who only catches «izquierda» and
+// «derecha» will not get far. A longer way is taken only where it asks more.
 export function plan(
   from: Spot,
   rand: () => number = Math.random,
@@ -375,14 +404,21 @@ export function plan(
   const here = rightLots(from.edge)
     .filter((r) => Math.abs(r.d - from.d) < 1)
     .map((r) => placeOn(r.lot)?.id)
-  const candidates = PLACES.filter((p) => !here.includes(p.id)).map((p) => ({
-    place: p,
-    found: routes(from, p.lot),
-  }))
+  // the shortest ways to each place, and those two crossings longer, up to
+  // six crossings
+  const candidates = PLACES.filter((p) => !here.includes(p.id)).map((p) => {
+    const found = routes(from, p.lot, 8, 2)
+    const shortest = found.length ? found[0].moves.length : 0
+    return {
+      place: p,
+      shortest,
+      found: found.filter((r) => r.moves.length <= Math.max(6, shortest)),
+    }
+  })
   const fits = (c: (typeof candidates)[number], fresh: boolean) =>
     c.found.length > 0 &&
-    c.found[0].moves.length >= 2 &&
-    c.found[0].moves.length <= 6 &&
+    c.shortest >= 2 &&
+    c.shortest <= 6 &&
     c.found.some((r) => turnsIn(r) > 0 && !loops(r)) &&
     (!fresh || !avoid.includes(c.place.id))
   const pool =
@@ -392,14 +428,19 @@ export function plan(
       candidates.filter((c) => c.found.length > 0),
     ].find((xs) => xs.length) ?? []
   const options = pool.map((c) => {
-    const turning = c.found.filter((r) => turnsIn(r) > 0 && !loops(r))
-    const ways = turning.length ? turning : c.found
+    const { found: near, shortest } = c
+    const turning = near.filter((r) => turnsIn(r) > 0 && !loops(r))
+    const ways = turning.length ? turning : near
     const fewest = Math.min(...ways.map(turnsIn))
     const fine = ways.filter((r) => turnsIn(r) <= fewest + 1)
-    const route = fine[Math.floor(rand() * fine.length)]
-    const end = lastStretch(route, c.place, lastTurn(route))
-    const choice = end.points.some((p) => p.lot && p.expect !== 'stop')
-    return [{ place: c.place, route }, choice ? 3 : 1] as [
+    const scored = fine.map((r) => ({
+      r,
+      d: demands(r, c.place) - (r.moves.length - shortest) / 2,
+    }))
+    const most = Math.max(...scored.map((x) => x.d))
+    const best = scored.filter((x) => x.d === most)
+    const route = best[Math.floor(rand() * best.length)].r
+    return [{ place: c.place, route }, (1 + Math.max(0, most)) ** 2] as [
       { place: Place; route: Route },
       number,
     ]
