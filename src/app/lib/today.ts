@@ -112,7 +112,11 @@ export function plan(
   const clues = clueCount(bank, fresh)
   const games = DAILY_GAMES.filter((g) => ready(g, met, clues))
   // A chapter every other day, once there are words enough to read it by
-  const story = chapter && met >= 15 && n % 2 === 0
+  const reading = !!chapter && met >= 15
+  const story = reading && n % 2 === 0
+  // The games take turns over the days that have one: every other day
+  // while there are chapters to read, so count those days alone
+  const turn = reading ? Math.floor(n / 2) : n
 
   const steps: Array<PathStep> = []
   if (review.length)
@@ -123,8 +127,8 @@ export function plan(
       ...(fading.length >= 4 ? {} : { arg: 'warm' }),
     })
   if (fresh.length) steps.push({ k: 'new', ids: fresh.map((w) => w.id) })
-  if (story) steps.push({ k: 'story', arg: chapter.id })
-  else steps.push({ k: 'game', arg: games[n % games.length] })
+  if (story && chapter) steps.push({ k: 'story', arg: chapter.id })
+  else steps.push({ k: 'game', arg: games[turn % games.length] })
   if (hear && met >= LISTEN) steps.push({ k: 'listen' })
 
   // How long each link of the words practised lasted before
