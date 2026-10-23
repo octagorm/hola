@@ -9,6 +9,7 @@ import { DECK, spanish } from './cadaver.ts'
 import { whole } from './porpara.ts'
 import { plain as said } from './tiempos.ts'
 import { SAID } from './letras.ts'
+import { SAID as LAID, LINES_SAID } from './palabras.ts'
 import { linesOf } from './orden.ts'
 import { plain, tokens } from './text.ts'
 import { tapasLines } from './tapas.ts'
@@ -49,9 +50,13 @@ export function speechItems(): Array<SpeechItem> {
   for (const line of [EPIGRAPH.line, ...lines])
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   for (const s of SAID) add(WORD_VOICE, s, 'word')
+  // (and those Palabras lays that are too long for Letras)
+  for (const s of LAID) add(WORD_VOICE, s, 'word')
   add(WORD_VOICE, SAMPLE, 'line')
   for (const line of lines) add(LINE_VOICE, plain(line), 'line')
   for (const s of DECK) add(LINE_VOICE, spanish(s), 'line')
+  // El relojero's lines in Palabras
+  for (const s of LINES_SAID) add(LINE_VOICE, s, 'line')
   for (const g of GAPS) add(LINE_VOICE, whole(g), 'line')
   for (const s of SENTENCES)
     for (const t of TIMES) add(LINE_VOICE, said(s, t), 'line')

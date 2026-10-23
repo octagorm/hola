@@ -95,6 +95,9 @@ const MARKED: Record<string, string | undefined> = {
 export function plural(s: string): string {
   if (/[aeiouáéó]$/.test(s)) return `${s}s`
   if (s.endsWith('z')) return `${s.slice(0, -1)}ces`
+  // A loanword in a consonant no Spanish word ends in takes -s, as the
+  // RAE has it: fuet → fuets, vermut → vermuts, cómic → cómics
+  if (/[bcfgkpt]$/.test(s)) return `${s}s`
   // The vowels of each syllable, roughly: enough to tell where the stress is
   const groups = [...s.matchAll(/[aeiouáéíóúü]+/g)]
   const last = groups.at(-1)?.[0] ?? ''
