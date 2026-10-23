@@ -47,18 +47,24 @@ export function others(
   return out
 }
 
+// The other article, to make the wrong one: «la agua» for «el agua»
+const SWAP: Record<string, string | undefined> = {
+  el: 'la',
+  la: 'el',
+  los: 'las',
+  las: 'los',
+}
+
 // The Spanish to pick from for a meaning: for a noun, now and then the
-// same noun with the other gender's article, so that the article is
-// learnt with it
+// same noun with the other article, so that the article is learnt with it
 export function spanishChoices(
   w: Word,
   pool: Array<Word> = WORDS,
   random: () => number = Math.random,
 ): Array<string> {
+  const other = SWAP[w.es.split(' ')[0]]
   const wrongGender =
-    w.pos === 'n' && random() < 0.5
-      ? `${w.pl ? (w.g === 'm' ? 'las' : 'los') : w.g === 'm' ? 'la' : 'el'} ${w.bare}`
-      : null
+    w.pos === 'n' && random() < 0.5 && other ? `${other} ${w.bare}` : null
   const rest = others(w, pool, random, wrongGender ? 2 : 3).map((x) => x.es)
   return shuffle([w.es, ...(wrongGender ? [wrongGender] : []), ...rest], random)
 }

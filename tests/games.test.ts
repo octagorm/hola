@@ -76,6 +76,28 @@ describe('choices', () => {
     )
     expect(all.has('el mano')).toBe(true)
   })
+
+  it('never offer the right answer twice, even for «el agua»', () => {
+    for (const id of ['el agua', 'el hambre', 'los zapatos', 'la mano']) {
+      const w = WORD[id]
+      if (!w) continue
+      for (let i = 1; i <= 20; i++) {
+        const xs = spanishChoices(w, WORDS, seeded(i))
+        expect(new Set(xs).size, id).toBe(xs.length)
+        expect(
+          xs.filter((x) => x === w.es),
+          id,
+        ).toHaveLength(1)
+      }
+    }
+    const agua = WORD['el agua']!
+    const all = new Set(
+      Array.from({ length: 20 }, (_, i) =>
+        spanishChoices(agua, WORDS, seeded(i + 1)),
+      ).flat(),
+    )
+    expect(all.has('la agua')).toBe(true)
+  })
 })
 
 describe('La palabra', () => {
