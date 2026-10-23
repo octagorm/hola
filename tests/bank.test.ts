@@ -11,9 +11,15 @@ import {
   newCard,
   recall,
   weakest,
+  withStart,
 } from '../src/app/lib/bank'
 import { DAILY_GAMES, clueCount, plan, ready } from '../src/app/lib/today'
-import { WORDS } from '../src/app/data/words'
+import { WORD, WORDS } from '../src/app/data/words'
+import {
+  KNOWN_AT_START,
+  PRACTISED_AT_START,
+  START,
+} from '../src/app/data/start'
 
 const now = Date.UTC(2026, 9, 22, 12)
 
@@ -71,6 +77,60 @@ describe('two banks merged', () => {
   it('read a bank saved before a field existed', () => {
     const m = merge({ cards: {} }, emptyBank())
     expect(m.palabra).toEqual({})
+  })
+})
+
+describe('the starting point', () => {
+  it('lists words of the bank, each once', () => {
+    const all = [...KNOWN_AT_START, ...PRACTISED_AT_START]
+    for (const id of all) expect(WORD[id], id).toBeDefined()
+    expect(new Set(all).size).toBe(all.length)
+  })
+
+  it('starts the simplest words known and the easy ones practised', () => {
+    const b = withStart(emptyBank(), now)
+    expect(b.start).toBe(START)
+    for (const id of KNOWN_AT_START)
+      expect(level(b.cards[id], now + 14 * DAY), id).toBe(2)
+    for (const id of PRACTISED_AT_START)
+      expect(level(b.cards[id], now), id).toBe(1)
+    // spread, so that they do not all fade on the same day
+    const s = new Set(PRACTISED_AT_START.map((id) => b.cards[id]?.leer.s))
+    expect(s.size).toBeGreaterThan(PRACTISED_AT_START.length / 2)
+    // and the first warm-up is of words being practised
+    const warm = plan(b, now).steps[0]
+    expect(warm.k).toBe('review')
+    for (const id of warm.ids ?? []) expect(PRACTISED_AT_START).toContain(id)
+  })
+
+  it('touches nothing learnt, and is given once', () => {
+    const b = emptyBank()
+    b.cards.hola = newCard(now)
+    b.cards['el gato'] = answerCard(newCard(now), ['leer'], false, now)
+    const s = withStart(b, now + DAY)
+    expect(s.cards.hola).toBe(b.cards.hola)
+    expect(s.cards['el gato']).toBe(b.cards['el gato'])
+    expect(s.cards.adiós?.z).toBe(1)
+    delete s.cards.adiós
+    expect(withStart(s, now + 2 * DAY).cards.adiós).toBeUndefined()
+  })
+
+  it('gives way in a merge to a card with answers, however old', () => {
+    const old = emptyBank()
+    old.cards.hola = answerCard(newCard(now), ['leer'], true, now)
+    const fresh = withStart(emptyBank(), now + 30 * DAY)
+    const m = merge(fresh, old)
+    expect(m.cards.hola).toEqual(old.cards.hola)
+    expect(m.cards.hola?.z).toBeUndefined()
+    expect(m.cards.adiós?.z).toBe(1)
+    expect(m.start).toBe(START)
+  })
+
+  it('is no longer a seed once answered', () => {
+    const b = withStart(emptyBank(), now)
+    const c = answerCard(b.cards.hola, ['oir'], true, now + DAY)
+    expect(c.z).toBeUndefined()
+    expect(c.leer).toEqual(b.cards.hola?.leer)
   })
 })
 

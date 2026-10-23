@@ -14,6 +14,7 @@ import {
   level,
   merge,
   newCard,
+  withStart,
 } from './bank'
 import { setVoice } from './speech'
 import { setEffects } from './sound'
@@ -111,9 +112,10 @@ export function useStore(): Store {
 }
 
 export function BankProvider({ children }: { children: ReactNode }) {
-  // (merged with nothing, so a bank kept by an older page is read as now)
+  // (merged with nothing, so a bank kept by an older page is read as now,
+  // and given the starting point if it has not had it)
   const [bank, setBank] = useState<Bank>(() =>
-    merge(load(BANK_KEY, emptyBank()), emptyBank()),
+    withStart(merge(load(BANK_KEY, emptyBank()), emptyBank()), Date.now()),
   )
   const [settings, setAll] = useState<Settings>(() =>
     load(SETTINGS_KEY, DEFAULTS),
@@ -283,7 +285,10 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  const reset = useCallback(() => setBank(emptyBank()), [])
+  const reset = useCallback(
+    () => setBank(withStart(emptyBank(), Date.now())),
+    [],
+  )
 
   const setSettings = useCallback(
     (s: Partial<Settings>) => setAll((old) => ({ ...old, ...s })),

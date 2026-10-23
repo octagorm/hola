@@ -1,4 +1,5 @@
 import { WORDS } from '../data/words.ts'
+import { KNOWN_AT_START, PRACTISED_AT_START, START } from '../data/start.ts'
 import type { Word } from '../data/words.ts'
 
 // The word bank: what the player knows, shared by every game. A word is
@@ -44,6 +45,10 @@ export interface Card {
   x: number
   // Met, ms
   i: number
+  // Given by the starting point and never answered since (withStart): it
+  // says nothing of what the player remembers, so in a merge a card with
+  // answers wins over it, however old
+  z?: 1
 }
 
 export interface Bank {
@@ -62,6 +67,8 @@ export interface Bank {
   // Today's chapter (lib/today.ts): the plan for one day, and how far it
   // has got
   path: Path | null
+  // The version of the starting point given (data/start.ts), 0 for none
+  start: number
 }
 
 export type StepKind = 'review' | 'new' | 'game' | 'story' | 'listen'
@@ -103,6 +110,7 @@ export const emptyBank = (): Bank => ({
   palabra: {},
   read: {},
   path: null,
+  start: 0,
 })
 
 export const DAY = 86_400_000
@@ -168,6 +176,7 @@ export function answerCard(
   weight = 1,
 ): Card {
   const c = { ...(card ?? newCard(now)), t: now, n: (card?.n ?? 0) + 1 }
+  delete c.z
   if (!right) c.x++
   for (const l of links) c[l] = answer(c[l], right, now, weight)
   return c
@@ -175,6 +184,48 @@ export function answerCard(
 
 // Words the player says they know already: straight to known
 export const known = (now: number): Card => ({ ...newCard(now, 4), n: 1 })
+
+// A number from 0 to 1 for a word, the same every time (FNV-1a)
+function spread(id: string): number {
+  let h = 0x811c9dc5
+  for (const ch of id) h = Math.imul(h ^ (ch.codePointAt(0) ?? 0), 0x01000193)
+  return (h >>> 0) / 2 ** 32
+}
+
+// A card from the starting point, never seen: each link lasting `s` days
+// from `t`
+const seeded = (t: number, s: Record<Link, number>): Card => ({
+  leer: { s: s.leer, t },
+  oir: { s: s.oir, t },
+  decir: { s: s.decir, t },
+  t: 0,
+  n: 0,
+  x: 0,
+  i: t,
+  z: 1,
+})
+
+// The starting point (data/start.ts), for a bank that has not had this
+// version of it: cards for its words where the bank has none, so nothing
+// learnt is touched. The known words last for weeks; those being practised
+// a day or so, spread so that they do not all fade on the same day, with
+// hearing and saying weaker than reading, and as if last practised half a
+// day ago, so that they come before the known ones from the first day.
+export function withStart(bank: Bank, now: number): Bank {
+  if (bank.start >= START) return bank
+  const cards = { ...bank.cards }
+  for (const id of KNOWN_AT_START)
+    cards[id] ??= seeded(now, { leer: 20, oir: 14, decir: 8 })
+  for (const id of PRACTISED_AT_START) {
+    const s = 0.5 + 0.9 * spread(id)
+    cards[id] ??= seeded(now - DAY / 2, {
+      leer: s,
+      oir: s * 0.8,
+      decir: s * 0.5,
+    })
+  }
+  return { ...bank, cards, start: START }
+}
 
 // The chance of remembering a word's weakest link, now
 export const recallOf = (card: Card, now: number) =>
@@ -268,9 +319,10 @@ const keysOf = (...rs: Array<object | undefined>) =>
   new Set(rs.flatMap((r) => (r ? Object.keys(r) : [])))
 
 // Two banks made one, as when a backup is read in: for each link of a word
-// the memory answered last, for days and scores the larger, and of two
-// days' sessions the later day's, or of the same day's the one further on.
-// A bank saved before a field existed is read as having it empty.
+// the memory answered last (but never a card from the starting point over
+// one with answers), for days and scores the larger, and of two days'
+// sessions the later day's, or of the same day's the one further on. A
+// bank saved before a field existed is read as having it empty.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const out = emptyBank()
   for (const id of keysOf(a.cards, b.cards)) {
@@ -283,12 +335,15 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
       out[k][id] = Math.max(a[k]?.[id] ?? 0, b[k]?.[id] ?? 0)
   }
   out.path = laterPath(a.path ?? null, b.path ?? null)
+  out.start = Math.max(a.start ?? 0, b.start ?? 0)
   return out
 }
 
 const later = (a: Memory, b: Memory) => (a.t >= b.t ? a : b)
 
 function both(x: Card, y: Card): Card {
+  if (x.z && !y.z) return y
+  if (y.z && !x.z) return x
   const last = x.t >= y.t ? x : y
   return {
     ...last,
