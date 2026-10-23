@@ -73,7 +73,7 @@ const INDEX: Array<{
       'Gustavo Adolfo Bécquers spøkelseshistorier, fortalt enkelt og lest høyt.',
   },
   {
-    id: 'reloj',
+    id: 'caso',
     es: 'El caso del reloj perdido',
     no: 'Klokken som forsvant',
     blurb:

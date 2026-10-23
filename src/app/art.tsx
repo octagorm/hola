@@ -322,9 +322,9 @@ function Inn() {
 
 // --- The index ---
 
-export type TocId = 'quijote' | 'viaje' | 'leyendas' | 'reloj'
+export type TocId = 'quijote' | 'viaje' | 'leyendas' | 'caso'
 
-const TOC_IDS = new Set<string>(['quijote', 'viaje', 'leyendas', 'reloj'])
+const TOC_IDS = new Set<string>(['quijote', 'viaje', 'leyendas', 'caso'])
 
 // Whether a story has a drawing of its own in the index
 export const isTocId = (id: string): id is TocId => TOC_IDS.has(id)
@@ -417,7 +417,7 @@ export function TocArt({
           )}
         </>
       )}
-      {id === 'reloj' && (
+      {id === 'caso' && (
         <>
           <circle
             cx="46"
