@@ -885,7 +885,7 @@ const LIST: Array<Lesson & { words: string }> = [
       los calamares | blekksprutringer, akkar
       los boquerones | ferske ansjoser
       el alioli | hvitløksmajones
-      la salsa | saus
+      la salsa | saus, salsa (musikk)
       picante | sterk (om mat) | adj
       frito | fritert | adj
       casero | hjemmelaget | adj
@@ -1314,6 +1314,615 @@ const LIST: Array<Lesson & { words: string }> = [
       la miel | honning
       la hoguera | bål
       la noche de San Juan | sankthansaften
+    `,
+  },
+  {
+    id: 'romanos',
+    es: 'Los romanos',
+    no: 'Romerne',
+    words: `
+      romano | romersk | adj
+      el imperio | keiserrike, imperium
+      el emperador | keiser
+      la capital | hovedstad
+      el soldado | soldat
+      conquistar | erobre | v
+      la guerra | krig
+      el acueducto | akvedukt
+      la muralla | bymur
+      la calzada | romersk vei, kjørebane
+      el foro | forum, torg
+      el templo | tempel
+      el teatro | teater
+      el anfiteatro | amfiteater
+      el gladiador | gladiator
+      la estatua | statue
+      el mármol | marmor
+      la moneda | mynt
+      las ruinas | ruiner
+      antiguo | antikk, gammel, tidligere | adj
+      el latín | latin
+      la lengua | tunge, språk
+      el español | spansk (språket)
+      el castellano | kastiljansk, spansk
+      la palabra | ord
+      el origen | opprinnelse, opphav
+      viene del latín | det kommer fra latin | expr
+      hace dos mil años | for to tusen år siden | expr
+    `,
+  },
+  {
+    id: 'alandalus',
+    es: 'Al-Ándalus',
+    no: 'Al-Andalus',
+    words: `
+      musulmán | muslimsk, muslim | adj
+      cristiano | kristen | adj
+      judío | jødisk, jøde | adj
+      el califa | kalif
+      la cultura | kultur
+      la convivencia | sameksistens, samliv
+      el alcázar | borg (fra arabisk al-qasr)
+      el arco de herradura | hesteskobue
+      los baños árabes | arabisk badehus
+      la almohada | pute (fra arabisk al-mukhadda)
+      el alcalde | ordfører (fra arabisk al-qadi «dommeren»)
+      la aldea | grend (fra arabisk)
+      la alfombra | teppe (fra arabisk)
+      el algodón | bomull (fra arabisk al-qutn)
+      el ajedrez | sjakk (fra arabisk ash-shatranj)
+      la aduana | toll (fra arabisk ad-diwan)
+      el almacén | lager (fra arabisk al-makhzan)
+      la zanahoria | gulrot (fra arabisk)
+      la berenjena | aubergine (fra arabisk)
+      el jarabe | sirup (fra arabisk sharab «drikk»)
+      el alcohol | alkohol (fra arabisk al-kuhl)
+      la tarea | oppgave (fra arabisk)
+      el albañil | murer (fra arabisk al-banna)
+      hasta | helt til (fra arabisk hatta) | prep
+      si Dios quiere | om Gud vil | expr
+      viene del árabe | det kommer fra arabisk | expr
+    `,
+  },
+  {
+    id: 'museo',
+    es: 'En el museo',
+    no: 'Kunstmuseet',
+    words: `
+      el cuadro | maleri, bilde
+      la pintura | malerkunst, maling
+      el pintor | maler
+      la pintora | maler (kvinne)
+      el retrato | portrett
+      el autorretrato | selvportrett
+      el paisaje | landskap
+      el bodegón | stilleben
+      el pincel | pensel
+      el lienzo | lerret
+      el óleo | oljemaling, oljemaleri
+      el marco | ramme
+      el dibujo | tegning
+      dibujar | tegne | v
+      el grabado | grafisk trykk
+      la obra | verk, byggearbeid
+      la obra maestra | mesterverk
+      la sala | sal, rom
+      la exposición | utstilling
+      la colección | samling
+      la entrada | inngang, billett
+      el surrealismo | surrealisme
+      abstracto | abstrakt | adj
+      realista | realistisk | adj
+      fijarse | legge merke til | v
+      ¿qué representa? | hva forestiller det? | expr
+      prohibido hacer fotos | fotografering forbudt | expr
+      ¡qué bonito! | så vakkert! | expr
+    `,
+  },
+  {
+    id: 'gaudi',
+    es: 'La Barcelona de Gaudí',
+    no: 'Gaudís Barcelona',
+    words: `
+      la naturaleza | natur
+      la forma | form, fasong
+      la curva | kurve, sving
+      curvo | buet | adj
+      recto | rett | adj
+      la columna | søyle
+      la cúpula | kuppel
+      la bóveda | hvelv
+      la vidriera | glassmaleri
+      la chimenea | skorstein, peis
+      el tejado | tak (utvendig)
+      la azotea | takterrasse
+      la escalera | trapp
+      el balcón | balkong
+      el hierro | jern
+      la cerámica | keramikk
+      el mosaico | mosaikk
+      el dragón | drage
+      la salamandra | salamander
+      el hueso | knokkel, bein
+      la hoja | blad, ark
+      la rama | grein
+      el tronco | stamme
+      el bosque | skog
+      la grúa | kran
+      sin terminar | uferdig | expr
+      ¡qué maravilla! | så fantastisk! | expr
+      parece un bosque | det ser ut som en skog | expr
+    `,
+  },
+  {
+    id: 'cine',
+    es: 'Cine y televisión',
+    no: 'Film og TV',
+    words: `
+      el cine | kino, film
+      la película | film
+      el director | regissør, direktør
+      el actor | skuespiller
+      la actriz | skuespiller (kvinne)
+      el personaje | rollefigur
+      el papel | papir, rolle
+      el guion | manus
+      la escena | scene
+      rodar | spille inn (film), rulle | v
+      la pantalla | skjerm, lerret
+      las palomitas | popkorn
+      el estreno | premiere
+      el premio | premie, pris
+      la versión original | originalversjon
+      doblado | dubbet | adj
+      los subtítulos | undertekster
+      la serie | TV-serie, serie
+      el capítulo | episode, kapittel
+      la guerra civil | borgerkrig
+      la dictadura | diktatur
+      la censura | sensur
+      la colmena | bikube
+      la abeja | bie
+      el fauno | faun
+      el laberinto | labyrint
+      el monstruo | monster
+      ¿de qué va? | hva handler den om? | expr
+      ¿vamos al cine? | skal vi gå på kino? | expr
+    `,
+  },
+  {
+    id: 'mexico',
+    es: 'México',
+    no: 'Mexico',
+    words: `
+      mexicano | meksikansk | adj
+      el Día de Muertos | De dødes dag
+      la muerte | døden, død
+      muerto | død | adj
+      el alma | sjel | f
+      la calavera | hodeskalle
+      el esqueleto | skjelett
+      la Catrina | skjelettdame med stor hatt
+      el altar | alter
+      la vela | stearinlys, seil
+      el cempasúchil | fløyelsblomst
+      el pan de muerto | søtt brød til De dødes dag
+      el papel picado | papirpynt med utklipte mønstre
+      el cementerio | kirkegård
+      la tumba | grav
+      el recuerdo | minne, suvenir
+      el mural | veggmaleri
+      el dolor | smerte
+      la ceja | øyenbryn
+      el mono | ape
+      el loro | papegøye
+      la bruja | heks
+      ¿mande? | hva sa du? (i Mexico) | expr
+      ¡qué padre! | så kult! (i Mexico) | expr
+      descanse en paz | hvil i fred | expr
+    `,
+  },
+  {
+    id: 'cuba',
+    es: 'Cuba',
+    no: 'Cuba',
+    words: `
+      cubano | kubansk | adj
+      la Habana | Havanna
+      el malecón | molo, strandpromenade
+      el Caribe | Karibia
+      el huracán | orkan
+      la caña de azúcar | sukkerrør
+      el ron | rom (brennevin)
+      el mojito | drink med rom og mynte
+      el tabaco | tobakk
+      el puro | sigar
+      la plantación | plantasje
+      la esclavitud | slaveri
+      la independencia | uavhengighet, selvstendighet
+      la revolución | revolusjon
+      la guerrilla | gerilja
+      el bloqueo | blokade
+      el compañero | kamerat, kollega
+      el son | son (kubansk musikk)
+      ¿qué bolá? | hva skjer? (på Cuba) | expr
+      en la lucha | vi holder ut (på Cuba) | expr
+    `,
+  },
+  {
+    id: 'argentina',
+    es: 'Argentina',
+    no: 'Argentina',
+    words: `
+      argentino | argentinsk | adj
+      porteño | fra Buenos Aires | adj
+      el tango | tango
+      el bandoneón | bandoneon (tangotrekkspill)
+      la milonga | tangokveld, milonga
+      el abrazo | klem, omfavnelse
+      la nostalgia | lengsel, nostalgi
+      la pampa | pampas, gresslette
+      el gaucho | gaucho (gjeter til hest)
+      el escritor | forfatter
+      el cuento | novelle, eventyr
+      érase una vez | det var en gang | expr
+      la biblioteca | bibliotek
+      infinito | uendelig | adj
+      ciego | blind | adj
+      la rayuela | paradis (hoppelek)
+      la tira cómica | tegneseriestripe
+      la paz | fred
+      vos | du (i Argentina) | pron
+      che | hei du (i Argentina) | int
+      ¿de dónde sos? | hvor er du fra? (i Argentina) | expr
+      ¡qué lindo! | så fint! | expr
+    `,
+  },
+  {
+    id: 'colombia',
+    es: 'Colombia',
+    no: 'Colombia',
+    words: `
+      colombiano | colombiansk | adj
+      el periodista | journalist
+      el periódico | avis
+      el realismo mágico | magisk realisme
+      la magia | magi, trolldom
+      la soledad | ensomhet
+      recordar | minnes, huske | v
+      la memoria | hukommelse, minne
+      el coronel | oberst
+      exagerar | overdrive | v
+      increíble | utrolig | adj
+      volar | fly | v
+      la esmeralda | smaragd
+      la telenovela | såpeopera
+      la cumbia | cumbia (musikk og dans)
+      el acordeón | trekkspill
+      ¡qué chévere! | så kult! (i Colombia) | expr
+      con cara de palo | med steinansikt | expr
+      muchos años después | mange år senere | expr
+    `,
+  },
+  {
+    id: 'flamenco',
+    es: 'El flamenco',
+    no: 'Flamenco',
+    words: `
+      el cantaor | flamencosanger
+      la cantaora | flamencosanger (kvinne)
+      el bailaor | flamencodanser
+      la bailaora | flamencodanser (kvinne)
+      el tocaor | flamencogitarist
+      tocar | spille (instrument), ta på | v
+      el tablao | flamencoscene
+      el cante jondo | dyp og alvorlig flamencosang
+      el compás | takt, passer
+      el duende | nisse, flamencoens magi
+      el palo | pinne, flamencostil
+      la soleá | langsom flamencostil (av soledad)
+      las bulerías | rask og leken flamencostil
+      el zapateado | rytmiske fottrinn
+      el zapato | sko
+      el tacón | hæl
+      las castañuelas | kastanjetter
+      la bata de cola | flamencokjole med slep
+      el mantón | stort sjal med frynser
+      el jaleo | oppstyr, rop og klapp (i flamenco)
+      la juerga | festing, moro
+      gitano | romsk, rom (folkegruppen) | adj
+      la voz | stemme
+      ronco | hes | adj
+      la pena | sorg, smerte
+      ¡qué pena! | så synd! | expr
+      ¡así se baila! | slik skal det danses! | expr
+    `,
+  },
+  {
+    id: 'ritmos',
+    es: 'Ritmos latinos',
+    no: 'Latinamerikanske rytmer',
+    words: `
+      la música | musikk
+      el ritmo | rytme
+      la canción | sang
+      la letra | bokstav, sangtekst
+      el cantante | sanger
+      el músico | musiker
+      la orquesta | orkester
+      el concierto | konsert
+      el disco | plate, skive
+      la radio | radio
+      el tambor | tromme
+      las maracas | maracas
+      la trompeta | trompet
+      el bolero | bolero (langsom kjærlighetssang)
+      el mambo | mambo
+      el merengue | marengs, merengue (dans)
+      la bachata | bachata
+      la rumba | rumba
+      la pista de baile | dansegulv
+      el bailarín | danser
+      la bailarina | danser (kvinne), ballerina
+      girar | snurre, svinge | v
+      la cadera | hofte
+      romántico | romantisk | adj
+      el amor | kjærlighet
+      besar | kysse | v
+      ¿me concedes este baile? | får jeg denne dansen? | expr
+      ¿quién canta? | hvem synger? | expr
+    `,
+  },
+  {
+    id: 'semanasanta',
+    es: 'Semana Santa y Feria',
+    no: 'Påske og feria i Sevilla',
+    words: `
+      el paso | skritt, prosesjonsplattform
+      la cofradía | brorskap
+      el nazareno | prosesjonsdeltaker i spiss hette
+      el costalero | bærer under prosesjonsplattformen
+      la saeta | kort sang til prosesjonen, pil
+      la Virgen | Jomfru Maria, madonnafigur
+      el Cristo | Kristus, kristusfigur
+      la cruz | kors
+      el incienso | røkelse
+      la cera | voks
+      el Domingo de Ramos | palmesøndag
+      el Jueves Santo | skjærtorsdag
+      el Viernes Santo | langfredag
+      la Madrugá | natten til langfredag (i Sevilla)
+      la Pascua | påske
+      la caseta | festtelt, bu
+      el farolillo | papirlykt
+      el traje de flamenca | flamencokjole
+      el volante | ratt, volang
+      el lunar | prikk, føflekk
+      la peineta | høy pyntekam (i håret)
+      las sevillanas | sevillanas (pardans fra Sevilla)
+      el coche de caballos | hestevogn
+      la manzanilla | kamillete, tørr sherry
+      guapo | kjekk, pen (om folk) | adj
+      ¡guapa! | vakker! (tilrop) | int
+      ¿bailamos unas sevillanas? | skal vi danse sevillanas? | expr
+      nos vemos en la caseta | vi ses i teltet | expr
+    `,
+  },
+  {
+    id: 'sanfermin',
+    es: 'San Fermín',
+    no: 'San Fermín i Pamplona',
+    words: `
+      el toro | okse
+      el encierro | oksesløp, innestenging
+      el corredor | løper
+      la carrera | løp, karriere, studier
+      la cuesta | bakke
+      la valla | gjerde
+      el pastor | gjeter
+      el cuerno | horn
+      peligroso | farlig | adj
+      el pañuelo rojo | rødt halstørkle
+      la faja | bredt belte rundt livet
+      el chupinazo | rakettskuddet som åpner festen
+      el cohete | rakett
+      los gigantes y cabezudos | kjempefigurer og storhoder
+      la charanga | festorkester
+      la peña | vennegjeng, klubb
+      el santo | helgen
+      la plaza de toros | tyrefekterarena
+      la corrida | tyrefekting
+      el torero | tyrefekter
+      ¡viva San Fermín! | leve San Fermín! | expr
+      ¡pobre de mí! | stakkars meg! | expr
+      el siete de julio | 7. juli | expr
+    `,
+  },
+  {
+    id: 'tenorio',
+    es: 'Don Juan Tenorio',
+    no: 'Don Juan Tenorio',
+    words: `
+      el seductor | forfører
+      la apuesta | veddemål
+      engañar | lure, bedra | v
+      el honor | ære
+      el duelo | duell, sorg
+      matar | drepe | v
+      el convento | kloster
+      la monja | nonne
+      el ángel | engel
+      la verdad | sannhet
+      arrepentirse | angre | v
+      perdonar | tilgi | v
+      salvar | redde, frelse | v
+      el infierno | helvete
+      el más allá | det hinsidige
+      el panteón | gravkapell
+      el difunto | avdød
+      el Día de Todos los Santos | allehelgensdag
+      el convidado de piedra | steingjesten, taus gjest
+      el drama | drama
+      el verso | vers, verselinje
+      el telón | teaterteppe
+      la orilla | bredd, strandkant
+      llamé al cielo y no me oyó | jeg ropte til himmelen og den hørte meg ikke | expr
+      ¡que Dios me perdone! | Gud tilgi meg! | expr
+    `,
+  },
+  {
+    id: 'llorona',
+    es: 'La Llorona',
+    no: 'Den gråtende kvinnen',
+    words: `
+      la leyenda | sagn, legende
+      cuentan que | det fortelles at | expr
+      llorar | gråte | v
+      el llanto | gråt
+      llorón | grinete | adj
+      el grito | skrik, rop
+      ¡ay! | au, å | int
+      el fantasma | spøkelse
+      el alma en pena | sjel uten fred | f
+      vagar | streife omkring | v
+      la medianoche | midnatt
+      la oscuridad | mørke
+      el miedo | frykt, redsel
+      ¡qué miedo! | så skummelt! | expr
+      asustar | skremme | v
+      el lago | innsjø
+      ahogar | drukne (noen), kvele | v
+      la traición | svik, forræderi
+      abandonar | forlate | v
+      celoso | sjalu | adj
+      el castigo | straff
+      el velo | slør
+      el vestido | kjole
+    `,
+  },
+  {
+    id: 'dorado',
+    es: 'El Dorado',
+    no: 'El Dorado',
+    words: `
+      el oro | gull
+      la plata | sølv, penger (i Latin-Amerika)
+      el polvo | støv, pulver
+      brillar | skinne, glitre | v
+      los pueblos indígenas | urfolk
+      el cacique | høvding, lokal pamp
+      el dios | gud
+      la ceremonia | seremoni
+      la laguna | lagune, tjern
+      la balsa | flåte, dam
+      el fondo | bunn, bakgrunn
+      hundirse | synke | v
+      el tesoro | skatt (av gull og edelstener)
+      la riqueza | rikdom
+      el conquistador | erobrer
+      la expedición | ekspedisjon
+      la selva | jungel, regnskog
+      la búsqueda | leting, søk
+      la codicia | grådighet
+      saquear | plyndre | v
+      el mito | myte
+      desaparecer | forsvinne | v
+      vale su peso en oro | den er verdt sin vekt i gull | expr
+      hacerse rico | bli rik | expr
+    `,
+  },
+  {
+    id: 'refranes',
+    es: 'Refranes',
+    no: 'Ordtak',
+    words: `
+      el refrán | ordtak
+      el dicho | uttrykk, ordtak
+      como dice el refrán | som ordtaket sier | expr
+      poco a poco se va lejos | sakte men sikkert | expr
+      más vale tarde que nunca | bedre sent enn aldri | expr
+      no es oro todo lo que reluce | det er ikke gull alt som glimrer | expr
+      más vale pájaro en mano que ciento volando | bedre med en fugl i hånden enn ti på taket | expr
+      a quien madruga, Dios le ayuda | morgenstund har gull i munn | expr
+      en boca cerrada no entran moscas | taushet er gull | expr
+      Dios los cría y ellos se juntan | like barn leker best | expr
+      ojos que no ven, corazón que no siente | man har ikke vondt av det man ikke vet | expr
+      al pan, pan, y al vino, vino | kalle en spade for en spade | expr
+      perro ladrador, poco mordedor | bjeffende hunder biter ikke | expr
+      a caballo regalado no le mires el diente | man skal ikke skue given hest i munnen | expr
+      donde fueres, haz lo que vieres | skikk følge eller land fly | expr
+      mucho ruido y pocas nueces | mye skrik og lite ull | expr
+      no hay mal que por bien no venga | ingenting er så galt at det ikke er godt for noe | expr
+      más vale prevenir que curar | bedre føre var enn etter snar | expr
+      el hábito no hace al monje | man skal ikke skue hunden på hårene | expr
+      de tal palo, tal astilla | eplet faller ikke langt fra stammen | expr
+      cuando el río suena, agua lleva | ingen røyk uten ild | expr
+      hablando del rey de Roma, por la puerta asoma | snakk om sola | expr
+      del dicho al hecho hay mucho trecho | lettere sagt enn gjort | expr
+      a falta de pan, buenas son tortas | i nøden spiser fanden fluer | expr
+    `,
+  },
+  {
+    id: 'falsos',
+    es: 'Falsos amigos',
+    no: 'Falske venner',
+    words: `
+      embarazada | gravid (ikke flau) | adj
+      constipado | forkjølet (ikke forstoppet) | adj
+      el éxito | suksess (ikke utgang)
+      la carpeta | mappe (ikke teppe)
+      el gimnasio | treningssenter (ikke gymnas)
+      el colegio | skole (ikke college)
+      el instituto | ungdomsskole og videregående, institutt
+      sensible | følsom (ikke fornuftig) | adj
+      actual | nåværende (ikke faktisk) | adj
+      en realidad | egentlig, faktisk | expr
+      darse cuenta | innse, bli klar over | expr
+      realizar | gjennomføre (ikke innse) | v
+      asistir | være til stede, delta | v
+      molestar | plage, forstyrre | v
+      el pariente | slektning (ikke forelder)
+      la librería | bokhandel (ikke bibliotek)
+      la lectura | lesning (ikke forelesning)
+      la novela | roman (ikke novelle)
+      el suceso | hendelse (ikke suksess)
+      el compromiso | forpliktelse, avtale
+      el tópico | klisjé (ikke emne)
+      el argumento | handling (i en bok eller film), argument
+      la decepción | skuffelse
+      grosero | uhøflig, grov | adj
+      el balón | ball (ikke ballong)
+      discutir | krangle, diskutere | v
+      ¿qué significa? | hva betyr det? | expr
+      ¿cómo se dice? | hvordan sier man det? | expr
+    `,
+  },
+  {
+    id: 'trabalenguas',
+    es: 'Trabalenguas',
+    no: 'Tungekrøllere',
+    words: `
+      el trabalenguas | tungekrøller
+      tres tristes tigres tragaban trigo en un trigal | tre triste tigre slukte hvete på en hveteåker | expr
+      el tigre | tiger
+      tragar | svelge | v
+      el trigo | hvete
+      erre con erre cigarro, erre con erre barril, ¡qué rápido corren los carros del ferrocarril! | dobbel r i cigarro og barril – så fort jernbanevognene går! | expr
+      el cigarro | sigarett, sigar
+      el barril | tønne
+      el carro | kjerre, bil (i Latin-Amerika)
+      el ferrocarril | jernbane
+      Pablito clavó un clavito en la calva de un calvito | lille Pablo slo en liten spiker inn i månen på en liten skallet mann | expr
+      el clavo | spiker
+      clavar | slå inn, stikke fast | v
+      calvo | skallet | adj
+      el perro de San Roque no tiene rabo porque Ramón Ramírez se lo ha cortado | San Roques hund har ingen hale fordi Ramón Ramírez har kuttet den av | expr
+      el rabo | hale
+      como poco coco como, poco coco compro | jeg kjøper lite kokos fordi jeg spiser lite kokos | expr
+      el coco | kokosnøtt
+      si Pancha plancha con cuatro planchas, ¿con cuántas planchas plancha Pancha? | hvis Pancha stryker med fire strykejern – med hvor mange strykejern stryker Pancha? | expr
+      planchar | stryke (klær) | v
+      la plancha | strykejern, stekeplate
     `,
   },
 ]
