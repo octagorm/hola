@@ -107,6 +107,12 @@ export const PAGES = [
     Page: page(() => import('./games/cadena')),
   },
   {
+    id: 'elola',
+    es: '¿El o la?',
+    no: 'Hankjønn eller hunkjønn',
+    Page: page(() => import('./games/elola')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

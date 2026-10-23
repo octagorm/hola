@@ -48,6 +48,7 @@ The games:
 | Ayer, hoy, mañana    | `games/tiempos.tsx`    | A sentence moved between yesterday, today and tomorrow; a triptych of 1930s posters       |
 | Letras               | `games/letras.tsx`     | The longest word of hers in nine letters, asked for one by one; a letterpress print shop  |
 | Palabras encadenadas | `games/cadena.tsx`     | Eight words, each begun by the last syllable of the one before; paper flags at a verbena  |
+| ¿El o la?            | `games/elola.tsx`      | El or la for each noun met before the candle burns down; the Spanish deck as woodcut      |
 | Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 

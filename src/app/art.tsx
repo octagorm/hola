@@ -461,6 +461,7 @@ export type GameIconId =
   | 'tapas'
   | 'porpara'
   | 'tiempos'
+  | 'elola'
 
 export function GameIcon({
   id,
@@ -691,6 +692,33 @@ export function GameIcon({
             />
           </g>
         </>
+      )}
+      {id === 'elola' && (
+        <g stroke={INK} strokeWidth="1.5" strokeLinejoin="round">
+          <g transform="rotate(-11 14 26)">
+            <rect x="5" y="9" width="17" height="26" rx="2" fill={PAPER} />
+            <path
+              d="M12.6 31C12.2 26 11.6 20 11.2 16 11 13.5 12 12 13.5 12 15 12 16.2 13.5 16 16 15.7 20 15.1 26 14.6 31Z"
+              fill="#4f7fa8"
+              fillOpacity=".65"
+              strokeWidth="1.1"
+            />
+          </g>
+          <g transform="rotate(11 30 26)">
+            <rect x="22" y="9" width="17" height="26" rx="2" fill={PAPER} />
+            <path
+              d="M25.6 15H35.4C35.4 21 33.2 23.6 30.5 23.6 27.8 23.6 25.6 21 25.6 15Z"
+              fill="#c2402c"
+              fillOpacity=".6"
+              strokeWidth="1.1"
+            />
+            <path
+              d="M30.5 23.6V28.5M27.2 30H33.8"
+              fill="none"
+              strokeWidth="1.1"
+            />
+          </g>
+        </g>
       )}
       {id === 'tapas' && (
         <>

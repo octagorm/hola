@@ -155,6 +155,7 @@ const PAGES = [
   ['#tiempos', 'Ayer, hoy, mañana'],
   ['#letras', 'Letras'],
   ['#cadena', 'Palabras encadenadas'],
+  ['#elola', '¿El o la?'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -480,6 +481,52 @@ await test(
     await page.getByText('4 av 5 ord reddet').waitFor()
     await page.getByRole('button', { name: 'Fem ord til' }).click()
     await page.waitForSelector('.rb-keys')
+  },
+  { learner: true },
+)
+
+// The article of the noun on ¿El o la?'s card, where the word tells it
+async function elolaArticle(page) {
+  const bare = await page.locator('.eo-deal .front .word').textContent()
+  const arts = new Set(
+    WORDS.filter((w) => w.pos === 'n' && w.bare === bare).map((w) =>
+      w.es.startsWith('la ') ? 'la' : 'el',
+    ),
+  )
+  return arts.size === 1 ? [...arts][0] : null
+}
+
+await test(
+  '¿El o la? takes el or la until the candle burns down',
+  async (page) => {
+    await page.clock.install()
+    await go(page, '#elola')
+    await page.getByRole('button', { name: 'Tenn lyset' }).click()
+    // One answer wrong on purpose, which turns the card, and the rest right
+    // by the arrow keys
+    let turned = false
+    for (let i = 0; i < 8; i++) {
+      await page.waitForSelector('.eo-deal:not(.turned)')
+      const a = (await elolaArticle(page)) ?? 'el'
+      if (!turned) {
+        await page
+          .locator('.eo-piles')
+          .getByRole('button', { name: a === 'el' ? 'la' : 'el', exact: true })
+          .click()
+        await page.waitForSelector('.eo-deal.turned .back .rule')
+        turned = true
+      } else await page.keyboard.press(a === 'el' ? 'ArrowLeft' : 'ArrowRight')
+      await page.waitForTimeout(250)
+      const next = page.getByRole('button', { name: /Neste/ })
+      if (await next.count()) await next.click()
+    }
+    const score = Number(await page.locator('.eo-score b').textContent())
+    expect(score >= 5, `right answers counted, not ${score}`)
+    await page.clock.fastForward(61_000)
+    await page.getByText('Se apagó la vela').waitFor()
+    await page.getByText('Ordene du bommet på').waitFor()
+    await page.getByRole('button', { name: 'En runde til' }).click()
+    await page.waitForSelector('.eo-deal')
   },
   { learner: true },
 )
