@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, Check } from 'lucide-react'
 import { LESSON, WORD } from '../data/words'
-import { CHAPTERS } from '../data/quijote'
+import { CHAPTER } from '../data/stories'
 import { fromOf, stageOf } from '../data/camino'
 import { GAME } from '../data/games'
 import { dayKey, pick } from '../lib/bank'
@@ -16,6 +16,7 @@ import {
   current,
   finished,
   gain,
+  inWords,
   lasts,
   markDone,
   plan,
@@ -28,7 +29,7 @@ import {
 } from '../lib/today'
 import { Drill, Learn } from '../quiz'
 import { Es, LINK_NAME, LinkIcon, Page, Ring, roman } from '../ui'
-import { GameIcon, Stamp, TocArt } from '../art'
+import { GameIcon, Stamp, TocArt, isTocId } from '../art'
 import type { GameIconId } from '../art'
 import type { Path, PathStep } from '../lib/bank'
 
@@ -132,7 +133,7 @@ const stepName = (s: PathStep) =>
   s.k === 'game'
     ? (GAME[s.arg ?? '']?.es ?? STEP.game.no)
     : s.k === 'story'
-      ? (CHAPTERS.find((c) => c.id === s.arg)?.title ?? STEP.story.no)
+      ? (CHAPTER[s.arg ?? '']?.chapter.title ?? STEP.story.no)
       : STEP[s.k].no
 
 // The part of the day to do now
@@ -229,19 +230,31 @@ function Part({ p, i }: { p: Path; i: number }) {
     )
   }
 
-  const c = CHAPTERS.find((x) => x.id === s.arg)
+  const found = CHAPTER[s.arg ?? '']
+  const story = found?.story
+  const c = found?.chapter
   return (
     <section className="q-frame q-card q-away fx-rise">
-      <TocArt id="quijote" className="icon wide" />
+      {story && isTocId(story.id) ? (
+        <TocArt id={story.id} className="icon wide" />
+      ) : (
+        c?.img && <img className="icon wide" src={c.img} alt="" />
+      )}
       <div>
         <div className="q-label">
-          Lectura <span>· Don Quijote, {c?.from}</span>
+          Lectura{' '}
+          <span>
+            · {story?.es}
+            {c?.from ? `, ${c.from}` : ''}
+          </span>
         </div>
         <h3>{c?.title}</h3>
-        <p>{c?.no}: ti linjer, så tre spørsmål.</p>
+        <p>
+          {c?.no}: {inWords(c?.lines.length ?? 0)} linjer, så tre spørsmål.
+        </p>
       </div>
       <div className="acts">
-        <a className="q-btn" href={`#quijote/${s.arg}`}>
+        <a className="q-btn" href={`#${story?.id ?? ''}/${s.arg}`}>
           Les <ArrowRight />
         </a>
         <button type="button" className="q-link" onClick={skip}>

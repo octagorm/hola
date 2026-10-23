@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { WORDS } from '../src/app/data/words'
-import { CHAPTERS, EPIGRAPH } from '../src/app/data/quijote'
+import { EPIGRAPH } from '../src/app/data/quijote'
+import { ALL_CHAPTERS } from '../src/app/data/stories'
 import { DESIGNED, SAMPLE, VOICES } from '../src/app/data/voices'
 import { DECK, spanish } from '../src/app/lib/cadaver'
 import { speechItems, speechKey } from '../src/app/lib/spoken'
@@ -24,7 +25,7 @@ describe('what is said aloud', () => {
     const items = speechItems()
     const texts = new Set(items.map((item) => item.text))
     expect(texts.size).toBe(items.length)
-    const lines = CHAPTERS.flatMap((c) => c.lines)
+    const lines = ALL_CHAPTERS.flatMap((c) => c.lines)
     const said = [
       ...WORDS.map((w) => w.es),
       ...[EPIGRAPH.line, ...lines].flatMap((l) =>

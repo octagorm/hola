@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Volume2,
 } from 'lucide-react'
-import { CHAPTERS } from '../data/quijote'
+import { STORY, subtitle } from '../data/stories'
 import { plain, wordIds } from '../lib/text'
 import { say, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
@@ -14,47 +14,63 @@ import { blip } from '../lib/sound'
 import { shuffle } from '../lib/choices'
 import { TodayNext, useBack } from '../daily'
 import { Mixed, MixedKey, Page, roman } from '../ui'
-import { Scene } from '../art'
-import type { View } from '../art'
-import type { Chapter } from '../data/quijote'
+import { Scene, hasView } from '../art'
+import type { Chapter, Story } from '../data/stories'
 import type { PageProps } from '../registry'
 
-// Don Quijote, told simply, a line at a time in mixed text: the words met
-// in Spanish, the rest in Norwegian, each a tap from its card. After the
-// chapter, three questions on what happened. The words read without
-// looking them up are counted as read.
+// A story (data/stories.ts), told simply, a line at a time in mixed text:
+// the words met in Spanish, the rest in Norwegian, each a tap from its
+// card. After the chapter, three questions on what happened. The words
+// read without looking them up are counted as read. Every story's page is
+// this one: /#quijote, and a chapter /#quijote/molinos.
 
-export default function Quijote({ arg }: PageProps) {
-  const chapter = CHAPTERS.find((c) => c.id === arg)
-  return chapter ? <Reader key={chapter.id} c={chapter} /> : <Chapters />
+export default function StoryPage({ id, arg }: PageProps) {
+  const story = STORY[id]
+  if (!story) return null
+  const chapter = story.chapters.find((c) => c.id === arg)
+  return chapter ? (
+    <Reader key={chapter.id} story={story} c={chapter} />
+  ) : (
+    <Chapters story={story} />
+  )
 }
 
-function Chapters() {
+// The picture above a chapter, or above the story's chapters: Don
+// Quijote's in ink (art.tsx), the others' painted
+function Picture({ story, c }: { story: Story; c?: Chapter }) {
+  if (story.id === 'quijote')
+    return (
+      <Scene
+        view={c && hasView(c.id) ? c.id : 'narrow'}
+        className="q-strip"
+        whole
+      />
+    )
+  const img = c?.img ?? story.chapters[0]?.img
+  return img ? <img className="q-strip q-pic" src={img} alt="" /> : null
+}
+
+function Chapters({ story }: { story: Story }) {
   const { bank } = useStore()
-  const next = CHAPTERS.find((c) => bank.read[c.id] === undefined)
+  const next = story.chapters.find((c) => bank.read[c.id] === undefined)
   return (
-    <Page es="Don Quijote" title="Romanen, fortalt enkelt">
+    <Page es={story.es} title={story.no}>
       <div className="q-read">
-        <Scene view="narrow" className="q-strip" whole />
+        <Picture story={story} />
         <p className="q-intro">
-          Miguel de Cervantes ga ut første del av <i>Don Quijote</i> i 1605, om
-          en adelsmann som leser seg gal på ridderbøker og drar ut for å bli
-          ridder selv. Her er begynnelsen fortalt enkelt på spansk. Ordene du
-          ikke har møtt ennå står på norsk, i spansk rekkefølge, og blir spanske
-          etter hvert som du lærer dem.
+          {story.intro} Ordene du ikke har møtt ennå står på norsk, i spansk
+          rekkefølge, og blir spanske etter hvert som du lærer dem.
         </p>
         <ol className="q-chapters">
-          {CHAPTERS.map((c, i) => {
+          {story.chapters.map((c, i) => {
             const read = bank.read[c.id]
             return (
               <li key={c.id} className={c === next ? 'next' : ''}>
-                <a href={`#quijote/${c.id}`}>
+                <a href={`#${story.id}/${c.id}`}>
                   <i>{roman(i + 1)}.</i>
                   <span>
                     <b>{c.title}</b>
-                    <small>
-                      {c.no} · fra romanens {c.from}
-                    </small>
+                    <small>{subtitle(story, c)}</small>
                   </span>
                   <em>
                     {read === undefined ? (
@@ -79,11 +95,11 @@ function Chapters() {
   )
 }
 
-function Reader({ c }: { c: Chapter }) {
+function Reader({ story, c }: { story: Story; c: Chapter }) {
   const { record, setRead, played, levelOf } = useStore()
   const { hear } = useVoices()
-  const back = useBack('quijote', c.id)
-  const no = CHAPTERS.indexOf(c) + 1
+  const back = useBack(story.id, c.id)
+  const no = story.chapters.indexOf(c) + 1
   const [shown, setShown] = useState(1)
   const [phase, setPhase] = useState<'read' | 'ask' | 'done'>('read')
   const [qi, setQi] = useState(0)
@@ -163,13 +179,13 @@ function Reader({ c }: { c: Chapter }) {
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  const nextChapter = CHAPTERS.at(no)
+  const nextChapter = story.chapters.at(no)
 
   return (
     <Page
-      es="Don Quijote"
-      title={`${c.no} · fra romanens ${c.from}`}
-      back={back === '#' ? '#quijote' : back}
+      es={story.es}
+      title={subtitle(story, c)}
+      back={back === '#' ? `#${story.id}` : back}
       tools={
         hear !== false && phase === 'read' ? (
           <button
@@ -184,7 +200,7 @@ function Reader({ c }: { c: Chapter }) {
       }
     >
       <div className="q-read">
-        <Scene view={c.id as View} className="q-strip" whole />
+        <Picture story={story} c={c} />
         <div className="q-chap">
           <b>Capítulo {roman(no)}</b>
           <h2>{c.title}</h2>
@@ -296,13 +312,16 @@ function Reader({ c }: { c: Chapter }) {
               Ordene du leste på spansk uten å slå dem opp, er regnet som lest.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <TodayNext page="quijote" arg={c.id} />
+              <TodayNext page={story.id} arg={c.id} />
               {nextChapter && (
-                <a className="q-btn ghost" href={`#quijote/${nextChapter.id}`}>
+                <a
+                  className="q-btn ghost"
+                  href={`#${story.id}/${nextChapter.id}`}
+                >
                   Neste kapittel: {nextChapter.title}
                 </a>
               )}
-              <a className="q-link" href="#quijote">
+              <a className="q-link" href={`#${story.id}`}>
                 Alle kapitlene
               </a>
             </div>

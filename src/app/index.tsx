@@ -72,7 +72,7 @@ function Router() {
       {found ? (
         <Suspense fallback={<div className="q-loading">…</div>}>
           <Mend key={`${found.id}/${route.arg ?? ''}`}>
-            <found.Page arg={route.arg} />
+            <found.Page id={found.id} arg={route.arg} />
           </Mend>
         </Suspense>
       ) : (

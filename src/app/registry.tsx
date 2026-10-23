@@ -7,6 +7,8 @@ import type { ComponentType } from 'react'
 // a page, add a file to games/ and a line here.
 
 export interface PageProps {
+  // The page's id: a story's page tells by it which story it is
+  id: string
   arg?: string
 }
 
@@ -42,7 +44,7 @@ export const PAGES = [
     id: 'quijote',
     es: 'Don Quijote',
     no: 'Don Quijote',
-    Page: page(() => import('./games/quijote')),
+    Page: page(() => import('./games/story')),
   },
   {
     id: 'palabra',

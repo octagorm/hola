@@ -1,5 +1,5 @@
 import { LESSON, WORD, WORDS, isClue } from '../data/words.ts'
-import { CHAPTERS } from '../data/quijote.ts'
+import { ALL_CHAPTERS, CHAPTER } from '../data/stories.ts'
 import { GAME } from '../data/games.ts'
 import { THEME } from '../data/themes.ts'
 import {
@@ -19,7 +19,7 @@ import type { Bank, Link, Path, PathStep, StepKind } from './bank.ts'
 // Today's chapter: a session of about ten minutes, made once a day from
 // the bank and kept in it (bank.path), so it can be taken up again where
 // it was left, even halfway through a step. In order: the words that are
-// fading, a few new ones, a game or a chapter of Don Quijote, and a little
+// fading, a few new ones, a game or a chapter of a story, and a little
 // listening; then a summary, and a stamp in the credential.
 
 export const STEP: Record<
@@ -93,7 +93,7 @@ export function plan(
   const fresh = unmet(bank, toMeet(bank)).slice(0, newCount)
   const met = list.length + fresh.length
   const n = dayNumber(now)
-  const chapter = CHAPTERS.find((c) => bank.read[c.id] === undefined)
+  const chapter = ALL_CHAPTERS.find((c) => bank.read[c.id] === undefined)
   const clues = clueCount(bank, fresh)
   const games = DAILY_GAMES.filter((g) => ready(g, met, clues))
   // A chapter every other day, once there are words enough to read it by
@@ -331,7 +331,7 @@ export function chapterLine(p: Path): string {
       case 'game':
         return GAME[s.arg ?? '']?.doing ?? 'spiller et ordspill'
       case 'story': {
-        const c = CHAPTERS.find((x) => x.id === s.arg)
+        const c = CHAPTER[s.arg ?? '']?.chapter
         return c ? `leser kapittelet «${c.no}»` : 'leser et kapittel'
       }
       case 'listen':

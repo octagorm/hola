@@ -12,23 +12,10 @@
 //   —  ~              a dash that opens a speech or a narration, and one
 //                     that closes the narration: —dice Sancho—.
 // The Spanish and the novel's chapters are retold, not quoted, except the
-// first line of the book.
+// first line of the book. The other stories (data/stories.ts) are written
+// the same way.
 
-export interface Question {
-  q: string
-  // The right answer first; they are shuffled when shown
-  a: [string, string, string]
-}
-
-export interface Chapter {
-  id: string
-  title: string
-  no: string
-  // The chapters of the novel it retells
-  from: string
-  lines: Array<string>
-  questions: Array<Question>
-}
+import type { Chapter } from './stories.ts'
 
 // The novel's first line, as the home page shows it
 export const EPIGRAPH = {

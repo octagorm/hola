@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { LESSONS, WORD, WORDS } from '../src/app/data/words'
 import { CHAPTERS, EPIGRAPH } from '../src/app/data/quijote'
+import { ALL_CHAPTERS, STORIES } from '../src/app/data/stories'
 import { STAGES } from '../src/app/data/camino'
 import { THEME_GROUPS } from '../src/app/data/themes'
 import { plain, tokens, wordIds } from '../src/app/lib/text'
+import { PAGES } from '../src/app/registry'
 
 describe('the words', () => {
   it('are each listed once', () => {
@@ -38,20 +40,32 @@ describe('the words', () => {
   })
 })
 
-describe('Don Quijote', () => {
-  it('has every word of every line in the bank', () => {
-    for (const c of CHAPTERS)
-      for (const line of c.lines) expect(() => tokens(line), line).not.toThrow()
+describe('the stories', () => {
+  it('have every word of every line in the bank', () => {
+    for (const c of ALL_CHAPTERS)
+      for (const line of c.lines)
+        expect(() => tokens(line), `${c.id}: ${line}`).not.toThrow()
     expect(() => tokens(EPIGRAPH.line)).not.toThrow()
   })
 
-  it('reads as Spanish is written', () => {
-    expect(plain(EPIGRAPH.line)).toBe(EPIGRAPH.es)
-    const molinos = CHAPTERS.find((c) => c.id === 'molinos')!
-    expect(plain(molinos.lines[3])).toBe(
-      '—¿Qué gigantes? —dice Sancho—. Son molinos, señor.',
-    )
-    expect(plain(CHAPTERS[0].lines[7])).toBe('—¡Voy a ser caballero! —dice.')
+  it('give each chapter an id of its own across all of them', () => {
+    const ids = ALL_CHAPTERS.map((c) => c.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    const stories = STORIES.map((s) => s.id)
+    expect(new Set(stories).size).toBe(stories.length)
+  })
+
+  it('each have a page', () => {
+    const pages = new Set<string>(PAGES.map((p) => p.id))
+    for (const s of STORIES) expect(pages.has(s.id), s.id).toBe(true)
+  })
+
+  it('have three questions to each chapter, with three answers', () => {
+    for (const c of ALL_CHAPTERS) {
+      expect(c.lines.length, c.id).toBeGreaterThan(0)
+      expect(c.questions, c.id).toHaveLength(3)
+      for (const q of c.questions) expect(new Set(q.a).size, q.q).toBe(3)
+    }
   })
 
   it('glosses a word at the start of a sentence with a capital', () => {
@@ -59,12 +73,16 @@ describe('Don Quijote', () => {
     expect(t[0].no).toBe('Plutselig')
     expect(t[2]).toMatchObject({ es: 'Sancho', name: true })
   })
+})
 
-  it('has three questions to each chapter, with three answers', () => {
-    for (const c of CHAPTERS) {
-      expect(c.questions).toHaveLength(3)
-      for (const q of c.questions) expect(new Set(q.a).size).toBe(3)
-    }
+describe('Don Quijote', () => {
+  it('reads as Spanish is written', () => {
+    expect(plain(EPIGRAPH.line)).toBe(EPIGRAPH.es)
+    const molinos = CHAPTERS.find((c) => c.id === 'molinos')!
+    expect(plain(molinos.lines[3])).toBe(
+      '—¿Qué gigantes? —dice Sancho—. Son molinos, señor.',
+    )
+    expect(plain(CHAPTERS[0].lines[7])).toBe('—¡Voy a ser caballero! —dice.')
   })
 
   it('uses words from many lessons', () => {

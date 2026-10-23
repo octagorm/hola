@@ -1,5 +1,6 @@
 import { WORDS } from '../data/words.ts'
-import { CHAPTERS, EPIGRAPH } from '../data/quijote.ts'
+import { EPIGRAPH } from '../data/quijote.ts'
+import { ALL_CHAPTERS } from '../data/stories.ts'
 import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
 import { DECK, spanish } from './cadaver.ts'
 import { plain, tokens } from './text.ts'
@@ -32,7 +33,7 @@ export function speechItems(): Array<SpeechItem> {
     items.push({ voice, text, kind })
   }
   for (const w of WORDS) add(WORD_VOICE, w.es, 'word')
-  const lines = CHAPTERS.flatMap((c) => c.lines)
+  const lines = ALL_CHAPTERS.flatMap((c) => c.lines)
   for (const line of [EPIGRAPH.line, ...lines])
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   add(WORD_VOICE, SAMPLE, 'line')

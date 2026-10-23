@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { useStore } from './lib/store'
 import { todays } from './lib/today'
+import { STORY } from './data/stories'
 
 // A game or a chapter opened from today's chapter knows it: its way back
 // leads there, and its end has a way on.
@@ -13,7 +14,7 @@ export function useInToday(
   const { bank } = useStore()
   const p = todays(bank, Date.now())
   const s = p?.steps.find((x) =>
-    page === 'quijote'
+    STORY[page]
       ? x.k === 'story' && x.arg === arg
       : x.k === 'game' && x.arg === page,
   )

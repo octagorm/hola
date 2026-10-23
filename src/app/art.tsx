@@ -25,6 +25,9 @@ const VIEW: Record<View, string> = {
   molinos: '610 60 750 416',
 }
 
+// Whether a chapter of Don Quijote has a picture of its own in the plain
+export const hasView = (id: string): id is View => id in VIEW
+
 // Sancho joins him in the fourth chapter
 const ALONE: Array<View> = ['hidalgo', 'dulcinea', 'venta']
 
@@ -319,7 +322,12 @@ function Inn() {
 
 // --- The index ---
 
-export type TocId = 'quijote' | 'viaje' | 'cuentos' | 'sueno'
+export type TocId = 'quijote' | 'viaje' | 'leyendas' | 'reloj'
+
+const TOC_IDS = new Set<string>(['quijote', 'viaje', 'leyendas', 'reloj'])
+
+// Whether a story has a drawing of its own in the index
+export const isTocId = (id: string): id is TocId => TOC_IDS.has(id)
 
 export function TocArt({
   id,
@@ -375,40 +383,61 @@ export function TocArt({
             <path d="M30 56 32 38M32 40 70 18" />
           </>,
         )}
-      {id === 'cuentos' &&
-        ink(
-          <>
-            <path d="M10 84V10H110V84" />
-            <path d="M10 10C30 20 34 50 30 84M110 10C90 20 86 50 90 84" />
-            <path d="M50 10V34M70 10V38" />
-            <circle cx="50" cy="40" r="6" fill={PAPER} />
-            <path d="M44 48H56L60 70H40Z" fill="#c2402c" fillOpacity=".5" />
-            <circle cx="70" cy="44" r="6" fill={PAPER} />
-            <path d="M64 52H76L80 72H60Z" fill="#4f7fa8" fillOpacity=".5" />
-          </>,
-        )}
-      {id === 'sueno' && (
+      {id === 'leyendas' && (
         <>
           <circle
-            cx="86"
-            cy="26"
-            r="14"
+            cx="30"
+            cy="22"
+            r="13"
             fill="#4f7fa8"
-            opacity=".5"
+            opacity=".45"
             filter="url(#q-w2)"
           />
           {ink(
             <>
-              <path d="M4 82H116" />
-              <path d="M30 82 44 20 58 82" />
-              <path d="M36 50H52M34 62H54" strokeWidth="3" />
+              <path d="M4 82C28 64 62 58 116 68" />
               <path
-                d="M38 44H50L52 50H36ZM36 56H52L54 62H34Z"
+                d="M24 16C16 22 18 34 28 36 22 32 20 22 24 16Z"
+                fill={INK}
+              />
+              <path d="M74 64V30C74 22 92 22 92 30V62" fill={PAPER} />
+              <path
+                d="M78 46C78 38 88 38 88 46L90 50H76Z"
                 fill="#d29a2e"
                 fillOpacity=".6"
               />
-              <path d="M70 60C76 50 92 50 98 60 104 70 90 80 80 76" />
-              <path d="M80 76 78 82M92 74 94 82" strokeWidth="1.5" />
+              <path d="M83 30V38" strokeWidth="1.5" />
+              <path
+                d="M38 80C38 66 42 56 48 56 54 56 58 66 58 80 54 77 52 81 48 78 44 81 42 77 38 80Z"
+                fill={PAPER}
+                strokeDasharray="3 2"
+              />
+              <path d="M45 64H46M51 64H52" strokeWidth="2.5" />
+            </>,
+          )}
+        </>
+      )}
+      {id === 'reloj' && (
+        <>
+          <circle
+            cx="46"
+            cy="52"
+            r="22"
+            fill="#d29a2e"
+            opacity=".45"
+            filter="url(#q-w2)"
+          />
+          {ink(
+            <>
+              <circle cx="46" cy="52" r="24" fill={PAPER} fillOpacity=".4" />
+              <circle cx="46" cy="52" r="19" />
+              <path d="M46 52V38M46 52 56 58" strokeWidth="2.5" />
+              <path d="M46 35V33M63 52H65M46 69V71M27 52H29" />
+              <path d="M42 28H50V23H42Z" fill={INK} />
+              <circle cx="46" cy="18" r="4" />
+              <path d="M50 17C66 8 88 10 98 24" strokeDasharray="2 3" />
+              <circle cx="92" cy="62" r="12" fill="#4f7fa8" fillOpacity=".25" />
+              <path d="M100 71 112 84" strokeWidth="5" />
             </>,
           )}
         </>

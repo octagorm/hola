@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen, Music, Settings2 } from 'lucide-react'
-import { CHAPTERS, EPIGRAPH } from './data/quijote'
+import { EPIGRAPH } from './data/quijote'
+import { STORY } from './data/stories'
 import { stageOf } from './data/camino'
 import { GAME_INFO } from './data/games'
 import { THEME_GROUPS } from './data/themes'
@@ -39,6 +40,46 @@ import type { GameIconId, TocId } from './art'
 // today's chapter, the novel's first line in mixed text, the words and
 // the credential, the index of the stories and the games.
 
+const ROMAN = ['I.', 'II.', 'III.', 'IV.', 'V.', 'VI.']
+
+// The index of stories (data/stories.ts), in order; one not written yet
+// stands faded, with «Kommer»
+const INDEX: Array<{
+  id: TocId
+  es: string
+  no: string
+  blurb: string
+}> = [
+  {
+    id: 'quijote',
+    es: 'Don Quijote',
+    no: 'Romanen',
+    blurb:
+      'Begynnelsen av romanen, fortalt enkelt: adelsmannen, vertshuset, Sancho og vindmøllene.',
+  },
+  {
+    id: 'viaje',
+    es: 'El viaje',
+    no: 'Reisen',
+    blurb:
+      'Fra Madrid til Cadaqués, scene for scene: tog, tapas og et rom for natten.',
+  },
+  {
+    id: 'leyendas',
+    es: 'Leyendas',
+    no: 'Sagnene',
+    blurb:
+      'Gustavo Adolfo Bécquers spøkelseshistorier, fortalt enkelt og lest høyt.',
+  },
+  {
+    id: 'reloj',
+    es: 'El caso del reloj perdido',
+    no: 'Klokken som forsvant',
+    blurb:
+      'Et detektivmysterium i Cadaqués: vitnene forteller, og du lytter etter sporene.',
+  },
+]
+
 export default function Home() {
   const { bank, settings, setSettings } = useStore()
   const { hear, recorded } = useVoices()
@@ -59,8 +100,6 @@ export default function Home() {
   const c = counts(bank, now)
   const clues = clueCount(bank)
   const shares = linkShares(bank, now)
-  const read = CHAPTERS.filter((x) => bank.read[x.id] !== undefined).length
-  const nextChapter = CHAPTERS.find((x) => bank.read[x.id] === undefined)
   const palabra = bank.palabra[dayKey(now)]
 
   const toggleMusic = () => {
@@ -73,50 +112,20 @@ export default function Home() {
     }
   }
 
-  const toc: Array<{
-    id: TocId
-    n: string
-    es: string
-    no: string
-    blurb: string
-    lead?: [string, string]
-    href?: string
-  }> = [
-    {
-      id: 'quijote',
-      n: 'I.',
-      es: 'Don Quijote',
-      no: 'Romanen',
-      blurb:
-        'Begynnelsen av romanen, fortalt enkelt: adelsmannen, vertshuset, Sancho og vindmøllene.',
-      lead: nextChapter
-        ? [nextChapter.no, `${read} / ${CHAPTERS.length}`]
-        : ['Alt er lest', `${read} / ${CHAPTERS.length}`],
-      href: '#quijote',
-    },
-    {
-      id: 'viaje',
-      n: 'II.',
-      es: 'El viaje',
-      no: 'Reisen',
-      blurb:
-        'Fra Madrid til Cadaqués, scene for scene: tog, tapas og et rom for natten.',
-    },
-    {
-      id: 'cuentos',
-      n: 'III.',
-      es: 'Cuentos',
-      no: 'Historier',
-      blurb: 'Gamle eventyr fra Spania og Amerika, spilt av dukker.',
-    },
-    {
-      id: 'sueno',
-      n: 'IV.',
-      es: 'El sueño',
-      no: 'Drømmen',
-      blurb: 'En drøm som adlyder ordre på spansk: åpne den tredje skuffen.',
-    },
-  ]
+  // The stories, those not written yet faded: how far each is read
+  const toc = INDEX.map((t, i) => {
+    const story = STORY[t.id]
+    if (!story) return { ...t, n: ROMAN[i], lead: undefined, href: undefined }
+    const read = story.chapters.filter((x) => bank.read[x.id] !== undefined)
+    const next = story.chapters.find((x) => bank.read[x.id] === undefined)
+    const of = `${read.length} / ${story.chapters.length}`
+    return {
+      ...t,
+      n: ROMAN[i],
+      lead: [next ? next.no : 'Alt er lest', of] as [string, string],
+      href: `#${story.id}`,
+    }
+  })
 
   // The last stamps got, and the next to get
   const shown = Array.from(
