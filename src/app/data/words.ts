@@ -2071,6 +2071,36 @@ const LIST: Array<Lesson & { words: string }> = [
       la farmacia | apotek
     `,
   },
+  {
+    id: 'ictineo',
+    es: 'El Ictíneo',
+    no: 'Ubåten Ictíneo',
+    words: `
+      el submarino | ubåt
+      a babor | til babord, mot venstre om bord | expr
+      a estribor | til styrbord, mot høyre om bord | expr
+      arriba | opp, oppe | adv
+      abajo | ned, nede | adv
+      avante | forover (til sjøs) | adv
+      despacio | sakte, langsomt | adv
+      ¡alto! | stopp! | int
+      la hélice | propell
+      sumergirse | dykke, gå under vann | v
+      la inmersión | dykk, neddykking
+      la superficie | overflate
+      el aire | luft
+      la escotilla | luke (om bord)
+      el casco | skrog, hjelm
+      ¡cuidado! | pass på!, forsiktig! | int
+      la red | nett, garn
+      el muelle | kai, molo
+      el coral | korall
+      el buzo | dykker
+      encender | tenne, slå på | v
+      apagar | slokke, slå av | v
+      el ancla | anker | f
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

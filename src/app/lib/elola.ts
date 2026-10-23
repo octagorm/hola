@@ -63,6 +63,8 @@ const STRESSED: Record<string, string> = {
     '*Alma* er hunkjønn, men får *el* fordi trykket ligger på a-en. I flertall: *las almas*.',
   'el ánima':
     '*Ánima* er hunkjønn, men får *el* fordi trykket ligger på a-en. I flertall: *las ánimas*.',
+  'el ancla':
+    '*Ancla* er hunkjønn, men får *el* fordi trykket ligger på a-en: *el ancla pesada*, i flertall *las anclas*.',
 }
 
 // Nouns of a gender their ending does not give

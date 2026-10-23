@@ -468,6 +468,7 @@ export type GameIconId =
   | 'acento'
   | 'numeros'
   | 'taxi'
+  | 'ictineo'
 
 export function GameIcon({
   id,
@@ -1005,6 +1006,51 @@ export function GameIcon({
             strokeWidth="2.6"
             strokeLinecap="round"
           />
+        </>
+      )}
+      {id === 'ictineo' && (
+        <>
+          <path
+            d="M2 10Q7 7 12 10T22 10T32 10T42 10"
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M39 28C39 22.5 33 20 23 20 14 20 9 24 6 28 9 32 14 36 23 36 33 36 39 33.5 39 28Z"
+            fill="#d29a2e"
+            opacity=".6"
+          />
+          <path
+            d="M20 20V16.5C20 14.5 27 14.5 27 16.5V20Z"
+            fill="#c2402c"
+            opacity=".55"
+          />
+          <g
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          >
+            <path d="M39 28C39 22.5 33 20 23 20 14 20 9 24 6 28 9 32 14 36 23 36 33 36 39 33.5 39 28Z" />
+            <path d="M20 20V16.5C20 14.5 27 14.5 27 16.5V20" />
+            <path d="M5.5 28 2.5 23M5.5 28 2.5 33" />
+            <path d="M15 21.6V34.4M29 20.4V35.6" strokeWidth="1" />
+          </g>
+          <circle
+            cx="34.5"
+            cy="27.5"
+            r="2"
+            fill={PAPER}
+            stroke={INK}
+            strokeWidth="1.2"
+          />
+          <g fill="none" stroke={INK} strokeWidth="1">
+            <circle cx="6" cy="19" r="1.4" />
+            <circle cx="9" cy="15.5" r="1" />
+          </g>
         </>
       )}
     </svg>

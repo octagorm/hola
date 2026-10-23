@@ -1012,10 +1012,28 @@ const ART: Record<string, ReactNode> = {
       <path d="M50 28 56 52H44Z" fill={RED} strokeWidth="1.4" />
       <circle cx="50" cy="52" r="3" fill={INK} />
       <path d="M46 14h8v6h-8Z" fill={GOLD} />
-      <g stroke="none" fill={INK}>
-        <circle cx="50" cy="29" r="0" />
-      </g>
       <path d="M26 52h4M70 52h4M50 76v-2" strokeWidth="1.6" />
+    </>
+  ),
+  coral: (
+    <>
+      <path
+        d="M47 80V62Q40 56 34 44 30 36 31 26M34 44Q26 42 20 34M41 56Q50 46 52 34 53 26 50 18M52 34Q60 30 64 22M47 66Q58 62 66 50 70 42 76 38M66 50Q72 52 80 50"
+        fill="none"
+        stroke={INK}
+        strokeWidth="9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M47 80V62Q40 56 34 44 30 36 31 26M34 44Q26 42 20 34M41 56Q50 46 52 34 53 26 50 18M52 34Q60 30 64 22M47 66Q58 62 66 50 70 42 76 38M66 50Q72 52 80 50"
+        fill="none"
+        stroke={RED}
+        strokeWidth="5.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M30 88Q32 78 47 78 62 78 66 88Z" fill={SILVER} />
     </>
   ),
   box: (

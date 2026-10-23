@@ -427,6 +427,18 @@ export const MUSEO: Array<Picture> = [
     motif: 'moon',
     colors: ['#e6dcc4', '#2c3e6a', '#e8c25a', '#161a24'],
   },
+  {
+    lesson: 'ictineo',
+    es: 'La inmersión',
+    no: 'Dykket',
+    shows:
+      'Ubåten av tre, formet som en fisk, halvveis under vann i Barcelonas havn, med kaien og seilskuter bak.',
+    medium: 'Tresnitt i grønt og svart',
+    shape: 'landscape',
+    size: 'm',
+    motif: 'sea',
+    colors: ['#e9e2c9', '#2f6b5e', '#a8c9b4', '#16211d'],
+  },
 
   // --- Sala V: América ---
   {

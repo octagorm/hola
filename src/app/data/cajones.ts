@@ -510,6 +510,14 @@ export const KEEPSAKES: Array<Keepsake> = [
     no: 'kompass',
     line: 'Et kompass av messing som alltid vet hvor nord er, også når gatene svinger.',
   },
+  {
+    lesson: 'ictineo',
+    art: 'coral',
+    es: 'el coral',
+    no: 'korall',
+    word: 'el coral',
+    line: 'En liten grein av rød korall på en stein, slik korallfiskerne ved Cap de Creus hentet den opp.',
+  },
 ]
 
 export const KEEPSAKE: Record<string, Keepsake | undefined> =
