@@ -173,7 +173,7 @@ export const SENTENCES: Array<Sentence> = [
     line: 'Espero>esperar el autobús>el_autobús .',
     no: 'Jeg venter på bussen.',
     level: 1,
-    pic: 'tren',
+    pic: 'reloj',
     point: 'sinprep',
   },
   {
