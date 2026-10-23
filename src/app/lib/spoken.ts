@@ -19,8 +19,9 @@ import { SAID as SONIDOS } from './sonidos.ts'
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
 // it), the plurals and an adjective's forms that Letras takes, and the
-// sample in Settings; in the narrator's each line of the story, each
-// sentence of Cadáver exquisito's deck, each sentence of Por o para (said
+// sample in Settings; in the narrator's each line of the stories (a line
+// one of a story's cast says, in theirs), each sentence of Cadáver
+// exquisito's deck, each sentence of Por o para (said
 // once answered) and each of Ayer, hoy, mañana in all three times.
 // scripts/audio.py makes the recordings with Gemini TTS; lib/speech.ts
 // plays them by their text, and falls back on the browser's own Spanish
@@ -54,7 +55,11 @@ export function speechItems(): Array<SpeechItem> {
   // (and those Palabras lays that are too long for Letras)
   for (const s of LAID) add(WORD_VOICE, s, 'word')
   add(WORD_VOICE, SAMPLE, 'line')
-  for (const line of lines) add(LINE_VOICE, plain(line), 'line')
+  // (a line one of a story's cast says, in their voice)
+  for (const c of ALL_CHAPTERS)
+    c.lines.forEach((line, i) =>
+      add(c.who?.[i] ?? LINE_VOICE, plain(line), 'line'),
+    )
   for (const s of DECK) add(LINE_VOICE, spanish(s), 'line')
   // El relojero's lines in Palabras
   for (const s of LINES_SAID) add(LINE_VOICE, s, 'line')

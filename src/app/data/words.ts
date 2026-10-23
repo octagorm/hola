@@ -2024,6 +2024,34 @@ const LIST: Array<Lesson & { words: string }> = [
       la vergüenza | skam, flauhet
     `,
   },
+  {
+    id: 'caso',
+    es: 'El caso del reloj perdido',
+    no: 'Detektivhistoriens ord',
+    words: `
+      el inspector | inspektør
+      el caso | sak, tilfelle
+      el reloj de bolsillo | lommeur
+      pararse | stanse, stoppe | v
+      a las cuatro y cuarto | klokka kvart over fire | expr
+      desde | siden, fra | prep
+      dar cuerda | trekke opp (en klokke) | expr
+      la lupa | forstørrelsesglass, lupe
+      la libreta | notatbok
+      a las nueve y media | klokka halv ti | expr
+      el pañuelo | tørkle, lommetørkle
+      el relojero | urmaker
+      la pista | spor, ledetråd
+      robar | stjele | v
+      el ladrón | tyv
+      la relojería | urmakerbutikk
+      arreglar | reparere, ordne | v
+      ya | nå, allerede | adv
+      prometer | love | v
+      la sorpresa | overraskelse
+      inocente | uskyldig | adj
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

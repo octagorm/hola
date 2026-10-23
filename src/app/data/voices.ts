@@ -1,8 +1,10 @@
-// Who reads Hola's Spanish aloud, and how: two voices designed from a
-// description, both from Madrid. The teacher says each word on its own, and
-// the sample in Settings; the narrator says whole sentences, the story's and
-// Cadáver exquisito's. The page uses only the names, as keys to the
-// recordings; scripts/audio.py reads the rest through scripts/speech.ts.
+// Who reads Hola's Spanish aloud, and how: voices designed from a
+// description, the teacher and the narrator from Madrid. The teacher says
+// each word on its own, and the sample in Settings; the narrator says whole
+// sentences, the story's and Cadáver exquisito's. The cast of the games and
+// of El caso del reloj perdido speak in voices of their own. The page uses
+// only the names, as keys to the recordings; scripts/audio.py reads the
+// rest through scripts/speech.ts.
 
 export interface Voice {
   // One of DESIGNED, or a Gemini prebuilt voice
@@ -22,6 +24,13 @@ export const DESIGNED: Record<string, string> = {
     'A Spanish woman in her thirties, a native speaker from Madrid who teaches Spanish, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in zapato and cielo): a clear, warm and natural voice, friendly and patient, every sound crisp.',
   Narrador:
     'A Spanish man in his fifties, a native speaker from Madrid, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in corazón and cerca): a warm, clear and natural voice, a storyteller reading an old novel aloud to a friend, lively but never theatrical.',
+  // Three witnesses in El caso del reloj perdido (data/caso.ts), from
+  // Cadaqués
+  Narcís:
+    'A Spanish man of almost eighty, a retired fisherman born and raised in Cadaqués on the coast of Catalonia, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in cerca and corazón): a deep, slightly hoarse and warm voice, slow and gentle, every word clear.',
+  Remei:
+    'A Spanish woman in her seventies, born and raised in Cadaqués on the coast of Catalonia, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in plaza and cielo): a bright, lively voice with a smile in it, a neighbour who loves to tell what she has seen, and always clear.',
+  Laia: 'A Spanish woman in her twenties, born and raised in Cadaqués on the coast of Catalonia, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in azul and hacer): a clear, warm and natural young voice, friendly and a little shy.',
 }
 
 export const VOICES: Record<string, Voice> = {
@@ -68,6 +77,42 @@ export const VOICES: Record<string, Voice> = {
   Pilar: {
     base: 'Gacrux',
     style: 'selling at a flea market, brisk and warm, at a calm pace',
+  },
+  // El caso del reloj perdido (data/caso.ts): the inspector in the
+  // narrator's voice, three witnesses in voices of their own, and the
+  // rest in Gemini's prebuilt voices
+  Garrido: {
+    base: 'Narrador',
+    style: 'an inspector asking a witness, kind and calm',
+  },
+  Narcís: {
+    base: 'Narcís',
+    style: 'an old fisherman talking to the inspector, warm and unhurried',
+  },
+  Remei: {
+    base: 'Remei',
+    style: 'a chatty neighbour, lively and warm, at a calm pace',
+  },
+  Laia: {
+    base: 'Laia',
+    style: 'a young woman talking to the inspector, warm, at a calm pace',
+  },
+  Montse: {
+    base: 'Aoede',
+    style: 'running a beach bar, lively and warm, at a calm pace',
+  },
+  Quim: {
+    base: 'Alnilam',
+    style:
+      'an old fisherman at his market stall, gruff and proud, at a calm pace',
+  },
+  Puig: {
+    base: 'Algieba',
+    style: 'a refined collector from Barcelona, smooth, at a calm pace',
+  },
+  Jordi: {
+    base: 'Iapetus',
+    style: 'a shy young watchmaker, gentle, at a calm pace',
   },
 }
 
