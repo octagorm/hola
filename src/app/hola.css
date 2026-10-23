@@ -1733,6 +1733,14 @@ a.q-box:hover {
   height: clamp(140px, 26vw, 220px);
 }
 
+/* A painted picture above a chapter, cut to the strip */
+img.q-pic {
+  height: clamp(160px, 32vw, 300px);
+  object-fit: cover;
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 rgba(42, 33, 26, 0.12);
+}
+
 .q-intro {
   margin: 0;
   font-size: 19px;
