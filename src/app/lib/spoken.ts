@@ -13,6 +13,7 @@ import { linesOf } from './orden.ts'
 import { plain, tokens } from './text.ts'
 import { tapasLines } from './tapas.ts'
 import { rastroLines } from './rastro.ts'
+import { SAID as SONIDOS } from './sonidos.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
@@ -65,5 +66,8 @@ export function speechItems(): Array<SpeechItem> {
   for (const { voice, line } of spoken) add(voice, plain(line), 'line')
   for (const { line } of spoken)
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+  // The nouns Sonidos says without their article, as the word they sound
+  // like has none (perro, beside pero), in the teacher's voice
+  for (const s of SONIDOS) add(WORD_VOICE, s, 'word')
   return items
 }

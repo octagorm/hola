@@ -9,6 +9,7 @@ import { DECK, spanish } from '../src/app/lib/cadaver'
 import { SAID } from '../src/app/lib/letras'
 import { SENTENCES } from '../src/app/data/orden'
 import { linesOf } from '../src/app/lib/orden'
+import { SAID as SONIDOS } from '../src/app/lib/sonidos'
 import { speechItems, speechKey } from '../src/app/lib/spoken'
 import { plain, tokens } from '../src/app/lib/text'
 
@@ -38,6 +39,7 @@ describe('what is said aloud', () => {
       ...DECK.map(spanish),
       ...SAID,
       ...SENTENCES.flatMap((s) => linesOf(s).map(plain)),
+      ...SONIDOS,
       SAMPLE,
     ]
     for (const t of said) expect(texts.has(t), t).toBe(true)
