@@ -1800,6 +1800,7 @@ img.q-pic {
 }
 
 .q-chapters em svg {
+  display: inline-block;
   width: 15px;
   height: 15px;
   vertical-align: -2px;
