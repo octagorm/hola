@@ -16,6 +16,7 @@ import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
 import { dictable } from '../src/app/lib/sonidos.ts'
 import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
+import { ORDER } from '../src/app/data/ictineo.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -176,6 +177,7 @@ const PAGES = [
   ['#acento', 'Acento'],
   ['#numeros', 'Números'],
   ['#taxi', 'Taxi'],
+  ['#ictineo', 'El Ictíneo'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -1421,6 +1423,58 @@ await test(
     await page.getByLabel('Søk').fill('gato')
     await page.locator('.q-lesson .row', { hasText: 'el gato' }).click()
     await page.locator('.q-lesson .more').waitFor()
+  },
+  { learner: true },
+)
+
+await test(
+  'El Ictíneo dives, steers and comes home from its first voyage',
+  async (page) => {
+    await page.clock.install()
+    await go(page, '#ictineo')
+    await page.getByRole('button', { name: /^Kadett/ }).click()
+    // Each order followed as soon as it is given, by the keys and by the
+    // helm's buttons in turn
+    const keys = {
+      babor: 'ArrowLeft',
+      estribor: 'ArrowRight',
+      arriba: 'ArrowUp',
+      abajo: 'ArrowDown',
+      rapido: 'f',
+      despacio: 's',
+      alto: 'x',
+    }
+    let last = ''
+    let n = 0
+    for (let i = 0; i < 3000 && !(await visible(page, '.ic-end')); i++) {
+      const live = page.locator('.ic-say[data-live]')
+      if (await live.count()) {
+        const id = await live.getAttribute('data-order')
+        const at = `${id}:${await live.getAttribute('data-n')}`
+        if (at !== last) {
+          last = at
+          n++
+          expect(!!ORDER[id], `an order «${id}»`)
+          for (const a of ORDER[id].do)
+            if (n % 2 && keys[a]) await page.keyboard.press(keys[a])
+            else await page.locator(`.ic-helm .ic-key.${a}`).click()
+        }
+      }
+      await page.clock.runFor(250)
+    }
+    await page.getByText('¡Hemos vuelto!').waitFor()
+    const sub = await page.locator('.ic-end .sub').textContent()
+    const [, right, given] = sub.match(/(\d+) av (\d+) ordrer/) ?? []
+    expect(
+      Number(given) >= 10 && right === given,
+      `every order followed in time: ${sub}`,
+    )
+    await page.getByRole('button', { name: /Neste tokt/ }).click()
+    await page.getByRole('button', { name: /^Kadett/ }).waitFor()
+    expect(
+      await visible(page, '.ic-log button.on:has-text("El coral")'),
+      'the next voyage open and chosen',
+    )
   },
   { learner: true },
 )

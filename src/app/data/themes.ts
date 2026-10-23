@@ -199,6 +199,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Luis Buñuel laget Un chien andalou med Dalí i 1929 og fikk Viridiana forbudt i Francos Spania, og Pedro Almodóvar laget fargesterke melodramaer etter diktaturet. I El espíritu de la colmena (1973) ser en liten jente Frankenstein i en landsby like etter borgerkrigen, og i El laberinto del fauno (2006) søker en jente tilflukt i en eventyrverden i 1944. I Spania dubbes de fleste utenlandske filmer og serier.',
       },
+      {
+        lesson: 'ictineo',
+        about:
+          'Narcís Monturiol fra Figueres, Narciso på spansk, var typograf, journalist og utopisk sosialist. I Cadaqués så han hvor farlig korallfiskernes arbeid var, og etter det som fortelles, så han en av dem drukne ved Cap de Creus. Han tegnet en båt som kunne hente korall under vann: Ictíneo, av gresk ikhthys, fisk, og naus, skip. Den var av tre, sju meter lang, og mannskapet drev propellen i halen med håndkraft. 23. september 1859 dykket den i Barcelonas havn i to timer og tjue minutter, ned til tjue meter, og i mai 1861 tok den den offisielle prøveturen i Alicante. Den dykket 69 ganger uten en eneste ulykke.',
+      },
     ],
   },
   {
