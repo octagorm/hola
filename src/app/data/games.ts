@@ -145,6 +145,13 @@ export const GAME_INFO: Array<GameInfo> = [
     blurb: 'Kjør dit passasjeren ber om, sving for sving',
     doing: 'kjører taxi dit passasjeren ber om',
   },
+  {
+    id: 'ictineo',
+    es: 'El Ictíneo',
+    no: 'Ubåten',
+    blurb: 'Kapteinens ordrer i en ubåt fra 1859',
+    doing: 'styrer ubåten etter kapteinens ordrer',
+  },
 ]
 
 export const GAME: Record<string, GameInfo | undefined> = Object.fromEntries(

@@ -17,6 +17,7 @@ import { plain, tokens } from './text.ts'
 import { tapasLines } from './tapas.ts'
 import { rastroLines } from './rastro.ts'
 import { SAID as SONIDOS } from './sonidos.ts'
+import { ictineoLines } from './ictineo.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
@@ -88,5 +89,11 @@ export function speechItems(): Array<SpeechItem> {
   for (const x of TAXI) add(x.voice, x.text, 'line')
   for (const x of TAXI)
     for (const t of tokens(x.line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+  // The captain's orders and lines in El Ictíneo, in his voice; and in the
+  // teacher's, each form in them
+  const captain = ictineoLines()
+  for (const { voice, line } of captain) add(voice, plain(line), 'line')
+  for (const { line } of captain)
+    for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   return items
 }

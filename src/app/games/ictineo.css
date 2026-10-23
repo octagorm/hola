@@ -1,0 +1,1561 @@
+/* El Ictíneo: a wood engraving of the 1860s, coloured by hand. A sepia
+   line on warm paper, washes of muted sea green, wood, copper and brass,
+   and each picture framed with a double rule, as a plate in a magazine of
+   the time. A Caslon for the text, Playfair's small capitals for the
+   headings. */
+
+.ic-game {
+  --ink: #2a2017;
+  --ink-2: #5e4c38;
+  --paper: #efe4c8;
+  --paper-2: #e3d4ae;
+  --card: #f6eedb;
+  --sea: #86a99a;
+  --sea-l: #c9d9cc;
+  --sea-d: #557c6f;
+  --deep: #33544c;
+  --wood: #b98a55;
+  --wood-d: #7c5532;
+  --copper: #b8683a;
+  --brass: #c9a24a;
+  --brass-l: #ecd9a2;
+  --coral: #c64f38;
+  --port: #b23a2e;
+  --star: #3f7a4e;
+  --lamp: #f6d77e;
+  /* Mixed text, in the plate's own colours */
+  --blue: #33597a;
+  --red: #b23a2e;
+  --nw: #7a5c3a;
+  --nw-line: #c9ab7c;
+  --body: 'Libre Caslon Text', Georgia, serif;
+  --display: 'Playfair Display SC', Georgia, serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--body);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.25 0 0 0 0 0.12 0 0 0 0.13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.ic-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.ic-game button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ic-game :focus-visible {
+  outline: 3px solid var(--copper);
+  outline-offset: 3px;
+}
+
+.ic-game kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 4px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--card);
+  font:
+    700 12px/1.5 'Libre Caslon Text',
+    Georgia,
+    serif;
+  text-align: center;
+  color: var(--ink);
+}
+
+.ic-game .small {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.ic-col {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+}
+
+@media (min-width: 900px) {
+  .ic-col {
+    max-width: 1120px;
+    padding-top: 18px;
+  }
+}
+
+/* --- The top --- */
+
+.ic-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ic-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  color: var(--ink) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.ic-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ic-round.small {
+  width: 36px;
+  height: 36px;
+  box-shadow: none;
+}
+
+.ic-round.small svg {
+  width: 17px;
+  height: 17px;
+}
+
+.ic-top h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.ic-top h1 small {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  color: var(--copper);
+}
+
+/* --- Cards and buttons --- */
+
+.ic-card {
+  position: relative;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow:
+    0 0 0 3px var(--card),
+    0 0 0 4.5px var(--ink);
+  margin: 6px 4px 14px;
+}
+
+.ic-card > p {
+  margin: 0 0 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ic-game .kick {
+  margin: 0 0 6px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--copper);
+}
+
+.ic-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 18px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--card) !important;
+  font-family: var(--display) !important;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--copper);
+}
+
+.ic-btn small {
+  font-family: var(--body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0;
+  opacity: 0.85;
+}
+
+.ic-btn svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.ic-btn.ghost {
+  background: var(--card);
+  color: var(--ink) !important;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.ic-btn:active,
+.ic-round:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.ic-game .ic-link {
+  border: 0;
+  padding: 6px 2px;
+  background: none;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2) !important;
+  text-decoration: underline;
+  text-decoration-color: var(--copper);
+  text-underline-offset: 3px;
+}
+
+.ic-icon {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.ic-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* --- The plate: the picture, framed as an engraving --- */
+
+.ic-plate {
+  position: relative;
+  margin: 6px 4px 12px;
+  height: clamp(220px, 30vh, 270px);
+  overflow: hidden;
+  background: #e6dec2;
+  border: 2px solid var(--ink);
+  box-shadow:
+    0 0 0 3px var(--paper),
+    0 0 0 4.5px var(--ink);
+}
+
+.ic-plate > svg,
+.ic-plate > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ic-plate > img {
+  object-fit: cover;
+}
+
+.ic-plate.still {
+  height: clamp(180px, 26vh, 240px);
+}
+
+.ic-plate figcaption {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  padding: 1px 12px 2px;
+  background: rgba(246, 238, 219, 0.88);
+  border: 1px solid var(--ink);
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--ink);
+  pointer-events: none;
+}
+
+/* The night under water, but where the lamp shines; the murky water at
+   Alicante */
+.ic-plate .ic-dark {
+  fill: #0b151a;
+  opacity: 0.8;
+}
+
+.ic-plate .ic-murk {
+  fill: #5b5a3c;
+  opacity: 0.42;
+  animation: ic-murk 6s ease-in-out infinite;
+}
+
+@keyframes ic-murk {
+  50% {
+    opacity: 0.52;
+  }
+}
+
+/* What is ahead shows only as a shadow until it is close */
+.ic-plate .ic-shape {
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.ic-plate[data-shown='1'] .ic-shape {
+  opacity: 1;
+}
+
+.ic-plate .ic-shadow {
+  transition: opacity 0.35s;
+}
+
+.ic-plate[data-shown='1'] .ic-shadow {
+  opacity: 0;
+}
+
+/* The boat glides between depths and lanes, and bobs at the surface */
+.ic-boat-pos {
+  transition: transform 0.9s cubic-bezier(0.45, 0.1, 0.3, 1);
+}
+
+.ic-boat.up {
+  animation: ic-bob 2.8s ease-in-out infinite;
+}
+
+@keyframes ic-bob {
+  50% {
+    transform: translateY(3px) rotate(0.8deg);
+  }
+}
+
+/* (the high sea at Alicante) */
+.ic-plate.v-alicante .ic-boat.up {
+  animation: ic-bob-rough 1.9s ease-in-out infinite;
+}
+
+@keyframes ic-bob-rough {
+  50% {
+    transform: translateY(7px) rotate(2.4deg);
+  }
+}
+
+.ic-jolt {
+  animation: ic-jolt 0.7s ease-out;
+}
+
+@keyframes ic-jolt {
+  15% {
+    transform: translate(-12px, 5px) rotate(-2.5deg);
+  }
+  35% {
+    transform: translate(9px, -4px) rotate(1.8deg);
+  }
+  55% {
+    transform: translate(-5px, 2px) rotate(-1deg);
+  }
+  75% {
+    transform: translate(2px, -1px);
+  }
+}
+
+/* The propeller and the crank turn with the boat's speed */
+.ic-prop {
+  animation: ic-prop 0.6s linear infinite;
+}
+
+.ic-crank {
+  animation: ic-turn 0.6s linear infinite;
+}
+
+.ic-cranker .arms {
+  animation: ic-arm 0.6s ease-in-out infinite;
+}
+
+.ic-boat.slow .ic-prop,
+.ic-boat.slow .ic-crank,
+.ic-boat.slow .ic-cranker .arms {
+  animation-duration: 1.3s;
+}
+
+.ic-boat.fast .ic-prop,
+.ic-boat.fast .ic-crank,
+.ic-boat.fast .ic-cranker .arms {
+  animation-duration: 0.32s;
+}
+
+.ic-boat.stop .ic-prop,
+.ic-boat.stop .ic-crank,
+.ic-boat.stop .ic-cranker .arms {
+  animation: none;
+}
+
+@keyframes ic-prop {
+  50% {
+    transform: scaleY(-1);
+  }
+}
+
+@keyframes ic-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ic-arm {
+  50% {
+    transform: translate(-3px, -4px);
+  }
+}
+
+/* Bubbles from the tail, under way under water */
+.ic-bubbles circle {
+  opacity: 0;
+  animation: ic-bubble 2.1s ease-out infinite;
+}
+
+.ic-boat.up .ic-bubbles,
+.ic-boat.stop .ic-bubbles {
+  display: none;
+}
+
+@keyframes ic-bubble {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-46px, -64px);
+    opacity: 0;
+  }
+}
+
+/* The hatch opens on its hinge; the lamp is lit; the claw reaches; the
+   anchor goes down */
+.ic-hatch {
+  transform-origin: 28px -95px;
+  transition: transform 0.5s ease;
+}
+
+.ic-hatch.open {
+  transform: rotate(-75deg);
+}
+
+.ic-lamp .halo {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.ic-lamp.on .halo {
+  opacity: 0.6;
+  animation: ic-flicker 2.4s ease-in-out infinite;
+}
+
+@keyframes ic-flicker {
+  40% {
+    opacity: 0.45;
+  }
+  60% {
+    opacity: 0.7;
+  }
+}
+
+.ic-claw {
+  transform-origin: 104px 54px;
+  animation: ic-claw 1.1s ease-in-out;
+}
+
+@keyframes ic-claw {
+  35% {
+    transform: rotate(22deg);
+  }
+  65% {
+    transform: rotate(-6deg);
+  }
+}
+
+.ic-anchor .chain {
+  transform-origin: 136px 30px;
+  transition: transform 0.9s ease-in;
+}
+
+.ic-anchor .iron {
+  transition: transform 0.9s ease-in;
+}
+
+.ic-anchor.down .chain {
+  transform: scaleY(5.5);
+}
+
+.ic-anchor.down .iron {
+  transform: translateY(45px);
+}
+
+/* What is seen on the way passes by; the lighthouse and the moon glint
+   once seen */
+.ic-pass {
+  animation: ic-pass-fish 11s linear forwards;
+}
+
+.ic-pass.buzo {
+  animation-name: ic-pass-diver;
+  animation-duration: 10s;
+}
+
+.ic-pass.pulpo {
+  animation-name: ic-pass-octopus;
+  animation-duration: 12s;
+}
+
+@keyframes ic-pass-fish {
+  from {
+    opacity: 0;
+    transform: translate(1000px, 330px);
+  }
+  6% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(-500px, 360px);
+  }
+}
+
+@keyframes ic-pass-diver {
+  from {
+    opacity: 0;
+    transform: translate(1060px, 310px);
+  }
+  6% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(-200px, 310px);
+  }
+}
+
+@keyframes ic-pass-octopus {
+  from {
+    opacity: 0;
+    transform: translate(1020px, 548px);
+  }
+  6% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(-200px, 548px);
+  }
+}
+
+.ic-school > g {
+  animation: ic-fin 0.9s ease-in-out infinite;
+}
+
+.ic-school > g:nth-child(even) {
+  animation-delay: -0.45s;
+}
+
+@keyframes ic-fin {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.ic-plate.saw-faro .ic-faro .glint {
+  animation: ic-glint 2.6s ease-in-out infinite;
+}
+
+.ic-plate.saw-luna .ic-luna .glint {
+  animation: ic-glint 3.4s ease-in-out infinite;
+}
+
+@keyframes ic-glint {
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* The sea breaks on the pier at Alicante */
+.ic-spray {
+  transform-origin: 280px 126px;
+  animation: ic-spray 3.4s ease-in-out infinite;
+}
+
+@keyframes ic-spray {
+  0%,
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.1, 0.7);
+    opacity: 0;
+  }
+}
+
+/* Paused, the picture stands still too */
+.ic-play.paused .ic-plate * {
+  animation-play-state: paused !important;
+}
+
+/* The time an order has, along the bottom of the plate */
+.ic-timer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background: rgba(42, 32, 23, 0.22);
+}
+
+.ic-timer i {
+  display: block;
+  height: 100%;
+  background: var(--brass);
+  border-top: 1.5px solid var(--ink);
+  transform-origin: left;
+  transform: scaleX(var(--left, 0));
+}
+
+/* The gauges, on a label in the plate's corner */
+.ic-gauges {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 8px 2px 6px;
+  background: rgba(246, 238, 219, 0.92);
+  border: 1.5px solid var(--ink);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ic-hull {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.ic-hull i {
+  width: 9px;
+  height: 15px;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px 6px 3px 3px;
+  background: var(--wood);
+}
+
+.ic-hull i.gone {
+  background: repeating-linear-gradient(
+    -40deg,
+    transparent 0 2px,
+    var(--ink-2) 2px 3px
+  );
+  opacity: 0.45;
+}
+
+.ic-air {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ic-air svg {
+  width: 34px;
+  height: 26px;
+}
+
+.ic-air small {
+  margin-top: -2px;
+  font-size: 10px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.ic-air .dial {
+  fill: var(--card);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.ic-air .red {
+  fill: none;
+  stroke: var(--port);
+  stroke-width: 4;
+}
+
+.ic-air .needle {
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.ic-air .hub {
+  fill: var(--brass);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.ic-plate[data-low='1'] .ic-air {
+  animation: ic-low 0.8s steps(2) infinite;
+}
+
+.ic-plate[data-low='1'] .ic-air .dial {
+  fill: #f3d2c4;
+}
+
+@keyframes ic-low {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.ic-depth {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.ic-depth b {
+  font-family: var(--display);
+  font-size: 17px;
+}
+
+.ic-coral {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.ic-coral svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* --- Before setting out --- */
+
+.ic-ready,
+.ic-over {
+  display: grid;
+  gap: 4px;
+}
+
+.ic-intro p {
+  font-size: 17px;
+}
+
+/* The boat in cutaway, once it is painted: above the introduction on a
+   narrow screen, beside it on a wide one */
+.ic-cutaway {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  margin: 2px 0 12px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper-2);
+}
+
+@media (min-width: 900px) {
+  .ic-cutaway {
+    float: right;
+    width: 46%;
+    aspect-ratio: 3 / 2;
+    margin: 4px 0 10px 18px;
+  }
+
+  .ic-legend {
+    clear: both;
+  }
+}
+
+.ic-log {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.ic-log button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 6px 12px 6px 8px;
+  border: 1.5px solid var(--ink-2);
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+}
+
+.ic-log button.on {
+  border: 2px solid var(--ink);
+  background: var(--brass-l);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.ic-log button.shut {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.ic-log .n {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  color: var(--copper);
+}
+
+.ic-log .t b {
+  display: block;
+  font-family: var(--display);
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.ic-log .t small {
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.ic-log .s {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.ic-log .s svg {
+  width: 13px;
+  height: 13px;
+}
+
+.ic-voyage .about {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.ic-fresh {
+  font-size: 15px !important;
+}
+
+.ic-fresh i {
+  color: var(--ink-2);
+}
+
+.ic-go {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ic-go .ic-btn {
+  flex: 1 1 220px;
+}
+
+/* The controls and their keys */
+.ic-legend {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ink-2);
+}
+
+.ic-legend ul {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 6px 12px;
+}
+
+.ic-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.ic-legend li svg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
+
+.ic-legend li kbd {
+  margin-left: auto;
+}
+
+/* The pictures of the controls: port red, starboard green, coral, lamp */
+.ic-game .port {
+  fill: var(--port);
+}
+
+.ic-game .star {
+  fill: var(--star);
+}
+
+.ic-game .coral {
+  stroke: var(--coral);
+}
+
+.ic-game .glow {
+  fill: var(--lamp);
+  opacity: 0.7;
+}
+
+@media (min-width: 900px) {
+  .ic-ready {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-areas:
+      'plate voyage'
+      'intro voyage';
+    align-items: start;
+    column-gap: 22px;
+  }
+
+  .ic-ready .ic-plate {
+    grid-area: plate;
+    height: 340px;
+  }
+
+  .ic-ready .ic-intro {
+    grid-area: intro;
+  }
+
+  .ic-ready .ic-voyage {
+    grid-area: voyage;
+  }
+
+  .ic-over {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 22px;
+  }
+
+  .ic-over .ic-plate {
+    height: 340px;
+  }
+}
+
+/* --- A voyage under way --- */
+
+.ic-stage {
+  position: relative;
+}
+
+.ic-play .ic-plate {
+  margin-bottom: 10px;
+}
+
+/* The score and the pause, on the plate's other corner */
+.ic-bar {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ic-score {
+  padding: 3px 10px;
+  background: rgba(246, 238, 219, 0.92);
+  border: 1.5px solid var(--ink);
+  font-size: 14px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.ic-score b {
+  font-family: var(--display);
+  font-style: normal;
+  font-size: 20px;
+}
+
+.ic-deck {
+  display: grid;
+  gap: 10px;
+}
+
+/* What the captain says */
+.ic-say {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    'face body'
+    'tools body';
+  align-items: start;
+  gap: 6px 12px;
+  height: 178px;
+  overflow: hidden;
+  margin: 2px 4px;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow:
+    0 0 0 3px var(--card),
+    0 0 0 4.5px var(--ink);
+}
+
+.ic-captain {
+  grid-area: face;
+  width: 46px;
+  height: 55px;
+  margin-top: 2px;
+}
+
+.ic-captain.talking .beard {
+  animation: ic-talk 0.3s ease-in-out infinite;
+}
+
+@keyframes ic-talk {
+  50% {
+    transform: translateY(1.6px);
+  }
+}
+
+.ic-say .body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.ic-say .who {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--copper);
+}
+
+.ic-say .who small {
+  font-family: var(--body);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+.ic-say .es {
+  margin: 0;
+  font-size: 23px;
+  line-height: 1.2;
+  animation: ic-in 0.25s ease-out;
+}
+
+.ic-say .es.long {
+  font-size: 20px;
+}
+
+.ic-say .es.line {
+  font-size: 20px;
+}
+
+.ic-say .es.line.long {
+  font-size: 18px;
+}
+
+.ic-say .es .mx {
+  line-height: 1.95;
+}
+
+/* (a word of two, as a babor, is never broken over two lines) */
+.ic-say .mx ruby,
+.ic-say .mx .nw,
+.ic-say .mx .kw {
+  white-space: nowrap;
+}
+
+@keyframes ic-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.ic-say .listen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.ic-say .listen svg {
+  width: 24px;
+  height: 24px;
+  animation: ic-listen 1.2s ease-in-out infinite;
+}
+
+@keyframes ic-listen {
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.ic-say .no {
+  margin: 1px 0 0;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+.ic-say .verdict {
+  margin: 3px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+}
+
+.ic-say .verdict.right {
+  color: var(--star);
+}
+
+.ic-say .verdict.wrong,
+.ic-say .verdict.late {
+  color: var(--port);
+}
+
+.ic-say .verdict .remark {
+  font-family: var(--body);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.ic-say > .tools {
+  grid-area: tools;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ic-say > .tools .ic-icon {
+  width: 38px;
+  height: 38px;
+}
+
+/* The helm: the cross round the wheel, the speed and the tools */
+.ic-helm {
+  --key: 62px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 4px 0 2px;
+}
+
+.ic-helm .cross {
+  display: grid;
+  grid-template-columns: repeat(3, var(--key));
+  grid-template-rows: repeat(3, var(--key));
+  gap: 5px;
+}
+
+.ic-helm .cross .arriba {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.ic-helm .cross .babor {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.ic-helm .cross .wheel {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.ic-helm .cross .estribor {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.ic-helm .cross .abajo {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.ic-helm .wheel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ic-helm .wheel svg {
+  width: 54px;
+  height: 54px;
+  fill: none;
+  stroke: var(--wood-d);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+}
+
+.ic-helm .speed,
+.ic-helm > .tools {
+  display: grid;
+  grid-auto-rows: var(--key);
+  grid-template-columns: var(--key);
+  gap: 5px;
+}
+
+.ic-helm > .tools {
+  padding-left: 9px;
+  border-left: 1.5px dashed var(--ink-2);
+}
+
+.ic-key {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 2px 3px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  touch-action: manipulation;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
+}
+
+.ic-key svg {
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+.ic-key .lb {
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.ic-key kbd {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 1.3em;
+  padding: 0 2px;
+  font-size: 10px;
+  line-height: 1.35;
+  border-width: 1px;
+}
+
+.ic-key:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+  background: var(--brass-l);
+}
+
+.ic-helm:not(.live) .ic-key {
+  opacity: 0.55;
+}
+
+.ic-helm .ic-key.want {
+  opacity: 1;
+  background: var(--brass-l);
+  animation: ic-want 0.9s ease-in-out infinite;
+}
+
+@keyframes ic-want {
+  50% {
+    box-shadow:
+      2px 2px 0 var(--ink),
+      0 0 0 5px var(--brass);
+  }
+}
+
+.ic-helm .ic-key.wrong {
+  opacity: 1;
+  background: #efc9bd;
+}
+
+.ic-key.babor .lb {
+  color: var(--port);
+}
+
+.ic-key.estribor .lb {
+  color: var(--star);
+}
+
+@media (min-width: 900px) {
+  .ic-play .ic-plate {
+    height: clamp(300px, 50vh, 460px);
+  }
+
+  .ic-deck {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 22px;
+  }
+
+  .ic-say {
+    height: auto;
+    min-height: 206px;
+    grid-template-columns: 74px minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    grid-template-areas: 'face body tools';
+    padding: 14px 16px;
+  }
+
+  .ic-captain {
+    width: 74px;
+    height: 89px;
+  }
+
+  .ic-say > .tools .ic-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ic-say .es {
+    font-size: 30px;
+  }
+
+  .ic-say .es.long {
+    font-size: 27px;
+  }
+
+  .ic-say .es.line {
+    font-size: 25px;
+  }
+
+  .ic-say .es.line.long {
+    font-size: 23px;
+  }
+
+  .ic-say .verdict {
+    font-size: 18px;
+  }
+
+  .ic-say .verdict .remark {
+    font-size: 16px;
+  }
+
+  .ic-say .no {
+    font-size: 18px;
+  }
+
+  .ic-helm {
+    --key: 70px;
+  }
+
+  .ic-gauges {
+    top: 10px;
+    left: 10px;
+    gap: 14px;
+    padding: 4px 14px 4px 10px;
+  }
+
+  .ic-air svg {
+    width: 50px;
+    height: 38px;
+  }
+
+  .ic-hull i {
+    width: 11px;
+    height: 18px;
+  }
+
+  .ic-depth b {
+    font-size: 21px;
+  }
+
+  .ic-bar {
+    top: 14px;
+    right: 14px;
+  }
+}
+
+/* On a phone the plate's caption is left to the harbour before and after */
+@media (max-width: 899px) {
+  .ic-play .ic-plate figcaption {
+    display: none;
+  }
+}
+
+/* A small phone: the helm a little smaller */
+@media (max-width: 370px) {
+  .ic-helm {
+    --key: 56px;
+    gap: 6px;
+  }
+
+  .ic-helm > .tools {
+    padding-left: 6px;
+  }
+
+  .ic-key svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Paused */
+.ic-pause {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(239, 228, 200, 0.82);
+}
+
+.ic-pause > div {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 22px 28px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow:
+    0 0 0 3px var(--card),
+    0 0 0 4.5px var(--ink);
+  text-align: center;
+}
+
+.ic-pause p {
+  margin: 0;
+}
+
+/* --- Home again --- */
+
+.ic-end h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 46px;
+  line-height: 1;
+}
+
+.ic-end h2 span {
+  font-family: var(--body);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--ink-2);
+}
+
+.ic-end .sub {
+  margin: 8px 0 6px;
+}
+
+.ic-end .kick {
+  font-size: 18px;
+}
+
+.ic-kind {
+  font-style: italic;
+}
+
+.ic-end .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 14px 0 6px;
+}
+
+.ic-missed {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.ic-missed li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--paper-2);
+}
+
+.ic-missed .es {
+  font-size: 18px;
+}
+
+.ic-missed .no {
+  grid-column: 1;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.ic-missed .ic-icon {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ic-game *,
+  .ic-game *::before,
+  .ic-game *::after {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+}
