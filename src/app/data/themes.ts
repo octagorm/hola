@@ -1,7 +1,7 @@
 // The themes on the home page: lessons of words (data/words.ts) beyond the
 // first ones, in groups, each with a few lines on what it is about. One can
 // be chosen (bank.theme, games/tema.tsx), and today's chapter then meets its
-// words before the rest.
+// words before the rest. A group with no themes yet is not shown.
 
 export interface Theme {
   // The lesson whose words the theme has
@@ -145,9 +145,9 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
     ],
   },
   {
-    id: 'cultura',
-    es: 'Cultura',
-    no: 'Kultur',
+    id: 'historia',
+    es: 'Historia y arte',
+    no: 'Historie og kunst',
     themes: [
       {
         lesson: 'mancha',
@@ -161,6 +161,10 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
       },
     ],
   },
+  { id: 'america', es: 'América', no: 'Latin-Amerika', themes: [] },
+  { id: 'fiestas', es: 'Música y fiestas', no: 'Musikk og fester', themes: [] },
+  { id: 'leyendas', es: 'Leyendas', no: 'Sagn', themes: [] },
+  { id: 'idioma', es: 'El idioma', no: 'Språket', themes: [] },
 ]
 
 export const THEME: Record<

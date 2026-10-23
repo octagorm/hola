@@ -362,9 +362,10 @@ export default function Home() {
 // The themes, a group at a time: the group of the theme chosen first
 function Themes() {
   const { bank } = useStore()
+  const groups = THEME_GROUPS.filter((g) => g.themes.length)
   const chosenGroup = THEME[bank.theme.id]?.group.id
-  const [open, setOpen] = useState(chosenGroup ?? THEME_GROUPS[0].id)
-  const group = THEME_GROUPS.find((g) => g.id === open) ?? THEME_GROUPS[0]
+  const [open, setOpen] = useState(chosenGroup ?? groups[0].id)
+  const group = groups.find((g) => g.id === open) ?? groups[0]
   return (
     <section className="q-themes">
       <div className="q-toc">
@@ -376,7 +377,7 @@ function Themes() {
         Velg et emne, så kommer de nye ordene i dagens kapittel derfra.
       </p>
       <div className="tabs" role="tablist" aria-label="Emner">
-        {THEME_GROUPS.map((g) => (
+        {groups.map((g) => (
           <button
             key={g.id}
             type="button"

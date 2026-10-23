@@ -193,7 +193,7 @@ await test('signing in with Google is offered', async (page) => {
 
 await test('a theme chosen gives today’s chapter its new words', async (page) => {
   await go(page, '')
-  await page.getByRole('tab', { name: /Cultura/ }).click()
+  await page.getByRole('tab', { name: /Historia/ }).click()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
   await page.getByRole('button', { name: /Velg som tema/ }).click()
   await page.getByText('Dagens tema').waitFor()
