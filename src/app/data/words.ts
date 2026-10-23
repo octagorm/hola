@@ -2004,6 +2004,27 @@ const LIST: Array<Lesson & { words: string }> = [
     `,
   },
   {
+    id: 'sonidos',
+    es: 'Letras y sonidos',
+    no: 'Bokstaver og lyder',
+    words: `
+      la gente | folk, mennesker
+      la caza | jakt
+      la tasa | avgift, gebyr
+      coser | sy | v
+      cocer | koke mat | v
+      la uña | negl
+      la cana | grått hårstrå
+      la olla | kjele, gryte
+      el polo | ispinne, pol
+      el higo | fiken
+      el peso | vekt
+      el beso | kyss
+      el pingüino | pingvin
+      la vergüenza | skam, flauhet
+    `,
+  },
+  {
     id: 'indicaciones',
     es: 'Indicaciones',
     no: 'Veibeskrivelse',

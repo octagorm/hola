@@ -12,8 +12,8 @@ import {
   nextOf,
   plainWord,
   plan,
-  syllables,
 } from '../src/app/lib/cadena'
+import { syllables } from '../src/app/lib/spanish'
 import { emptyBank, known, newCard, withStart } from '../src/app/lib/bank'
 import { clueCount, ready } from '../src/app/lib/today'
 import type { Word } from '../src/app/data/words'

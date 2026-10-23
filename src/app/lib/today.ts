@@ -54,6 +54,8 @@ export const DAILY_GAMES = [
   'elola',
   'orden',
   'tapas',
+  'sonidos',
+  'acento',
   'numeros',
   'taxi',
 ]
@@ -76,6 +78,11 @@ export const NEEDS: Record<string, number> = {
   // The bar opens from the start, on the food and drink every bank begins
   // with (El Rastro is not a step of the chapter: it meets words of its own)
   tapas: 0,
+  // Sonidos' ear round is made of its own pairs, each with its Norwegian;
+  // Acento's first rule wants five words met of each stress, which the
+  // lessons in order have by about here
+  sonidos: 0,
+  acento: 45,
   // Heard and typed as digits: the number words are among those every
   // player starts with
   numeros: 0,

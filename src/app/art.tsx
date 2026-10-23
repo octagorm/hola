@@ -464,6 +464,8 @@ export type GameIconId =
   | 'elola'
   | 'orden'
   | 'rastro'
+  | 'sonidos'
+  | 'acento'
   | 'numeros'
   | 'taxi'
 
@@ -940,6 +942,68 @@ export function GameIcon({
             stroke={INK}
             strokeWidth="1"
             fill="none"
+          />
+        </>
+      )}
+      {id === 'sonidos' && (
+        <>
+          <rect
+            x="10"
+            y="13"
+            width="24"
+            height="7"
+            fill="#d29a2e"
+            opacity=".65"
+          />
+          <g
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          >
+            <path d="M5 38V17Q5 6 22 6 39 6 39 17V38ZM9 38V41.5M35 38V41.5" />
+            <rect x="10" y="13" width="24" height="7" rx="1" />
+            <rect x="10" y="24" width="24" height="10" rx="1" />
+            <path
+              d="M14 24V34M18 24V34M22 24V34M26 24V34M30 24V34"
+              strokeWidth="1.1"
+            />
+          </g>
+          <path d="M19 13.6V19.4" stroke="#c2402c" strokeWidth="1.8" />
+        </>
+      )}
+      {id === 'acento' && (
+        <>
+          <path
+            d="M2 9Q22 17 42 9"
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <g stroke={INK} strokeWidth="1.5">
+            <path d="M12 13.2V17M32 13.2V17" />
+            <ellipse cx="12" cy="26" rx="7.5" ry="9" fill={PAPER} />
+            <ellipse
+              cx="32"
+              cy="26"
+              rx="7.5"
+              ry="9"
+              fill="#c2402c"
+              fillOpacity=".6"
+            />
+            <path
+              d="M5.2 22.5Q12 25 18.8 22.5M5.2 29.5Q12 32 18.8 29.5"
+              fill="none"
+              strokeWidth="1"
+            />
+          </g>
+          <path
+            d="M30 30.5 34.5 22.5"
+            stroke={PAPER}
+            strokeWidth="2.6"
+            strokeLinecap="round"
           />
         </>
       )}

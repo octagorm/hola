@@ -1,7 +1,7 @@
 import { WORDS, isClue } from '../data/words.ts'
 import { recall } from './bank.ts'
 import { shuffle } from './choices.ts'
-import { unaccent } from './spanish.ts'
+import { syllables, unaccent } from './spanish.ts'
 import type { Word } from '../data/words.ts'
 import type { Bank } from './bank.ts'
 
@@ -18,104 +18,7 @@ import type { Bank } from './bank.ts'
 // words before it starts, and gives the meaning of each next word as the
 // clue.
 
-// --- Syllables, by Spanish spelling ---
-
-// A word is read as units: a strong vowel (a, e, o, and an accented í or ú,
-// which stand apart from the vowel beside them), a weak one (i, u, ü, and y
-// at the end of a word or before a consonant), or a consonant, which may be
-// written with two letters: ch, ll, rr, and qu or gu before e or i, whose u
-// is not said.
-type Kind = 'c' | 'weak' | 'strong'
-
-interface Unit {
-  s: string
-  k: Kind
-}
-
-const STRONG = new Set([...'aeoáéóíú'])
-const WEAK = new Set([...'iuü'])
-const vowel = (c: string | undefined) =>
-  !!c && (STRONG.has(c) || WEAK.has(c) || c === 'y')
-
-function units(word: string): Array<Unit> {
-  const w = word.toLowerCase()
-  // (each unit as it is written, a capital kept, though read in small)
-  const as = w.length === word.length ? word : w
-  const out: Array<Unit> = []
-  for (let i = 0; i < w.length;) {
-    const two = w.slice(i, i + 2)
-    if (
-      two === 'ch' ||
-      two === 'll' ||
-      two === 'rr' ||
-      ((two === 'qu' || two === 'gu') && /[eéií]/.test(w.charAt(i + 2)))
-    ) {
-      out.push({ s: as.slice(i, i + 2), k: 'c' })
-      i += 2
-      continue
-    }
-    const c = w.charAt(i)
-    const s = as.charAt(i)
-    if (STRONG.has(c)) out.push({ s, k: 'strong' })
-    else if (WEAK.has(c)) out.push({ s, k: 'weak' })
-    else if (c === 'y')
-      // A consonant before a vowel (yo, playa), else a vowel (rey, muy)
-      out.push({ s, k: vowel(w.charAt(i + 1)) ? 'c' : 'weak' })
-    else out.push({ s, k: 'c' })
-    i++
-  }
-  return out
-}
-
-// Two consonants that begin a syllable together: pr, bl, tr, cl, gr, fl …
-// (but not tl or dl, which Spain divides: at-las)
-const together = (a: string, b: string) =>
-  /^[pbcgfkdt]$/.test(a) &&
-  /^[rl]$/.test(b) &&
-  !((a === 't' || a === 'd') && b === 'l')
-
-// The syllables of a word, as it is written: ca-sa, pe-rro, ha-blar,
-// hom-bre, puer-ta, rí-o, le-er, a-ve-ni-da. Vowels side by side share a
-// syllable (a diphthong) unless both are strong (a hiatus); between
-// vowels, one consonant goes with the next syllable, and of more, the last
-// one goes, or the last two where they begin a syllable together.
-export function syllables(word: string): Array<string> {
-  const u = units(word.trim())
-  // The vowels of each syllable, as ranges of units
-  const nuclei: Array<[number, number]> = []
-  for (let i = 0; i < u.length;) {
-    if (u[i].k === 'c') {
-      i++
-      continue
-    }
-    let j = i
-    while (
-      j + 1 < u.length &&
-      u[j + 1].k !== 'c' &&
-      !(u[j].k === 'strong' && u[j + 1].k === 'strong')
-    )
-      j++
-    nuclei.push([i, j])
-    i = j + 1
-  }
-  if (nuclei.length <= 1) return [u.map((x) => x.s).join('')]
-  // Where each syllable after the first begins
-  const starts = [0]
-  for (let k = 1; k < nuclei.length; k++) {
-    const from = nuclei[k - 1][1] + 1
-    const to = nuclei[k][0]
-    const n = to - from
-    if (n === 0) starts.push(to)
-    else if (n >= 2 && together(u[to - 2].s, u[to - 1].s)) starts.push(to - 2)
-    else starts.push(to - 1)
-  }
-  return starts.map((s, k) =>
-    u
-      .slice(s, starts[k + 1] ?? u.length)
-      .map((x) => x.s)
-      .join(''),
-  )
-}
+// --- Links, by the last syllable (syllables in lib/spanish.ts) ---
 
 // A word as the chain compares it: lower case, no accents, ñ kept
 export const plainWord = (s: string) => unaccent(s.toLowerCase())
