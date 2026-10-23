@@ -79,6 +79,18 @@ uv run scripts/audio.py .cache/speech.json --job             # make it
 
 `scripts/audio.py` asks for each item on its own. With `--job` it uses Gemini's batch mode, at half the price, answered within a day and often within minutes; the jobs are noted in `.cache/jobs.json`, so a run cut short picks them up again. Without it, up to `--max` (10) are asked for directly, or those named with `--only "text"`, to try a voice; `--voice` keeps to one voice's items. Each answer is trimmed of its silence (the quiet edges, such as a final s, are kept) and becomes `public/audio/<id>.mp3`, named by a hash of the file itself, and `data/audio.json` maps `voice|text` to it; files no longer used are removed. `public/_headers` lets browsers keep `/audio/*` for a year as immutable, which is safe because a recording made again gets a new name. The designed voices' ids are kept in `scripts/voices.json`: delete one to design that voice again, then `--remake <name>` (or `--remake words`, `lines`) to read its items again. At the end it names the recordings far from the length of their text, and words said with a pause inside them (la ... dama), to listen to or make again. Commit `public/audio/`, `data/audio.json` and `scripts/voices.json`. Once `audio.json` has entries, `tests/speech.test.ts` fails while anything listed has no recording, or a file is left over or not named by its hash.
 
+## The pictures
+
+Painted pictures are made on the user's Mac too, with the image tool of the Codex CLI on the user's ChatGPT plan (signed in with `codex login`) and ImageMagick. `scripts/pictures.mjs` holds each picture's description, painted with the sketch in `design/sketches/` that set its look as a reference for the style:
+
+```bash
+node scripts/pictures.mjs --list          # what is painted, and what is not
+node scripts/pictures.mjs stories/caso    # paint those missing whose names begin so (none named: all)
+node scripts/pictures.mjs --web           # cut them to shape into public/ and list them
+```
+
+Each takes a minute or two and counts against the plan's limits. The full-size paintings stay in `.cache/pictures/`; delete one there to paint it again. `--web` saves each as `public/<name>.webp`, cut to the shape it is shown in, and lists the names in `data/pictures.ts`, so that a page shows a picture only once it is made, and its drawing until then: a chapter of a story takes `stories/<story>/<chapter id>`. Look at each picture before committing it, and paint again what is off. Commit the `.webp` files and `data/pictures.ts`.
+
 ## The look
 
 The home page and the pages around the games are Don Quijote in ink on paper, with a wash of colour (`hola.css`, classes `q-`; the drawings are in `art.tsx`, roughened by the filters in `ui.tsx`). The user chose this look; keep it. Each game has a look of its own, with its own fonts (`useFont`) and a CSS file whose classes have a prefix of their own (`g5-`, `d4-`, `r6-`, `c6-`, …). The first four are drawn freely after moods from Salvador Dalí's world. The later ones follow the user's taste in flat graphic printmaking and posters (woodcut, linocut, hand-coloured woodcut, paper-cut, ligne claire, 1930s travel posters) in Spanish forms such as azulejos, aleluyas, the baraja española and feria posters, after the sketches in `design/sketches/`, painted with ChatGPT, which the user allows freely. The user dislikes glossy 3D, photographs, neon, painterly oil, crowds and kitsch. Dalí's works are protected until the end of 2059, so draw anew and never copy a painting, and leave out the Chupa Chups logo. No emoji in the graphics; lucide icons for plain controls.

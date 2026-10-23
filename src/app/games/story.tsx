@@ -12,6 +12,7 @@ import {
   Volume2,
 } from 'lucide-react'
 import { STORY, subtitle } from '../data/stories'
+import { PICTURES } from '../data/pictures'
 import { plain } from '../lib/text'
 import { saidCount, say, stop, useVoices } from '../lib/speech'
 import { aloudFrom, readLine } from '../lib/aloud'
@@ -57,6 +58,14 @@ export default function StoryPage({ id, arg }: PageProps) {
 }
 
 // The picture above a chapter, or above the story's chapters: Don
+// A chapter's painted picture: its own, or one scripts/pictures.mjs has
+// made for it
+function painted(story: Story, c?: Chapter) {
+  if (!c) return undefined
+  const name = `stories/${story.id}/${c.id}`
+  return c.img ?? (PICTURES.has(name) ? `/${name}.webp` : undefined)
+}
+
 // Quijote's in ink (art.tsx), the others' painted, and until they are, the
 // story's drawing from the index as a vignette
 function Picture({ story, c }: { story: Story; c?: Chapter }) {
@@ -68,7 +77,7 @@ function Picture({ story, c }: { story: Story; c?: Chapter }) {
         whole
       />
     )
-  const img = c?.img ?? story.chapters[0]?.img
+  const img = painted(story, c ?? story.chapters[0])
   if (img) return <img className="q-strip q-pic" src={img} alt="" />
   return isTocId(story.id) ? (
     <TocArt id={story.id} className="q-vignette" />
