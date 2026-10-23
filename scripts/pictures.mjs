@@ -136,6 +136,43 @@ const PICTURES = Object.fromEntries(
   ),
 )
 
+// El Ictíneo (games/ictineo.tsx): each voyage's harbour, for the plate
+// before setting out and at the end (up to about 610 × 340 CSS pixels), and
+// the boat in cutaway beside the captain's introduction (about 270 × 180),
+// twice that or more for sharp screens. The boat is the one the game draws.
+const ENGRAVING =
+  'A hand-coloured wood engraving from an illustrated magazine of the 1860s, in the style of the reference image, for its style only and not its subject: fine sepia-black engraved lines and cross-hatching on warm cream paper, washed by hand in muted sea green, pale sky blue, wood brown, copper and brass. Not photographic, not 3D, never glossy. No crowds: at most a few small figures.'
+const BOAT =
+  "The submarine is the Ictíneo, Narciso Monturiol's wooden submarine of 1859, facing right: a plump fish-shaped hull about seven metres long, of pale wooden staves bound with copper bands, with a small round brass turret with round portholes on top and a propeller at its tail on the left."
+const SPLIT =
+  'A view cut at the waterline, as in the reference: the top third above the water and the rest under it, down to the seabed. It will be cut a little less than twice as wide as it is tall, so keep the boat in the middle.'
+const VOYAGE = (subject) => ({
+  shape: 'landscape',
+  size: '1440x800',
+  ref: 'design/sketches/ictineo.jpg',
+  prompt: `${subject} ${BOAT} ${ENGRAVING} ${SPLIT} ${NONE}`,
+})
+Object.assign(PICTURES, {
+  'ictineo/barcelona': VOYAGE(
+    `The port of Barcelona on a calm, bright morning in September 1859: the submarine floating at the surface in front, a sailor in a cap at its open hatch; behind it the stone breakwater with a small lighthouse, a few tall sailing ships at anchor, the old town's roofs and church towers, and the hill of Montjuïc with its castle. No monument column on the quay. Under the water a few fish over sand and weed.`,
+  ),
+  'ictineo/creus': VOYAGE(
+    `Cap de Creus on the Costa Brava on a clear, windy morning: wind-carved grey rocks falling into a deep blue-green sea, the white lighthouse on the headland, a small fishing boat with a lateen sail, and the submarine at the surface near the rocks. Under the water the rocks are covered with branches of red coral, and small fish swim among them.`,
+  ),
+  'ictineo/alicante': VOYAGE(
+    `The port of Alicante on a grey, blustery day in May 1861: rough grey-green waves with white crests, the castle of Santa Bárbara on the rocky top of Mount Benacantil above the town, the harbour mole and a few sailing ships rolling at anchor, and the submarine riding the waves at the surface with its hatch shut. Under the water the sea is cloudy with stirred-up sand.`,
+  ),
+  'ictineo/noche': VOYAGE(
+    `Barcelona harbour on a calm night: a full moon over the hill of Montjuïc, the dark masts of sailing ships against the sky, a few lit windows on the quay, and under the water the submarine, a lamp shining from its bow, its beam of warm yellow light falling on a shoal of silver fish in the dark green water.`,
+  ),
+  'ictineo/cutaway': {
+    shape: 'landscape',
+    size: '900x600',
+    ref: 'design/sketches/ictineo.jpg',
+    prompt: `The submarine under water, its side cut away to show the crew inside at their stations: two men in caps and dark jackets turning the great crank of the propeller, one at the steering wheel, and the captain, a bearded man in a dark coat, looking out through a round brass porthole; pipes, brass air bottles and a lamp inside. Green water around it, a few fish, and rocks and weed on the seabed below. ${BOAT} ${ENGRAVING} Keep the whole boat in the middle of the picture. ${NONE}`,
+  },
+})
+
 const full = (name) => `${FULL}/${name}.png`
 
 function paint(name) {

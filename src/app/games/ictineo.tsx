@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { WORD, gloss } from '../data/words'
 import { SPEED, STEER, VOYAGES } from '../data/ictineo'
+import { PICTURES } from '../data/pictures'
 import {
   AIR,
   AIR_LOW,
@@ -111,6 +112,13 @@ const METRES = [0, 7, 13, 20]
 
 const ROMAN = ['I', 'II', 'III', 'IV']
 const COUNT = ['null', 'ett', 'to', 'tre']
+
+// A painting from scripts/pictures.mjs, once it is made
+function painted(name: string) {
+  const path = `ictineo/${name}`
+  return PICTURES.has(path) ? `/${path}.webp` : undefined
+}
+const CUTAWAY = painted('cutaway')
 
 // The first voyage not yet brought home, or the one asked for in the
 // address (#ictineo/creus), if it is open
@@ -237,12 +245,19 @@ function Ready({
   return (
     <section className="ic-ready">
       <figure className="ic-plate still">
-        <Still voyage={voyage} />
+        <Harbour voyage={voyage} />
         <figcaption>
           <span lang="es">{voyage.caption}</span>
         </figcaption>
       </figure>
       <div className="ic-card ic-intro">
+        {CUTAWAY && (
+          <img
+            className="ic-cutaway"
+            src={CUTAWAY}
+            alt="Ictíneo sett i snitt, med mannskapet ved sveiven og roret"
+          />
+        )}
         <p className="kick">Barcelona, 1859</p>
         <p>
           Du står ved roret i Ictíneo, ubåten av tre som Narciso Monturiol
@@ -357,6 +372,13 @@ function Controls({ voyage }: { voyage: Voyage }) {
       </p>
     </div>
   )
+}
+
+// The voyage's picture before setting out and at the end: painted once it
+// is made, drawn until then
+function Harbour({ voyage }: { voyage: Voyage }) {
+  const img = painted(voyage.id)
+  return img ? <img src={img} alt="" /> : <Still voyage={voyage} />
 }
 
 // The harbour before setting out, the boat at the surface
@@ -1090,7 +1112,7 @@ function End({
   return (
     <section className="ic-over">
       <figure className="ic-plate still">
-        <Still voyage={v} />
+        <Harbour voyage={v} />
         <figcaption>
           <span lang="es">{v.caption}</span>
         </figcaption>
