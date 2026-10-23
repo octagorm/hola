@@ -82,6 +82,15 @@ describe('the stories', () => {
     expect(t[0].no).toBe('Plutselig')
     expect(t[2]).toMatchObject({ es: 'Sancho', name: true })
   })
+
+  it('shows a mark once where the Norwegian ends with the line’s own', () => {
+    const t = tokens('Gracias>gracias . ¡ Qué_rico>¡qué_rico! !')
+    expect(t[3].no).toBe('Så godt')
+    expect(tokens('¡qué_rico!')[0].no).toBe('så godt!')
+    expect(plain('Gracias>gracias . ¡ Qué_rico>¡qué_rico! !')).toBe(
+      'Gracias. ¡Qué rico!',
+    )
+  })
 })
 
 describe('Don Quijote', () => {

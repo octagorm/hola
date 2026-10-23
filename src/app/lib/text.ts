@@ -29,7 +29,7 @@ const isCapital = (s: string) =>
   s.charAt(0) === s.charAt(0).toUpperCase()
 
 export function tokens(line: string): Array<Token> {
-  return line
+  const toks = line
     .split(' ')
     .filter(Boolean)
     .map((raw): Token => {
@@ -48,6 +48,14 @@ export function tokens(line: string): Array<Token> {
       const no = override ? spaced(override) : gloss(w)
       return { es, id, no: isCapital(es) ? capital(no) : no }
     })
+  // A Norwegian that ends as the line goes on (¡qué rico! as «så godt!»
+  // before «!») leaves the mark to the line, so that it is not shown twice
+  return toks.map((t, i) => {
+    const mark = t.no.at(-1)
+    return t.id && (mark === '!' || mark === '?') && toks[i + 1]?.no === mark
+      ? { ...t, no: t.no.slice(0, -1) }
+      : t
+  })
 }
 
 // Where a space goes before a token: not before closing punctuation, nor
