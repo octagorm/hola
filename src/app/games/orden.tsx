@@ -460,7 +460,13 @@ function useFlip(root: RefObject<HTMLElement | null>) {
     for (const item of el.querySelectorAll<HTMLElement>('[data-flip]')) {
       const id = item.dataset.flip ?? ''
       const r = item.getBoundingClientRect()
-      const at = { x: r.left - base.left, y: r.top - base.top }
+      // Where the tile stands in the layout, without the glide it may be
+      // in the middle of, or each render would start a longer one
+      const glide = new DOMMatrixReadOnly(getComputedStyle(item).transform)
+      const at = {
+        x: r.left - base.left - glide.m41,
+        y: r.top - base.top - glide.m42,
+      }
       next.set(id, at)
       const was = last.current.get(id)
       if (!was || still) continue

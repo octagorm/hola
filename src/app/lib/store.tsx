@@ -64,9 +64,22 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
+// JSON with each object's keys in order, so that two tabs holding the same
+// bank write the same text
+export const stable = (value: unknown): string =>
+  JSON.stringify(value, (_, v: unknown) =>
+    v && typeof v === 'object' && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.entries(v).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+        )
+      : v,
+  )
+
+// (only when it changes: each write tells the other tabs, and they answer)
 function save(key: string, value: unknown) {
   try {
-    localStorage.setItem(key, JSON.stringify(value))
+    const text = stable(value)
+    if (localStorage.getItem(key) !== text) localStorage.setItem(key, text)
   } catch {
     // private mode, or full
   }
@@ -153,7 +166,12 @@ export function BankProvider({ children }: { children: ReactNode }) {
       if (e.key !== BANK_KEY || !e.newValue) return
       try {
         const other = JSON.parse(e.newValue) as Partial<Bank>
-        setBank((b) => merge(b, other))
+        // Nothing new keeps the bank as it is, or the tabs would answer each
+        // other for ever
+        setBank((b) => {
+          const both = merge(b, other)
+          return stable(both) === stable(b) ? b : both
+        })
       } catch {
         // not ours to read
       }

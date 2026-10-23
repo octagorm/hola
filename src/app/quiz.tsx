@@ -89,7 +89,9 @@ export function Question({
     [],
   )
 
-  // The four to pick from: meanings, or for saying the Spanish
+  // The four to pick from: meanings, or for saying the Spanish. Made once
+  // for the question: the pool grows as words are answered, and the
+  // choices must not move under the player
   const choices = useMemo(() => {
     if (kind === 'elegir')
       return spanishChoices(w, pool).map((s) => ({
@@ -101,7 +103,7 @@ export function Question({
       text: meaning(x),
       right: x.id === w.id,
     }))
-  }, [w, kind, pool])
+  }, [w, kind])
 
   // Hearing starts by saying the word
   useEffect(() => {
