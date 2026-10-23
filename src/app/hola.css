@@ -1117,26 +1117,52 @@ a.q-box:hover {
   color: var(--ink-2);
 }
 
-.q-themes .group {
-  margin-top: 22px;
-}
-
-.q-themes h5 {
-  margin: 0;
-  padding-bottom: 4px;
+.q-themes .tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 26px;
+  margin-top: 18px;
   border-bottom: 2px solid var(--ink);
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.1;
 }
 
-.q-themes h5 span {
-  margin-left: 10px;
+.q-themes .tabs button {
+  position: relative;
+  margin: 0 0 -2px;
+  padding: 6px 0 6px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--ink-2);
+  font-family: var(--display);
+  font-size: 23px;
+  cursor: pointer;
+}
+
+.q-themes .tabs button:hover {
+  color: var(--ink);
+}
+
+.q-themes .tabs button.on {
+  border-bottom-color: var(--red);
+  color: var(--ink);
+}
+
+.q-themes .tabs span {
+  margin-left: 8px;
   font-family: var(--body);
   font-style: italic;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--ink-2);
+}
+
+.q-themes .tabs i {
+  position: absolute;
+  top: 8px;
+  right: -11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
 }
 
 .q-themes ul {
@@ -1411,6 +1437,21 @@ a.q-box:hover {
 
   .q-themes b {
     font-size: 19px;
+  }
+
+  .q-themes .tabs {
+    gap: 0 18px;
+  }
+
+  .q-themes .tabs button {
+    font-size: 19px;
+  }
+
+  .q-themes .tabs span {
+    display: block;
+    margin: 0;
+    font-size: 13px;
+    text-align: left;
   }
 }
 
