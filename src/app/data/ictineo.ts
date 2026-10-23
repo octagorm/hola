@@ -451,7 +451,7 @@ export const VOYAGES: Array<Voyage> = [
     no: 'Korallen',
     caption: 'El cabo de Creus',
     about:
-      'Ved Cap de Creus, der korallfiskerne dykket uten noe vern. Det var for dem Monturiol tegnet båten.',
+      'Et tenkt tokt ved Cap de Creus, der korallfiskerne dykket uten noe vern. Det var for dem Monturiol tegnet båten.',
     tools: ['escotilla', 'coral'],
     time: 8,
     drain: 1.7,
