@@ -55,6 +55,7 @@ The games:
 | Tapas                | `games/tapas.tsx`      | One guest at a time orders aloud, the tray filled from pictures; a bar in ligne claire    |
 | El Rastro            | `games/rastro.tsx`     | Four stalls of Madrid's flea market, a price haggled down by ear; hand-coloured woodcut   |
 | Palabras             | `games/palabras.tsx`   | Scrabble with Ñ, CH, LL and RR against El relojero, a watchmaker; a well-loved wooden set |
+| Números              | `games/numeros.tsx`    | Prices, times and years by ear, typed in digits, and the lottery sung; an engraved ticket |
 | Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 

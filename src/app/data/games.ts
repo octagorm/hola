@@ -117,6 +117,13 @@ export const GAME_INFO: Array<GameInfo> = [
     blurb: 'Prut på loppemarkedet i Madrid',
     doing: 'pruter på loppemarkedet i Madrid',
   },
+  {
+    id: 'numeros',
+    es: 'Números',
+    no: 'Tallene',
+    blurb: 'Priser, klokkeslett og årstall, hørt og skrevet',
+    doing: 'skriver ned tall som blir lest opp',
+  },
 ]
 
 export const GAME: Record<string, GameInfo | undefined> = Object.fromEntries(

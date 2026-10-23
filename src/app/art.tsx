@@ -464,6 +464,7 @@ export type GameIconId =
   | 'elola'
   | 'orden'
   | 'rastro'
+  | 'numeros'
 
 export function GameIcon({
   id,
@@ -747,6 +748,57 @@ export function GameIcon({
             fill="#c2402c"
             opacity=".5"
           />
+        </>
+      )}
+      {id === 'numeros' && (
+        <>
+          <g transform="rotate(-9 19 19)">
+            <rect
+              x="3"
+              y="8"
+              width="32"
+              height="21"
+              fill={PAPER}
+              stroke={INK}
+              strokeWidth="1.5"
+            />
+            <path
+              d="M6 12.5Q9 10.5 12 12.5T18 12.5T24 12.5T30 12.5"
+              fill="none"
+              stroke={INK}
+              strokeWidth="1"
+            />
+            <circle cx="11" cy="21" r="4" fill="#4f7fa8" opacity=".55" />
+            <circle
+              cx="11"
+              cy="21"
+              r="4"
+              fill="none"
+              stroke={INK}
+              strokeWidth="1.1"
+            />
+            <path d="M18 19.5H31M18 23.5H27" stroke={INK} strokeWidth="1.2" />
+          </g>
+          <circle cx="33" cy="32" r="8" fill={PAPER} />
+          <circle cx="33" cy="32" r="8" fill="#d29a2e" opacity=".6" />
+          <circle
+            cx="33"
+            cy="32"
+            r="8"
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.5"
+          />
+          <text
+            x="33"
+            y="35.6"
+            textAnchor="middle"
+            fontFamily="IM Fell English, serif"
+            fontSize="10.5"
+            fill={INK}
+          >
+            7
+          </text>
         </>
       )}
       {id === 'tapas' && (

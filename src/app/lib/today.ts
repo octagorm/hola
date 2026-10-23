@@ -54,6 +54,7 @@ export const DAILY_GAMES = [
   'elola',
   'orden',
   'tapas',
+  'numeros',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -74,6 +75,9 @@ export const NEEDS: Record<string, number> = {
   // The bar opens from the start, on the food and drink every bank begins
   // with (El Rastro is not a step of the chapter: it meets words of its own)
   tapas: 0,
+  // Heard and typed as digits: the number words are among those every
+  // player starts with
+  numeros: 0,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 

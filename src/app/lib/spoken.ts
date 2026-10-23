@@ -11,6 +11,7 @@ import { plain as said } from './tiempos.ts'
 import { SAID } from './letras.ts'
 import { SAID as LAID, LINES_SAID } from './palabras.ts'
 import { linesOf } from './orden.ts'
+import { LOTTERY, DECK as NUMEROS } from './numeros.ts'
 import { plain, tokens } from './text.ts'
 import { tapasLines } from './tapas.ts'
 import { rastroLines } from './rastro.ts'
@@ -70,5 +71,7 @@ export function speechItems(): Array<SpeechItem> {
   for (const { voice, line } of spoken) add(voice, plain(line), 'line')
   for (const { line } of spoken)
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+  // Números' sentences, each in its own voice, and the lottery sung
+  for (const x of [...NUMEROS, ...LOTTERY]) add(x.voice, x.say, 'line')
   return items
 }

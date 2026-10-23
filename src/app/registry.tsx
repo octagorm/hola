@@ -149,6 +149,12 @@ export const PAGES = [
     Page: page(() => import('./games/palabras')),
   },
   {
+    id: 'numeros',
+    es: 'Números',
+    no: 'Tallene',
+    Page: page(() => import('./games/numeros')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',
