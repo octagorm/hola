@@ -28,6 +28,8 @@ const EITHER = new Set([
   'el cantante',
   'el pariente',
   'el bebé',
+  'el poeta',
+  'el organista',
 ])
 
 // The nouns that can be asked: singular ones (not los padres), of one
@@ -59,6 +61,8 @@ const STRESSED: Record<string, string> = {
     '*Ama* er hunkjønn, men får *el* fordi trykket ligger på a-en. I flertall: *las amas*.',
   'el alma':
     '*Alma* er hunkjønn, men får *el* fordi trykket ligger på a-en. I flertall: *las almas*.',
+  'el ánima':
+    '*Ánima* er hunkjønn, men får *el* fordi trykket ligger på a-en. I flertall: *las ánimas*.',
 }
 
 // Nouns of a gender their ending does not give

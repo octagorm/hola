@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { LESSONS, WORD, WORDS } from '../src/app/data/words'
 import { CHAPTERS, EPIGRAPH } from '../src/app/data/quijote'
+import { CHAPTERS as LEYENDAS } from '../src/app/data/leyendas'
 import { ALL_CHAPTERS, STORIES } from '../src/app/data/stories'
 import { STAGES } from '../src/app/data/camino'
 import { THEME_GROUPS } from '../src/app/data/themes'
@@ -96,6 +97,41 @@ describe('Don Quijote', () => {
     const ids = CHAPTERS.flatMap((c) => c.lines.flatMap(wordIds))
     const lessons = new Set(ids.map((id) => WORD[id]!.lesson))
     expect(lessons.size).toBeGreaterThan(8)
+  })
+})
+
+describe('Leyendas', () => {
+  it('names each chapter after the story, and the legend it is from', () => {
+    const legends = new Set([
+      'El monte de las ánimas',
+      'Los ojos verdes',
+      'El rayo de luna',
+      'Maese Pérez el organista',
+    ])
+    for (const c of LEYENDAS) {
+      expect(c.id, c.id).toMatch(/^leyendas-[a-z]+$/)
+      expect(legends.has(c.from ?? ''), c.id).toBe(true)
+      expect(c.lines.length, c.id).toBeGreaterThanOrEqual(10)
+      expect(c.lines.length, c.id).toBeLessThanOrEqual(14)
+    }
+    expect(new Set(LEYENDAS.map((c) => c.from))).toEqual(legends)
+  })
+
+  it('reads as Spanish is written, Bécquer’s first line first', () => {
+    expect(plain(LEYENDAS[0].lines[0])).toBe(
+      '«La noche de difuntos me despertó a no sé qué hora el doble de las campanas», escribe Bécquer.',
+    )
+    expect(plain(LEYENDAS[0].lines[4])).toBe(
+      '—Vamos a casa, Beatriz —dice Alonso—. Esta noche es la noche de difuntos.',
+    )
+  })
+
+  it('has its own words as a theme among the legends, each met in it', () => {
+    const group = THEME_GROUPS.find((g) => g.id === 'leyendas')
+    expect(group?.themes.map((t) => t.lesson)).toContain('becquer')
+    const used = new Set(LEYENDAS.flatMap((c) => c.lines.flatMap(wordIds)))
+    for (const w of WORDS.filter((x) => x.lesson === 'becquer'))
+      expect(used.has(w.id), w.id).toBe(true)
   })
 })
 

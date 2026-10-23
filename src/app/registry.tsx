@@ -47,6 +47,12 @@ export const PAGES = [
     Page: page(() => import('./games/story')),
   },
   {
+    id: 'leyendas',
+    es: 'Leyendas',
+    no: 'Sagnene',
+    Page: page(() => import('./games/story')),
+  },
+  {
     id: 'palabra',
     es: 'La palabra',
     no: 'Dagens ord',
