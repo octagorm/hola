@@ -158,7 +158,7 @@ describe('the day’s chapter', () => {
     expect(p.steps.some((s) => s.k === 'listen')).toBe(false)
   })
 
-  it('waits for words that make clues before the crossword and the ring', () => {
+  it('waits for words that make clues before the crossword, the ring and the chain', () => {
     // The first lesson is greetings, which make no clues
     const b = emptyBank()
     for (const w of WORDS.slice(0, 25)) b.cards[w.id] = newCard(now)
@@ -167,7 +167,12 @@ describe('the day’s chapter', () => {
     const games = DAILY_GAMES.filter((g) => ready(g, 25, clues))
     expect(games).toEqual(['palabra', 'cadaver'])
     for (const w of WORDS.slice(0, 60)) b.cards[w.id] = newCard(now)
-    expect(DAILY_GAMES.every((g) => ready(g, 60, clueCount(b)))).toBe(true)
+    // The chain waits for words enough to make a chain of eight
+    expect(DAILY_GAMES.filter((g) => !ready(g, 60, clueCount(b)))).toEqual([
+      'cadena',
+    ])
+    for (const w of WORDS.slice(0, 200)) b.cards[w.id] = newCard(now)
+    expect(DAILY_GAMES.every((g) => ready(g, 200, clueCount(b)))).toBe(true)
   })
 })
 

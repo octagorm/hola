@@ -3,12 +3,14 @@ import { EPIGRAPH } from '../data/quijote.ts'
 import { ALL_CHAPTERS } from '../data/stories.ts'
 import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
 import { DECK, spanish } from './cadaver.ts'
+import { SAID } from './letras.ts'
 import { plain, tokens } from './text.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
-// it) and the sample in Settings; in the narrator's each line of the story
-// and each sentence of Cadáver exquisito's deck. scripts/audio.py makes the
+// it), the plurals and an adjective's forms that Letras takes, and the
+// sample in Settings; in the narrator's each line of the story and each
+// sentence of Cadáver exquisito's deck. scripts/audio.py makes the
 // recordings with Gemini TTS; lib/speech.ts plays them by their text, and
 // falls back on the browser's own Spanish voice where there is none.
 
@@ -36,6 +38,7 @@ export function speechItems(): Array<SpeechItem> {
   const lines = ALL_CHAPTERS.flatMap((c) => c.lines)
   for (const line of [EPIGRAPH.line, ...lines])
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+  for (const s of SAID) add(WORD_VOICE, s, 'word')
   add(WORD_VOICE, SAMPLE, 'line')
   for (const line of lines) add(LINE_VOICE, plain(line), 'line')
   for (const s of DECK) add(LINE_VOICE, spanish(s), 'line')

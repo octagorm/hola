@@ -83,6 +83,18 @@ export const PAGES = [
     Page: page(() => import('./games/reloj')),
   },
   {
+    id: 'letras',
+    es: 'Letras',
+    no: 'Bokstavene',
+    Page: page(() => import('./games/letras')),
+  },
+  {
+    id: 'cadena',
+    es: 'Palabras encadenadas',
+    no: 'Ordkjeden',
+    Page: page(() => import('./games/cadena')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

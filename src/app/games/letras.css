@@ -1,0 +1,865 @@
+/* Letras: a letterpress print shop. Wooden type in a composing stick on an
+   oak bench, the type case along the top, and the word printed in black
+   and red ink on cream paper, with a red sun cut in lino. */
+
+.lt {
+  --ink: #1f1a16;
+  --ink-2: #4a3f35;
+  --red: #c23b26;
+  --red-2: #9e2b1a;
+  --paper: #f4ead3;
+  --paper-2: #e6d7b6;
+  --block: #e9cb94;
+  --block-2: #d2aa68;
+  --block-3: #a87b3f;
+  --wood: #5b3a1d;
+  --wood-2: #3d2611;
+  --metal: #3a3835;
+  --metal-2: #6a6660;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  font-family: 'Bitter', Georgia, serif;
+  color: var(--ink);
+  /* An oak bench: the grain drawn once, stretched along the boards */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300'%3E%3Cfilter id='w' x='0' y='0' width='600' height='300' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .09' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .17 0 0 0 0 .06 0 0 0 .5 -.08'/%3E%3C/filter%3E%3Crect width='600' height='300' filter='url(%23w)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #c89a63, #b5844d 60%, #a9773f);
+}
+
+.lt :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lt :focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+
+.lt .q-round {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+/* --- The type case along the top --- */
+
+.lt-case {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 5px;
+  padding: 7px 8px 9px;
+  background: var(--wood);
+  box-shadow:
+    inset 0 -4px 0 var(--wood-2),
+    0 6px 14px -6px rgba(40, 20, 5, 0.55);
+}
+
+.lt-case span {
+  height: 34px;
+  border-radius: 2px;
+  background: #2c1b0c;
+  box-shadow:
+    inset 0 3px 4px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 0 rgba(255, 220, 170, 0.12);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  padding-bottom: 3px;
+  overflow: hidden;
+}
+
+.lt-case i {
+  width: 11px;
+  height: 18px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, #d9b67a, #b88d50);
+  box-shadow: inset 0 2px 0 #ecd2a0;
+  font-family: 'Alfa Slab One', serif;
+  font-style: normal;
+  font-size: 9px;
+  line-height: 20px;
+  text-align: center;
+  color: #3b2a1a;
+}
+
+.lt-case .fill4 i:last-child {
+  background: linear-gradient(180deg, #8d8a84, #5e5b56);
+  box-shadow: inset 0 2px 0 #b3afa8;
+  color: #23211f;
+}
+
+@media (max-width: 699px) {
+  .lt-case {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px 6px 8px;
+  }
+
+  .lt-case span:nth-child(n + 13) {
+    display: none;
+  }
+
+  .lt-case span {
+    height: 26px;
+  }
+}
+
+/* --- The page --- */
+
+.lt-col {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 14px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lt-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lt-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 0 rgba(40, 20, 5, 0.35);
+}
+
+.lt-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lt-top h1 {
+  margin: 0;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.lt-top h1 small {
+  display: block;
+  margin-top: 4px;
+  font-family: 'Bitter', serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--red-2);
+}
+
+.lt-score {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 2px var(--ink),
+    0 3px 0 2px rgba(40, 20, 5, 0.3);
+  font-size: 12px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.lt-score b {
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.lt-score .pips {
+  display: inline-flex;
+  gap: 4px;
+  margin-right: 4px;
+  align-self: center;
+}
+
+.lt-score .pips i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+}
+
+.lt-score .pips i.on {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+/* --- The sheet of paper --- */
+
+.lt-sheet {
+  position: relative;
+  container-type: inline-size;
+  margin-top: 16px;
+  padding: 18px 20px 16px;
+  min-height: 172px;
+  overflow: hidden;
+  border-radius: 2px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' x='0' y='0' width='240' height='240' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .3 0 0 0 0 .18 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E"),
+    var(--paper);
+  box-shadow:
+    0 1px 0 #fffaf0 inset,
+    0 18px 30px -16px rgba(40, 20, 5, 0.6),
+    0 2px 4px rgba(40, 20, 5, 0.25);
+  transform: rotate(-0.4deg);
+}
+
+/* A red sun, cut in lino and printed a little unevenly */
+.lt-sun {
+  position: absolute;
+  right: -34px;
+  top: -40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--red);
+  opacity: 0.88;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='160' height='160' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='160' height='160' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.4 2.3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.lt-sheet > :not(.lt-sun) {
+  position: relative;
+}
+
+.lt-sheet .kick {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red-2);
+}
+
+.lt-ask-head h2 {
+  margin: 8px 0 8px;
+  max-width: 12em;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.lt .red {
+  color: var(--red);
+}
+
+.lt-ask-head .sub {
+  margin: 0;
+  max-width: 30em;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.lt-hint {
+  display: none;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lt-hint {
+    display: block;
+  }
+}
+
+/* The word being set, as it will print */
+.lt-line {
+  min-height: 66px;
+  margin: 10px 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ink);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.lt-line.shake {
+  animation: q-shake 0.35s ease-in-out;
+}
+
+.lt-line button {
+  min-width: 0;
+  padding: 0 1px;
+  border: 0;
+  background: none;
+  font-family: 'Alfa Slab One', serif;
+  /* (as large as the word of --n letters lets it be on one line) */
+  font-size: min(46px, 100cqw / (var(--n) * 0.86));
+  line-height: 1;
+  color: var(--ink);
+  animation: lt-press 0.22s ease-out;
+}
+
+.lt-line button.red {
+  color: var(--red);
+}
+
+.lt-line.empty span {
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #8d7a63;
+}
+
+.lt-note {
+  min-height: 1.4em;
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.lt-note.no {
+  font-weight: 700;
+  color: var(--red-2);
+}
+
+/* The word printed, letter by letter */
+.lt-word {
+  margin: 10px 0 2px;
+  display: flex;
+  gap: 2px;
+  font-family: 'Alfa Slab One', serif;
+  font-size: min(54px, 100cqw / (var(--n) * 0.84));
+  line-height: 1;
+}
+
+.lt-word span {
+  animation: lt-stamp 0.32s ease-out both;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='i' x='0' y='0' width='120' height='120' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3 2.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23i)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='i' x='0' y='0' width='120' height='120' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3 2.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23i)'/%3E%3C/svg%3E");
+}
+
+.lt-gloss {
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 17px;
+  color: var(--ink-2);
+}
+
+.lt-gloss b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.lt-gloss .q-round.small {
+  width: 34px;
+  height: 34px;
+}
+
+.lt-none {
+  margin: 12px 0 6px;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+/* --- The composing stick and its type --- */
+
+.lt-stick {
+  position: relative;
+  margin: 18px 0 0;
+  padding: 9px 8px 10px 18px;
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--metal-2), var(--metal) 30%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -5px 0 #24221f,
+    0 10px 16px -8px rgba(30, 15, 5, 0.7);
+}
+
+/* The knee at its end that holds the line */
+.lt-stick::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: -10px;
+  bottom: 4px;
+  width: 9px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, #77736c, #4a4743);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
+
+.lt-slot {
+  height: 58px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45);
+}
+
+.lt-block {
+  position: relative;
+  height: 58px;
+  min-width: 0;
+  padding: 6px 0 0;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--block), var(--block-2));
+  box-shadow:
+    inset 0 5px 0 #f4ddb1,
+    inset 0 -6px 0 var(--block-3),
+    inset 1px 0 0 rgba(255, 240, 210, 0.5),
+    inset -1px 0 0 rgba(90, 55, 20, 0.35);
+  font-family: 'Alfa Slab One', serif;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink);
+  animation: lt-drop 0.3s cubic-bezier(0.3, 1.5, 0.6, 1) both;
+  transition:
+    transform 0.15s,
+    opacity 0.15s;
+}
+
+.lt-block.red {
+  color: var(--red);
+}
+
+.lt-block:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+.lt-block:disabled {
+  cursor: default;
+}
+
+/* Taken out to be set in the word: an empty place, the letter faint */
+.lt-block.used {
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 0 0 2px rgba(233, 203, 148, 0.4);
+  color: rgba(233, 203, 148, 0.45);
+}
+
+/* --- What to do --- */
+
+.lt-asks {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lt-ask {
+  height: 86px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--paper), var(--paper-2));
+  box-shadow:
+    0 0 0 3px var(--ink),
+    0 6px 0 3px rgba(40, 20, 5, 0.4);
+  font-family: 'Alfa Slab One', serif;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s;
+}
+
+.lt-ask.red {
+  color: var(--red);
+  box-shadow:
+    0 0 0 3px var(--red),
+    0 6px 0 3px rgba(40, 20, 5, 0.4);
+}
+
+.lt-ask small {
+  font-family: 'Bitter', serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+
+.lt-ask:active:not(:disabled) {
+  transform: translateY(3px);
+}
+
+.lt-ask:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.lt-acts {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.lt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 17px;
+  text-decoration: none;
+  box-shadow: 0 4px 0 rgba(40, 20, 5, 0.4);
+}
+
+.lt-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.lt-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.lt-btn.ghost {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 2px var(--ink),
+    0 4px 0 2px rgba(40, 20, 5, 0.3);
+}
+
+.lt-tool {
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 2px var(--ink),
+    0 4px 0 2px rgba(40, 20, 5, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lt-tool svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lt-tool:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.lt-link {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lt-acts .lt-link {
+  margin-left: auto;
+}
+
+/* --- The proof: the longest words, and the end --- */
+
+.lt-proof {
+  margin-top: 16px;
+  padding: 14px 18px 16px;
+  border-radius: 2px;
+  background: var(--paper);
+  box-shadow:
+    0 14px 24px -14px rgba(40, 20, 5, 0.6),
+    0 2px 4px rgba(40, 20, 5, 0.25);
+  transform: rotate(0.3deg);
+  animation: q-rise 0.4s ease-out both;
+}
+
+.lt-proof h3 {
+  margin: 0 0 6px;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.lt-proof h3 span {
+  font-family: 'Bitter', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.lt-proof ul,
+.lt-end ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lt-proof li,
+.lt-end li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #c9b48e;
+}
+
+.lt-say {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+
+.lt-say b {
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.lt-say span {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.lt-say:hover b {
+  color: var(--red);
+}
+
+.lt-proof em,
+.lt-end li em {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.lt-end {
+  min-height: 0;
+  animation: q-rise 0.4s ease-out both;
+}
+
+.lt-end h2 {
+  margin: 6px 0 2px;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 46px;
+  line-height: 1;
+}
+
+.lt-end .sub {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+.lt-end li i {
+  width: 26px;
+  font-family: 'Alfa Slab One', serif;
+  font-style: normal;
+  font-size: 18px;
+  color: var(--red);
+}
+
+.lt-end li .none {
+  flex: 1;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+/* --- Motion --- */
+
+@keyframes lt-drop {
+  from {
+    transform: translateY(-40px) rotate(-8deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes lt-press {
+  from {
+    transform: scale(1.25);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes lt-stamp {
+  0% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* --- Wider screens --- */
+
+@media (min-width: 700px) {
+  .lt-col {
+    max-width: 780px;
+    padding: 22px 28px 40px;
+  }
+
+  .lt-top h1 {
+    font-size: 48px;
+  }
+
+  .lt-sheet {
+    margin-top: 22px;
+    padding: 26px 32px 22px;
+    min-height: 210px;
+  }
+
+  .lt-sun {
+    right: -20px;
+    top: -50px;
+    width: 220px;
+    height: 220px;
+  }
+
+  .lt-ask-head h2 {
+    font-size: 46px;
+  }
+
+  .lt-line {
+    min-height: 92px;
+  }
+
+  .lt-line button {
+    font-size: min(68px, 100cqw / (var(--n) * 0.86));
+  }
+
+  .lt-word {
+    font-size: min(76px, 100cqw / (var(--n) * 0.84));
+  }
+
+  .lt-stick {
+    margin-top: 26px;
+    padding: 12px 12px 14px 26px;
+    gap: 7px;
+  }
+
+  .lt-stick::before {
+    width: 12px;
+    left: 6px;
+  }
+
+  .lt-slot,
+  .lt-block {
+    height: 88px;
+  }
+
+  .lt-block {
+    font-size: 46px;
+    padding-top: 8px;
+  }
+
+  .lt-asks {
+    margin-top: 24px;
+    gap: 18px;
+  }
+
+  .lt-ask {
+    height: 96px;
+    font-size: 32px;
+  }
+
+  .lt-proof {
+    padding: 18px 26px 20px;
+  }
+}
+
+@media (max-width: 370px) {
+  .lt-stick {
+    gap: 3px;
+    padding-left: 15px;
+  }
+
+  .lt-block {
+    font-size: 24px;
+  }
+
+  .lt-line button {
+    font-size: 38px;
+  }
+
+  .lt-word {
+    font-size: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-block,
+  .lt-line button,
+  .lt-word span,
+  .lt-proof,
+  .lt-end {
+    animation: none;
+  }
+}

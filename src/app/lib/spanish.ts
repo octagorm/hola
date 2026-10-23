@@ -81,11 +81,35 @@ export const VERDICT: Record<Verdict, { right: boolean; weight: number }> = {
   wrong: { right: false, weight: 1 },
 }
 
+const MARKED: Record<string, string | undefined> = {
+  a: 'á',
+  e: 'é',
+  i: 'í',
+  o: 'ó',
+  u: 'ú',
+}
+
 // The plural of a noun or an adjective, by the usual rules: casa → casas,
-// reloj → relojes, luz → luces, cajón → cajones
+// reloj → relojes, luz → luces, cajón → cajones, joven → jóvenes, and
+// el lunes → los lunes
 export function plural(s: string): string {
   if (/[aeiouáéó]$/.test(s)) return `${s}s`
   if (s.endsWith('z')) return `${s.slice(0, -1)}ces`
+  // The vowels of each syllable, roughly: enough to tell where the stress is
+  const groups = [...s.matchAll(/[aeiouáéíóúü]+/g)]
+  const last = groups.at(-1)?.[0] ?? ''
+  // Unstressed at the end and ending in s or x, it stays as it is
+  if (/[sx]$/.test(s) && groups.length > 1 && !/[áéíóú]/.test(last)) return s
+  // Stressed on the next to last and ending in n, it takes an accent
+  // there once a syllable is added
+  if (s.endsWith('n') && groups.length > 1 && !/[áéíóú]/.test(s)) {
+    const g = groups[groups.length - 2]
+    // (the strong vowel of a diphthong, or the second of two weak ones)
+    const strong = g[0].search(/[aeo]/)
+    const i = g.index + (strong >= 0 ? strong : g[0].length - 1)
+    const marked = MARKED[s.charAt(i)] ?? s.charAt(i)
+    return `${s.slice(0, i)}${marked}${s.slice(i + 1)}es`
+  }
   // An accent on the last syllable goes when a syllable is added
   const stressed = s.replace(/([áéíóú])([nsl])$/, (_, v: string, c: string) => {
     const back: Record<string, string> = {

@@ -63,6 +63,20 @@ export const GAME_INFO: Array<GameInfo> = [
     doing: 'redder ord før klokken smelter',
   },
   {
+    id: 'letras',
+    es: 'Letras',
+    no: 'Bokstavene',
+    blurb: 'Det lengste ordet av ni bokstaver',
+    doing: 'finner det lengste ordet av ni bokstaver',
+  },
+  {
+    id: 'cadena',
+    es: 'Palabras encadenadas',
+    no: 'Ordkjeden',
+    blurb: 'Hvert ord begynner med slutten av det forrige',
+    doing: 'lager en kjede av ord',
+  },
+  {
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',

@@ -456,6 +456,8 @@ export type GameIconId =
   | 'cadaver'
   | 'sopa'
   | 'reloj'
+  | 'letras'
+  | 'cadena'
   | 'tapas'
 
 export function GameIcon({
@@ -602,6 +604,90 @@ export function GameIcon({
             d="M31 40.2c.9 1.2 1.4 1.9 1.4 2.5a1.4 1.4 0 0 1-2.8 0c0-.6.5-1.3 1.4-2.5z"
             fill={INK}
           />
+        </>
+      )}
+      {id === 'letras' && (
+        <>
+          <circle
+            cx="33"
+            cy="9"
+            r="6"
+            fill="#c2402c"
+            opacity=".6"
+            filter="url(#q-w2)"
+          />
+          <g fill="none" stroke={INK} strokeWidth="1.6" strokeLinejoin="round">
+            <path d="M3 33H41V38H3ZM3 33V21H6.5V33" fill={PAPER} />
+            {[8, 19, 30].map((x) => (
+              <rect key={x} x={x} y="18" width="10" height="15" fill={PAPER} />
+            ))}
+          </g>
+          <rect
+            x="20"
+            y="19"
+            width="8"
+            height="13"
+            fill="#d29a2e"
+            opacity=".5"
+          />
+          <g
+            fontFamily="IM Fell English, serif"
+            fontSize="10"
+            textAnchor="middle"
+            fill={INK}
+          >
+            <text x="13" y="29.5">
+              S
+            </text>
+            <text x="24" y="29.5" fill="#c2402c">
+              O
+            </text>
+            <text x="35" y="29.5">
+              L
+            </text>
+          </g>
+        </>
+      )}
+      {id === 'cadena' && (
+        <>
+          <path
+            d="M2 9Q22 24 42 9"
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <g fill={PAPER} stroke={INK} strokeWidth="1.5" strokeLinejoin="round">
+            {[
+              [8, 12.8, -14],
+              [17, 16, -5],
+              [26, 16.2, 5],
+              [35, 13.3, 14],
+            ].map(([x, y, a]) => (
+              <path
+                key={x}
+                d={`M${x - 3.6} ${y}H${x + 3.6}V${y + 11}L${x} ${y + 8}L${x - 3.6} ${y + 11}Z`}
+                transform={`rotate(${a} ${x} ${y})`}
+              />
+            ))}
+          </g>
+          <g opacity=".55">
+            <path
+              d="M5 13.4H11.6V23.4L8.3 20.7L5 23.4Z"
+              fill="#c2402c"
+              transform="rotate(-14 8 12.8)"
+            />
+            <path
+              d="M23 16.8H29.6V26.8L26.3 24.1L23 26.8Z"
+              fill="#d29a2e"
+              transform="rotate(5 26 16.2)"
+            />
+            <path
+              d="M32 13.9H38.6V23.9L35.3 21.2L32 23.9Z"
+              fill="#4f7fa8"
+              transform="rotate(14 35 13.3)"
+            />
+          </g>
         </>
       )}
       {id === 'tapas' && (

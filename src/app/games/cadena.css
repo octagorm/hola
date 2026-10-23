@@ -1,0 +1,997 @@
+/* Palabras encadenadas: a summer verbena in a village square at night.
+   Paper flags strung across a deep blue sky, white houses with lit
+   windows, paper lanterns, and the warm stone of the square below, all
+   in layers of cut paper. */
+
+.en-verbena {
+  --ink: #1d2446;
+  --ink-2: #4b5276;
+  --paper: #f8efdc;
+  --paper-2: #efe2c6;
+  --red: #c8402c;
+  --red-2: #9f2f1d;
+  --saffron: #f0b23a;
+  --coral: #ef8a6a;
+  --green: #3f8a5c;
+  --green-2: #2c6343;
+  --twine: #d9c8a2;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g' x='0' y='0' width='220' height='220' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  font-family: 'Figtree', system-ui, sans-serif;
+  color: var(--ink);
+  /* The square: worn setts, lit warm from the lanterns above and darker
+     away from them */
+  background:
+    var(--grain),
+    radial-gradient(80% 340px at 50% 0, rgba(255, 220, 150, 0.55), transparent),
+    linear-gradient(180deg, transparent 40%, rgba(70, 34, 8, 0.32)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='40'%3E%3Crect x='1' y='1' width='26' height='18' rx='7' fill='%23dcae6e'/%3E%3Crect x='29' y='1' width='22' height='18' rx='7' fill='%23d6a767'/%3E%3Crect x='53' y='1' width='24' height='18' rx='7' fill='%23dfb373'/%3E%3Crect x='79' y='1' width='16' height='18' rx='7' fill='%23d4a464'/%3E%3Crect x='-11' y='21' width='24' height='18' rx='7' fill='%23d6a767'/%3E%3Crect x='15' y='21' width='26' height='18' rx='7' fill='%23dfb373'/%3E%3Crect x='43' y='21' width='20' height='18' rx='7' fill='%23d4a464'/%3E%3Crect x='65' y='21' width='18' height='18' rx='7' fill='%23dcae6e'/%3E%3Crect x='85' y='21' width='24' height='18' rx='7' fill='%23d6a767'/%3E%3C/svg%3E")
+      0 0 / 96px 40px,
+    #c4935a;
+}
+
+.en-verbena :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.en-verbena :focus-visible {
+  outline: 3px solid var(--saffron);
+  outline-offset: 3px;
+}
+
+.en-verbena .g-m {
+  color: #2d5fa8;
+}
+
+.en-verbena .g-f {
+  color: var(--red);
+}
+
+.en-verbena .q-round {
+  background: var(--paper);
+  border: 2px solid rgba(29, 36, 70, 0.3);
+  color: var(--ink);
+}
+
+/* --- The night above the square --- */
+
+.en-night {
+  position: relative;
+  overflow: hidden;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='200'%3E%3Cg fill='%23f6efd8'%3E%3Ccircle cx='12' cy='18' r='1.1'/%3E%3Ccircle cx='48' cy='64' r='.7' fill-opacity='.6'/%3E%3Ccircle cx='86' cy='22' r='.9' fill-opacity='.8'/%3E%3Ccircle cx='120' cy='90' r='.6' fill-opacity='.5'/%3E%3Ccircle cx='150' cy='40' r='1.2' fill-opacity='.9'/%3E%3Ccircle cx='196' cy='12' r='.7' fill-opacity='.6'/%3E%3Ccircle cx='222' cy='70' r='1' fill-opacity='.8'/%3E%3Ccircle cx='250' cy='130' r='.7' fill-opacity='.6'/%3E%3Ccircle cx='30' cy='140' r='.9' fill-opacity='.7'/%3E%3Ccircle cx='90' cy='170' r='.6' fill-opacity='.5'/%3E%3Ccircle cx='170' cy='150' r='.8' fill-opacity='.7'/%3E%3Ccircle cx='130' cy='124' r='.5' fill-opacity='.5'/%3E%3Ccircle cx='8' cy='100' r='.6' fill-opacity='.5'/%3E%3Ccircle cx='236' cy='180' r='.8' fill-opacity='.6'/%3E%3C/g%3E%3C/svg%3E")
+      0 0 / 260px 200px,
+    radial-gradient(120% 60% at 50% 100%, #2c4290 0, transparent 70%),
+    linear-gradient(180deg, #0a1130 0%, #132058 55%, #1d2f72 100%);
+}
+
+.en-moon {
+  position: absolute;
+  top: 18px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  fill: #f8e7b0;
+  filter: drop-shadow(0 0 10px rgba(255, 228, 160, 0.5));
+}
+
+.en-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 12px 16px 0;
+}
+
+.en-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 3px 0 rgba(3, 6, 22, 0.45);
+}
+
+.en-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.en-top h1 {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+.en-top h1 small {
+  display: block;
+  margin-top: 5px;
+  font-family: 'Figtree', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--saffron);
+}
+
+/* --- The garlands, hung in front of the village --- */
+
+.en-scene {
+  position: relative;
+  padding-bottom: 50px;
+}
+
+.en-village {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 132px;
+}
+
+.en-village .win {
+  fill: #2b3566;
+  transition: fill 0.8s ease;
+}
+
+.en-village .win.on,
+.en-village.lit .win {
+  fill: #ffd27a;
+}
+
+.en-village .glow {
+  opacity: 0.7;
+  transition: opacity 0.8s ease;
+}
+
+.en-village.lit .glow {
+  opacity: 1;
+}
+
+/* Each string sags --sag deep in the middle (the curve in Garland, from
+   -2 to 102 across with its middle 20 below its ends, of 40). A flag
+   hangs at --x along it, where the string is down --y of the sag, and
+   tilts with it there. */
+.en-garland {
+  --sag: 40px;
+  --tilt: 7.4deg;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  padding: 2px 6px 0;
+}
+
+.en-string {
+  position: relative;
+  height: 60px;
+  filter: drop-shadow(0 3px 2px rgba(3, 6, 22, 0.45));
+}
+
+.en-string svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--sag);
+  overflow: visible;
+}
+
+.en-string path {
+  fill: none;
+  stroke: var(--twine);
+  stroke-width: 1.3;
+  vector-effect: non-scaling-stroke;
+}
+
+/* A paper flag: folded over the string at the top, cut in a swallowtail
+   below */
+.en-flag {
+  --c: var(--paper);
+  --t: var(--ink);
+  position: absolute;
+  left: var(--x);
+  top: calc(var(--y) * var(--sag));
+  width: 30%;
+  max-width: 112px;
+  height: 42px;
+  padding: 8px 3px 0;
+  border: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  translate: -50% 0;
+  rotate: calc(var(--d) * var(--tilt));
+  transform-origin: 50% 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  background: var(--grain), var(--c);
+  box-shadow: inset 0 5px 0 rgba(0, 0, 0, 0.16);
+  color: var(--t);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.en-flag.left {
+  --x: 16.7%;
+  --y: 0.395;
+  --d: 1;
+}
+
+.en-flag.mid {
+  --x: 50%;
+  --y: 0.6;
+  --d: 0;
+}
+
+.en-flag.right {
+  --x: 83.3%;
+  --y: 0.395;
+  --d: -1;
+}
+
+.en-flag span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.en-flag.l {
+  font-size: 14px;
+  padding-top: 9px;
+}
+
+.en-flag.xl {
+  font-size: 12.5px;
+  padding-top: 10px;
+}
+
+button.en-flag {
+  animation:
+    en-hang 0.75s cubic-bezier(0.3, 1.3, 0.5, 1) both,
+    en-sway 4.2s ease-in-out calc(0.75s + var(--i) * 0.37s) infinite alternate;
+}
+
+.en-garland.done button.en-flag {
+  animation: en-wave 0.8s ease-in-out calc(var(--i) * 0.09s) 2;
+}
+
+.en-flag.hue-red {
+  --c: var(--red);
+  --t: #fbefd9;
+}
+
+.en-flag.hue-saffron {
+  --c: var(--saffron);
+  --t: #2b1d0e;
+}
+
+.en-flag.hue-cream {
+  --c: #f6ecd6;
+  --t: var(--ink);
+}
+
+.en-flag.hue-coral {
+  --c: var(--coral);
+  --t: #2b150d;
+}
+
+.en-flag.hue-green {
+  --c: var(--green);
+  --t: #f6ecd6;
+}
+
+/* A word she did not know hangs too, but faded */
+.en-flag.pale {
+  filter: saturate(0.2) brightness(1.12) contrast(0.8);
+}
+
+/* The flags still to come are not there yet, but the next one's shape
+   is marked out on the string */
+.en-flag.empty {
+  visibility: hidden;
+}
+
+.en-flag.next {
+  visibility: visible;
+  clip-path: none;
+  box-shadow: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='1,1 99,1 99,99 50,78 1,99' fill='%23f6ecd6' fill-opacity='.06' stroke='%23f6ecd6' stroke-opacity='.4' stroke-width='1.3' stroke-dasharray='4 4' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")
+    center / 100% 100% no-repeat;
+}
+
+.en-flag.next {
+  animation: en-wait 1.4s ease-in-out infinite alternate;
+}
+
+/* --- The square --- */
+
+.en-col {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px 12px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* A card of paper with a scalloped edge, as a verbena's menu */
+.en-panel {
+  position: relative;
+  margin-top: 6px;
+  padding: 14px 16px 14px;
+  border-radius: 2px 2px 10px 10px;
+  background: var(--grain), var(--paper);
+  filter: drop-shadow(0 2px 0 rgba(96, 50, 14, 0.25))
+    drop-shadow(0 14px 14px rgba(70, 35, 8, 0.3));
+}
+
+.en-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -7px;
+  height: 8px;
+  background: radial-gradient(
+      circle at 50% 100%,
+      var(--paper) 6.5px,
+      transparent 7px
+    ) -1px
+    0 / 16px 8px repeat-x;
+}
+
+.en-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.en-step i {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0 4px;
+  border-top: 1.5px solid rgba(29, 36, 70, 0.35);
+}
+
+.en-step b {
+  width: 12px;
+  height: 14px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%);
+  background: rgba(29, 36, 70, 0.14);
+}
+
+.en-step b.ok {
+  background: var(--red);
+}
+
+.en-step b.help {
+  background: var(--saffron);
+}
+
+.en-from {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 10px 0 0;
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.en-from .word {
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink-2);
+}
+
+.en-from .word i {
+  margin: 0 2px;
+  font-style: normal;
+  color: rgba(29, 36, 70, 0.3);
+}
+
+.en-from .word .end {
+  color: var(--ink);
+  font-weight: 700;
+  background: linear-gradient(transparent 60%, rgba(240, 178, 58, 0.55) 60%);
+}
+
+.en-from svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-2);
+}
+
+.en-from .link {
+  font-weight: 900;
+  font-size: 26px;
+  color: var(--red);
+}
+
+.en-clue {
+  margin: 8px 0 10px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.en-clue small {
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'Figtree', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.en-answer {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: #fffaf0;
+  box-shadow:
+    inset 0 0 0 2px rgba(29, 36, 70, 0.2),
+    inset 0 3px 0 rgba(29, 36, 70, 0.06);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: 0.06em;
+  overflow: hidden;
+}
+
+.en-answer .lock {
+  color: var(--red);
+}
+
+.en-answer .caret {
+  width: 3px;
+  height: 30px;
+  margin-left: 3px;
+  border-radius: 2px;
+  background: var(--ink);
+  animation: en-blink 1.05s steps(2, start) infinite;
+}
+
+.en-opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* The four words to pick from, as flags too */
+.en-opts button {
+  --c: var(--paper-2);
+  --t: var(--ink);
+  min-height: 62px;
+  padding: 8px 6px 16px;
+  border: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
+  background: var(--grain), var(--c);
+  box-shadow: inset 0 5px 0 rgba(0, 0, 0, 0.14);
+  color: var(--t);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.1;
+  transition:
+    transform 0.12s ease,
+    opacity 0.2s ease;
+}
+
+.en-opts button:active {
+  transform: translateY(2px);
+}
+
+.en-opts .hue-red {
+  --c: var(--red);
+  --t: #fbefd9;
+}
+
+.en-opts .hue-saffron {
+  --c: var(--saffron);
+  --t: #2b1d0e;
+}
+
+.en-opts .hue-cream {
+  --c: #f1e2c2;
+}
+
+.en-opts .hue-coral {
+  --c: var(--coral);
+  --t: #2b150d;
+}
+
+.en-opts button.no {
+  opacity: 0.3;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.en-note {
+  min-height: 20px;
+  margin: 10px 2px 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+.en-note.ok {
+  color: var(--green-2);
+  font-weight: 700;
+}
+
+.en-note svg {
+  width: 16px;
+  height: 16px;
+  margin: 0 5px -3px 0;
+  stroke-width: 3;
+}
+
+.en-shown p {
+  margin: 10px 0 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--ink-2);
+}
+
+.en-shown b {
+  font-weight: 900;
+  font-size: 30px;
+  color: var(--red);
+}
+
+.en-shown span {
+  display: block;
+  margin-top: 2px;
+  font-family: 'Figtree', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.en-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.en-acts > :last-child {
+  margin-left: auto;
+}
+
+.en-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fbefd9;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  box-shadow: 0 3px 0 var(--red-2);
+  transition: transform 0.12s ease;
+}
+
+.en-verbena .en-btn {
+  color: #fbefd9;
+}
+
+.en-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.en-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--red-2);
+}
+
+.en-verbena .en-btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px rgba(29, 36, 70, 0.32);
+}
+
+.en-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  transform: none;
+}
+
+.en-link {
+  padding: 10px 6px;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The keyboard: tiles of the same paper */
+.en-keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.en-keys div {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.en-keys button {
+  flex: 1 1 0;
+  max-width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grain), var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 0 rgba(96, 50, 14, 0.5);
+}
+
+.en-keys button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.en-keys .wide {
+  flex: 1.6 1 0;
+  max-width: 76px;
+}
+
+.en-keys svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- The end, and not yet --- */
+
+.en-card .kick {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--red);
+}
+
+.en-card h2 {
+  margin: 4px 0 6px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 900;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.en-card > p:not(.kick) {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.en-list {
+  margin: 14px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.en-list li {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  padding: 7px 0;
+  border-top: 1px dashed rgba(29, 36, 70, 0.2);
+}
+
+.en-list li::before {
+  content: '';
+  grid-row: 1 / 3;
+  width: 12px;
+  height: 15px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%);
+  background: rgba(29, 36, 70, 0.22);
+}
+
+.en-list li.ok::before {
+  background: var(--red);
+}
+
+.en-list li.help::before {
+  background: var(--saffron);
+}
+
+.en-list b {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.en-list b .from {
+  color: var(--red);
+}
+
+.en-list li > span {
+  grid-column: 2;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.en-verbena .en-speak.q-round.small {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+}
+
+/* --- The square on a wide screen: a café table and geraniums --- */
+
+.en-plaza {
+  display: none;
+}
+
+.en-cut {
+  filter: drop-shadow(0 4px 4px rgba(70, 35, 8, 0.4));
+}
+
+/* --- Motion --- */
+
+@keyframes en-hang {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) rotate(-12deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(2px) rotate(5deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes en-sway {
+  from {
+    transform: rotate(-1.6deg);
+  }
+  to {
+    transform: rotate(1.6deg);
+  }
+}
+
+@keyframes en-wave {
+  0%,
+  100% {
+    transform: none;
+  }
+  35% {
+    transform: translateY(-5px) rotate(-6deg);
+  }
+  70% {
+    transform: translateY(1px) rotate(4deg);
+  }
+}
+
+@keyframes en-wait {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes en-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .en-verbena *,
+  .en-verbena *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- Wider screens --- */
+
+@media (min-width: 700px) {
+  .en-top {
+    padding: 22px 28px 0;
+  }
+
+  .en-top h1 {
+    font-size: 40px;
+  }
+
+  .en-top h1 small {
+    font-size: 12px;
+  }
+
+  .en-moon {
+    top: 22px;
+    right: 9%;
+    width: 50px;
+    height: 50px;
+  }
+
+  .en-garland {
+    --sag: 52px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 10px 0 0;
+  }
+
+  .en-string {
+    height: 96px;
+  }
+
+  .en-flag {
+    width: 27%;
+    max-width: 136px;
+    height: 60px;
+    padding-top: 13px;
+    font-size: 20px;
+  }
+
+  .en-flag.l {
+    font-size: 17px;
+    padding-top: 15px;
+  }
+
+  .en-flag.xl {
+    font-size: 15px;
+    padding-top: 16px;
+  }
+
+  /* (on a wide screen each string's flags keep together) */
+  .en-flag.left {
+    --x: 21%;
+    --y: 0.445;
+  }
+
+  .en-flag.right {
+    --x: 79%;
+    --y: 0.445;
+  }
+
+  .en-village {
+    height: min(14vw, 270px);
+  }
+
+  .en-scene {
+    padding-bottom: calc(min(14vw, 270px) - 34px);
+  }
+
+  .en-col {
+    padding: 22px 16px 28px;
+    gap: 14px;
+  }
+
+  .en-panel {
+    padding: 18px 24px 18px;
+  }
+
+  .en-clue {
+    font-size: 28px;
+  }
+
+  .en-keys button {
+    max-width: 50px;
+    height: 50px;
+  }
+
+  .en-keys .wide {
+    max-width: 80px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .en-plaza {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  .en-table {
+    position: absolute;
+    left: max(2vw, calc(50% - 600px));
+    bottom: 14px;
+    width: 250px;
+  }
+
+  .en-pots {
+    position: absolute;
+    right: max(3vw, calc(50% - 590px));
+    bottom: 14px;
+    width: 190px;
+  }
+}
+
+@media (max-width: 370px) {
+  .en-top h1 {
+    font-size: 23px;
+  }
+
+  .en-flag {
+    font-size: 14.5px;
+  }
+
+  .en-flag.l {
+    font-size: 12.5px;
+  }
+
+  .en-flag.xl {
+    font-size: 11px;
+  }
+
+  .en-clue {
+    font-size: 21px;
+  }
+
+  .en-keys div {
+    gap: 4px;
+  }
+
+  .en-keys button {
+    height: 44px;
+  }
+}
