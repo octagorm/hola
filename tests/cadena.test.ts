@@ -15,6 +15,7 @@ import {
   syllables,
 } from '../src/app/lib/cadena'
 import { emptyBank, known, newCard, withStart } from '../src/app/lib/bank'
+import { clueCount, ready } from '../src/app/lib/today'
 import type { Word } from '../src/app/data/words'
 
 const now = Date.UTC(2026, 9, 22, 12)
@@ -105,7 +106,7 @@ describe('syllables', () => {
       const s = syllables(w.bare)
       expect(s.join(''), w.bare).toBe(w.bare)
       for (const x of s)
-        expect(/[aeiouáéíóúüy]/.test(x), `${w.bare}: ${x}`).toBe(true)
+        expect(/[aeiouáéíóúüy]/i.test(x), `${w.bare}: ${x}`).toBe(true)
     }
   })
 })
@@ -179,9 +180,20 @@ describe('Palabras encadenadas', () => {
       isChain(chain)
       hits += chain.filter((w) => weak.includes(w.id)).length
     }
-    // (left to chance, seven words of some four hundred would come about
-    // three times in twenty chains)
+    // (left to chance, seven words of some eight hundred would come once
+    // or twice in twenty chains)
     expect(hits).toBeGreaterThan(12)
+  })
+
+  it('comes in today’s chapter once the words met make a chain', () => {
+    // Met lesson by lesson, without the starting point
+    const b = emptyBank()
+    let met = 0
+    while (!ready('cadena', met, clueCount(b)))
+      b.cards[WORDS[met++].id] = newCard(now)
+    const chain = plan(b, now, seeded(1))!
+    isChain(chain)
+    for (const w of chain) expect(b.cards[w.id], w.id).toBeTruthy()
   })
 
   it('takes words not met only where hers make no chain', () => {

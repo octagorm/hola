@@ -171,8 +171,8 @@ describe('the day’s chapter', () => {
     expect(DAILY_GAMES.filter((g) => !ready(g, 60, clueCount(b)))).toEqual([
       'cadena',
     ])
-    for (const w of WORDS.slice(0, 200)) b.cards[w.id] = newCard(now)
-    expect(DAILY_GAMES.every((g) => ready(g, 200, clueCount(b)))).toBe(true)
+    for (const w of WORDS.slice(0, 260)) b.cards[w.id] = newCard(now)
+    expect(DAILY_GAMES.every((g) => ready(g, 260, clueCount(b)))).toBe(true)
   })
 })
 

@@ -80,7 +80,8 @@ function formsOf(w: Word): Array<Form> {
   const add = (es: string, form: Form['form'], say = es) =>
     out.push({ es, key: letters(es), w, form, say })
   add(w.bare, 'word', w.es)
-  if (w.pos === 'n' && !w.pl) {
+  // (no plural for a name: Alhambra, Guggenheim)
+  if (w.pos === 'n' && !w.pl && w.bare === w.bare.toLowerCase()) {
     const p = plural(w.bare)
     add(p, 'pl', `${w.g === 'f' ? 'las' : 'los'} ${p}`)
   }

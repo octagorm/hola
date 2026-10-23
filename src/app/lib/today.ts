@@ -39,7 +39,7 @@ export const STEP: Record<
 // (data/words.ts). Letras wants enough words met for its letters to hold a
 // few of them; the chain, words enough that a chain of eight can be made of
 // them, as it first can about here when they are met lesson by lesson (a
-// new player has 284 from the start).
+// new player has 288 from the start).
 export const DAILY_GAMES = [
   'palabra',
   'cadaver',
@@ -58,7 +58,7 @@ export const NEEDS: Record<string, number> = {
   sopa: 12,
   reloj: 12,
   letras: 40,
-  cadena: 160,
+  cadena: 210,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 

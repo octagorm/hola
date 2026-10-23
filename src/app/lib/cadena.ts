@@ -8,14 +8,15 @@ import type { Bank } from './bank.ts'
 // Palabras encadenadas: a chain of words, each beginning with the last
 // syllable of the one before (casa → sapo → pozo).
 //
-// Measured over Hola's words that can be clues, of three letters or more
-// (409 spellings), two in three have a word to follow them, and chains of
-// fifty links can be made; over the 325 a new player starts with (272),
-// a little over half have one, and chains of eight links can start from 82
-// of them. Many endings lead nowhere (-ño, -che, -bre, -llo, -ción), so a
-// chain left to chance soon stops: the game finds a chain of eight among
-// the player's words before it starts, and gives the meaning of each next
-// word as the clue.
+// Measured over the words a chain may hold (canChain, below; 838
+// spellings), three in four have a word to follow them, seven on average,
+// and chains of over a hundred links can be made; over the 322 words a new
+// player starts with (272 spellings), a little over half have one, two on
+// average, and chains of eight links can start from 82 of them. Many
+// endings lead nowhere (-ño, -che, -bre, -llo, -ción), so a chain left to
+// chance soon stops: the game finds a chain of eight among the player's
+// words before it starts, and gives the meaning of each next word as the
+// clue.
 
 // --- Syllables, by Spanish spelling ---
 
@@ -38,26 +39,29 @@ const vowel = (c: string | undefined) =>
 
 function units(word: string): Array<Unit> {
   const w = word.toLowerCase()
+  // (each unit as it is written, a capital kept, though read in small)
+  const as = w.length === word.length ? word : w
   const out: Array<Unit> = []
   for (let i = 0; i < w.length;) {
     const two = w.slice(i, i + 2)
-    if (two === 'ch' || two === 'll' || two === 'rr') {
-      out.push({ s: two, k: 'c' })
-      i += 2
-      continue
-    }
-    if ((two === 'qu' || two === 'gu') && /[eéií]/.test(w.charAt(i + 2))) {
-      out.push({ s: two, k: 'c' })
+    if (
+      two === 'ch' ||
+      two === 'll' ||
+      two === 'rr' ||
+      ((two === 'qu' || two === 'gu') && /[eéií]/.test(w.charAt(i + 2)))
+    ) {
+      out.push({ s: as.slice(i, i + 2), k: 'c' })
       i += 2
       continue
     }
     const c = w.charAt(i)
-    if (STRONG.has(c)) out.push({ s: c, k: 'strong' })
-    else if (WEAK.has(c)) out.push({ s: c, k: 'weak' })
+    const s = as.charAt(i)
+    if (STRONG.has(c)) out.push({ s, k: 'strong' })
+    else if (WEAK.has(c)) out.push({ s, k: 'weak' })
     else if (c === 'y')
       // A consonant before a vowel (yo, playa), else a vowel (rey, muy)
-      out.push({ s: c, k: vowel(w.charAt(i + 1)) ? 'c' : 'weak' })
-    else out.push({ s: c, k: 'c' })
+      out.push({ s, k: vowel(w.charAt(i + 1)) ? 'c' : 'weak' })
+    else out.push({ s, k: 'c' })
     i++
   }
   return out
@@ -133,8 +137,10 @@ export const follows = (prev: string, next: string) =>
 export const LENGTH = 8
 
 // A word the game may put in a chain: one that can be a clue, of three
-// letters or more. Any of Hola's words counts when typed.
-export const canChain = (w: Word) => isClue(w) && plainWord(w.bare).length >= 3
+// letters or more, and not a name (Navidad, Alhambra) or an abbreviation
+// (NIE), as the game is played. Any of Hola's words counts when typed.
+export const canChain = (w: Word) =>
+  isClue(w) && w.bare === w.bare.toLowerCase() && plainWord(w.bare).length >= 3
 
 const CHAIN = WORDS.filter(canChain)
 
