@@ -57,7 +57,7 @@ const LOOK = {
 const GARRIDO =
   'Inspector Garrido, a man of about fifty in a tan trench coat and a brown fedora, with a magnifying glass or a small notebook'
 const NARCIS =
-  'old Narcís, a retired fisherman of eighty with white hair, a flat cap and a navy jersey'
+  'old Narcís, a retired fisherman of eighty with white hair, a grey flat cap and a navy jersey'
 const LAIA =
   'Laia, a young woman in her twenties in a blue headscarf and a striped top'
 const CAT = 'a fat ginger-and-white cat with long white whiskers'
@@ -66,7 +66,7 @@ const CAT = 'a fat ginger-and-white cat with long white whiskers'
 const CHAPTERS = {
   viaje: {
     'viaje-madrid':
-      'The Puerta del Sol in Madrid on a sunny morning: the old Casa de Correos with its clock tower, the Kilómetro Cero plaque set in the paving stones, a tall grey-haired Norwegian woman in her sixties with a big suitcase and a black umbrella greeting a small dark-haired Spanish woman of the same age, and at the edge a café table with a cup of thick hot chocolate and churros.',
+      'The Puerta del Sol in Madrid on a sunny morning: the old Casa de Correos with its clock tower, the Kilómetro Cero plaque set in the paving stones, a tall grey-haired Norwegian woman in her sixties pulling a big suitcase and holding a long closed black umbrella, plainly seen, in her other hand, greeting a small dark-haired Spanish woman of the same age, and at the edge a café table with a cup of thick hot chocolate and churros.',
     'viaje-cordoba':
       'Inside the Mezquita of Córdoba: rows of red-and-white striped double arches on slender columns going back like a forest of stone, one shaft of sunlight across the floor, and through a far arch a glimpse of orange trees in the courtyard.',
     'viaje-sevilla':
@@ -143,17 +143,19 @@ Object.assign(PICTURES, MUSEO_PICTURES)
 // before setting out and at the end (up to about 610 × 340 CSS pixels), and
 // the boat in cutaway beside the captain's introduction (about 270 × 180),
 // twice that or more for sharp screens. The boat is the one the game draws.
-const ENGRAVING =
-  'A hand-coloured wood engraving from an illustrated magazine of the 1860s, in the style of the reference image, for its style only and not its subject: fine sepia-black engraved lines and cross-hatching on warm cream paper, washed by hand in muted sea green, pale sky blue, wood brown, copper and brass. Not photographic, not 3D, never glossy. No crowds: at most a few small figures.'
+const ENGRAVED =
+  'fine sepia-black engraved lines and cross-hatching on warm cream paper, washed by hand in muted sea green, pale sky blue, wood brown, copper and brass. Not photographic, not 3D, never glossy. No crowds: at most a few small figures.'
 const BOAT =
   "The submarine is the Ictíneo, Narciso Monturiol's wooden submarine of 1859, facing right: a plump fish-shaped hull about seven metres long, of pale wooden staves bound with copper bands, with a small round brass turret with round portholes on top and a propeller at its tail on the left."
 const SPLIT =
-  'A view cut at the waterline, as in the reference: the top third above the water and the rest under it, down to the seabed. It will be cut a little less than twice as wide as it is tall, so keep the boat in the middle.'
+  'A view cut at the waterline: the top third above the water and the rest under it, down to the seabed. It will be cut a little less than twice as wide as it is tall, so keep the boat in the middle.'
+// The voyages go without the sketch as a reference: it shows the boat cut
+// open, with a monument on the quay from 1888, and plates given it copied
+// both
 const VOYAGE = (subject) => ({
   shape: 'landscape',
   size: '1440x800',
-  ref: 'design/sketches/ictineo.jpg',
-  prompt: `${subject} ${BOAT} ${ENGRAVING} ${SPLIT} ${NONE}`,
+  prompt: `${subject} ${BOAT} The hull is seen whole from outside and closed: it is not cut open, and nobody inside it can be seen. A hand-coloured wood engraving from an illustrated magazine of the 1860s: ${ENGRAVED} ${SPLIT} ${NONE}`,
 })
 Object.assign(PICTURES, {
   'ictineo/barcelona': VOYAGE(
@@ -166,13 +168,13 @@ Object.assign(PICTURES, {
     `The port of Alicante on a grey, blustery day in May 1861: rough grey-green waves with white crests, the castle of Santa Bárbara on the rocky top of Mount Benacantil above the town, the harbour mole and a few sailing ships rolling at anchor, and the submarine riding the waves at the surface with its hatch shut. Under the water the sea is cloudy with stirred-up sand.`,
   ),
   'ictineo/noche': VOYAGE(
-    `Barcelona harbour on a calm night: a full moon over the hill of Montjuïc, the dark masts of sailing ships against the sky, a few lit windows on the quay, and under the water the submarine, a lamp shining from its bow, its beam of warm yellow light falling on a shoal of silver fish in the dark green water.`,
+    `Barcelona harbour on a calm night: a full moon over the hill of Montjuïc, the dark masts of sailing ships against the sky, a few lit windows on the quay, and under the water the submarine, a lamp shining from its bow, its beam of warm yellow light falling on a shoal of silver fish in the dark green water. No monument column on the quay.`,
   ),
   'ictineo/cutaway': {
     shape: 'landscape',
     size: '900x600',
     ref: 'design/sketches/ictineo.jpg',
-    prompt: `The submarine under water, its side cut away to show the crew inside at their stations: two men in caps and dark jackets turning the great crank of the propeller, one at the steering wheel, and the captain, a bearded man in a dark coat, looking out through a round brass porthole; pipes, brass air bottles and a lamp inside. Green water around it, a few fish, and rocks and weed on the seabed below. ${BOAT} ${ENGRAVING} Keep the whole boat in the middle of the picture. ${NONE}`,
+    prompt: `The submarine under water, its side cut away to show the crew inside at their stations: two men in caps and dark jackets turning the great crank of the propeller, one at the steering wheel, and the captain, a bearded man in a dark coat, looking out through a round brass porthole; pipes, brass air bottles and a lamp inside. Green water around it, a few fish, and rocks and weed on the seabed below. ${BOAT} A hand-coloured wood engraving from an illustrated magazine of the 1860s, in the style of the reference image, for its style only and not its subject: ${ENGRAVED} Keep the whole boat in the middle of the picture. ${NONE}`,
   },
 })
 
