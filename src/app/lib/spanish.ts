@@ -123,3 +123,138 @@ export function plural(s: string): string {
   })
   return `${stressed}es`
 }
+
+// --- Syllables and stress ---
+
+// Words of Hola's spelt by Basque or Catalan rules (tx, a final ll), where
+// Spanish spelling and stress do not hold
+export const FOREIGN = new Set(['castells', 'kaixo', 'pintxo', 'txakoli'])
+
+// A word is read as units, by the rules of the RAE's Ortografía (2010): a
+// strong vowel (a, e, o, and an accented í or ú, which stand apart from
+// the vowel beside them), a weak one (i, u, ü, and y at the end of a word
+// or before a consonant), or a consonant, which may be written with two
+// letters: ch, ll, rr, and qu or gu before e or i, whose u is not said.
+type Sound = 'c' | 'weak' | 'strong'
+
+interface Unit {
+  s: string
+  k: Sound
+}
+
+const STRONG = new Set([...'aeoáéóíú'])
+const WEAK = new Set([...'iuü'])
+const vowel = (c: string | undefined) =>
+  !!c && (STRONG.has(c) || WEAK.has(c) || c === 'y')
+
+function units(word: string): Array<Unit> {
+  const w = word.toLowerCase()
+  // (each unit as it is written, a capital kept, though read in small)
+  const as = w.length === word.length ? word : w
+  const out: Array<Unit> = []
+  for (let i = 0; i < w.length;) {
+    const two = w.slice(i, i + 2)
+    if (
+      two === 'ch' ||
+      two === 'll' ||
+      two === 'rr' ||
+      ((two === 'qu' || two === 'gu') && /[eéií]/.test(w.charAt(i + 2)))
+    ) {
+      out.push({ s: as.slice(i, i + 2), k: 'c' })
+      i += 2
+      continue
+    }
+    const c = w.charAt(i)
+    const s = as.charAt(i)
+    if (STRONG.has(c)) out.push({ s, k: 'strong' })
+    else if (WEAK.has(c)) out.push({ s, k: 'weak' })
+    else if (c === 'y')
+      // A consonant before a vowel (yo, playa), else a vowel (rey, muy)
+      out.push({ s, k: vowel(w.charAt(i + 1)) ? 'c' : 'weak' })
+    else out.push({ s, k: 'c' })
+    i++
+  }
+  return out
+}
+
+// Two consonants that begin a syllable together: pr, bl, tr, cl, gr, fl …
+// (but not tl or dl, which Spain divides: at-las)
+const together = (a: string, b: string) =>
+  /^[pbcgfkdt]$/i.test(a) && /^[rl]$/i.test(b) && !/^[td]l$/i.test(a + b)
+
+const silentH = (x: Unit | undefined) => x?.s.toLowerCase() === 'h'
+
+// The syllables of a word, as it is written: ca-sa, pe-rro, ha-blar,
+// hom-bre, puer-ta, rí-o, le-er, a-ve-ni-da. Vowels side by side share a
+// syllable (a diphthong) unless both are strong, or the same weak one (a
+// hiatus), and a silent h between them changes nothing, as the RAE has it
+// (prohi-bir, ahu-ma-do, but pro-hí-be); a syllable has one strong vowel
+// at most, so a weak one between two strong ones goes with the second
+// (a-hue-car). Between vowels, one consonant goes with the next syllable,
+// and of more, the last one goes, or the last two where they begin a
+// syllable together.
+export function syllables(word: string): Array<string> {
+  const u = units(word.trim())
+  // The vowels of each syllable, as ranges of units
+  const nuclei: Array<[number, number]> = []
+  for (let i = 0; i < u.length;) {
+    if (u[i].k === 'c') {
+      i++
+      continue
+    }
+    let j = i
+    let strong = u[i].k === 'strong'
+    for (;;) {
+      const gap = silentH(u[j + 1]) ? 2 : 1
+      const next = u[j + gap] as Unit | undefined
+      if (!next || next.k === 'c') break
+      // (two of the same weak vowel stand apart: chi-i-ta)
+      if (next.s.toLowerCase() === u[j].s.toLowerCase() && next.k === 'weak')
+        break
+      if (next.k === 'strong' && strong) {
+        // (a weak vowel after the strong one goes on with the next)
+        if (u[j].k === 'weak' && j > i) {
+          const end = silentH(u[j - 1]) ? j - 2 : j - 1
+          nuclei.push([i, end])
+          i = j
+          j = -1
+        }
+        break
+      }
+      strong ||= next.k === 'strong'
+      j += gap
+    }
+    if (j < 0) continue
+    nuclei.push([i, j])
+    i = j + 1
+  }
+  if (nuclei.length <= 1) return [u.map((x) => x.s).join('')]
+  // Where each syllable after the first begins
+  const starts = [0]
+  for (let k = 1; k < nuclei.length; k++) {
+    const from = nuclei[k - 1][1] + 1
+    const to = nuclei[k][0]
+    const n = to - from
+    if (n === 0) starts.push(to)
+    else if (n >= 2 && together(u[to - 2].s, u[to - 1].s)) starts.push(to - 2)
+    else starts.push(to - 1)
+  }
+  return starts.map((s, k) =>
+    u
+      .slice(s, starts[k + 1] ?? u.length)
+      .map((x) => x.s)
+      .join(''),
+  )
+}
+
+// The syllable that carries the stress, counted from the first (0): the
+// one with an accent mark, or else by the rule: the next to last in a word
+// that ends in a vowel, or in n or s after one (ca-sa, jo-ven, lu-nes), and
+// the last in any other (ha-blar, re-loj, ciu-dad, es-toy)
+export function stressIndex(word: string): number {
+  const syl = syllables(word)
+  const marked = syl.findIndex((s) => /[áéíóú]/i.test(s))
+  if (marked >= 0) return marked
+  if (syl.length < 2) return 0
+  return /[aeiou][ns]?$/i.test(word.trim()) ? syl.length - 2 : syl.length - 1
+}
