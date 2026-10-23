@@ -55,12 +55,13 @@ The games:
 | Orden                | `games/orden.tsx`      | Norwegian sentences set in Spanish order, eight to a sheet; an aleluya of the 1860s       |
 | Tapas                | `games/tapas.tsx`      | One guest at a time orders aloud, the tray filled from pictures; a bar in ligne claire    |
 | El Rastro            | `games/rastro.tsx`     | Four stalls of Madrid's flea market, a price haggled down by ear; hand-coloured woodcut   |
+| Palabras             | `games/palabras.tsx`   | Scrabble with Ñ, CH, LL and RR against El relojero, a watchmaker; a well-loved wooden set |
 | Sonidos              | `games/sonidos.tsx`    | Spain's sounds, an ear for words alike, and a dictation; a fifties radio, ligne claire    |
 | Acento               | `games/acento.tsx`     | Where the stress falls, and when it takes a tilde, rule by rule; a 1920s feria poster     |
 | Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 
-`data/games.ts` names the games for the home page and today's chapter; Palabras (Scrabble with Ñ, LL and RR) is there marked `soon`, shown faded until it is made.
+`data/games.ts` names the games for the home page and today's chapter; a game marked `soon` there is shown faded until it is made.
 
 ## The recordings
 

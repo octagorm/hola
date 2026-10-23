@@ -23,9 +23,8 @@ export const GAME_INFO: Array<GameInfo> = [
     id: 'palabras',
     es: 'Palabras',
     no: 'Ordbrett',
-    blurb: 'Scrabble med Ñ, LL og RR',
+    blurb: 'Scrabble med Ñ, LL og RR mot urmakeren',
     doing: 'legger ord på brettet',
-    soon: true,
   },
   {
     id: 'crucigrama',
