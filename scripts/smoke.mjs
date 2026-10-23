@@ -154,6 +154,8 @@ const PAGES = [
   ['#viaje/viaje-granada', 'El viaje'],
   ['#leyendas', 'Leyendas'],
   ['#leyendas/leyendas-ojos', 'Leyendas'],
+  ['#caso', 'El caso del reloj perdido'],
+  ['#caso/caso-iglesia', 'El caso del reloj perdido'],
   ['#palabra', 'La palabra'],
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
@@ -297,6 +299,76 @@ await test(
     await page.getByRole('button', { name: 'Stopp', exact: true }).click()
     expect(!(await visible(page, '.q-text p.aloud')), 'stopped')
     await page.getByRole('button', { name: 'Les høyt', exact: true }).waitFor()
+  },
+  { learner: true },
+)
+
+// Through a story's lines to its questions, and answers them
+async function toTheEnd(page) {
+  for (let i = 0; i < 30 && !(await visible(page, '.q-ask')); i++) {
+    await page.locator('.q-readnav .next').click()
+    await page.waitForTimeout(80)
+  }
+  for (let q = 0; q < 3; q++) {
+    await page.locator('.q-ask .q-choice').first().click()
+    await page
+      .getByRole('button', { name: q < 2 ? 'Neste spørsmål' : 'Ferdig' })
+      .click()
+  }
+  await page.getByText('Fin del capítulo').waitFor()
+}
+
+await test(
+  'a chapter of the mystery is heard before it is read, and fills the notebook',
+  async (page) => {
+    await go(page, '#caso/caso-iglesia')
+    // (each line is heard, its text hidden until asked for)
+    await page.waitForSelector('.q-text .cs-heard')
+    expect(!(await visible(page, '.q-text .cs-said')), 'no text at first')
+    await page
+      .locator('.q-text .cs-heard')
+      .first()
+      .getByRole('button', { name: 'Vis teksten' })
+      .click()
+    await page.waitForSelector('.q-text .cs-said')
+    await page.getByRole('button', { name: 'Skjul teksten' }).first().click()
+    expect(!(await visible(page, '.q-text .cs-said')), 'hidden again')
+    await toTheEnd(page)
+    expect(!(await visible(page, '.q-text .cs-heard')), 'every line written')
+    expect(await visible(page, '.cs-newclue'), 'a clue for the notebook')
+    await page
+      .getByRole('link', { name: 'Notatboka og alle kapitlene' })
+      .click()
+    await page.waitForSelector('.cs-libreta')
+    expect(
+      (await page.locator('.cs-libreta li:not(.blank)').count()) === 1,
+      'the clue in the notebook',
+    )
+  },
+  { learner: true },
+)
+
+await test(
+  'the mystery’s last chapter asks who took the watch, with a hint for a wrong guess',
+  async (page) => {
+    await go(page, '#caso/caso-playa')
+    for (let i = 0; i < 30 && !(await visible(page, '.cs-accuse')); i++) {
+      await page.locator('.q-readnav .next').click()
+      await page.waitForTimeout(80)
+    }
+    const suspect = (name) =>
+      page.locator('.cs-suspects .q-choice', { hasText: name })
+    await suspect('Quim').click()
+    await page.waitForSelector('.cs-hint')
+    expect(await suspect('Quim').isDisabled(), 'a wrong guess struck out')
+    expect(
+      await visible(page, '.cs-libreta li.mark'),
+      'the notebook marked where he is ruled out',
+    )
+    await suspect('Laia').click()
+    await page.getByRole('button', { name: 'Hør forklaringen' }).click()
+    await toTheEnd(page)
+    await page.getByText('på 2. forsøk').waitFor()
   },
   { learner: true },
 )

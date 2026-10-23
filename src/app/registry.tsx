@@ -59,6 +59,12 @@ export const PAGES = [
     Page: page(() => import('./games/story')),
   },
   {
+    id: 'caso',
+    es: 'El caso del reloj perdido',
+    no: 'Klokken som forsvant',
+    Page: page(() => import('./games/story')),
+  },
+  {
     id: 'palabra',
     es: 'La palabra',
     no: 'Dagens ord',

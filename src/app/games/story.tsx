@@ -4,21 +4,25 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  EyeOff,
   Pause,
   Play,
   Square,
   Volume2,
 } from 'lucide-react'
 import { STORY, subtitle } from '../data/stories'
-import { plain, wordIds } from '../lib/text'
+import { plain } from '../lib/text'
 import { saidCount, say, stop, useVoices } from '../lib/speech'
 import { aloudFrom, readLine } from '../lib/aloud'
+import { UNDERSTOOD, credit } from '../lib/caso'
 import { useStore } from '../lib/store'
 import { blip } from '../lib/sound'
 import { shuffle } from '../lib/choices'
 import { TodayNext, useBack } from '../daily'
 import { Mixed, MixedKey, Page, roman } from '../ui'
 import { Scene, TocArt, hasView, isTocId } from '../art'
+import { Accuse, Again, Heard, HeardKey, Libreta, NewClue, Who } from './caso'
 import type { Chapter, Story } from '../data/stories'
 import type { PageProps } from '../registry'
 
@@ -32,10 +36,14 @@ import type { PageProps } from '../registry'
 // line at hand (lib/aloud.ts): each line is marked and kept in sight while
 // it is said. A word looked up makes the reading wait after its line, and
 // anything else said over a line pauses it.
-
-// The narrator's voice, for reading aloud: the recordings, or the
-// browser's Spanish voice where a line has none
-const NARRATOR = { say: (text: string) => say(text), count: saidCount, stop }
+//
+// A story told by ear (`listen`: El caso del reloj perdido) is heard
+// before it is read: each line is said as it comes, by whoever says it,
+// and shows as its sound wave (games/caso.tsx) until its text is asked
+// for, or the questions are answered. The words of a line only heard
+// count as heard, when the answers show it was understood (lib/caso.ts).
+// Its chapters add to the inspector's notebook on the story's page, and
+// one may stop to ask who did it.
 
 export default function StoryPage({ id, arg }: PageProps) {
   const story = STORY[id]
@@ -71,6 +79,7 @@ function Chapters({ story }: { story: Story }) {
   const { bank } = useStore()
   const { hear } = useVoices()
   const next = story.chapters.find((c) => bank.read[c.id] === undefined)
+  const ear = !!story.listen && hear !== false
   return (
     <Page es={story.es} title={story.no}>
       <div className="q-read">
@@ -78,8 +87,10 @@ function Chapters({ story }: { story: Story }) {
         <p className="q-intro">
           {story.intro} Ordene du ikke har møtt ennå står på norsk, i spansk
           rekkefølge, og blir spanske etter hvert som du lærer dem.
-          {hear !== false &&
-            ' Trykk «Les høyt» i et kapittel, så leser fortelleren det for deg, linje for linje.'}
+          {ear
+            ? ' Hver linje sies høyt før du ser den: trykk på bølgen for å høre den igjen, på sneglen for å høre den sakte, og på øyet for å se teksten.'
+            : hear !== false &&
+              ' Trykk «Les høyt» i et kapittel, så leser fortelleren det for deg, linje for linje.'}
         </p>
         <ol className="q-chapters">
           {story.chapters.map((c, i) => {
@@ -110,18 +121,23 @@ function Chapters({ story }: { story: Story }) {
             )
           })}
         </ol>
+        {story.chapters.some((c) => c.clue) && (
+          <Libreta story={story} read={bank.read} />
+        )}
       </div>
     </Page>
   )
 }
 
 function Reader({ story, c }: { story: Story; c: Chapter }) {
-  const { record, setRead, played, levelOf } = useStore()
+  const { bank, record, setRead, played, levelOf } = useStore()
   const { hear } = useVoices()
   const back = useBack(story.id, c.id)
   const no = story.chapters.indexOf(c) + 1
+  // Heard before it is read, while Spanish can be heard here
+  const ear = !!story.listen && hear !== false
   const [shown, setShown] = useState(1)
-  const [phase, setPhase] = useState<'read' | 'ask' | 'done'>('read')
+  const [phase, setPhase] = useState<'read' | 'accuse' | 'ask' | 'done'>('read')
   const [qi, setQi] = useState(0)
   const [picked, setPicked] = useState<string | null>(null)
   const [right, setRight] = useState(0)
@@ -131,16 +147,43 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
   const [aloud, setAloud] = useState<'off' | 'on' | 'paused'>('off')
   // A word looked up: reading aloud waits after the line it is on
   const hold = useRef(false)
+  // By ear: the lines whose text is shown, or all of them; the lines whose
+  // text was seen before the questions were answered; the last line said
+  // as it came; the line being said now
+  const [open, setOpen] = useState<ReadonlySet<number>>(() => new Set())
+  const [all, setAll] = useState(false)
+  const seen = useRef(new Set<number>())
+  const said = useRef(0)
+  const [talking, setTalking] = useState<number | null>(null)
+  const talk = useRef(0)
+  // Who did it: the tries it took, once named
+  const [tries, setTries] = useState<number | null>(null)
+  const asked = useRef<HTMLDivElement>(null)
+  // By ear, how many lines were only heard, once the chapter is done
+  const [heard, setHeard] = useState(0)
 
   const options = useMemo(() => c.questions.map((q) => shuffle([...q.a])), [c])
 
-  const line = c.lines[shown - 1]
+  // The lines read before the question of who did it, until it is answered
+  const stopAt = c.accuse && tries === null ? c.accuse.after : c.lines.length
+
+  // Says a line, in its speaker's voice, its wave moving while it is said
+  const sayLine = async (i: number, slow = false) => {
+    const mine = ++talk.current
+    setTalking(i)
+    try {
+      await say(plain(c.lines[i]), slow)
+    } finally {
+      if (talk.current === mine) setTalking(null)
+    }
+  }
+
   const next = () => {
     if (phase !== 'read') return
-    if (shown < c.lines.length) setShown(shown + 1)
+    if (shown < stopAt) setShown(shown + 1)
     else {
       setAloud('off')
-      setPhase('ask')
+      setPhase(shown < c.lines.length ? 'accuse' : 'ask')
     }
   }
   const prev = () => {
@@ -154,6 +197,13 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
     setAloud('on')
   }
 
+  const toggle = (i: number) =>
+    setOpen((o) => {
+      const n = new Set(o)
+      if (!n.delete(i)) n.add(i)
+      return n
+    })
+
   // The line just shown is kept in sight; while read aloud, in the middle,
   // so that the buttons under it are in sight too
   useEffect(() => {
@@ -163,29 +213,60 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
     })
   }, [shown, aloud])
 
+  useEffect(() => {
+    if (phase === 'accuse')
+      asked.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  }, [phase])
+
   // Read aloud: the line at hand, a pause, then the next, to the last
   useEffect(() => {
     if (aloud !== 'on' || phase !== 'read') return
-    const reading = readLine(plain(c.lines[shown - 1]), NARRATOR)
+    said.current = Math.max(said.current, shown)
+    const reading = readLine(plain(c.lines[shown - 1]), {
+      say: () => sayLine(shown - 1),
+      count: saidCount,
+      stop,
+    })
     void reading.done.then((end) => {
       if (end === 'cancelled') return
       if (end === 'cut' || hold.current) {
         hold.current = false
         setAloud('paused')
-      } else if (shown < c.lines.length) setShown(shown + 1)
+      } else if (shown < stopAt) setShown(shown + 1)
       else setAloud('off')
     })
     return reading.cancel
-  }, [aloud, shown, phase, c])
+  }, [aloud, shown, phase, c, stopAt])
+
+  // By ear, each line is said as it first comes
+  useEffect(() => {
+    if (!ear || aloud !== 'off' || phase !== 'read') return
+    if (said.current >= shown) return
+    said.current = shown
+    void sayLine(shown - 1)
+  }, [ear, aloud, phase, shown])
+
+  // By ear, the lines whose text has been seen
+  useEffect(() => {
+    if (!ear || phase === 'done') return
+    const upto = phase === 'ask' ? c.lines.length : shown
+    for (let i = 0; i < upto; i++) if (all || open.has(i)) seen.current.add(i)
+  }, [ear, phase, shown, all, open, c])
 
   const finish = (score: number) => {
     setPhase('done')
     setRead(c.id, score)
-    // Words read in Spanish without being looked up: read, a little
-    const ids = new Set(c.lines.flatMap(wordIds))
-    for (const id of ids)
-      if (!tapped.current.has(id) && levelOf(id) > 0)
-        record(id, true, 0.3, 'leer')
+    // Words read in Spanish without being looked up: read, a little; and
+    // by ear, words only heard: heard, if the answers show it
+    for (const { id, link } of credit(
+      c.lines,
+      ear ? seen.current : null,
+      tapped.current,
+      score,
+      (w) => levelOf(w) > 0,
+    ))
+      record(id, true, 0.3, link)
+    setHeard(ear ? c.lines.length - seen.current.size : 0)
     played(c.id)
     blip('win')
   }
@@ -233,6 +314,7 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
   })
 
   const nextChapter = story.chapters.at(no)
+  const reading = phase === 'read' || phase === 'accuse'
 
   return (
     <Page
@@ -245,7 +327,7 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
             type="button"
             className="q-round"
             aria-label="Les linjen høyt"
-            onClick={() => void say(plain(line))}
+            onClick={() => void sayLine(shown - 1)}
           >
             <Volume2 />
           </button>
@@ -260,9 +342,18 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
         </div>
 
         <div className="q-text">
-          {c.lines
-            .slice(0, phase === 'read' ? shown : c.lines.length)
-            .map((l, i) => (
+          {c.lines.slice(0, reading ? shown : c.lines.length).map((l, i) => {
+            const text = !ear || phase === 'done' || all || open.has(i)
+            const mixed = (
+              <Mixed
+                line={l}
+                onPeek={(id) => {
+                  tapped.current.add(id)
+                  hold.current = true
+                }}
+              />
+            )
+            return (
               <p
                 key={i}
                 ref={phase === 'read' && i === shown - 1 ? nowLine : undefined}
@@ -274,15 +365,31 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                       : 'now'
                 }
               >
-                <Mixed
-                  line={l}
-                  onPeek={(id) => {
-                    tapped.current.add(id)
-                    hold.current = true
-                  }}
-                />
+                <Who name={c.who?.[i]} />
+                {!ear ? (
+                  mixed
+                ) : text ? (
+                  <span className="cs-said">
+                    {mixed}
+                    <Again
+                      talking={talking === i}
+                      onSay={(slow) => void sayLine(i, slow)}
+                      onHide={
+                        phase === 'done' || all ? undefined : () => toggle(i)
+                      }
+                    />
+                  </span>
+                ) : (
+                  <Heard
+                    text={plain(l)}
+                    talking={talking === i}
+                    onSay={(slow) => void sayLine(i, slow)}
+                    onOpen={() => toggle(i)}
+                  />
+                )}
               </p>
-            ))}
+            )
+          })}
         </div>
 
         {phase === 'read' && (
@@ -314,7 +421,11 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                 type="button"
                 className="next"
                 aria-label={
-                  shown < c.lines.length ? 'Neste linje' : 'Til spørsmålene'
+                  shown < stopAt
+                    ? 'Neste linje'
+                    : shown < c.lines.length
+                      ? 'Til inspektørens spørsmål'
+                      : 'Til spørsmålene'
                 }
                 onClick={next}
               >
@@ -338,7 +449,11 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                     onClick={readAloud}
                   >
                     <Play aria-hidden="true" />{' '}
-                    {aloud === 'paused' ? 'Fortsett' : 'Les høyt'}
+                    {aloud === 'paused'
+                      ? 'Fortsett'
+                      : ear
+                        ? 'Spill av'
+                        : 'Les høyt'}
                   </button>
                 )}
                 {aloud !== 'off' && (
@@ -350,10 +465,44 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                     <Square aria-hidden="true" /> Stopp
                   </button>
                 )}
+                {ear && (
+                  <button
+                    type="button"
+                    className="q-btn ghost small"
+                    aria-pressed={all}
+                    onClick={() => setAll(!all)}
+                  >
+                    {all ? (
+                      <>
+                        <EyeOff aria-hidden="true" /> Skjul teksten
+                      </>
+                    ) : (
+                      <>
+                        <Eye aria-hidden="true" /> Vis teksten
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             )}
-            <MixedKey />
+            {ear && <HeardKey />}
+            {(!ear || all || open.size > 0) && <MixedKey />}
           </>
+        )}
+
+        {phase === 'accuse' && c.accuse && (
+          <div ref={asked}>
+            <Accuse
+              a={c.accuse}
+              story={story}
+              read={bank.read}
+              onSolved={(n) => {
+                setTries(n)
+                setShown(c.accuse!.after + 1)
+                setPhase('read')
+              }}
+            />
+          </div>
         )}
 
         {phase === 'ask' && (
@@ -362,6 +511,11 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
               Pregunta {qi + 1} <span>· av {c.questions.length}</span>
             </div>
             <h3>{c.questions[qi].q}</h3>
+            {ear && qi === 0 && (
+              <p className="q-muted -mt-2 mb-3">
+                Du kan høre linjene over igjen, eller se teksten, før du svarer.
+              </p>
+            )}
             <div className="q-choices one">
               {options[qi].map((o, i) => {
                 const state = !picked
@@ -405,8 +559,17 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
               {right} av {c.questions.length} riktige
             </h3>
             <p className="q-muted mt-2">
-              Ordene du leste på spansk uten å slå dem opp, er regnet som lest.
+              {tries !== null &&
+                `Du fant ut hvem det var ${tries === 1 ? 'på første forsøk' : `på ${tries}. forsøk`}. `}
+              {heard === 0
+                ? 'Ordene du leste på spansk uten å slå dem opp, er regnet som lest.'
+                : right < UNDERSTOOD
+                  ? 'Med to riktige svar eller flere er ordene i linjene du bare hørte, regnet som hørt.'
+                  : heard === c.lines.length
+                    ? 'Du hørte hele kapittelet uten å se teksten: ordene i det er regnet som hørt.'
+                    : 'Ordene i linjene du bare hørte, er regnet som hørt, og de du leste på spansk uten å slå dem opp, som lest.'}
             </p>
+            {c.clue && <NewClue clue={c.clue} />}
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <TodayNext page={story.id} arg={c.id} />
               {nextChapter && (
@@ -418,7 +581,7 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                 </a>
               )}
               <a className="q-link" href={`#${story.id}`}>
-                Alle kapitlene
+                {c.clue ? 'Notatboka og alle kapitlene' : 'Alle kapitlene'}
               </a>
             </div>
           </section>
