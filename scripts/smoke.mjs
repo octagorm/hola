@@ -280,6 +280,7 @@ await test(
   async (page) => {
     await go(page, '#leyendas/leyendas-monte')
     const lines = page.locator('.q-text p')
+    await lines.first().waitFor()
     expect((await lines.count()) === 1, 'the chapter begins at its first line')
     await page.getByRole('button', { name: 'Les høyt', exact: true }).click()
     await page.waitForSelector('.q-text p.aloud')
