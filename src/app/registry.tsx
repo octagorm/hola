@@ -131,6 +131,12 @@ export const PAGES = [
     Page: page(() => import('./games/orden')),
   },
   {
+    id: 'palabras',
+    es: 'Palabras',
+    no: 'Ordbrett',
+    Page: page(() => import('./games/palabras')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',
