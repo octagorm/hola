@@ -51,10 +51,11 @@ The games:
 | Palabras encadenadas | `games/cadena.tsx`     | Eight words, each begun by the last syllable of the one before; paper flags at a verbena  |
 | ¿El o la?            | `games/elola.tsx`      | El or la for each noun met before the candle burns down; the Spanish deck as woodcut      |
 | Orden                | `games/orden.tsx`      | Norwegian sentences set in Spanish order, eight to a sheet; an aleluya of the 1860s       |
+| Palabras             | `games/palabras.tsx`   | Scrabble with Ñ, CH, LL and RR against El relojero, a watchmaker; a well-loved wooden set |
 | Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 
-`data/games.ts` names the games for the home page and today's chapter; Palabras (Scrabble with Ñ, LL and RR) and Tapas (orders called across a bar) are there marked `soon`, shown faded until they are made.
+`data/games.ts` names the games for the home page and today's chapter; Tapas (orders called across a bar) is there marked `soon`, shown faded until it is made.
 
 ## The recordings
 
