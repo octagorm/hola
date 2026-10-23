@@ -196,6 +196,18 @@ export const PAGES = [
     no: 'Pilegrimspasset',
     Page: page(() => import('./games/credencial')),
   },
+  {
+    id: 'cajones',
+    es: 'Los cajones',
+    no: 'Skuffene',
+    Page: page(() => import('./games/cajones')),
+  },
+  {
+    id: 'museo',
+    es: 'Tu museo',
+    no: 'Museet ditt',
+    Page: page(() => import('./games/museo')),
+  },
 ] as const
 
 export type PageId = (typeof PAGES)[number]['id']

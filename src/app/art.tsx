@@ -1264,3 +1264,113 @@ function starPath(
   }
   return `M${out.join('L')}Z`
 }
+
+// --- The collections (games/cajones.tsx, games/museo.tsx) ---
+
+// For the home page: a chest of drawers, those of lessons finished pulled
+// out a little; or a wall with three frames, as many hung as pictures are
+const FRAMED: Array<[number, number, number, number]> = [
+  [10, 22, 26, 20],
+  [46, 18, 20, 28],
+  [78, 24, 30, 18],
+]
+
+export function CollectionArt({
+  kind,
+  open,
+  className = '',
+}: {
+  kind: 'cajones' | 'museo'
+  open: number
+  className?: string
+}) {
+  if (kind === 'cajones')
+    return (
+      <svg className={className} viewBox="0 0 120 80" aria-hidden="true">
+        <g
+          filter="url(#q-ink-s)"
+          fill="none"
+          stroke={INK}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        >
+          <path d="M30 10H90L94 16V70H26V16Z" />
+          <path d="M26 16H94" />
+          <path d="M32 70V76M88 70V76" strokeWidth="3" />
+          {[0, 1, 2, 3].map((r) => {
+            const out = r < Math.min(4, open)
+            const y = 20 + r * 12.5
+            return (
+              <g key={r}>
+                <rect
+                  x={out ? 28 : 31}
+                  y={y}
+                  width={out ? 64 : 58}
+                  height="10"
+                  fill={out ? '#d29a2e' : 'none'}
+                  fillOpacity=".45"
+                />
+                <circle cx="60" cy={y + 5} r="1.6" fill={INK} />
+              </g>
+            )
+          })}
+        </g>
+        {open > 0 && (
+          <path
+            d="M44 20q4-6 8-1 3-5 7 0 4-4 7 1"
+            fill="#f6dcd6"
+            stroke="#c2402c"
+            strokeWidth="1.2"
+          />
+        )}
+      </svg>
+    )
+  return (
+    <svg className={className} viewBox="0 0 120 80" aria-hidden="true">
+      <path
+        d="M4 12H116V66H4Z"
+        fill="#c2402c"
+        fillOpacity=".28"
+        filter="url(#q-wash-s)"
+      />
+      <g
+        filter="url(#q-ink-s)"
+        fill="none"
+        stroke={INK}
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      >
+        <path d="M2 66H118M2 12H118" />
+        {FRAMED.map(([x, y, w, h], i) =>
+          i < open ? (
+            <g key={i}>
+              <rect x={x} y={y} width={w} height={h} strokeWidth="2.6" />
+              <path
+                d={`M${x + 3} ${y + h - 4}l${w / 3} -${h / 2.4} ${w / 4} ${h / 4} ${w / 3} -${h / 3}`}
+                strokeWidth="1.3"
+              />
+              <circle
+                cx={x + w - 6}
+                cy={y + 6}
+                r="2.6"
+                fill="#d29a2e"
+                stroke="none"
+              />
+            </g>
+          ) : (
+            <rect
+              key={i}
+              x={x}
+              y={y}
+              width={w}
+              height={h}
+              strokeDasharray="3 3"
+              strokeWidth="1.2"
+            />
+          ),
+        )}
+        <path d="M44 56h32v3H44ZM48 59v5M72 59v5" />
+      </g>
+    </svg>
+  )
+}

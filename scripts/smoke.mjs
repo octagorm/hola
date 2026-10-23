@@ -16,6 +16,9 @@ import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
 import { dictable } from '../src/app/lib/sonidos.ts'
 import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
+import { LESSONS } from '../src/app/data/words.ts'
+
+const LESSON_COUNT = LESSONS.length
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -179,6 +182,8 @@ const PAGES = [
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
+  ['#cajones', 'Los cajones'],
+  ['#museo', 'Tu museo'],
   ['/om', 'Om Hola'],
   ['/personvern', 'Personvern i Hola'],
   ['/admin', 'Logg inn som administrator'],
@@ -1412,6 +1417,85 @@ await test(
     await page.locator('.tx-bubble').waitFor()
   },
   { phone: true, learner: true },
+)
+
+for (const learner of [false, true])
+  await test(
+    `the drawers open, on ${learner ? 'a learner’s' : 'a new player’s'} bank`,
+    async (page) => {
+      await go(page, '#cajones')
+      await page.locator('.cj-drawer').first().waitFor()
+      const all = await page.locator('.cj-drawer').count()
+      expect(all === LESSON_COUNT, `${all} drawers`)
+      expect(
+        (await page.locator('.cj-drawer.st1').count()) > 3,
+        'some keepsakes wrapped',
+      )
+      // A shut drawer is empty
+      await page.locator('.cj-drawer.st0').first().click()
+      await page.locator('.cj-open').getByText('Tom ennå').waitFor()
+      await page.keyboard.press('Escape')
+      expect(!(await visible(page, '.cj-open')), 'closed by Escape')
+      // A drawer begun has its keepsake wrapped, and says its word
+      await page.locator('.cj-drawer.st1').first().click()
+      await page.locator('.cj-open .thing').waitFor()
+      await page.locator('.cj-open .cj-word b').waitFor()
+      await page.getByRole('button', { name: 'Neste skuff' }).click()
+      await page.getByRole('button', { name: 'Lukk skuffen' }).click()
+      if (!learner) {
+        // A new player knows the greetings: their keepsake is unwrapped
+        await page.locator('.cj-drawer.st2').first().click()
+        await page.locator('.cj-open.st2').getByText('el pañuelo').waitFor()
+      }
+    },
+    { learner, phone: learner },
+  )
+
+await test(
+  'the museum hangs a finished theme’s picture',
+  async (page) => {
+    await go(page, '#museo')
+    await page.locator('.mu-frame').first().waitFor()
+    expect(
+      !(await visible(page, '.mu-frame.hung')),
+      'nothing hung for a new learner',
+    )
+    // Every word of En el bar de tapas learnt
+    await page.evaluate(
+      (ids) => {
+        const bank = JSON.parse(localStorage.getItem('hola:bank:v1'))
+        const t = Date.now()
+        for (const id of ids)
+          bank.cards[id] = {
+            leer: { s: 6, t },
+            oir: { s: 4, t },
+            decir: { s: 3, t },
+            t,
+            n: 3,
+            x: 0,
+            i: t,
+          }
+        localStorage.setItem('hola:bank:v1', JSON.stringify(bank))
+      },
+      WORDS.filter((w) => w.lesson === 'tapeo').map((w) => w.id),
+    )
+    await page.reload()
+    await page.locator('.mu-frame').first().waitFor()
+    await page.getByRole('tab', { name: /La vida diaria/ }).click()
+    await page.locator('.mu-frame.hung').first().click()
+    await page.locator('.mu-open .gilt svg').waitFor()
+    await page.locator('.mu-open').getByText('La barra').waitFor()
+    await page.keyboard.press('ArrowRight')
+    await page.locator('.mu-open.empty').waitFor()
+    await page.getByRole('button', { name: 'Tilbake til salen' }).click()
+    // On through the doorway to the next room
+    await page.getByRole('button', { name: /Neste sal/ }).click()
+    await page.locator('.mu-sign').getByText('A la mesa').waitFor()
+    // And from the home page
+    await go(page, '')
+    await page.locator('.q-coll[href="#museo"]').getByText('1 av').waitFor()
+  },
+  { learner: true },
 )
 
 await test(

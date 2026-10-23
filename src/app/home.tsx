@@ -23,6 +23,7 @@ import {
 } from './lib/today'
 import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
 import { AccountButton } from './account'
+import { Colecciones } from './colecciones'
 import { useAccount } from './lib/account'
 import {
   InkBar,
@@ -262,6 +263,8 @@ export default function Home() {
             </div>
           </a>
         </div>
+
+        <Colecciones />
 
         <Themes />
 

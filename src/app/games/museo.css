@@ -1,0 +1,831 @@
+/* Tu museo: a museum in flat graphic style. Coloured walls, a different
+   colour in each room, under a long skylight; cream mouldings, a floor of
+   terracotta tiles, a bench, a doorway on to the next room. The pictures
+   on the walls are prints and posters in flat gilt frames, each with a
+   small label. */
+
+.mu {
+  --wall: #9e3329;
+  --ink: #241a14;
+  --ink-2: #5c4a3a;
+  --cream: #f3e7cc;
+  --cream-2: #e3d1aa;
+  --gold: #d3a54a;
+  --gold-2: #f2d58a;
+  --gold-3: #9a7128;
+  --floor: #c9764a;
+  --floor-2: #b5643c;
+  --mould: #7a6a4a;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-bottom: 40px;
+  font-family: 'Libre Caslon Text', Georgia, serif;
+  font-size: 17px;
+  color: var(--ink);
+  background: #efe2c4;
+}
+
+.mu :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mu :focus-visible {
+  outline: 3px solid #2f6fa8;
+  outline-offset: 3px;
+}
+
+.mu-top {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 20px 0;
+}
+
+.mu-top h1 {
+  margin: 0;
+  text-align: center;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mu-top h1 small {
+  display: block;
+  margin-top: 6px;
+  font-family: 'Libre Caslon Text', Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-2);
+}
+
+.mu-round,
+.mu-count {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.mu-round {
+  width: 46px;
+}
+
+.mu-round svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mu-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 14px;
+  white-space: nowrap;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 16px;
+}
+
+.mu-count b {
+  font-size: 20px;
+}
+
+.mu-intro {
+  max-width: 600px;
+  margin: 12px auto 0;
+  padding: 0 20px;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* --- The plan: a door for each room --- */
+
+.mu-plan {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 1120px;
+  margin: 18px auto 0;
+  padding: 0 16px;
+}
+
+.mu-plan button {
+  display: grid;
+  grid-template-columns: 22px auto;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 7px 12px 7px 9px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--cream);
+  text-align: left;
+}
+
+.mu-plan button i {
+  grid-row: span 2;
+  width: 20px;
+  height: 30px;
+  border: 2px solid var(--ink);
+  border-radius: 10px 10px 0 0;
+  background: var(--door);
+}
+
+.mu-plan button b {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.mu-plan button span {
+  display: none;
+}
+
+.mu-plan button small {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.mu-plan button.on {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.mu-plan button.on small {
+  color: var(--cream-2);
+}
+
+/* --- The room --- */
+
+.mu-room {
+  max-width: 1120px;
+  margin: 18px auto 0;
+  padding: 0 16px;
+}
+
+.mu-sky {
+  display: block;
+  width: 100%;
+  height: 110px;
+  border: 2.5px solid var(--ink);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.mu-wall {
+  position: relative;
+  padding: 26px 28px 40px;
+  background-color: var(--wall);
+  /* Light from the skylight, falling in a wide band */
+  background-image:
+    linear-gradient(
+      100deg,
+      transparent 0 18%,
+      rgba(255, 240, 210, 0.1) 18% 46%,
+      transparent 46%
+    ),
+    linear-gradient(transparent calc(100% - 26px), var(--cream-2) 0);
+  border: 2.5px solid var(--ink);
+  border-top: 8px solid var(--cream-2);
+  border-bottom: none;
+}
+
+.mu-wall::after {
+  /* the skirting */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  border-top: 2.5px solid var(--ink);
+}
+
+.mu-sign {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 28px;
+  padding: 10px 26px 9px;
+  background: var(--cream);
+  border: 2.5px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.mu-sign .no {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mu-sign b {
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+
+.mu-sign small {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.mu-hang {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px 44px;
+}
+
+.mu-hang > li {
+  --w: 230px;
+  width: var(--w);
+}
+
+.mu-hang > li.portrait.l {
+  --w: 230px;
+}
+.mu-hang > li.portrait.m {
+  --w: 180px;
+}
+.mu-hang > li.landscape.l {
+  --w: 340px;
+}
+.mu-hang > li.landscape.m {
+  --w: 270px;
+}
+.mu-hang > li.square.l {
+  --w: 270px;
+}
+.mu-hang > li.square.m {
+  --w: 215px;
+}
+
+.mu-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.mu-frame .gilt,
+.mu-frame .patch,
+.mu-big .gilt,
+.mu-big .patch {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.portrait .gilt,
+.portrait .patch {
+  aspect-ratio: 2 / 3;
+}
+
+.landscape .gilt,
+.landscape .patch {
+  aspect-ratio: 3 / 2;
+}
+
+.square .gilt,
+.square .patch {
+  aspect-ratio: 1;
+}
+
+/* A flat gilt frame: a band of gold between two dark lines, and a cream
+   mount inside */
+.gilt {
+  padding: 13px;
+  background: var(--gold);
+  border: 2.5px solid var(--ink);
+  box-shadow:
+    inset 0 0 0 4px var(--gold-2),
+    inset 0 0 0 6px var(--gold-3),
+    8px 10px 0 rgba(0, 0, 0, 0.28);
+  transition: transform 0.18s;
+}
+
+.gilt > svg,
+.gilt > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid var(--ink);
+  background: var(--cream);
+}
+
+.mu-frame:hover .gilt {
+  transform: translateY(-3px);
+}
+
+/* Where a picture will hang: a paler patch of wall, and its nail */
+.patch {
+  border: 2px dashed rgba(255, 245, 225, 0.45);
+  background: rgba(255, 245, 225, 0.08);
+}
+
+.patch .nail {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: #c8c2b8;
+  border: 2px solid var(--ink);
+}
+
+.mu-frame .label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 7px 12px;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  text-align: center;
+}
+
+.mu-frame .label b {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.mu-frame .label small {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.mu-frame.empty .label {
+  background: rgba(243, 231, 204, 0.88);
+}
+
+.mu .bar {
+  display: block;
+  width: 100%;
+  min-width: 120px;
+  height: 7px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: #e6d6b4;
+  overflow: hidden;
+}
+
+.mu .bar i {
+  display: block;
+  height: 100%;
+  background: var(--wall);
+}
+
+/* The doorway on to the next room */
+.mu-hang > li.door {
+  --w: 170px;
+}
+
+.mu-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cream);
+}
+
+.mu-door .arch {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 5;
+  padding: 12px 12px 0;
+  background: var(--cream-2);
+  border: 2.5px solid var(--ink);
+  border-bottom: none;
+  border-radius: 80px 80px 0 0;
+}
+
+.mu-door .arch i {
+  display: block;
+  height: 100%;
+  border: 2.5px solid var(--ink);
+  border-bottom: none;
+  border-radius: 70px 70px 0 0;
+  background:
+    linear-gradient(transparent 76%, #c9764a 76%),
+    linear-gradient(
+      transparent 30%,
+      var(--gold) 30% 31%,
+      transparent 31% 52%,
+      var(--gold) 52% 53%,
+      transparent 53%
+    ),
+    var(--next);
+  background-size:
+    100% 100%,
+    40% 100%,
+    100% 100%;
+  background-position:
+    0 0,
+    50% 0,
+    0 0;
+  background-repeat: no-repeat;
+}
+
+.mu-door .go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mu-door .go svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mu-door small {
+  font-size: 13px;
+  font-style: italic;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.mu-floor {
+  display: grid;
+  place-items: center;
+  height: 140px;
+  border: 2.5px solid var(--ink);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  background-color: var(--floor);
+  background-image:
+    linear-gradient(
+      45deg,
+      var(--floor-2) 25%,
+      transparent 25% 75%,
+      var(--floor-2) 75%
+    ),
+    linear-gradient(
+      45deg,
+      var(--floor-2) 25%,
+      transparent 25% 75%,
+      var(--floor-2) 75%
+    );
+  background-size: 56px 56px;
+  background-position:
+    0 0,
+    28px 28px;
+}
+
+.mu-bench {
+  width: 300px;
+  max-width: 80%;
+}
+
+.mu-bench .seat {
+  fill: var(--wall);
+}
+
+/* --- A picture opened --- */
+
+.mu-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(28, 20, 16, 0.7);
+  overflow-y: auto;
+}
+
+.mu-open {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(260px, 340px);
+  gap: 30px;
+  align-items: center;
+  max-width: min(1080px, 100%);
+  padding: 28px 64px 28px 28px;
+  background: var(--wall);
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 12px 14px 0 rgba(0, 0, 0, 0.4);
+  animation: mu-in 0.25s ease;
+}
+
+@keyframes mu-in {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+}
+
+.mu-big {
+  display: flex;
+  justify-content: center;
+}
+
+.mu-open.portrait .mu-big > * {
+  width: min(400px, 52vh);
+}
+
+.mu-open.landscape .mu-big > * {
+  width: min(560px, 90vh);
+}
+
+.mu-open.square .mu-big > * {
+  width: min(460px, 62vh);
+}
+
+.mu-big .patch {
+  display: grid;
+  place-items: center;
+}
+
+.mu-big .patch em {
+  color: var(--cream);
+  opacity: 0.8;
+}
+
+.mu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  background: var(--cream);
+  border: 2.5px solid var(--ink);
+}
+
+.mu-text h2 {
+  margin: 0;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.mu-text .sub {
+  margin: 0;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-2);
+}
+
+.mu-text .medium {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.mu-text .about {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--cream-2);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.mu-text .far p {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+.mu-text .rule {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.mu-text .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.mu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mu-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mu-btn.ghost {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.mu-step,
+.mu-x {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--cream);
+}
+
+.mu-step svg,
+.mu-x svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mu-x {
+  top: 10px;
+  right: 10px;
+}
+
+.mu-step.prev {
+  right: 10px;
+  bottom: 64px;
+}
+
+.mu-step.next {
+  right: 10px;
+  bottom: 12px;
+}
+
+/* --- A phone --- */
+
+@media (max-width: 860px) {
+  .mu-open {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding: 62px 16px 18px;
+  }
+
+  .mu-open.portrait .mu-big > * {
+    width: min(300px, 100%);
+  }
+
+  .mu-open.landscape .mu-big > *,
+  .mu-open.square .mu-big > * {
+    width: 100%;
+  }
+
+  .mu-step.prev {
+    top: 10px;
+    left: 10px;
+    right: auto;
+    bottom: auto;
+  }
+
+  .mu-step.next {
+    top: 10px;
+    left: 62px;
+    right: auto;
+    bottom: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .mu-top {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 14px 16px 0;
+  }
+
+  .mu-top h1 {
+    font-size: 30px;
+  }
+
+  .mu-plan {
+    gap: 6px;
+  }
+
+  .mu-plan button {
+    padding: 6px 9px 6px 7px;
+    grid-template-columns: 16px auto;
+    column-gap: 6px;
+  }
+
+  .mu-plan button i {
+    width: 15px;
+    height: 24px;
+  }
+
+  .mu-room {
+    padding: 0 10px;
+  }
+
+  .mu-sky {
+    height: 70px;
+  }
+
+  .mu-wall {
+    padding: 20px 14px 40px;
+  }
+
+  .mu-sign b {
+    font-size: 24px;
+  }
+
+  .mu-hang {
+    gap: 30px 18px;
+  }
+
+  .mu-hang > li {
+    width: calc(50% - 9px);
+  }
+
+  .mu-hang > li.landscape {
+    width: 100%;
+  }
+
+  .mu-hang > li.landscape.m {
+    width: 86%;
+  }
+
+  .gilt {
+    padding: 8px;
+  }
+
+  .mu-frame .label {
+    padding: 6px 8px;
+  }
+
+  .mu-frame .label b {
+    font-size: 15px;
+  }
+
+  .mu .bar {
+    min-width: 0;
+  }
+
+  .mu-floor {
+    height: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mu-open {
+    animation: none;
+  }
+
+  .gilt {
+    transition: none;
+  }
+}
