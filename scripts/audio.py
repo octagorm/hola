@@ -64,7 +64,9 @@ MODEL = "gemini-3.8-flash-tts"
 # Requests in one batch job
 PER_JOB = 50
 # How a word is said, and a line when its voice has no manner of its own
-WORD_STYLE = "Castilian Spanish, as a patient teacher says a word to a beginner: clear and a little slow, every sound exact"
+# (asked to be slow, the teacher left a pause of up to a second between
+# the article and the noun: la ... dama)
+WORD_STYLE = "Castilian Spanish, as a teacher says a new word to a learner: clear and natural, at a calm pace, said in one breath, the article joined to the noun with no pause between them"
 LINE_STYLE = "natural and warm, at a calm pace a learner can follow"
 
 
@@ -262,6 +264,15 @@ def doubtful(it, seconds: float) -> bool:
     return seconds > 1.0 + 0.15 * letters or (letters > 8 and seconds < 0.04 * letters)
 
 
+def paused(it, path: Path) -> bool:
+    """Whether a word is said with a pause inside it, as la ... dama: the
+    article and the noun are one thing to hear"""
+    if it["kind"] != "word":
+        return False
+    total = duration(path)
+    return any(s > 0.05 and e < total - 0.05 for s, e in gaps(path, least=0.4))
+
+
 def made(it, raw: Path, manifest, doubts) -> bool:
     """The item's file trimmed from its raw sound, and noted in the
     manifest"""
@@ -272,7 +283,7 @@ def made(it, raw: Path, manifest, doubts) -> bool:
         return False
     fid, seconds = trimmed
     manifest[key_of(it)] = fid
-    if doubtful(it, seconds):
+    if doubtful(it, seconds) or paused(it, OUT / f"{fid}.mp3"):
         doubts.append((it, seconds))
     return True
 
@@ -485,7 +496,7 @@ def main():
     save(manifest)
     tidy(manifest)
     if doubts:
-        print(f"worth a listen, as far from the length of their text ({len(doubts)}):")
+        print(f"worth a listen, as far from the length of their text or with a pause inside a word ({len(doubts)}):")
         for it, seconds in doubts:
             print(f"  {seconds:4.1f} s  public/audio/{manifest[key_of(it)]}.mp3  {it['text']}")
     missing = sum(key_of(it) not in manifest for it in items)
