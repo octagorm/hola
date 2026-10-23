@@ -24,7 +24,10 @@ import type {
 // its time runs out, when its danger arrives: a rock, a reef, a net. Under
 // water the air runs low, and the captain takes the boat up to breathe.
 // A miss costs a little, a bump to the hull or a bit of air, and the third
-// bump ends the dive.
+// bump ends the dive; a run of orders followed mends a plate again. An
+// order pays for being understood: a word of it looked up halves its
+// points, and a move made once the danger has shown the way out earns
+// little.
 //
 // Time is the dive's own clock, moved on by the page every frame, so that
 // it stands still while the game is paused or the page hidden.
@@ -53,6 +56,10 @@ export const DEEPEST = 3
 const RUN = [0, 40, 90, 140]
 // Points for each plate of the hull left at the end
 const HULL_BONUS = 15
+// Orders followed in a row that mend a plate of the hull
+export const MEND = 5
+// The points for a move made once the danger had shown the way out
+export const SEEN_GAIN = 5
 
 // Dangers that strike the boat when the order is missed
 export const COLLISIONS: ReadonlySet<Danger> = new Set<Danger>([
@@ -199,11 +206,24 @@ export function span(o: Order, given: number, v: Voyage): number {
   return Math.max(5, v.time - given * 0.08) * (o.do.length > 1 ? 1.5 : 1)
 }
 
+// What helped with an order: a word of it looked up, or the danger come
+// so near that the picture showed the way out
+export type Aid = 'none' | 'looked' | 'seen'
+
 // The points an order earns: more the quicker, twice as many for an
-// officer, who only hears it
-export function gain(ok: boolean, left: number, officer: boolean): number {
+// officer, who only hears it; half for a word looked up, and little for a
+// move the picture showed
+export function gain(
+  ok: boolean,
+  left: number,
+  officer: boolean,
+  aid: Aid = 'none',
+): number {
   if (!ok) return 0
-  return (officer ? 2 : 1) * (10 + Math.round(Math.max(0, left) * 10))
+  const k = officer ? 2 : 1
+  if (aid === 'seen') return k * SEEN_GAIN
+  const base = 10 + Math.round(Math.max(0, left) * 10)
+  return k * (aid === 'looked' ? Math.round(base / 2) : base)
 }
 
 export type How = 'right' | 'wrong' | 'late'
@@ -219,23 +239,26 @@ export interface Evidence {
 // on its words; the step missed is wrong on them, fully for a wrong move
 // and by half for time running out, which may be slowness as much as not
 // knowing. A step done once the danger had shown the way out says
-// nothing, the picture having told it.
+// nothing, the picture having told it, and a word looked up says nothing
+// either.
 export function evidence(
   o: Order,
   how: How,
   steps: Array<number>,
   danger: Danger,
+  looked: ReadonlySet<string> = new Set(),
 ): Array<Evidence> {
   const seen = HIDDEN.has(danger)
   const out = new Map<string, Evidence>()
   o.do.forEach((_, i) => {
     const at = steps.at(i)
+    const keys = o.keys[i].filter((id) => !looked.has(id))
     if (at !== undefined) {
       if (seen && at > REVEAL) return
-      for (const id of o.keys[i]) out.set(id, { id, right: true, share: 1 })
+      for (const id of keys) out.set(id, { id, right: true, share: 1 })
     } else if (i === steps.length && how !== 'right') {
       const share = how === 'wrong' ? 1 : 0.5
-      for (const id of o.keys[i]) out.set(id, { id, right: false, share })
+      for (const id of keys) out.set(id, { id, right: false, share })
     }
   })
   return [...out.values()]
@@ -298,8 +321,9 @@ export interface Hud {
   // Steps of the order done
   done: number
   result: How | null
-  // What was pressed, when it was wrong
+  // What was pressed, when it was wrong; what helped
   wrong: Action | null
+  aid: Aid
   gain: number
   // What the captain says that is not an order, and what he says of a bump
   line: Line | null
@@ -310,8 +334,13 @@ export interface Hud {
   // The water darker; the coral bed come into view
   murk: boolean
   bed: boolean
-  // Bumps taken, for the scene to shake
+  // Bumps taken, for the scene to shake; plates mended, and the orders
+  // followed in a row towards the next
   hits: number
+  mends: number
+  streak: number
+  // The order just settled mended a plate
+  mended: boolean
   // Times up for air
   breaths: number
   missed: Array<Order>
@@ -368,6 +397,8 @@ interface Current {
   t0: number
   span: number
   steps: Array<number>
+  // The words looked up
+  looked: Set<string>
   settle: (o: Outcome) => void
 }
 
@@ -409,6 +440,7 @@ export class Dive {
       done: 0,
       result: null,
       wrong: null,
+      aid: 'none',
       gain: 0,
       line: null,
       remark: null,
@@ -417,6 +449,9 @@ export class Dive {
       murk: false,
       bed: false,
       hits: 0,
+      mends: 0,
+      streak: 0,
+      mended: false,
       breaths: 0,
       missed: [],
       home: false,
@@ -478,6 +513,13 @@ export class Dive {
     this.emit({ done: c.steps.length, boat: effect(this.hud.boat, a, c.top) })
     if (c.steps.length === c.order.do.length)
       this.settle({ how: 'right', p, steps: c.steps })
+  }
+
+  // A word of the order looked up while it runs
+  look(id: string) {
+    const c = this.current
+    if (!c || this.stopped) return
+    c.looked.add(id)
   }
 
   stop() {
@@ -588,6 +630,7 @@ export class Dive {
     this.last = o
     const time = span(o, this.hud.given, this.v)
     const t0 = this.now + 0.4
+    const looked = new Set<string>()
     const out = await new Promise<Outcome>((settle) => {
       this.current = {
         order: o,
@@ -596,6 +639,7 @@ export class Dive {
         t0,
         span: time,
         steps: [],
+        looked,
         settle,
       }
       this.passing = null
@@ -607,6 +651,8 @@ export class Dive {
         done: 0,
         result: null,
         wrong: null,
+        aid: 'none',
+        mended: false,
         gain: 0,
         line: null,
         remark: null,
@@ -615,12 +661,18 @@ export class Dive {
     })
     this.check()
     const ok = out.how === 'right'
-    const g = gain(ok, 1 - out.p, this.opts.officer)
+    const aid: Aid =
+      HIDDEN.has(danger) && out.p > REVEAL
+        ? 'seen'
+        : looked.size
+          ? 'looked'
+          : 'none'
+    const g = gain(ok, 1 - out.p, this.opts.officer, aid)
     this.opts.onSettled?.({
       order: o,
       how: out.how,
       gain: g,
-      evidence: evidence(o, out.how, out.steps, danger),
+      evidence: evidence(o, out.how, out.steps, danger, looked),
     })
     // A miss: the danger strikes, or a bit of air is lost; then the crew
     // does late what was not done (but gathers no coral)
@@ -637,10 +689,18 @@ export class Dive {
       late()
     }
     this.passing = { p0: Math.min(1, out.p), t: 0, hit: strikes }
+    // A run of orders followed mends a plate the hull has lost
+    const streak = ok ? this.hud.streak + 1 : 0
+    const mend = streak >= MEND && this.hud.hull < HULL
     this.emit({
       phase: 'result',
       result: out.how,
+      aid: ok ? aid : 'none',
       gain: g,
+      streak: mend ? 0 : streak,
+      hull: this.hud.hull + (mend ? 1 : 0),
+      mends: this.hud.mends + (mend ? 1 : 0),
+      mended: mend,
       score: this.hud.score + g,
       given: this.hud.given + 1,
       right: this.hud.right + (ok ? 1 : 0),

@@ -9,7 +9,9 @@ import {
   DEEPEST,
   Dive,
   HULL,
+  MEND,
   REVEAL,
+  SEEN_GAIN,
   actionsOf,
   bestKey,
   effect,
@@ -219,6 +221,14 @@ describe('an order', () => {
     expect(gain(false, 1, true)).toBe(0)
   })
 
+  it('pays for being understood: half for a word looked up, little when seen', () => {
+    expect(gain(true, 1, false, 'looked')).toBe(10)
+    expect(gain(true, 0.5, true, 'looked')).toBe(16)
+    expect(gain(true, 0.1, false, 'seen')).toBe(SEEN_GAIN)
+    expect(gain(true, 0.1, true, 'seen')).toBe(SEEN_GAIN * 2)
+    expect(gain(true, 0.1, false, 'seen')).toBeLessThan(gain(true, 0.1, false))
+  })
+
   it('says something of its words only when understood, not seen', () => {
     const o = ORDER['roca-babor']!
     expect(evidence(o, 'right', [0.3], 'rock-l')).toEqual([
@@ -241,6 +251,14 @@ describe('an order', () => {
     // With nothing to see, late is still understood
     expect(evidence(ORDER.avante!, 'right', [0.9], 'none')).toEqual([
       { id: 'avante', right: true, share: 1 },
+    ])
+    // A word looked up says nothing, right or wrong
+    const looked = new Set(['el ancla'])
+    expect(evidence(two, 'right', [0.2, 0.3], 'quay', looked)).toEqual([
+      { id: '¡alto!', right: true, share: 1 },
+    ])
+    expect(evidence(two, 'wrong', [0.2], 'quay', looked)).toEqual([
+      { id: '¡alto!', right: true, share: 1 },
     ])
   })
 })
@@ -356,9 +374,60 @@ describe('a dive', () => {
     const wrong = settled.find((s) => s.how === 'wrong')
     expect(wrong?.evidence).toEqual([{ id: 'a babor', right: false, share: 1 }])
     expect(over?.home).toBe(true)
-    expect(over?.hull).toBe(HULL - 1)
-    expect(over?.bonus).toBe((HULL - 1) * 15 * 2)
+    expect(over?.hits).toBe(1)
     const right = settled.find((s) => s.how === 'right')
     expect(right?.gain).toBeGreaterThanOrEqual(20)
+    // The orders followed after it mended the plate
+    const after = settled.slice(settled.indexOf(wrong!) + 1)
+    expect(after.length).toBeGreaterThanOrEqual(MEND)
+    expect(over?.mends).toBe(1)
+    expect(over?.hull).toBe(HULL)
+    expect(over?.bonus).toBe(HULL * 15 * 2)
+  })
+
+  it('mends no plate while the hull is whole, nor after a run broken', async () => {
+    let n = 0
+    const { over } = await sail(VOYAGES[0], (h, d) => {
+      const o = h.order
+      if (!o) return
+      n++
+      // Every fourth order missed by waiting: never five in a row
+      if (n % 4 === 0) return
+      for (const a of o.do) d.act(a)
+    })
+    expect(over?.mends).toBe(0)
+    expect(over?.streak).toBeLessThan(MEND)
+  })
+
+  it('halves the points of an order whose words were looked up, and records nothing of them', async () => {
+    let looked = 0
+    const { settled } = await sail(VOYAGES[0], (h, d) => {
+      const o = h.order
+      if (!o) return
+      if (looked === 0 && o.id === 'babor') {
+        looked++
+        d.look('a babor')
+      }
+      for (const a of o.do) d.act(a)
+    })
+    expect(looked).toBe(1)
+    const helped = settled.find((s) => s.order.id === 'babor')!
+    expect(helped.how).toBe('right')
+    expect(helped.evidence).toEqual([])
+    const unhelped = settled.find((s) => s.order.id === 'avante')!
+    expect(helped.gain).toBe(Math.round(unhelped.gain / 2))
+  })
+
+  it('pays little for waiting until the danger shows the way', async () => {
+    const { settled } = await sail(
+      VOYAGES[0],
+      (h, d) => {
+        for (const a of h.order?.do ?? []) d.act(a)
+      },
+      { delay: 7.6 },
+    )
+    const seen = settled.filter((s) => s.how === 'right' && !s.evidence.length)
+    expect(seen.length).toBeGreaterThan(0)
+    for (const s of seen) expect(s.gain).toBe(SEEN_GAIN)
   })
 })

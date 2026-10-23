@@ -63,9 +63,10 @@ import type { Hud, Settled, Tick } from '../lib/ictineo'
 import './ictineo.css'
 
 // El Ictíneo: at the helm of Narciso Monturiol's wooden submarine, 1859.
-// The captain gives his orders in Spanish; the helm is pictures and keys.
-// A cadet sees each order in mixed text, an officer only hears it, for
-// twice the points. The rules are in lib/ictineo.ts, the voyages and the
+// The captain gives his orders in Spanish; the helm is pictures and keys,
+// named in Norwegian. A cadet sees each order in Spanish, with no Norwegian
+// over it (a word tapped shows what it means, for half the points); an
+// officer only hears it, for twice the points. The rules are in lib/ictineo.ts, the voyages and the
 // orders in data/ictineo.ts, the pictures in ictineoArt.tsx.
 
 const FONTS =
@@ -180,9 +181,7 @@ export default function Ictineo({ arg }: PageProps) {
           </h1>
         </header>
 
-        {phase === 'ready' && (
-          <Ready at={at} onPick={setAt} fresh={fresh} onStart={start} />
-        )}
+        {phase === 'ready' && <Ready at={at} onPick={setAt} onStart={start} />}
         {phase === 'play' && (
           <Voyager
             key={round}
@@ -220,17 +219,18 @@ export default function Ictineo({ arg }: PageProps) {
 function Ready({
   at,
   onPick,
-  fresh,
   onStart,
 }: {
   at: number
   onPick: (i: number) => void
-  fresh: Array<string>
   onStart: (officer: boolean) => void
 }) {
-  const { bank } = useStore()
+  const { bank, levelOf } = useStore()
   const { hear } = useVoices()
   const voyage = VOYAGES[at]
+  // The voyage's words not known yet, to look at before setting out: the
+  // orders under way have no Norwegian over them
+  const study = voyageWords(voyage).filter((id) => levelOf(id) < 2)
   // Enter sets out as a cadet
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -264,6 +264,12 @@ function Ready({
           bygde. Kapteinen gir ordrer på spansk: styr unna klippene, dykk og kom
           opp igjen før faren er der. Under vann går lufta tom, og da tar han
           dere opp for å puste.
+        </p>
+        <p>
+          Ordrene står bare på spansk. Trykk på et ord du ikke kan, så ser du
+          hva det betyr, men da gir ordren halve poeng. Feil vei gir et smell i
+          skroget, og tre smell sender dere hjem. Fem ordrer riktig på rad
+          reparerer et smell.
         </p>
         <Controls voyage={voyage} />
       </div>
@@ -306,10 +312,10 @@ function Ready({
           })}
         </ol>
         <p className="about">{voyage.about}</p>
-        {fresh.length > 0 && (
+        {study.length > 0 && (
           <p className="ic-fresh">
-            <b>Nye ord på dette toktet:</b>{' '}
-            {fresh.map((id, i) => {
+            <b>Ord å kunne på dette toktet:</b>{' '}
+            {study.map((id, i) => {
               const w = WORD[id]
               if (!w) return null
               return (
@@ -457,10 +463,11 @@ function Voyager({
 
   useEffect(() => {
     const link = officer ? 'oir' : 'leer'
-    // A cadet reads the order in mixed text, its words glossed until known:
-    // reading with help, 0.3. An officer only hears it and acts on it, a
-    // choice among the helm's few controls: 0.6, on hearing.
-    const weight = officer ? 0.6 : 0.3
+    // A cadet reads the order in Spanish alone and acts on it, a choice
+    // among the helm's controls named in Norwegian: 0.4, on reading (a
+    // word looked up records nothing). An officer only hears it: 0.6, on
+    // hearing.
+    const weight = officer ? 0.6 : 0.4
     const d = new Dive(voyage, {
       officer,
       speak: (line) => speakRef.current(line),
@@ -508,11 +515,15 @@ function Voyager({
     }
   }, [voyage, officer])
 
-  // A bump: the wrong knock
+  // A bump: the wrong knock; a plate mended: the voyage's fanfare
   const hits = hud?.hits ?? 0
   useEffect(() => {
     if (hits) blip('wrong')
   }, [hits])
+  const mends = hud?.mends ?? 0
+  useEffect(() => {
+    if (mends) blip('win')
+  }, [mends])
 
   const live = hud?.phase === 'order' && !paused
   const act = (a: Action) => {
@@ -604,6 +615,7 @@ function Voyager({
           talking={talking}
           hear={hear !== false}
           onHear={hearAgain}
+          onLook={(id) => dive.current?.look(id)}
         />
         <Helm hud={hud} live={live} onAct={act} />
       </div>
@@ -896,9 +908,13 @@ function Gauges({
         className="ic-hull"
         role="img"
         aria-label={`Skroget tåler ${hud.hull} smell til`}
+        key={`m${hud.mends}`}
       >
         {[0, 1, 2].map((i) => (
-          <i key={i} className={i < hud.hull ? 'ok' : 'gone'} />
+          <i
+            key={i}
+            className={`${i < hud.hull ? 'ok' : 'gone'} ${hud.mends && i === hud.hull - 1 ? 'mended' : ''}`}
+          />
         ))}
       </span>
       <span className="ic-air" ref={air} role="img" aria-label="Luft">
@@ -924,20 +940,22 @@ function Gauges({
   )
 }
 
-// What the captain says: the order (hidden from an officer until it is
-// settled), or a line of his
+// What the captain says: the order, in Spanish alone (hidden from an
+// officer until it is settled), or a line of his in mixed text
 function Said({
   hud,
   officer,
   talking,
   hear,
   onHear,
+  onLook,
 }: {
   hud: Hud
   officer: boolean
   talking: boolean
   hear: boolean
   onHear: (slow?: boolean) => void
+  onLook: (id: string) => void
 }) {
   const o = hud.order
   const settled = hud.phase === 'result' || hud.phase === 'over'
@@ -948,7 +966,7 @@ function Said({
   const long = !!text && plain(text).length > 22 ? 'long' : ''
   const verdict =
     hud.result === 'right'
-      ? `Riktig! +${hud.gain}`
+      ? `Riktig! +${hud.gain}${hud.aid === 'looked' ? ' · halve poeng' : ''}${hud.mended ? ' · skroget er reparert' : ''}`
       : hud.result === 'wrong'
         ? 'Feil vei'
         : hud.result === 'late'
@@ -974,7 +992,7 @@ function Said({
             </p>
           ) : (
             <p className={`es ${long}`} lang="es" key={`${o.id}${hud.given}`}>
-              <Mixed line={o.line} />
+              <Mixed line={o.line} all={2} onPeek={onLook} />
             </p>
           )
         ) : line ? (

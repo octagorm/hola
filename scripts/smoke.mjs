@@ -1546,6 +1546,11 @@ await test(
           last = at
           n++
           expect(!!ORDER[id], `an order «${id}»`)
+          // In Spanish alone: the Norwegian is not over its words
+          expect(
+            !(await live.locator('rt').count()),
+            `«${id}» without Norwegian over it`,
+          )
           for (const a of ORDER[id].do)
             if (n % 2 && keys[a]) await page.keyboard.press(keys[a])
             else await page.locator(`.ic-helm .ic-key.${a}`).click()
