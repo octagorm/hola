@@ -4,7 +4,8 @@ import AUDIO from '~/app/data/audio.json'
 import '~/app/hola.css'
 
 // What Hola is, and the app's home page on Google's consent screen: keep it
-// saying what Hola is, with a link to /personvern. Signing in is told of
+// saying what Hola is, under the app's name alone (Google's brand check
+// looks for it), with a link to /personvern. Signing in is told of
 // only where the page is built with accounts (src/app/lib/cloud.tsx), and
 // the Gemini voices only once there are recordings (scripts/audio.py).
 const accounts = !!import.meta.env.PUBLIC_CONVEX_URL
@@ -13,7 +14,7 @@ const recorded = Object.keys(AUDIO).length > 0
 
 <Base
   title="Om Hola"
-  description="Hva Hola er, hvordan ordene læres, og hva som lagres: alt ligger i nettleseren din."
+  description="Hva Hola er, hvordan ordene læres, og hva som lagres."
 >
   <div class="q-shell">
     <header class="q-top">
@@ -29,7 +30,7 @@ const recorded = Object.keys(AUDIO).length > 0
           ><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg
         >
       </a>
-      <h1>Acerca de Hola<small>Om Hola</small></h1>
+      <h1>Hola<small>Om Hola</small></h1>
     </header>
     <main class="q-main q-about">
       <p class="lead">

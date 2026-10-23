@@ -147,7 +147,7 @@ const PAGES = [
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
-  ['/om', 'Acerca de Hola'],
+  ['/om', 'Om Hola'],
   ['/ingensteds', '¿Dónde?'],
 ]
 
