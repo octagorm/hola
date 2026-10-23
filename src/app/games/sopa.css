@@ -1,0 +1,746 @@
+/* Sopa de letras: a panel of azulejos set in a whitewashed wall, cobalt
+   on white glaze, lemons in the border and a star at each corner */
+
+.sl {
+  --cobalt: #1f3e9c;
+  --cobalt-2: #2d55bd;
+  --navy: #142a66;
+  --glaze: #fbf8f0;
+  --lemon: #f2c230;
+  --leaf: #4b8a43;
+  --terra: #c25a33;
+  --ink: #1c2442;
+  --ink-2: #4f5878;
+  --dot: rgba(31, 62, 156, 0.85);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  font-family: 'Figtree', system-ui, sans-serif;
+  color: var(--ink);
+  background-color: #f1ece2;
+  background-image:
+    radial-gradient(
+      1100px 620px at 8% -8%,
+      rgba(255, 253, 247, 0.9),
+      transparent 70%
+    ),
+    radial-gradient(
+      900px 700px at 100% 110%,
+      rgba(214, 202, 182, 0.45),
+      transparent 70%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42  0 0 0 0 .39  0 0 0 0 .33  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+
+.sl button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sl :focus-visible {
+  outline: 3px solid var(--lemon);
+  outline-offset: 2px;
+}
+
+.sl .g-m {
+  color: var(--cobalt-2);
+}
+
+.sl .g-f {
+  color: var(--terra);
+}
+
+/* A sprig of lemons hanging over the wall, and its shadow, where the
+   screen is wide enough to leave it room */
+.sl-branch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  pointer-events: none;
+}
+
+@media (max-width: 1239px) {
+  .sl-branch {
+    display: none;
+  }
+}
+
+.sl-col {
+  position: relative;
+  max-width: 560px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 16px 12px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sl-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sl-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--glaze);
+  border: 2px solid var(--cobalt);
+  box-shadow:
+    inset 0 0 0 3px var(--glaze),
+    inset 0 0 0 4.5px var(--lemon);
+  color: var(--cobalt);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sl-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sl-top h1 {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--navy);
+}
+
+.sl-top h1 small {
+  display: block;
+  margin-top: 5px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+
+.sl-count {
+  margin-left: auto;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--glaze);
+  border: 2px solid var(--cobalt);
+  box-shadow: 0 6px 14px -8px rgba(20, 42, 102, 0.5);
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.sl-count b {
+  font-size: 22px;
+  color: var(--navy);
+}
+
+/* --- The panel --- */
+
+.sl-play {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sl-board {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.8),
+    0 26px 40px -24px rgba(60, 48, 30, 0.55),
+    0 4px 10px -4px rgba(60, 48, 30, 0.3);
+}
+
+.sl-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sl-field {
+  position: absolute;
+  inset: 7.1%;
+}
+
+.sl-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--n), minmax(0, 1fr));
+  gap: 0.55cqi;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+/* Each letter on a tile of its own, white glaze with a crackle of light
+   and a quarter of a blue dot at each corner, so that four tiles meeting
+   make a dot */
+.sl-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6cqi;
+  background:
+    radial-gradient(circle at 0 0, var(--dot) 0 7%, transparent 7.5%),
+    radial-gradient(circle at 100% 0, var(--dot) 0 7%, transparent 7.5%),
+    radial-gradient(circle at 0 100%, var(--dot) 0 7%, transparent 7.5%),
+    radial-gradient(circle at 100% 100%, var(--dot) 0 7%, transparent 7.5%),
+    linear-gradient(160deg, #ffffff 0, #f8f4ea 50%, #efe8d8 100%);
+  box-shadow:
+    inset 0 -0.3cqi 0 rgba(120, 100, 70, 0.14),
+    inset 0 0.25cqi 0 rgba(255, 255, 255, 0.95);
+  color: var(--cobalt);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 5.7cqi;
+  line-height: 1;
+  transition:
+    transform 0.15s,
+    color 0.15s;
+}
+
+.sl-tile .l {
+  position: relative;
+  z-index: 1;
+  font-weight: 650;
+}
+
+/* A word found, glazed in its own colour; two crossing share the tile */
+.sl-tile.f {
+  background:
+    radial-gradient(
+      130% 100% at 28% 18%,
+      rgba(255, 255, 255, 0.35) 0,
+      transparent 60%
+    ),
+    var(--c1);
+  color: var(--i1);
+  animation: sl-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+.sl-tile.f.two {
+  background:
+    radial-gradient(
+      130% 100% at 28% 18%,
+      rgba(255, 255, 255, 0.3) 0,
+      transparent 60%
+    ),
+    linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
+  color: #fff;
+  text-shadow: 0 0.3cqi 0 rgba(20, 20, 40, 0.45);
+}
+
+/* A word not found, shown when given up */
+.sl-tile.shown {
+  background: color-mix(in srgb, var(--c1) 24%, var(--glaze));
+  box-shadow: inset 0 0 0 0.5cqi var(--c1);
+  color: var(--navy);
+}
+
+/* A word's first letter, lit by a hint */
+.sl-tile.hint {
+  z-index: 1;
+  background: radial-gradient(
+    130% 100% at 28% 18%,
+    #fffbe6 0,
+    #ffeaa0 60%,
+    #f6d36a 100%
+  );
+  animation: sl-glow 1.4s ease-in-out infinite;
+}
+
+/* The line being picked out, over anything else, and the first letter
+   tapped */
+.sl-tile.sel,
+.sl-tile.anchor {
+  background: radial-gradient(
+    130% 100% at 28% 18%,
+    #4569cf 0,
+    var(--cobalt) 60%,
+    #172f78 100%
+  );
+  color: #fff;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.sl-tile.anchor {
+  box-shadow: 0 0 0 0.7cqi var(--lemon);
+  animation: sl-breathe 1.1s ease-in-out infinite;
+}
+
+/* The square chosen with the keyboard */
+.sl-tile.cur {
+  z-index: 3;
+  outline: 0.7cqi solid var(--terra);
+  outline-offset: 0.2cqi;
+}
+
+/* The end: every tile but the words' turns over to its pattern */
+.sl-tile .m {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23fbf8f0'/%3E%3Cg fill='none' stroke='%231f3e9c' stroke-width='6'%3E%3Ccircle r='31'/%3E%3Ccircle cx='100' r='31'/%3E%3Ccircle cy='100' r='31'/%3E%3Ccircle cx='100' cy='100' r='31'/%3E%3C/g%3E%3Cg fill='%231f3e9c'%3E%3Ccircle r='14'/%3E%3Ccircle cx='100' r='14'/%3E%3Ccircle cy='100' r='14'/%3E%3Ccircle cx='100' cy='100' r='14'/%3E%3Cpath d='M50 20C55 38 62 45 80 50 62 55 55 62 50 80 45 62 38 55 20 50 38 45 45 38 50 20Z'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='7' fill='%23f2c230'/%3E%3C/svg%3E")
+    center / 100% 100%;
+}
+
+.sl-tile.deco {
+  animation: sl-turn 0.7s ease-in-out var(--d) both;
+}
+
+.sl-tile.deco .l {
+  animation: sl-hide 0.7s linear var(--d) both;
+}
+
+.sl-tile.deco .m {
+  animation: sl-show 0.7s linear var(--d) both;
+}
+
+.sl-play.won .sl-tile.f {
+  animation: sl-hop 0.6s ease-out calc(var(--d) + 0.2s) both;
+}
+
+/* A line that was no word, fading */
+.sl-miss {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  fill: none;
+  stroke: var(--cobalt);
+  stroke-width: 0.78;
+  stroke-linecap: round;
+  animation: sl-fade 0.65s ease-out both;
+}
+
+@keyframes sl-fade {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sl-pop {
+  0% {
+    transform: scale(0.82);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes sl-hop {
+  0%,
+  100% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-1.4cqi) scale(1.08);
+  }
+}
+
+@keyframes sl-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0.7cqi var(--lemon);
+  }
+  50% {
+    box-shadow: 0 0 0 1.1cqi rgba(242, 194, 48, 0.6);
+  }
+}
+
+@keyframes sl-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0.6cqi var(--lemon),
+      0 0 2.4cqi rgba(242, 194, 48, 0.85);
+  }
+  50% {
+    box-shadow:
+      0 0 0 0.9cqi var(--lemon),
+      0 0 4cqi rgba(242, 194, 48, 1);
+  }
+}
+
+@keyframes sl-turn {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: scaleX(0.04);
+  }
+}
+
+@keyframes sl-hide {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sl-show {
+  0%,
+  49% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* --- The list, on a tiled plaque --- */
+
+.sl-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sl-list,
+.sl-card {
+  padding: 16px 16px 14px;
+  border-radius: 8px;
+  background:
+    radial-gradient(120% 80% at 20% 0, #ffffff 0, transparent 60%), var(--glaze);
+  border: 2px solid var(--cobalt);
+  box-shadow:
+    inset 0 0 0 4px var(--glaze),
+    inset 0 0 0 5.5px var(--lemon),
+    0 18px 30px -22px rgba(60, 48, 30, 0.6);
+}
+
+.sl-list h2 {
+  margin: 2px 4px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+
+.sl-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 8px;
+}
+
+.sl-list button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+}
+
+.sl-list button:hover {
+  background: rgba(31, 62, 156, 0.06);
+}
+
+.sl-list .sw {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 0 0, var(--dot) 0 8%, transparent 9%),
+    radial-gradient(circle at 100% 0, var(--dot) 0 8%, transparent 9%),
+    radial-gradient(circle at 0 100%, var(--dot) 0 8%, transparent 9%),
+    radial-gradient(circle at 100% 100%, var(--dot) 0 8%, transparent 9%),
+    linear-gradient(160deg, #ffffff 0, #f3eddf 100%);
+  box-shadow:
+    0 0 0 1px rgba(31, 62, 156, 0.35),
+    inset 0 -2px 0 rgba(120, 100, 70, 0.14);
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--cobalt);
+}
+
+.sl-list .hinted .sw {
+  background: linear-gradient(160deg, #fffbe6 0, #f6d36a 100%);
+  box-shadow: 0 0 0 2px var(--lemon);
+}
+
+.sl-list .got .sw {
+  background: var(--c1);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.sl-list .missed .sw {
+  background: color-mix(in srgb, var(--c1) 24%, #fff);
+  box-shadow: inset 0 0 0 2px var(--c1);
+}
+
+.sl-list .txt {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.sl-list .txt b {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+.sl-list .txt small {
+  display: block;
+  margin-top: 1px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.sl-list .missed .txt b {
+  color: var(--ink-2);
+}
+
+/* The word's length, a little tile for each letter */
+.sl-list .len {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.sl-list .len i {
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: #d5dcf0;
+  box-shadow: inset 0 0 0 1px rgba(31, 62, 156, 0.45);
+}
+
+.sl-list .say {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--cobalt);
+  opacity: 0.55;
+}
+
+.sl-help {
+  margin: 10px 4px 0;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(31, 62, 156, 0.3);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.sl-help p {
+  margin: 0 0 6px;
+}
+
+.sl-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--terra) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- Cards --- */
+
+.sl-card {
+  position: relative;
+  margin-top: 18px;
+  padding: 20px 22px;
+  animation: q-rise 0.4s ease-out both;
+}
+
+.sl-result {
+  margin-top: 0;
+}
+
+.sl-result.won {
+  animation-delay: 0.5s;
+}
+
+.sl-card .kick {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--terra);
+}
+
+.sl-card h2 {
+  margin: 4px 0 6px;
+  padding-right: 52px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+.sl-card p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.sl-card .acts {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.sl-rosette {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+}
+
+.sl-result.won .sl-rosette {
+  animation: sl-spin 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.7s both;
+}
+
+@keyframes sl-spin {
+  from {
+    transform: rotate(-180deg) scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.sl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--cobalt);
+  box-shadow:
+    inset 0 -3px 0 rgba(0, 0, 0, 0.25),
+    0 0 0 2px var(--lemon);
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.sl-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sl-btn.ghost {
+  background: var(--glaze);
+  color: var(--cobalt) !important;
+  box-shadow: inset 0 0 0 2px var(--cobalt);
+}
+
+/* --- A wide screen: the panel beside the list --- */
+
+@media (min-width: 900px) {
+  .sl-col {
+    max-width: 1080px;
+    padding: 28px 32px 36px;
+  }
+
+  .sl-top {
+    padding-left: 4px;
+  }
+
+  .sl-top h1 {
+    font-size: 42px;
+  }
+
+  .sl-play {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 600px) minmax(300px, 1fr);
+    gap: 36px;
+    align-items: start;
+  }
+
+  .sl-list ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sl-list .txt {
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-tile,
+  .sl-tile .l,
+  .sl-tile .m,
+  .sl-card,
+  .sl-rosette,
+  .sl-miss {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

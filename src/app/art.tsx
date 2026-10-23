@@ -449,7 +449,7 @@ export function TocArt({
 // --- The games ---
 
 export type GameIconId =
-  'palabra' | 'palabras' | 'crucigrama' | 'rosco' | 'cadaver' | 'tapas'
+  'palabra' | 'palabras' | 'crucigrama' | 'rosco' | 'cadaver' | 'sopa' | 'tapas'
 
 export function GameIcon({
   id,
@@ -533,6 +533,35 @@ export function GameIcon({
           <path d="M12 30H32L28 40H16Z" fill="#4f7fa8" fillOpacity=".45" />
           <path d="M6 16H38M6 29H38" strokeDasharray="2 3" />
         </g>
+      )}
+      {id === 'sopa' && (
+        <>
+          <path
+            d="M10 34 34 10"
+            stroke="#4f7fa8"
+            strokeWidth="8"
+            strokeLinecap="round"
+            opacity=".55"
+          />
+          <path
+            d="M8 22H20"
+            stroke="#d29a2e"
+            strokeWidth="7"
+            strokeLinecap="round"
+            opacity=".6"
+          />
+          <g fill="none" stroke={INK} strokeWidth="1.5">
+            <rect x="4" y="4" width="36" height="36" />
+            <path d="M16 4V40M28 4V40M4 16H40M4 28H40" />
+          </g>
+          <g fill={INK}>
+            {[16, 28].flatMap((x) =>
+              [16, 28].map((y) => (
+                <circle key={`${x},${y}`} cx={x} cy={y} r="1.8" />
+              )),
+            )}
+          </g>
+        </>
       )}
       {id === 'tapas' && (
         <>

@@ -42,6 +42,7 @@ The games:
 | Mini crucigrama   | `games/crucigrama.tsx` | A small crossword of the words whose saying has faded most; the dusk of Destino           |
 | El rosco          | `games/rosco.tsx`      | A ring of letters, a word for each from its meaning, as in Pasapalabra; the Teatro-Museo  |
 | Cadáver exquisito | `games/cadaver.tsx`    | Absurd sentences from random parts, where the verb and the adjective must agree; 1969 pop |
+| Sopa de letras    | `games/sopa.tsx`       | A word search of words met, found from their meanings; azulejos with lemons               |
 | Repaso, Nuevas    | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras      | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 

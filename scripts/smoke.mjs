@@ -5,6 +5,8 @@
 //
 //   node scripts/smoke.mjs [part of a test's name, to run only those]
 import { chromium } from 'playwright'
+import { WORDS, meaning } from '../src/app/data/words.ts'
+import { letters } from '../src/app/lib/spanish.ts'
 import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 
@@ -146,6 +148,7 @@ const PAGES = [
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
   ['#cadaver', 'Cadáver exquisito'],
+  ['#sopa', 'Sopa de letras'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -331,6 +334,90 @@ await test(
       await page.waitForTimeout(60)
     }
     await page.getByText(/av 6 uten feil/).waitFor()
+  },
+  { learner: true },
+)
+
+// The words met with a meaning, as a game asks for them
+const byMeaning = (text) => WORDS.filter((w) => meaning(w) === text)
+
+// Where the words still to find in Sopa de letras lie, from the meanings
+// in its list: the first letter and the last
+async function sopaPlaces(page) {
+  const ls = await page.$$eval('.sl-tile .l', (els) =>
+    els.map((e) => e.textContent),
+  )
+  const n = Math.round(Math.sqrt(ls.length))
+  const at = (r, c) => (r < n && c < n ? ls[r * n + c] : '')
+  const todo = await page.$$eval('.sl-list li button:not(.got)', (els) =>
+    els.map((e) => e.querySelector('.txt')?.firstChild?.textContent ?? ''),
+  )
+  const out = []
+  for (const w of todo.flatMap(byMeaning)) {
+    const a = [...letters(w.bare)]
+    for (const [dr, dc] of [
+      [0, 1],
+      [1, 0],
+      [1, 1],
+    ])
+      for (let r = 0; r < n; r++)
+        for (let c = 0; c < n; c++)
+          if (a.every((ch, k) => at(r + dr * k, c + dc * k) === ch))
+            out.push({
+              from: r * n + c,
+              to: (r + dr * (a.length - 1)) * n + c + dc * (a.length - 1),
+            })
+  }
+  return out
+}
+
+async function middleOf(page, selector, i) {
+  const box = await page.locator(selector).nth(i).boundingBox()
+  return [box.x + box.width / 2, box.y + box.height / 2]
+}
+
+await test(
+  'Sopa de letras is found by tapping and dragging, and shown when given up',
+  async (page) => {
+    await go(page, '#sopa')
+    await page.waitForSelector('.sl-tile')
+    expect(
+      (await page.locator('.sl-tile').count()) === 81,
+      'nine rows of nine letters',
+    )
+    const words = await page.locator('.sl-list li').count()
+    expect(words >= 6 && words <= 8, `six to eight words, not ${words}`)
+    await page.locator('.sl-list li button').first().click()
+    expect(await visible(page, '.sl-tile.hint'), 'a first letter lit')
+    // The first word by tapping its first letter and its last, the rest by
+    // dragging over them
+    const tried = new Set()
+    for (let i = 0; i < 30 && !(await visible(page, '.sl-result')); i++) {
+      const p = (await sopaPlaces(page)).find(
+        (x) => !tried.has(`${x.from}-${x.to}`),
+      )
+      expect(!!p, 'a word to find')
+      tried.add(`${p.from}-${p.to}`)
+      const [x0, y0] = await middleOf(page, '.sl-tile', p.from)
+      const [x1, y1] = await middleOf(page, '.sl-tile', p.to)
+      if (i === 0) {
+        await page.mouse.click(x0, y0)
+        await page.mouse.click(x1, y1)
+        expect(
+          (await page.locator('.sl-list button.got').count()) === 1,
+          'a word found by tapping',
+        )
+      } else {
+        await page.mouse.move(x0, y0)
+        await page.mouse.down()
+        await page.mouse.move(x1, y1, { steps: 6 })
+        await page.mouse.up()
+      }
+    }
+    await page.getByText('¡Sopa completa!').waitFor()
+    await page.getByRole('button', { name: 'En ny sopa' }).click()
+    await page.getByRole('button', { name: 'Vis resten' }).click()
+    await page.getByText('Las que faltaban').waitFor()
   },
   { learner: true },
 )
