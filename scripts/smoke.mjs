@@ -1485,7 +1485,8 @@ await test(
     await page.locator('.mu-frame').first().waitFor()
     await page.getByRole('tab', { name: /La vida diaria/ }).click()
     await page.locator('.mu-frame.hung').first().click()
-    await page.locator('.mu-open .gilt svg').waitFor()
+    // its painting, or its drawing until it is painted
+    await page.locator('.mu-open .gilt :is(img, svg)').first().waitFor()
     await page.locator('.mu-open').getByText('La barra').waitFor()
     await page.keyboard.press('ArrowRight')
     await page.locator('.mu-open.empty').waitFor()
