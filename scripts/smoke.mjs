@@ -145,6 +145,8 @@ const PAGES = [
   ['#tema/mancha', 'La Mancha'],
   ['#quijote', 'Don Quijote'],
   ['#quijote/venta', 'Don Quijote'],
+  ['#leyendas', 'Leyendas'],
+  ['#leyendas/leyendas-ojos', 'Leyendas'],
   ['#palabra', 'La palabra'],
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
@@ -253,6 +255,34 @@ await test(
         .click()
     }
     await page.getByText('Fin del capítulo').waitFor()
+  },
+  { learner: true },
+)
+
+await test(
+  'a chapter is read aloud line by line, paused, carried on and stopped',
+  async (page) => {
+    await go(page, '#leyendas/leyendas-monte')
+    const lines = page.locator('.q-text p')
+    expect((await lines.count()) === 1, 'the chapter begins at its first line')
+    await page.getByRole('button', { name: 'Les høyt', exact: true }).click()
+    await page.waitForSelector('.q-text p.aloud')
+    // (the narrator goes on to the next line by itself)
+    await page.waitForFunction(
+      () => document.querySelectorAll('.q-text p').length >= 2,
+      undefined,
+      { timeout: 20000 },
+    )
+    await page.getByRole('button', { name: 'Pause', exact: true }).click()
+    expect(!(await visible(page, '.q-text p.aloud')), 'no line read in a pause')
+    const at = await lines.count()
+    await page.waitForTimeout(2500)
+    expect((await lines.count()) === at, 'paused, it stays at its line')
+    await page.getByRole('button', { name: 'Fortsett', exact: true }).click()
+    await page.waitForSelector('.q-text p.aloud')
+    await page.getByRole('button', { name: 'Stopp', exact: true }).click()
+    expect(!(await visible(page, '.q-text p.aloud')), 'stopped')
+    await page.getByRole('button', { name: 'Les høyt', exact: true }).waitFor()
   },
   { learner: true },
 )
