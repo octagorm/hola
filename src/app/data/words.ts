@@ -1980,6 +1980,29 @@ const LIST: Array<Lesson & { words: string }> = [
       la tramontana | nordavind (i Katalonia)
     `,
   },
+  {
+    id: 'rastro',
+    es: 'El Rastro',
+    no: 'Loppemarkedet',
+    words: `
+      el rastro | loppemarked, spor
+      el vendedor | selger
+      regatear | prute | v
+      la ganga | røverkjøp, kupp
+      de segunda mano | brukt | expr
+      la caja de música | spilledåse
+      dejar | la, la være igjen | v
+      me lo llevo | jeg tar den | expr
+      ¡trato hecho! | avtale!, det er en avtale | expr
+      ¡qué va! | slett ikke!, langt ifra! | expr
+      menos | mindre | adv
+      quince | femten | num
+      veinticinco | tjuefem | num
+      cuarenta | førti | num
+      sesenta | seksti | num
+      ochenta | åtti | num
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

@@ -108,9 +108,15 @@ export const GAME_INFO: Array<GameInfo> = [
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',
-    blurb: 'Bestillinger ropt over en travel bar',
+    blurb: 'Én gjest om gangen bestiller ved disken',
     doing: 'tar imot bestillinger i baren',
-    soon: true,
+  },
+  {
+    id: 'rastro',
+    es: 'El Rastro',
+    no: 'Loppemarkedet',
+    blurb: 'Prut på loppemarkedet i Madrid',
+    doing: 'pruter på loppemarkedet i Madrid',
   },
 ]
 

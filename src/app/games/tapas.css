@@ -1,0 +1,811 @@
+/* Tapas: a bar in ligne claire, an even black line and flat colours:
+   cream plaster, blue and yellow azulejos, ham, steel and the green of the
+   lamp. Panels are drawn as a comic's, with a hard shadow. */
+
+.tp {
+  --ink: #1d1a17;
+  --ink-2: #4d4338;
+  --cream: #f7eedb;
+  --wall: #f3e6c8;
+  --tile: #2f5f9e;
+  --tile-d: #234a7d;
+  --gold: #e6b43c;
+  --gold-d: #b9871c;
+  --ham: #b4642d;
+  --lamp: #2f6b4f;
+  --white: #fffdf7;
+  /* The articles' colours and mixed text, in the bar's own */
+  --blue: #2f5f9e;
+  --red: #c2402c;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--ink);
+  background-color: var(--cream);
+  background-image:
+    linear-gradient(rgba(47, 95, 158, 0.07) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(47, 95, 158, 0.07) 1.5px, transparent 1.5px);
+  background-size: 34px 34px;
+}
+
+.tp button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tp :focus-visible {
+  outline: 3px solid var(--tile);
+  outline-offset: 3px;
+}
+
+.tp kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 4px;
+  border: 1.5px solid var(--ink);
+  border-radius: 5px;
+  background: var(--white);
+  font:
+    700 12px/1.5 'Nunito',
+    sans-serif;
+  text-align: center;
+  color: var(--ink);
+}
+
+.tp-col {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 14px 16px 28px;
+}
+
+@media (min-width: 900px) {
+  .tp-col {
+    max-width: 1080px;
+    padding-top: 20px;
+  }
+}
+
+/* --- The top --- */
+
+.tp-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.tp-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.tp-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tp-round.small {
+  width: 38px;
+  height: 38px;
+  border-width: 2px;
+}
+
+.tp-round.small svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tp-round:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.tp-top h1 {
+  margin: 0;
+  font-family: 'Lilita One', 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--tile);
+  text-shadow: 2px 2px 0 var(--gold);
+}
+
+.tp-top h1 small {
+  display: block;
+  margin-top: 3px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-shadow: none;
+}
+
+/* The tips so far, and the guests of the day */
+.tp-jar {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.tp-jar .dots {
+  display: flex;
+  gap: 4px;
+}
+
+.tp-jar .dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: var(--white);
+}
+
+.tp-jar .dots i.done {
+  background: var(--tile);
+}
+
+.tp-jar .dots i.now {
+  background: var(--gold);
+}
+
+.tp-jar .sum {
+  font-family: 'Lilita One', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1;
+  padding: 5px 12px 4px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--gold);
+  box-shadow: 2px 2px 0 var(--ink);
+  animation: tp-bump 0.35s ease-out;
+}
+
+/* --- Panels and buttons --- */
+
+.tp-frame {
+  position: relative;
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--ink);
+  background: var(--wall);
+}
+
+.tp-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tp-card {
+  margin-top: 14px;
+  padding: 18px 18px 20px;
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 3px 3px 0 var(--ink);
+  background: var(--white);
+  text-align: center;
+}
+
+.tp-card p {
+  margin: 0 auto 12px;
+  max-width: 30em;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.tp-card p.small {
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.tp-card .kick {
+  font-family: 'Lilita One', sans-serif;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--tile);
+  margin-bottom: 8px;
+}
+
+.tp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 20px;
+  border: 2.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--tile);
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--white) !important;
+  font-weight: 800 !important;
+  font-size: 17px;
+  text-decoration: none;
+}
+
+.tp-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tp-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.tp-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.tp-btn.ghost {
+  background: var(--white);
+  color: var(--ink) !important;
+}
+
+.tp-link {
+  font-weight: 700;
+  color: var(--tile-d);
+}
+
+.tp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 4px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+  font-weight: 700 !important;
+  font-size: 15px;
+}
+
+.tp-pill svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* --- The bar, open --- */
+
+.tp-play {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .tp-play {
+    grid-template-columns: 1.1fr 1fr;
+    grid-template-areas:
+      'frame carta'
+      'bubble acts'
+      'keys keys';
+    align-items: start;
+    column-gap: 22px;
+  }
+  .tp-play > .tp-frame {
+    grid-area: frame;
+  }
+  .tp-play > .tp-bubble {
+    grid-area: bubble;
+  }
+  .tp-play > .tp-carta {
+    grid-area: carta;
+  }
+  .tp-play > .tp-acts {
+    grid-area: acts;
+  }
+  .tp-play > .tp-keys {
+    grid-area: keys;
+  }
+}
+
+/* What the guest said: a speech bubble from the counter */
+.tp-bubble {
+  position: relative;
+  padding: 12px 14px 12px;
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.tp-bubble::before,
+.tp-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  border: solid transparent;
+}
+
+.tp-bubble::before {
+  top: -17px;
+  margin-left: -13px;
+  border-width: 0 13px 17px;
+  border-bottom-color: var(--ink);
+}
+
+.tp-bubble::after {
+  top: -12px;
+  margin-left: -9.5px;
+  border-width: 0 9.5px 13px;
+  border-bottom-color: var(--white);
+}
+
+.tp-bubble.miss {
+  background: #fff4e8;
+}
+
+.tp-bubble.miss::after {
+  border-bottom-color: #fff4e8;
+}
+
+.tp-said {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tp-said .mx {
+  line-height: 2.1;
+}
+
+.tp-listen {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-2);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.tp-listen svg {
+  width: 24px;
+  height: 24px;
+  color: var(--tile);
+}
+
+.tp-listen.on svg {
+  animation: tp-pulse 0.7s ease-in-out infinite alternate;
+}
+
+.tp-tools {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The tip still to be had, in the scene's corner */
+.tp-tip {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.tp-tip .coins {
+  display: inline-flex;
+  gap: 3px;
+  padding: 4px 6px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.tp-tip .coins i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px dashed #b8ad9c;
+  transition:
+    background 0.4s,
+    border-color 0.4s;
+}
+
+.tp-tip .coins i.on {
+  border: 2px solid var(--ink);
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--gold) 0 45%,
+    #f3cf6a 46% 100%
+  );
+}
+
+.tp-tip .x2 {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 1px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--lamp);
+  color: var(--white);
+}
+
+.tp-paid {
+  margin: 6px 0 0;
+  font-weight: 800;
+  color: var(--lamp);
+  animation: tp-rise 0.3s ease-out;
+}
+
+/* What was asked for, beside what was served */
+.tp-marks {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.tp-marks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.tp-marks .pic {
+  width: 32px;
+  height: 32px;
+}
+
+.tp-marks .had {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--red);
+}
+
+.tp-marks .ok .had {
+  color: var(--lamp);
+}
+
+.tp-marks .had svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* The carta: everything the bar has today */
+.tp-carta {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tp-carta button {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 5px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 2px 2px 0 var(--ink);
+  text-align: left;
+}
+
+.tp-carta button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.tp-carta button:disabled {
+  opacity: 0.55;
+}
+
+.tp-carta .pic {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+
+.tp-carta .nm {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.tp-carta .nm small {
+  font-weight: 600;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.tp-carta kbd {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  min-width: 1.4em;
+}
+
+.tp-carta .n {
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 5px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--gold);
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  animation: tp-bump 0.25s ease-out;
+}
+
+@media (min-width: 900px) {
+  .tp-carta {
+    gap: 10px;
+  }
+  .tp-carta button {
+    min-height: 62px;
+  }
+  .tp-carta .pic {
+    width: 50px;
+    height: 50px;
+  }
+  .tp-carta .nm {
+    font-size: 18px;
+  }
+}
+
+.tp-acts {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+}
+
+/* On a phone the serve stays in reach, under the carta */
+@media (max-width: 899px) {
+  .tp-acts {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 0 -16px -16px;
+    padding: 10px 16px 14px;
+    background: linear-gradient(rgba(247, 238, 219, 0), var(--cream) 28%);
+  }
+}
+
+.tp-keys {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+@media (hover: none), (max-width: 899px) {
+  .tp-keys,
+  .tp-carta kbd {
+    display: none;
+  }
+}
+
+/* --- The scene's life --- */
+
+.tp-guest {
+  animation: tp-come 0.5s ease-out both;
+}
+
+.tp-guest.happy {
+  animation: tp-hop 0.5s ease-out;
+}
+
+.tp-mouth .open {
+  visibility: hidden;
+}
+
+.tp-guest.talk .tp-mouth .open {
+  animation: tp-talk 0.32s steps(1) infinite;
+}
+
+.tp-guest.talk .tp-mouth .shut {
+  animation: tp-talk 0.32s steps(1) infinite reverse;
+}
+
+.tp-on {
+  cursor: pointer;
+  animation: tp-drop 0.22s ease-out;
+}
+
+.tp-tray.served {
+  animation: tp-away 0.7s ease-in 0.15s forwards;
+}
+
+@keyframes tp-come {
+  from {
+    transform: translateY(26px);
+    opacity: 0;
+  }
+}
+
+@keyframes tp-hop {
+  40% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes tp-talk {
+  0% {
+    visibility: visible;
+  }
+  50% {
+    visibility: hidden;
+  }
+}
+
+@keyframes tp-drop {
+  from {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+}
+
+@keyframes tp-away {
+  to {
+    transform: translateY(-34px);
+    opacity: 0;
+  }
+}
+
+@keyframes tp-bump {
+  40% {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes tp-pulse {
+  to {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes tp-rise {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp *,
+  .tp *::before {
+    animation: none !important;
+  }
+  .tp-mouth .open {
+    visibility: hidden !important;
+  }
+}
+
+/* --- Ready, and the day's end --- */
+
+.tp-ready .tp-card {
+  margin-top: 14px;
+}
+
+.tp-end h2 {
+  margin: 0 0 6px;
+  font-family: 'Lilita One', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.tp-end .sub {
+  color: var(--ink-2);
+}
+
+.tp-end .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 16px;
+  margin: 14px 0 16px;
+}
+
+.tp-day {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  display: grid;
+  gap: 8px;
+}
+
+.tp-day li {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--cream);
+}
+
+.tp-day li.miss {
+  background: #fff4e8;
+}
+
+.tp-day .face {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--wall);
+}
+
+.tp-day .line {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.tp-day .line .mx {
+  line-height: 1.95;
+}
+
+.tp-day .after {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tp-day .got {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  white-space: nowrap;
+  color: var(--lamp);
+}
+
+.tp-day li.miss .got {
+  color: var(--red);
+}
+
+.tp-day .got svg {
+  width: 18px;
+  height: 18px;
+}

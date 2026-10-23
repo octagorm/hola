@@ -33,6 +33,42 @@ export const VOICES: Record<string, Voice> = {
     base: 'Narrador',
     style: 'telling a story, warm and natural, at a pace a learner can follow',
   },
+  // The guests who order at the bar in Tapas (lib/tapas.ts), two women
+  // and two men, in Gemini's prebuilt voices
+  Lucía: {
+    base: 'Laomedeia',
+    style: 'ordering at the bar, cheerful and natural, at a calm pace',
+  },
+  Manolo: {
+    base: 'Charon',
+    style: 'ordering at his usual bar, relaxed and friendly, at a calm pace',
+  },
+  Carmen: {
+    base: 'Sulafat',
+    style: 'ordering at the bar, warm and unhurried',
+  },
+  Javi: {
+    base: 'Achird',
+    style: 'ordering at the bar, casual and friendly, at a calm pace',
+  },
+  // The four sellers at El Rastro (lib/rastro.ts); the player's own lines
+  // there are the teacher's
+  Paco: {
+    base: 'Algenib',
+    style: 'selling old books at a flea market, gruff but kind, at a calm pace',
+  },
+  Rosa: {
+    base: 'Pulcherrima',
+    style: 'selling at a flea market, lively and warm, at a calm pace',
+  },
+  Julián: {
+    base: 'Sadaltager',
+    style: 'an antique dealer at a flea market, courteous, at a calm pace',
+  },
+  Pilar: {
+    base: 'Gacrux',
+    style: 'selling at a flea market, brisk and warm, at a calm pace',
+  },
 }
 
 // What «Prøv stemmen» in Settings says

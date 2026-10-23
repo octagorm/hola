@@ -163,6 +163,8 @@ const PAGES = [
   ['#cadena', 'Palabras encadenadas'],
   ['#elola', '¿El o la?'],
   ['#orden', 'Orden'],
+  ['#tapas', 'Tapas'],
+  ['#rastro', 'El Rastro'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -768,6 +770,91 @@ await test(
     )
     await page.getByRole('button', { name: 'En kjede til' }).click()
     await page.waitForSelector('.en-step')
+  },
+  { learner: true },
+)
+
+await test(
+  'Tapas serves a day of eight guests',
+  async (page) => {
+    await go(page, '#tapas')
+    await page.getByRole('button', { name: 'Åpne baren' }).click()
+    for (let g = 0; g < 8; g++) {
+      await page.waitForSelector('.tp-carta button:not([disabled])')
+      // Served wrong first, to be shown what was asked for, then right
+      await page.locator('.tp-carta button').first().click()
+      await page.getByRole('button', { name: 'Server' }).click()
+      await page.waitForTimeout(150)
+      if (await visible(page, '.tp-marks')) {
+        const want = await page.$$eval('.tp-marks li[data-want]', (els) =>
+          els.map((e) => [
+            e.getAttribute('data-id'),
+            Number(e.getAttribute('data-want')),
+          ]),
+        )
+        await page.getByRole('button', { name: 'Tøm brettet' }).click()
+        for (const [id, n] of want)
+          for (let k = 0; k < n; k++)
+            await page.locator(`.tp-carta button[data-id="${id}"]`).click()
+        await page.getByRole('button', { name: 'Server' }).click()
+      }
+      await page.waitForFunction(
+        (n) =>
+          document.querySelector('.tp-end') ||
+          document.querySelectorAll('.tp-jar .dots i.done').length > n,
+        g,
+      )
+    }
+    await page.getByText(/€ i tips/).waitFor()
+    await page.getByRole('button', { name: 'En dag til' }).click()
+    await page.waitForSelector('.tp-carta')
+  },
+  { learner: true },
+)
+
+await test(
+  'El Rastro haggles through a Sunday of four stalls',
+  async (page) => {
+    await go(page, '#rastro')
+    await page.getByRole('button', { name: 'Gå til markedet' }).click()
+    // A move, and the seller's answer to it
+    const say = async (selector) => {
+      const lines = await page.locator('.ra-line').count()
+      await page.locator(selector).click()
+      await page.waitForFunction(
+        (n) =>
+          document.querySelector('.ra-note') ||
+          (document.querySelectorAll('.ra-line').length >= n + 2 &&
+            (document.querySelector('.ra-outcome') ||
+              !document.querySelector('.ra-move[disabled]'))),
+        lines,
+      )
+    }
+    for (let s = 0; s < 4; s++) {
+      await say('.ra-move.ask')
+      if (s === 0) {
+        // The price looked at, then haggled: too dear, and an offer
+        const read = page.getByRole('button', { name: 'Les det selgeren sa' })
+        if (await read.count()) await read.click()
+        expect(
+          !(await page.locator('.ra-tag b').textContent()).includes('?'),
+          'the price on the tag once read',
+        )
+        await say('.ra-move.dear')
+        if (!(await visible(page, '.ra-outcome'))) {
+          await page.locator('.ra-move.offer').click()
+          await say('.ra-offer .chips button:not([disabled]) >> nth=0')
+        }
+      }
+      for (let k = 0; k < 8 && !(await visible(page, '.ra-outcome')); k++)
+        await say(
+          (await visible(page, '.ra-note')) ? '.ra-move.leave' : '.ra-move.buy',
+        )
+      await page.locator('.ra-outcome').getByRole('button').click()
+    }
+    await page.getByText(/av 12 stjerner/).waitFor()
+    await page.getByRole('button', { name: 'En søndag til' }).click()
+    await page.getByRole('button', { name: 'Gå til markedet' }).waitFor()
   },
   { learner: true },
 )
