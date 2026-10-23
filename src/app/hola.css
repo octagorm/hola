@@ -2692,3 +2692,40 @@ img.q-pic {
 .q-about p + p {
   margin-top: 10px;
 }
+
+/* --- The collections' boxes on the home page (colecciones.tsx) --- */
+
+.q-coll {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.q-coll .art {
+  width: 110px;
+  height: 74px;
+}
+
+.q-coll h3 {
+  font-size: 28px;
+}
+
+.q-coll p {
+  margin: 6px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+@media (max-width: 560px) {
+  .q-coll {
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .q-coll .art {
+    width: 80px;
+    height: 54px;
+  }
+}

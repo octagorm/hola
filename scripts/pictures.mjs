@@ -19,6 +19,7 @@
 import { spawn, execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
+import { MUSEO_PICTURES } from '../src/app/data/museo-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -136,6 +137,8 @@ const PICTURES = Object.fromEntries(
   ),
 )
 
+// Tu museo's pictures, a print for each theme (data/museo-prompts.ts)
+Object.assign(PICTURES, MUSEO_PICTURES)
 // El Ictíneo (games/ictineo.tsx): each voyage's harbour, for the plate
 // before setting out and at the end (up to about 610 × 340 CSS pixels), and
 // the boat in cutaway beside the captain's introduction (about 270 × 180),
