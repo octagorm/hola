@@ -172,7 +172,8 @@ for (const phone of [false, true])
         await go(page, target)
         await page.getByText(heading).first().waitFor({ timeout: 5000 })
         expect(
-          !(await page.getByText('¡Ay!').count()),
+          // (what the page that catches a break says, not the word ¡ay!)
+          !(await page.getByText('Noe gikk galt').count()),
           `${target || 'home'} broke`,
         )
         if (phone) {
