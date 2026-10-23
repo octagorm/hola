@@ -63,7 +63,7 @@ const INDEX: Array<{
     es: 'El viaje',
     no: 'Reisen',
     blurb:
-      'Fra Madrid til Cadaqués, scene for scene: tog, tapas og et rom for natten.',
+      'To venninner reiser fra Madrid til Cadaqués, ett sted i hvert kapittel: churros, flamenco, tapas, paella og sankthansbål.',
   },
   {
     id: 'leyendas',

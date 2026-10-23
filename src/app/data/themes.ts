@@ -142,6 +142,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Alicante på Costa Blanca, der mange nordmenn har feriert og bodd: stranden og strandpromenaden, borgen Santa Bárbara over byen, turrón fra Jijona og bålene sankthansnatt.',
       },
+      {
+        lesson: 'viaje',
+        about:
+          'Ordene i fortellingen El viaje, reisen fra Madrid til Cadaqués, som ikke står i de andre emnene: paraplyen som er med «por si acaso», for sikkerhets skyld, tapasen som er gratis i Granada, utsikten over Alhambra, brannmennene i Alicante og tramontanaen, nordavinden i Cadaqués.',
+      },
     ],
   },
   {

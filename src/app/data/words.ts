@@ -1925,6 +1925,22 @@ const LIST: Array<Lesson & { words: string }> = [
       la plancha | strykejern, stekeplate
     `,
   },
+  {
+    id: 'viaje',
+    es: 'De Madrid a Cadaqués',
+    no: 'Reisens ord',
+    words: `
+      por si acaso | for sikkerhets skyld | expr
+      reírse | le | v
+      entrar | gå inn, komme inn | v
+      como | som, slik som | conj
+      gratis | gratis | adj
+      el mirador | utsiktspunkt
+      el bombero | brannmann
+      la roca | klippe, berg
+      la tramontana | nordavind (i Katalonia)
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {
