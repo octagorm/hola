@@ -1966,6 +1966,20 @@ const LIST: Array<Lesson & { words: string }> = [
       reírse | le | v
     `,
   },
+  {
+    id: 'viaje',
+    es: 'De Madrid a Cadaqués',
+    no: 'Reisens ord',
+    words: `
+      por si acaso | for sikkerhets skyld | expr
+      entrar | gå inn, komme inn | v
+      gratis | gratis | adj
+      el mirador | utsiktspunkt
+      el bombero | brannmann
+      la roca | klippe, berg
+      la tramontana | nordavind (i Katalonia)
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

@@ -1,5 +1,6 @@
 import { CHAPTERS as QUIJOTE } from './quijote.ts'
 import { CHAPTERS as LEYENDAS } from './leyendas.ts'
+import { CHAPTERS as VIAJE } from './viaje.ts'
 
 // The stories, each read a chapter at a time in mixed text
 // (games/story.tsx), with three questions after each chapter. Their lines
@@ -47,6 +48,14 @@ export const STORIES: Array<Story> = [
       'Miguel de Cervantes ga ut første del av Don Quijote i 1605, om en adelsmann som leser seg gal på ridderbøker og drar ut for å bli ridder selv. Her er begynnelsen fortalt enkelt på spansk.',
     of: 'romanens',
     chapters: QUIJOTE,
+  },
+  {
+    id: 'viaje',
+    es: 'El viaje',
+    no: 'Reisen',
+    intro:
+      'Solveig fra Bergen og Carmen fra Madrid har skrevet brev til hverandre i femti år, men aldri reist sammen. Nå tar de tog og buss fra Puerta del Sol i Madrid, gjennom Andalucía og langs Middelhavet, helt til den hvite fiskerlandsbyen Cadaqués: ett sted i hvert kapittel, med stedets ord.',
+    chapters: VIAJE,
   },
   {
     id: 'leyendas',

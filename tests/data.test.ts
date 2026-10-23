@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { LESSONS, WORD, WORDS } from '../src/app/data/words'
 import { CHAPTERS, EPIGRAPH } from '../src/app/data/quijote'
 import { CHAPTERS as LEYENDAS } from '../src/app/data/leyendas'
+import { CHAPTERS as VIAJE } from '../src/app/data/viaje'
 import { ALL_CHAPTERS, STORIES } from '../src/app/data/stories'
 import { STAGES } from '../src/app/data/camino'
 import { THEME_GROUPS } from '../src/app/data/themes'
@@ -132,6 +133,46 @@ describe('Leyendas', () => {
     const used = new Set(LEYENDAS.flatMap((c) => c.lines.flatMap(wordIds)))
     for (const w of WORDS.filter((x) => x.lesson === 'becquer'))
       expect(used.has(w.id), w.id).toBe(true)
+  })
+})
+
+describe('El viaje', () => {
+  it('names its chapters after the story, a few minutes each', () => {
+    expect(STORIES.findIndex((s) => s.id === 'viaje')).toBe(1)
+    for (const c of VIAJE) {
+      expect(c.id).toMatch(/^viaje-/)
+      expect(c.lines.length, c.id).toBeGreaterThanOrEqual(10)
+      expect(c.lines.length, c.id).toBeLessThanOrEqual(14)
+    }
+  })
+
+  it('meets the words of each place where it is', () => {
+    const places: Record<string, string> = {
+      'viaje-cordoba': 'andalucia',
+      'viaje-sevilla': 'andalucia',
+      'viaje-granada': 'andalucia',
+      'viaje-murcia': 'murcia',
+      'viaje-alicante': 'alicante',
+      'viaje-valencia': 'valencia',
+      'viaje-barcelona': 'cataluna',
+    }
+    for (const [id, lesson] of Object.entries(places)) {
+      const c = VIAJE.find((x) => x.id === id)!
+      const ids = new Set(c.lines.flatMap(wordIds))
+      const there = [...ids].filter((w) => WORD[w]!.lesson === lesson)
+      expect(there.length, id).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  it('reads as Spanish is written', () => {
+    const [madrid] = VIAJE
+    expect(plain(madrid.lines[4])).toBe(
+      '—¡Sol! —dice Carmen—. ¡Mi Sol, en la Puerta del Sol!',
+    )
+    const creus = VIAJE.at(-1)!
+    expect(plain(creus.lines[6])).toBe(
+      '—El viaje empieza en la Puerta del Sol —dice Carmen— y termina aquí, donde sale el sol.',
+    )
   })
 })
 
