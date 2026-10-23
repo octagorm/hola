@@ -5,8 +5,6 @@
 //
 //   node scripts/smoke.mjs [part of a test's name, to run only those]
 import { chromium } from 'playwright'
-import { WORDS, meaning } from '../src/app/data/words.ts'
-import { letters } from '../src/app/lib/spanish.ts'
 import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 import { WORDS, meaning } from '../src/app/data/words.ts'
