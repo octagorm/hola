@@ -145,6 +145,8 @@ const PAGES = [
   ['#tema/mancha', 'La Mancha'],
   ['#quijote', 'Don Quijote'],
   ['#quijote/venta', 'Don Quijote'],
+  ['#viaje', 'El viaje'],
+  ['#viaje/viaje-granada', 'El viaje'],
   ['#palabra', 'La palabra'],
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
