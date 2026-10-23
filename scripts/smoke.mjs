@@ -142,7 +142,8 @@ await test('a new player goes through today’s chapter and gets a stamp', async
     (await page.locator('.q-cred .stamps svg').count()) >= 5,
     'the stamp on the home page',
   )
-  const words = await page.locator('.q-box .counts b').nth(1).textContent()
+  await page.getByRole('button', { name: 'Ordene', exact: true }).click()
+  const words = await page.locator('.q-words .counts b').nth(1).textContent()
   expect(Number(words) >= 5, `five words met, not ${words}`)
 })
 
@@ -231,12 +232,16 @@ await test('signing in with Google is offered', async (page) => {
 
 await test('a theme chosen gives today’s chapter its new words', async (page) => {
   await go(page, '')
+  await page.getByRole('button', { name: 'Ordene', exact: true }).click()
   await page.getByRole('tab', { name: /Historia/ }).click()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
   await page.getByRole('button', { name: /Velg som tema/ }).click()
   await page.getByText('Dagens tema').waitFor()
   await go(page, '')
+  // (the home page keeps the part it was left on)
+  await page.getByRole('button', { name: 'I dag', exact: true }).click()
   await page.getByText('fra «Don Quijotes ord»').waitFor()
+  await page.getByRole('button', { name: 'Ordene', exact: true }).click()
   expect(
     (await page.locator('.q-themes a.chosen').count()) === 1,
     'the theme marked on the home page',
@@ -1496,6 +1501,7 @@ await test(
     await page.locator('.mu-sign').getByText('A la mesa').waitFor()
     // And from the home page
     await go(page, '')
+    await page.getByRole('button', { name: 'Ordene', exact: true }).click()
     await page.locator('.q-coll[href="#museo"]').getByText('1 av').waitFor()
   },
   { learner: true },

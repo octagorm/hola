@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { ArrowRight, BookOpen, Music, Settings2 } from 'lucide-react'
+import {
+  ArrowRight,
+  BookOpen,
+  Library,
+  Music,
+  Puzzle,
+  Settings2,
+  Sun,
+} from 'lucide-react'
 import { EPIGRAPH } from './data/quijote'
 import { STORY } from './data/stories'
 import { stageOf } from './data/camino'
@@ -38,9 +46,75 @@ import {
 } from './ui'
 import type { GameIconId, TocId } from './art'
 
-// The home page, a page of an old book: La Mancha in ink at the top, then
-// today's chapter, the novel's first line in mixed text, the words and
-// the credential, the index of the stories and the games.
+// The home page, a page of an old book: La Mancha in ink at the top, and
+// under it four parts, one at a time, picked from a bar at the foot of a
+// phone's screen or under the picture on a larger one: today (today's
+// chapter, the story to go on with, the credential), the stories, the
+// games in three groups, and the words (the count, the themes and the
+// collections).
+
+type Tab = 'hoy' | 'leer' | 'jugar' | 'palabras'
+
+const TABS: Array<{ id: Tab; no: string; Icon: typeof Sun }> = [
+  { id: 'hoy', no: 'I dag', Icon: Sun },
+  { id: 'leer', no: 'Les', Icon: BookOpen },
+  { id: 'jugar', no: 'Spill', Icon: Puzzle },
+  { id: 'palabras', no: 'Ordene', Icon: Library },
+]
+
+// The part shown, kept while the player is in a game or a story and comes
+// back (for this visit only)
+const TAB_KEY = 'hola:tab'
+
+function useTab(): [Tab, (t: Tab) => void] {
+  const [tab, setTab] = useState<Tab>(() => {
+    try {
+      const t = sessionStorage.getItem(TAB_KEY)
+      if (TABS.some((x) => x.id === t)) return t as Tab
+    } catch {
+      // storage closed
+    }
+    return 'hoy'
+  })
+  const choose = (t: Tab) => {
+    setTab(t)
+    try {
+      sessionStorage.setItem(TAB_KEY, t)
+    } catch {
+      // storage closed
+    }
+    window.scrollTo(0, 0)
+  }
+  return [tab, choose]
+}
+
+// The games in three groups, the easiest first in each
+const GAME_GROUPS: Array<{ es: string; no: string; ids: Array<string> }> = [
+  {
+    es: 'Palabras',
+    no: 'Ordlek',
+    ids: [
+      'palabra',
+      'sopa',
+      'reloj',
+      'crucigrama',
+      'rosco',
+      'cadena',
+      'letras',
+      'palabras',
+    ],
+  },
+  {
+    es: 'Gramática',
+    no: 'Grammatikk',
+    ids: ['elola', 'porpara', 'tiempos', 'orden', 'cadaver', 'acento'],
+  },
+  {
+    es: 'De oído',
+    no: 'Lytting',
+    ids: ['numeros', 'tapas', 'rastro', 'taxi', 'sonidos', 'ictineo'],
+  },
+]
 
 const ROMAN = ['I.', 'II.', 'III.', 'IV.', 'V.', 'VI.']
 
@@ -84,6 +158,7 @@ const INDEX: Array<{
 
 export default function Home() {
   const { bank, settings, setSettings } = useStore()
+  const [tab, choose] = useTab()
   const { hear, recorded } = useVoices()
   const narrow = useMedia('(max-width: 860px)')
   const playing = useMusic()
@@ -129,6 +204,13 @@ export default function Home() {
     }
   })
 
+  // The story to go on with: the first with a chapter not read
+  const reading = INDEX.flatMap((t) => {
+    const story = STORY[t.id]
+    const next = story?.chapters.find((x) => bank.read[x.id] === undefined)
+    return story && next ? [{ story, next, t }] : []
+  }).at(0)
+
   // The last stamps got, and the next to get
   const shown = Array.from(
     { length: Math.min(4, walked) },
@@ -139,10 +221,39 @@ export default function Home() {
     (_, i) => walked + i + 1,
   )
 
+  const game = (g: (typeof GAME_INFO)[number]) => {
+    const note =
+      g.id === 'palabra' && palabra !== undefined
+        ? palabra
+          ? `Løst på ${palabra} forsøk i dag`
+          : 'Ikke løst i dag – nytt ord i morgen'
+        : ready(g.id, c.met, clues)
+          ? g.blurb
+          : `${g.blurb} · trenger flere ord`
+    const body = (
+      <>
+        <GameIcon id={g.id as GameIconId} />
+        <span>
+          <b>{g.es}</b>
+          <small>{g.soon ? `${g.blurb} · kommer` : note}</small>
+        </span>
+      </>
+    )
+    return g.soon ? (
+      <div key={g.id} className="soon">
+        {body}
+      </div>
+    ) : (
+      <a key={g.id} href={`#${g.id}`}>
+        {body}
+      </a>
+    )
+  }
+
   return (
-    <div className="q-home">
+    <div className={`q-home tab-${tab}`}>
       <section className="q-hero">
-        {!narrow && <Scene view="home" className="scene" />}
+        {!narrow && tab === 'hoy' && <Scene view="home" className="scene" />}
         <div className="head">
           <div>
             <h1>Hola</h1>
@@ -156,188 +267,220 @@ export default function Home() {
               type="button"
               className={`q-round ${playing ? 'dark' : ''}`}
               aria-label="Musikk"
+              title="Musikk"
               aria-pressed={playing}
               onClick={toggleMusic}
             >
               <Music />
             </button>
-            <a className="q-round" href="#ordbank" aria-label="Ordbank">
-              <BookOpen />
-            </a>
-            <a className="q-round" href="#ajustes" aria-label="Innstillinger">
+            <a
+              className="q-round"
+              href="#ajustes"
+              aria-label="Innstillinger"
+              title="Innstillinger"
+            >
               <Settings2 />
             </a>
             <AccountButton />
           </div>
         </div>
-        {narrow && <Scene view="narrow" className="strip" />}
+        {narrow && tab === 'hoy' && <Scene view="narrow" className="strip" />}
       </section>
 
-      <main className="q-home-main">
-        <section className="q-frame q-today">
-          <a
-            href="#hoy"
-            className="q-ring-link"
-            aria-hidden="true"
-            tabIndex={-1}
+      <nav className="q-tabs" aria-label="Deler av forsiden">
+        {TABS.map(({ id, no, Icon }) => (
+          <button
+            key={id}
+            type="button"
+            className={id === tab ? 'on' : ''}
+            aria-current={id === tab ? 'page' : undefined}
+            onClick={() => choose(id)}
           >
-            <Ring
-              shares={done ? p.steps.map(() => 1) : p.steps.map(share)}
-              numeral={roman(chapterNo)}
-            />
-          </a>
-          <div>
-            <div className="q-label">
-              Capítulo de hoy <span>· Dagens kapittel</span>
-            </div>
-            <h2>{done ? 'Dagens kapittel er skrevet' : chapterTitle(p)}</h2>
-            <p className="drop">
-              {done
-                ? `Hvori leseren har gjort dagens arbeid og fått stempelet fra ${stageOf(chapterNo).town}.`
-                : chapterLine(p)}
-            </p>
-          </div>
-          <a className="q-btn go" href="#hoy">
-            {!today ? 'Begynn' : done ? 'Se dagen' : 'Fortsett'}
-            <ArrowRight />
-          </a>
-        </section>
+            <Icon aria-hidden="true" />
+            {no}
+          </button>
+        ))}
+      </nav>
 
-        <section className="q-epi">
-          <div className="orig">«{EPIGRAPH.es}»</div>
-          <div className="mix">
-            <Mixed line={EPIGRAPH.line} />
-          </div>
-          <MixedKey />
-        </section>
-
-        <div className="q-row2">
-          <a className="q-frame q-box" href="#ordbank">
-            <h3>
-              Tus palabras<span>dine ord</span>
-            </h3>
-            <div className="counts">
+      <main className="q-home-main">
+        {tab === 'hoy' && (
+          <>
+            <section className="q-frame q-today">
+              <a
+                href="#hoy"
+                className="q-ring-link"
+                aria-hidden="true"
+                tabIndex={-1}
+              >
+                <Ring
+                  shares={done ? p.steps.map(() => 1) : p.steps.map(share)}
+                  numeral={roman(chapterNo)}
+                />
+              </a>
               <div>
-                <b>{c.known}</b>kjente
-              </div>
-              <div>
-                <b>{c.met - c.known}</b>øver på
-              </div>
-              <div>
-                <b>{c.all - c.met}</b>venter
-              </div>
-            </div>
-            <ul className="links">
-              {LINKS.map((l) => (
-                <li key={l}>
-                  <LinkIcon link={l} className="i" />
-                  <b>{LINK_NAME[l].es}</b>
-                  <InkBar
-                    share={shares[l]}
-                    color={l === 'decir' ? 'var(--red)' : 'var(--blue)'}
-                    className="bar"
-                  />
-                  <em>{percent(shares[l])}</em>
-                </li>
-              ))}
-            </ul>
-          </a>
-          <a className="q-frame q-box q-cred" href="#credencial">
-            <h3>
-              La credencial<span>pilegrimspasset</span>
-            </h3>
-            <p>
-              Hver dag du fullfører dagens kapittel, går du en etappe av
-              Caminoen til Santiago og får et stempel.{' '}
-              {walked
-                ? `Dag ${walked}: ${stageOf(walked).town}.`
-                : `Første etappe: over Pyreneene til ${stageOf(1).town}.`}
-            </p>
-            <div className="stamps">
-              {shown.map((n) => (
-                <Stamp key={n} motif={stageOf(n).motif} n={n} />
-              ))}
-              {blanks.map((n) => (
-                <EmptyStamp key={n} label={`día ${n}`} />
-              ))}
-            </div>
-          </a>
-        </div>
-
-        <Colecciones />
-
-        <Themes />
-
-        <section className="q-toc">
-          <h4>
-            Índice<small>Eventyr</small>
-          </h4>
-          <ol>
-            {toc.map((t) => {
-              const body = (
-                <>
-                  <TocArt id={t.id} />
-                  <span>
-                    <span className="nm">
-                      <i>{t.n}</i>
-                      {t.es}
-                    </span>
-                    <span className="en">{t.no}</span>
-                    <p>{t.blurb}</p>
-                    <span className="lead">
-                      {t.lead ? t.lead[0] : 'Kommer'}
-                      <span />
-                      {t.lead ? t.lead[1] : ''}
-                    </span>
-                  </span>
-                </>
-              )
-              return (
-                <li key={t.id} className={t.href ? '' : 'soon'}>
-                  {t.href ? <a href={t.href}>{body}</a> : <div>{body}</div>}
-                </li>
-              )
-            })}
-          </ol>
-        </section>
-
-        <section>
-          <div className="q-toc">
-            <h4>
-              Juegos<small>Ordspill</small>
-            </h4>
-          </div>
-          <div className="q-games">
-            {GAME_INFO.map((g) => {
-              const note =
-                g.id === 'palabra' && palabra !== undefined
-                  ? palabra
-                    ? `Løst på ${palabra} forsøk i dag`
-                    : 'Ikke løst i dag – nytt ord i morgen'
-                  : ready(g.id, c.met, clues)
-                    ? g.blurb
-                    : `${g.blurb} · trenger flere ord`
-              const body = (
-                <>
-                  <GameIcon id={g.id as GameIconId} />
-                  <span>
-                    <b>{g.es}</b>
-                    <small>{g.soon ? `${g.blurb} · kommer` : note}</small>
-                  </span>
-                </>
-              )
-              return g.soon ? (
-                <div key={g.id} className="soon">
-                  {body}
+                <div className="q-label">
+                  Capítulo de hoy <span>· Dagens kapittel</span>
                 </div>
-              ) : (
-                <a key={g.id} href={`#${g.id}`}>
-                  {body}
+                <h2>{done ? 'Dagens kapittel er skrevet' : chapterTitle(p)}</h2>
+                <p className="drop">
+                  {done
+                    ? `Hvori leseren har gjort dagens arbeid og fått stempelet fra ${stageOf(chapterNo).town}.`
+                    : chapterLine(p)}
+                </p>
+              </div>
+              <a className="q-btn go" href="#hoy">
+                {!today ? 'Begynn' : done ? 'Se dagen' : 'Fortsett'}
+                <ArrowRight />
+              </a>
+            </section>
+
+            <div className="q-row2">
+              {reading && (
+                <a
+                  className="q-frame q-box q-coll q-reading"
+                  href={`#${reading.story.id}/${reading.next.id}`}
+                >
+                  <TocArt id={reading.t.id} className="art" />
+                  <span>
+                    <h3>
+                      Sigue leyendo<span>les videre</span>
+                    </h3>
+                    <p>
+                      <b>{reading.t.es}</b>: {reading.next.title}
+                      <br />
+                      <em>{reading.next.no}</em>
+                    </p>
+                  </span>
                 </a>
-              )
-            })}
-          </div>
-        </section>
+              )}
+              <a className="q-frame q-box q-cred" href="#credencial">
+                <h3>
+                  La credencial<span>pilegrimspasset</span>
+                </h3>
+                <p>
+                  Hver dag du fullfører dagens kapittel, går du en etappe av
+                  Caminoen til Santiago og får et stempel.{' '}
+                  {walked
+                    ? `Dag ${walked}: ${stageOf(walked).town}.`
+                    : `Første etappe: over Pyreneene til ${stageOf(1).town}.`}
+                </p>
+                <div className="stamps">
+                  {shown.map((n) => (
+                    <Stamp key={n} motif={stageOf(n).motif} n={n} />
+                  ))}
+                  {blanks.map((n) => (
+                    <EmptyStamp key={n} label={`día ${n}`} />
+                  ))}
+                </div>
+              </a>
+            </div>
+          </>
+        )}
+
+        {tab === 'leer' && (
+          <>
+            <section className="q-toc">
+              <h4>
+                Índice<small>Fortellingene</small>
+              </h4>
+              <ol>
+                {toc.map((t) => {
+                  const body = (
+                    <>
+                      <TocArt id={t.id} />
+                      <span>
+                        <span className="nm">
+                          <i>{t.n}</i>
+                          {t.es}
+                        </span>
+                        <span className="en">{t.no}</span>
+                        <p>{t.blurb}</p>
+                        <span className="lead">
+                          {t.lead ? t.lead[0] : 'Kommer'}
+                          <span />
+                          {t.lead ? t.lead[1] : ''}
+                        </span>
+                      </span>
+                    </>
+                  )
+                  return (
+                    <li key={t.id} className={t.href ? '' : 'soon'}>
+                      {t.href ? <a href={t.href}>{body}</a> : <div>{body}</div>}
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+
+            <section className="q-epi">
+              <div className="orig">«{EPIGRAPH.es}»</div>
+              <div className="mix">
+                <Mixed line={EPIGRAPH.line} />
+              </div>
+              <MixedKey />
+            </section>
+          </>
+        )}
+
+        {tab === 'jugar' &&
+          GAME_GROUPS.map((group) => (
+            <section key={group.no}>
+              <div className="q-toc">
+                <h4>
+                  {group.es}
+                  <small>{group.no}</small>
+                </h4>
+              </div>
+              <div className="q-games">
+                {group.ids.flatMap((id) => {
+                  const g = GAME_INFO.find((x) => x.id === id)
+                  return g ? [game(g)] : []
+                })}
+              </div>
+            </section>
+          ))}
+
+        {tab === 'palabras' && (
+          <>
+            <a className="q-frame q-box q-words" href="#ordbank">
+              <h3>
+                Tus palabras<span>dine ord</span>
+              </h3>
+              <div className="counts">
+                <div>
+                  <b>{c.known}</b>kjente
+                </div>
+                <div>
+                  <b>{c.met - c.known}</b>øver på
+                </div>
+                <div>
+                  <b>{c.all - c.met}</b>venter
+                </div>
+              </div>
+              <ul className="links">
+                {LINKS.map((l) => (
+                  <li key={l}>
+                    <LinkIcon link={l} className="i" />
+                    <b>{LINK_NAME[l].es}</b>
+                    <InkBar
+                      share={shares[l]}
+                      color={l === 'decir' ? 'var(--red)' : 'var(--blue)'}
+                      className="bar"
+                    />
+                    <em>{percent(shares[l])}</em>
+                  </li>
+                ))}
+              </ul>
+              <span className="more">
+                Se alle ordene <ArrowRight />
+              </span>
+            </a>
+
+            <Themes />
+
+            <Colecciones />
+          </>
+        )}
 
         <footer className="q-foot">
           <nav>
