@@ -34,16 +34,25 @@ export const STEP: Record<
 }
 
 // Games the chapter picks from, one a day in turn, once enough words are
-// met to make a round of them: for the crossword and the ring, words that
-// can be clues (data/words.ts)
-export const DAILY_GAMES = ['palabra', 'cadaver', 'crucigrama', 'rosco']
+// met to make a round of them: for the crossword, the ring, the word
+// search and the soft clock, words that can be clues (data/words.ts)
+export const DAILY_GAMES = [
+  'palabra',
+  'cadaver',
+  'crucigrama',
+  'rosco',
+  'sopa',
+  'reloj',
+]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
   cadaver: 0,
   crucigrama: 12,
   rosco: 16,
+  sopa: 12,
+  reloj: 12,
 }
-const BY_CLUES = new Set(['crucigrama', 'rosco'])
+const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj'])
 
 // The words met that can be clues, with any about to be met
 export const clueCount = (bank: Bank, extra: Array<Word> = []) =>

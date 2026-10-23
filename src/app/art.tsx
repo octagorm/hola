@@ -449,7 +449,14 @@ export function TocArt({
 // --- The games ---
 
 export type GameIconId =
-  'palabra' | 'palabras' | 'crucigrama' | 'rosco' | 'cadaver' | 'tapas'
+  | 'palabra'
+  | 'palabras'
+  | 'crucigrama'
+  | 'rosco'
+  | 'cadaver'
+  | 'sopa'
+  | 'reloj'
+  | 'tapas'
 
 export function GameIcon({
   id,
@@ -533,6 +540,69 @@ export function GameIcon({
           <path d="M12 30H32L28 40H16Z" fill="#4f7fa8" fillOpacity=".45" />
           <path d="M6 16H38M6 29H38" strokeDasharray="2 3" />
         </g>
+      )}
+      {id === 'sopa' && (
+        <>
+          <path
+            d="M10 34 34 10"
+            stroke="#4f7fa8"
+            strokeWidth="8"
+            strokeLinecap="round"
+            opacity=".55"
+          />
+          <path
+            d="M8 22H20"
+            stroke="#d29a2e"
+            strokeWidth="7"
+            strokeLinecap="round"
+            opacity=".6"
+          />
+          <g fill="none" stroke={INK} strokeWidth="1.5">
+            <rect x="4" y="4" width="36" height="36" />
+            <path d="M16 4V40M28 4V40M4 16H40M4 28H40" />
+          </g>
+          <g fill={INK}>
+            {[16, 28].flatMap((x) =>
+              [16, 28].map((y) => (
+                <circle key={`${x},${y}`} cx={x} cy={y} r="1.8" />
+              )),
+            )}
+          </g>
+        </>
+      )}
+      {id === 'reloj' && (
+        <>
+          <rect
+            x="2"
+            y="25"
+            width="23"
+            height="16"
+            fill="#4f7fa8"
+            opacity=".2"
+          />
+          <path
+            d="M7 25C6 17 13 11.5 20.5 11.5 29 11.5 34.5 17 34.5 25 34.5 30 33.5 34.5 31 38.5 28.5 35.5 28 31 25.5 27.5 24 25.5 21 25 7 25Z"
+            fill="#d29a2e"
+            opacity=".65"
+          />
+          <g
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M1.5 25H25V41.5" />
+            <path d="M7 25C6 17 13 11.5 20.5 11.5 29 11.5 34.5 17 34.5 25 34.5 30 33.5 34.5 31 38.5 28.5 35.5 28 31 25.5 27.5" />
+            <path d="M20.5 11.5V9" />
+            <circle cx="20.5" cy="7.3" r="1.7" />
+            <path d="M20.5 19.5V15.2M20.5 19.5 24.5 21.2" strokeWidth="1.4" />
+          </g>
+          <path
+            d="M31 40.2c.9 1.2 1.4 1.9 1.4 2.5a1.4 1.4 0 0 1-2.8 0c0-.6.5-1.3 1.4-2.5z"
+            fill={INK}
+          />
+        </>
       )}
       {id === 'tapas' && (
         <>

@@ -49,6 +49,20 @@ export const GAME_INFO: Array<GameInfo> = [
     doing: 'får absurde setninger til å stemme',
   },
   {
+    id: 'sopa',
+    es: 'Sopa de letras',
+    no: 'Ordleting',
+    blurb: 'Ord gjemt blant blå og hvite fliser',
+    doing: 'finner ord gjemt blant flisene',
+  },
+  {
+    id: 'reloj',
+    es: 'El reloj blando',
+    no: 'Den myke klokken',
+    blurb: 'Gjett ordet før klokken smelter',
+    doing: 'redder ord før klokken smelter',
+  },
+  {
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',
