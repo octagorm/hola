@@ -74,7 +74,7 @@ export interface Form {
   say: string
 }
 
-function formsOf(w: Word): Array<Form> {
+export function formsOf(w: Word): Array<Form> {
   if (w.bare.includes(' ')) return []
   const out: Array<Form> = []
   const add = (es: string, form: Form['form'], say = es) =>
