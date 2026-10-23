@@ -1197,9 +1197,17 @@ function Play({
                 </div>
               )}
               <p className="pz-help">
-                {mine
-                  ? 'Trykk på en brikke og så på en rute, eller dra den. Med tastaturet: trykk på ruten der ordet begynner, og skriv.'
-                  : 'El relojero tenker …'}
+                {mine ? (
+                  <>
+                    Trykk på en brikke og så på en rute, eller dra den.{' '}
+                    <span className="keys">
+                      Med tastaturet: trykk på ruten der ordet begynner, og
+                      skriv.
+                    </span>
+                  </>
+                ) : (
+                  'El relojero tenker …'
+                )}
               </p>
             </>
           )}
