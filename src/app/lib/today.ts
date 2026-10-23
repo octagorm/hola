@@ -1,6 +1,7 @@
-import { WORD, WORDS, isClue } from '../data/words.ts'
+import { LESSON, WORD, WORDS, isClue } from '../data/words.ts'
 import { CHAPTERS } from '../data/quijote.ts'
 import { GAME } from '../data/games.ts'
+import { THEME } from '../data/themes.ts'
 import {
   DAY,
   LINKS,
@@ -9,6 +10,7 @@ import {
   due,
   recallOf,
   streak,
+  toMeet,
   unmet,
 } from './bank.ts'
 import type { Word } from '../data/words.ts'
@@ -88,7 +90,7 @@ export function plan(
         : fading.length >= 10
           ? 3
           : perDay
-  const fresh = unmet(bank).slice(0, newCount)
+  const fresh = unmet(bank, toMeet(bank)).slice(0, newCount)
   const met = list.length + fresh.length
   const n = dayNumber(now)
   const chapter = CHAPTERS.find((c) => bank.read[c.id] === undefined)
@@ -118,6 +120,26 @@ export function plan(
   }
   const c = counts(bank, now)
   return { d: dayKey(now), t: now, steps, met: c.met, known: c.known, s0 }
+}
+
+// The day's plan with its new words taken from a theme just chosen, if
+// none of them has been begun on
+export function retheme(p: Path, bank: Bank): Path {
+  const i = p.steps.findIndex((s) => s.k === 'new')
+  if (i < 0) return p
+  const s = p.steps[i]
+  if (s.done || s.got?.length) return p
+  const ids = unmet(bank, toMeet(bank))
+    .slice(0, s.ids?.length ?? 0)
+    .map((w) => w.id)
+  return { ...p, steps: p.steps.map((x, j) => (j === i ? { ...x, ids } : x)) }
+}
+
+// The lesson all of a step's words are from, if they are from one
+export function lessonOf(ids: Array<string>): string | undefined {
+  const lessons = new Set(ids.map((id) => WORD[id]?.lesson))
+  const [only] = lessons
+  return lessons.size === 1 ? only : undefined
 }
 
 // The day's plan if one has been made today
@@ -301,8 +323,11 @@ export function chapterLine(p: Path): string {
         return s.arg === 'warm'
           ? `varmer opp med ${inWords(n, true)} ord`
           : `henter tilbake ${inWords(n, true)} ord som har bleknet`
-      case 'new':
-        return `møter ${inWords(n, true)} nye${reviewed ? '' : ' ord'}`
+      case 'new': {
+        const lesson = LESSON[lessonOf(s.ids ?? []) ?? '']
+        const from = lesson && THEME[lesson.id] ? ` fra «${lesson.no}»` : ''
+        return `møter ${inWords(n, true)} nye${reviewed ? '' : ' ord'}${from}`
+      }
       case 'game':
         return GAME[s.arg ?? '']?.doing ?? 'spiller et ordspill'
       case 'story': {

@@ -13,13 +13,21 @@ import {
   weakest,
   withStart,
 } from '../src/app/lib/bank'
-import { DAILY_GAMES, clueCount, plan, ready } from '../src/app/lib/today'
+import {
+  DAILY_GAMES,
+  chapterLine,
+  clueCount,
+  plan,
+  ready,
+  retheme,
+} from '../src/app/lib/today'
 import { WORD, WORDS } from '../src/app/data/words'
 import {
   KNOWN_AT_START,
   PRACTISED_AT_START,
   START,
 } from '../src/app/data/start'
+import type { Bank } from '../src/app/lib/bank'
 
 const now = Date.UTC(2026, 9, 22, 12)
 
@@ -160,5 +168,60 @@ describe('the day’s chapter', () => {
     expect(games).toEqual(['palabra', 'cadaver'])
     for (const w of WORDS.slice(0, 60)) b.cards[w.id] = newCard(now)
     expect(DAILY_GAMES.every((g) => ready(g, 60, clueCount(b)))).toBe(true)
+  })
+})
+
+describe('a theme', () => {
+  const theme = (id: string, t = now) => ({ ...emptyBank(), theme: { id, t } })
+
+  it('has today’s chapter meet its words before the rest', () => {
+    const p = plan(theme('mancha'), now)
+    const fresh = p.steps.find((s) => s.k === 'new')?.ids ?? []
+    expect(fresh).toHaveLength(5)
+    for (const id of fresh) expect(WORD[id]?.lesson).toBe('mancha')
+    expect(chapterLine(p)).toContain('fra «Don Quijotes ord»')
+    // without one, in lesson order
+    const plain = plan(emptyBank(), now).steps[0].ids ?? []
+    expect(WORD[plain[0]]?.lesson).toBe(WORDS[0].lesson)
+    expect(chapterLine(plan(emptyBank(), now))).not.toContain('fra «')
+  })
+
+  it('goes on in lesson order once its words are all met', () => {
+    const b = theme('mancha')
+    for (const w of WORDS.filter((x) => x.lesson === 'mancha'))
+      b.cards[w.id] = newCard(now - DAY)
+    const fresh = plan(b, now).steps.find((s) => s.k === 'new')?.ids ?? []
+    expect(fresh.length).toBeGreaterThan(0)
+    for (const id of fresh) expect(WORD[id]?.lesson).not.toBe('mancha')
+  })
+
+  it('takes over today’s new words if none of them is begun', () => {
+    const p = plan(emptyBank(), now)
+    const b = theme('suenos')
+    const q = retheme(p, b)
+    const fresh = q.steps.find((s) => s.k === 'new')?.ids ?? []
+    expect(fresh).toHaveLength(5)
+    for (const id of fresh) expect(WORD[id]?.lesson).toBe('suenos')
+    // a step begun keeps its words
+    const begun = {
+      ...p,
+      steps: p.steps.map((s) =>
+        s.k === 'new' ? { ...s, got: [`${s.ids?.[0]} met`] } : s,
+      ),
+    }
+    expect(retheme(begun, b)).toEqual(begun)
+  })
+
+  it('is the one chosen last when two banks are merged', () => {
+    const a = theme('mancha', now)
+    const b = theme('suenos', now + 1000)
+    expect(merge(a, b).theme.id).toBe('suenos')
+    expect(merge(b, a).theme.id).toBe('suenos')
+    // leaving a theme is a choice too
+    expect(merge(theme('', now + 2000), b).theme.id).toBe('')
+    // a bank saved before themes has none
+    const old: Partial<Bank> = { cards: {} }
+    expect(merge(old, emptyBank()).theme).toEqual({ id: '', t: 0 })
+    expect(merge(old, a).theme.id).toBe('mancha')
   })
 })

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { LESSONS, WORD, WORDS } from '../src/app/data/words'
 import { CHAPTERS, EPIGRAPH } from '../src/app/data/quijote'
 import { STAGES } from '../src/app/data/camino'
+import { THEME_GROUPS } from '../src/app/data/themes'
 import { plain, tokens, wordIds } from '../src/app/lib/text'
 
 describe('the words', () => {
@@ -79,5 +80,23 @@ describe('the credential', () => {
     expect(STAGES.findIndex((s) => s.town === 'Santiago de Compostela')).toBe(
       32,
     )
+  })
+})
+
+describe('the themes', () => {
+  it('are lessons with words, each in one group, with a few lines about it', () => {
+    const lessons = new Set(LESSONS.map((l) => l.id))
+    const seen = new Set<string>()
+    for (const g of THEME_GROUPS)
+      for (const t of g.themes) {
+        expect(lessons.has(t.lesson), t.lesson).toBe(true)
+        expect(seen.has(t.lesson), t.lesson).toBe(false)
+        seen.add(t.lesson)
+        expect(
+          WORDS.some((w) => w.lesson === t.lesson),
+          t.lesson,
+        ).toBe(true)
+        expect(t.about.length, t.lesson).toBeGreaterThan(40)
+      }
   })
 })

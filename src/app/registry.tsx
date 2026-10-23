@@ -33,6 +33,12 @@ export const PAGES = [
     Page: page(() => import('./games/nuevas')),
   },
   {
+    id: 'tema',
+    es: 'Temas',
+    no: 'Emner',
+    Page: page(() => import('./games/tema')),
+  },
+  {
     id: 'quijote',
     es: 'Don Quijote',
     no: 'Don Quijote',

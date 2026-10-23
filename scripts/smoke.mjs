@@ -139,6 +139,7 @@ const PAGES = [
   ['#repaso', 'Repaso'],
   ['#nuevas', 'Palabras nuevas'],
   ['#nuevas/comida', 'Palabras nuevas'],
+  ['#tema/mancha', 'La Mancha'],
   ['#quijote', 'Don Quijote'],
   ['#quijote/venta', 'Don Quijote'],
   ['#palabra', 'La palabra'],
@@ -188,6 +189,22 @@ await test('signing in with Google is offered', async (page) => {
   expect(!(await visible(page, '.q-account-pop')), 'closed by Escape')
   await go(page, '#ajustes')
   await page.getByRole('button', { name: 'Logg inn med Google' }).waitFor()
+})
+
+await test('a theme chosen gives today’s chapter its new words', async (page) => {
+  await go(page, '')
+  await page.locator('.q-themes a[href="#tema/mancha"]').click()
+  await page.getByRole('button', { name: /Velg som tema/ }).click()
+  await page.getByText('Dagens tema').waitFor()
+  await go(page, '')
+  await page.getByText('fra «Don Quijotes ord»').waitFor()
+  expect(
+    (await page.locator('.q-themes a.chosen').count()) === 1,
+    'the theme marked on the home page',
+  )
+  await go(page, '#tema/mancha')
+  await page.getByRole('button', { name: 'Ikke lenger tema' }).click()
+  await page.getByRole('button', { name: /Velg som tema/ }).waitFor()
 })
 
 await test(

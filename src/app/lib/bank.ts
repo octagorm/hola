@@ -69,6 +69,9 @@ export interface Bank {
   path: Path | null
   // The version of the starting point given (data/start.ts), 0 for none
   start: number
+  // The lesson chosen as the theme (data/themes.ts), whose words today's
+  // chapter meets before the rest, and when it was chosen; '' for none
+  theme: { id: string; t: number }
 }
 
 export type StepKind = 'review' | 'new' | 'game' | 'story' | 'listen'
@@ -111,6 +114,7 @@ export const emptyBank = (): Bank => ({
   read: {},
   path: null,
   start: 0,
+  theme: { id: '', t: 0 },
 })
 
 export const DAY = 86_400_000
@@ -284,6 +288,17 @@ export function due(
 export const unmet = (bank: Bank, words: Array<Word> = WORDS) =>
   words.filter((w) => !bank.cards[w.id])
 
+// The words in the order today's chapter meets them: the chosen theme's
+// first, then the rest in lesson order
+export function toMeet(bank: Bank): Array<Word> {
+  const id = bank.theme.id
+  if (!id) return WORDS
+  return [
+    ...WORDS.filter((w) => w.lesson === id),
+    ...WORDS.filter((w) => w.lesson !== id),
+  ]
+}
+
 // Words for a round of a game: up to `n` of them, weighted towards those
 // that need practice (in the `link` the game asks about, if it asks about
 // one), among the words met that `fit`. Words seen in the last minute are
@@ -321,8 +336,9 @@ const keysOf = (...rs: Array<object | undefined>) =>
 // Two banks made one, as when a backup is read in: for each link of a word
 // the memory answered last (but never a card from the starting point over
 // one with answers), for days and scores the larger, and of two days'
-// sessions the later day's, or of the same day's the one further on. A
-// bank saved before a field existed is read as having it empty.
+// sessions the later day's, or of the same day's the one further on, and
+// of two themes the one chosen last. A bank saved before a field existed
+// is read as having it empty.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const out = emptyBank()
   for (const id of keysOf(a.cards, b.cards)) {
@@ -336,6 +352,9 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   }
   out.path = laterPath(a.path ?? null, b.path ?? null)
   out.start = Math.max(a.start ?? 0, b.start ?? 0)
+  const ta = a.theme ?? out.theme
+  const tb = b.theme ?? out.theme
+  out.theme = tb.t > ta.t ? tb : ta
   return out
 }
 

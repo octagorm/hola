@@ -16,6 +16,7 @@ import {
   newCard,
   withStart,
 } from './bank'
+import { retheme } from './today'
 import { setVoice } from './speech'
 import { setEffects } from './sound'
 import type { ReactNode } from 'react'
@@ -96,6 +97,9 @@ interface Store {
   // was waiting for it is done
   played: (id: string) => void
   setPath: (f: (p: Path | null) => Path | null) => void
+  // A lesson chosen as the theme, '' for none: today's chapter meets its
+  // words first, from today's new words on if none of them is begun
+  setTheme: (lesson: string) => void
   // A day's chapter finished, with points for it; only once a day
   finishDay: (day: string, bonus?: number) => void
   // A bank read in from a backup, merged with this one
@@ -266,6 +270,16 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const setTheme = useCallback(
+    (lesson: string) =>
+      setBank((b) => {
+        const next = { ...b, theme: { id: lesson, t: Date.now() } }
+        const p = next.path
+        return p && p.d === today() ? { ...next, path: retheme(p, next) } : next
+      }),
+    [],
+  )
+
   const finishDay = useCallback(
     (day: string, bonus = 0) =>
       setBank((b) =>
@@ -311,6 +325,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       setRead,
       played,
       setPath,
+      setTheme,
       finishDay,
       absorb,
       reset,
@@ -329,6 +344,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       setRead,
       played,
       setPath,
+      setTheme,
       finishDay,
       absorb,
       reset,

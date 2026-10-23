@@ -2,6 +2,8 @@ import { ArrowRight, BookOpen, Music, Settings2 } from 'lucide-react'
 import { CHAPTERS, EPIGRAPH } from './data/quijote'
 import { stageOf } from './data/camino'
 import { GAME_INFO } from './data/games'
+import { THEME_GROUPS } from './data/themes'
+import { LESSON, WORDS } from './data/words'
 import { LINKS, counts, dayKey, linkShares } from './lib/bank'
 import { canHear, useVoices } from './lib/speech'
 import { useStore } from './lib/store'
@@ -250,6 +252,56 @@ export default function Home() {
             </div>
           </a>
         </div>
+
+        <section className="q-themes">
+          <div className="q-toc">
+            <h4>
+              Temas<small>Emner</small>
+            </h4>
+          </div>
+          <p className="intro">
+            Velg et emne, så kommer de nye ordene i dagens kapittel derfra.
+          </p>
+          {THEME_GROUPS.map((g) => (
+            <div key={g.id} className="group">
+              <h5>
+                {g.es}
+                <span>{g.no}</span>
+              </h5>
+              <ul>
+                {g.themes.map((t) => {
+                  const lesson = LESSON[t.lesson]
+                  if (!lesson) return null
+                  const all = WORDS.filter((w) => w.lesson === t.lesson)
+                  const met = all.filter((w) => bank.cards[w.id]).length
+                  const chosen = bank.theme.id === t.lesson
+                  return (
+                    <li key={t.lesson}>
+                      <a
+                        href={`#tema/${t.lesson}`}
+                        className={chosen ? 'chosen' : ''}
+                      >
+                        <b>{lesson.es}</b>
+                        <small>{lesson.no}</small>
+                        <InkBar
+                          share={all.length ? met / all.length : 0}
+                          className="bar"
+                        />
+                        <em>
+                          {chosen
+                            ? 'Dagens tema'
+                            : met === all.length
+                              ? 'Alle møtt'
+                              : `${met} av ${all.length} ord`}
+                        </em>
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
+        </section>
 
         <section className="q-toc">
           <h4>
