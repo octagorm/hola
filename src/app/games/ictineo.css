@@ -1105,7 +1105,6 @@
 
 /* (a word of two, as a babor, is never broken over two lines) */
 .ic-say .mx ruby,
-.ic-say .mx .nw,
 .ic-say .mx .kw {
   white-space: nowrap;
 }

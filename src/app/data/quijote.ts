@@ -1,6 +1,6 @@
 // Don Quijote, told simply: the start of the novel and the windmills, in
-// five short chapters. Each line is mixed text (lib/text.ts): a word is
-// shown as the reader knows it, in Norwegian until it is met.
+// five short chapters. Each line is mixed text (lib/text.ts): every word in
+// Spanish, with the Norwegian over it until the reader knows it.
 //
 // The markup, token by token, separated by spaces:
 //   word              a word in the bank, as written there

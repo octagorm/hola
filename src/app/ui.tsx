@@ -109,9 +109,9 @@ export function Es({ w, plain = false }: { w: Word; plain?: boolean }) {
 
 // --- Mixed text ---
 
-// A line of a story in Spanish order, each word as the player knows it:
-// in Norwegian until it is met, in Spanish with the Norwegian over it while
-// it is learnt, in Spanish alone once known. A tap opens the word's card.
+// A line of a story, every word in Spanish as the player knows it: with
+// the Norwegian over it until it is known (in brown while it is not met, in
+// blue while it is learnt), alone once known. A tap opens the word's card.
 export function Mixed({
   line,
   className = '',
@@ -158,12 +158,8 @@ export function Mixed({
         return (
           <span key={i}>
             {space}
-            {lv === 0 ? (
-              <span className="nw" {...tap}>
-                {t.no}
-              </span>
-            ) : lv === 1 ? (
-              <ruby className="lw" {...tap}>
+            {lv < 2 ? (
+              <ruby className={lv === 0 ? 'nw' : 'lw'} {...tap}>
                 {t.es}
                 <rt>{t.no}</rt>
               </ruby>
@@ -187,11 +183,16 @@ export function MixedKey() {
         <b>Spansk</b> · kjent
       </span>
       <span>
-        <b style={{ color: 'var(--blue)' }}>Spansk med forklaring</b> · øver på
+        <b>
+          Spansk med <i style={{ color: 'var(--blue)' }}>blått</i> over
+        </b>{' '}
+        · øver på
       </span>
       <span>
-        <b style={{ color: 'var(--nw)', fontStyle: 'italic' }}>Norsk</b> · ikke
-        møtt ennå, i spansk rekkefølge
+        <b>
+          Spansk med <i style={{ color: 'var(--nw)' }}>brunt</i> over
+        </b>{' '}
+        · ikke møtt ennå
       </span>
     </div>
   )

@@ -257,9 +257,12 @@ body.q-body {
 }
 
 .mx .nw {
-  font-style: italic;
-  color: var(--nw);
   border-bottom: 2px dotted var(--nw-line);
+}
+
+/* (weak, so that a game's own colour for the Norwegian over stands) */
+.mx :where(.nw) rt {
+  color: var(--nw);
 }
 
 .mx .kw:hover,

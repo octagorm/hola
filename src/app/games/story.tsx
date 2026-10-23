@@ -94,8 +94,8 @@ function Chapters({ story }: { story: Story }) {
       <div className="q-read">
         <Picture story={story} />
         <p className="q-intro">
-          {story.intro} Ordene du ikke har møtt ennå står på norsk, i spansk
-          rekkefølge, og blir spanske etter hvert som du lærer dem.
+          {story.intro} Alt står på spansk, og ordene du ikke kan ennå har norsk
+          over seg, som forsvinner etter hvert som du lærer dem.
           {ear
             ? ' Hver linje sies høyt før du ser den: trykk på bølgen for å høre den igjen, på sneglen for å høre den sakte, og på øyet for å se teksten.'
             : hear !== false &&
