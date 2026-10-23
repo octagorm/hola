@@ -252,8 +252,8 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
   },
   {
     id: 'leyendas',
-    es: 'Leyendas',
-    no: 'Sagn',
+    es: 'Leyendas y misterios',
+    no: 'Sagn og mysterier',
     themes: [
       {
         lesson: 'tenorio',
