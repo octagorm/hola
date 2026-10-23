@@ -91,6 +91,20 @@ export const GAME_INFO: Array<GameInfo> = [
     doing: 'lager en kjede av ord',
   },
   {
+    id: 'elola',
+    es: '¿El o la?',
+    no: 'Hankjønn eller hunkjønn',
+    blurb: 'El eller la, før lyset brenner ned',
+    doing: 'skiller el fra la før lyset brenner ned',
+  },
+  {
+    id: 'orden',
+    es: 'Orden',
+    no: 'Ordstilling',
+    blurb: 'Setninger lagt i spansk rekkefølge',
+    doing: 'legger åtte setninger i spansk rekkefølge',
+  },
+  {
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',

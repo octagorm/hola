@@ -1,0 +1,972 @@
+/* ¿El o la?: the Spanish deck as hand-coloured woodcut, on a green card
+   table. Cream cards drawn in ink, coloured in vermilion, slate blue and
+   ochre; a candle in a brass stick for the clock. */
+
+.eo {
+  --felt: #2f4b3c;
+  --felt-2: #22392d;
+  --paper: #f4ead2;
+  --paper-2: #e8dab9;
+  --ink: #1d1813;
+  --ink-2: #5b4f42;
+  --blue: #4f7fa8;
+  --red: #c2402c;
+  --ochre: #d9a53a;
+  --green: #5f7d46;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Alegreya', Georgia, serif;
+  color: var(--paper);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(
+      ellipse 90% 70% at 50% 38%,
+      #3a5c49 0%,
+      var(--felt) 55%,
+      var(--felt-2) 100%
+    );
+  background-attachment: fixed;
+}
+
+.eo :where(button) {
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.eo :focus-visible {
+  outline: 2px solid var(--ochre);
+  outline-offset: 3px;
+}
+
+.eo-col {
+  max-width: 760px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 16px 14px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- The top --- */
+
+.eo-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eo-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  color: var(--paper);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eo-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.eo-top h1 {
+  margin: 0;
+  font-family: 'Rye', 'Gloock', serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--paper);
+  letter-spacing: 0.01em;
+}
+
+.eo-top h1 small {
+  display: block;
+  margin-top: 5px;
+  font-family: 'Alegreya', serif;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+}
+
+.eo-score {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 14px 4px 4px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.2);
+}
+
+.eo-score .coin {
+  width: 32px;
+  height: 32px;
+}
+
+.eo-score b {
+  font-family: 'Rye', serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1;
+  min-width: 1ch;
+}
+
+/* --- The table: the deck, the card, the candle --- */
+
+/* (the table and the piles, in the middle of the height left) */
+.eo-play {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 18px;
+}
+
+.eo-table {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 48px;
+  align-items: end;
+  gap: 6px;
+}
+
+.eo-spot {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+}
+
+.eo-card {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.66;
+  perspective: 1000px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.25s ease;
+}
+
+.eo-card.held {
+  transition: none;
+  cursor: grabbing;
+}
+
+.eo-flip {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.3, 0.7, 0.25, 1) 0.18s;
+}
+
+.eo-card.turned .eo-flip {
+  transform: rotateY(180deg);
+}
+
+.eo-card.turned {
+  animation: eo-shake 0.32s ease-in-out;
+}
+
+.eo-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background:
+    radial-gradient(
+      ellipse at 30% 20%,
+      rgb(255 255 255 / 0.35),
+      transparent 60%
+    ),
+    var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 2px 0 var(--paper-2),
+    0 14px 24px -10px rgb(0 0 0 / 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12% 9%;
+  overflow: hidden;
+}
+
+/* The frame line inside every card of the deck */
+.eo-face::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.eo-face .pip {
+  position: absolute;
+  left: 50%;
+  width: 20cqw;
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.eo-face .pip.top {
+  top: 7%;
+}
+
+.eo-face .pip.bottom {
+  bottom: 7%;
+  transform: translateX(-50%) rotate(180deg);
+}
+
+.eo-face .word {
+  margin: 0;
+  font-family: 'Gloock', Georgia, serif;
+  font-size: clamp(20px, calc(124cqw / var(--n, 6)), 60px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.eo-face .mean {
+  margin: 0.55em 0 0;
+  font-style: italic;
+  font-size: clamp(14px, 7cqw, 20px);
+  color: var(--ink-2);
+}
+
+.eo-face.back {
+  transform: rotateY(180deg);
+  padding: 10% 10%;
+}
+
+.eo-face.back .pip {
+  position: static;
+  transform: none;
+  width: 19cqw;
+  margin-bottom: 5%;
+  flex: none;
+}
+
+.eo-face.back .word {
+  font-size: clamp(20px, calc(124cqw / var(--n, 6)), 46px);
+}
+
+.eo-face.back .rule {
+  margin: 1.1em 0 0;
+  font-size: clamp(15px, 7cqw, 21px);
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+
+/* A short rule over the rule */
+.eo-face.back .rule::before {
+  content: '';
+  display: block;
+  width: 38%;
+  margin: 0 auto 0.8em;
+  border-top: 1.5px solid var(--ink);
+}
+
+.eo-face i[lang='es'] {
+  font-weight: 700;
+}
+
+/* The start: the instructions on a card of their own */
+.eo-start .eo-face {
+  justify-content: center;
+  gap: 0.7em;
+  padding: 11% 10%;
+}
+
+.eo-start .kick {
+  margin: 0;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.eo-start h2 {
+  margin: 0;
+  font-family: 'Gloock', serif;
+  font-weight: 400;
+  font-size: clamp(20px, 10cqw, 30px);
+  line-height: 1.12;
+}
+
+.eo-start h2 span {
+  font-family: 'Rye', serif;
+}
+
+.eo-start p {
+  margin: 0;
+  font-size: clamp(14px, 6.6cqw, 18px);
+  line-height: 1.35;
+}
+
+.eo-start .eo-btn {
+  margin-top: 0.3em;
+}
+
+/* A card dealt, and one answered on its way to its pile */
+.eo-deal {
+  animation: eo-deal 0.34s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.eo-leave {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.eo-leave.to-el {
+  animation: eo-to-el 0.42s ease-in forwards;
+}
+
+.eo-leave.to-la {
+  animation: eo-to-la 0.42s ease-in forwards;
+}
+
+@keyframes eo-deal {
+  from {
+    transform: translate(-46%, 4%) rotate(-7deg) scale(0.82);
+    opacity: 0;
+  }
+}
+
+@keyframes eo-to-el {
+  to {
+    transform: translate(-52%, 105%) rotate(-16deg) scale(0.42);
+    opacity: 0;
+  }
+}
+
+@keyframes eo-to-la {
+  to {
+    transform: translate(52%, 105%) rotate(16deg) scale(0.42);
+    opacity: 0;
+  }
+}
+
+@keyframes eo-shake {
+  20% {
+    transform: translateX(-7px) rotate(-1.5deg);
+  }
+  45% {
+    transform: translateX(6px) rotate(1.2deg);
+  }
+  70% {
+    transform: translateX(-3px);
+  }
+}
+
+/* --- The deck, face down --- */
+
+.eo-deck {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.66;
+  margin-bottom: 6px;
+}
+
+.eo-deck i {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 4px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 5px, var(--red) 5px 6.6px)
+      content-box,
+    repeating-linear-gradient(-45deg, transparent 0 5px, var(--red) 5px 6.6px)
+      content-box,
+    var(--paper);
+  box-shadow: inset 0 0 0 4px var(--paper);
+}
+
+.eo-deck i:nth-child(1) {
+  transform: translate(4px, 4px);
+}
+
+.eo-deck i:nth-child(2) {
+  transform: translate(2px, 2px);
+}
+
+/* --- The candle --- */
+
+.eo-candle {
+  --tall: 150px;
+  --thick: 15px;
+  position: relative;
+  width: 100%;
+  height: calc(var(--tall) + 60px);
+  justify-self: center;
+}
+
+.eo-candle .stick {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 1;
+  width: 64px;
+  transform: translateX(-50%);
+}
+
+.eo-candle .wax {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  width: var(--thick);
+  height: calc(10px + var(--left, 1) * var(--tall));
+  transform: translateX(-50%);
+  border: 2px solid var(--ink);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  background:
+    repeating-linear-gradient(
+        0deg,
+        transparent 0 7px,
+        rgb(29 24 19 / 0.22) 7px 8px
+      )
+      right / 30% 100% no-repeat,
+    linear-gradient(90deg, #fbf4e2, #efe2c1);
+}
+
+/* A drip of wax down its side */
+.eo-candle .wax::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: 6px;
+  height: 14px;
+  border: 2px solid var(--ink);
+  border-radius: 0 0 4px 4px;
+  background: #fbf4e2;
+}
+
+/* The light it gives the table */
+.eo-candle.lit .wax::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  width: 150px;
+  height: 150px;
+  transform: translate(-50%, 50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(255 214 120 / 0.26),
+    rgb(255 214 120 / 0.08) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.eo-candle .flame,
+.eo-candle .smoke {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 3px);
+  width: 22px;
+  margin-left: -11px;
+  display: none;
+}
+
+.eo-candle.lit .flame {
+  display: block;
+  transform-origin: 50% 92%;
+  animation:
+    eo-light 0.5s ease-out,
+    eo-flicker 1.9s ease-in-out 0.5s infinite alternate;
+}
+
+.eo-candle.out .smoke {
+  display: block;
+  bottom: calc(100% + 2px);
+  height: 40px;
+  animation: eo-smoke 2.6s ease-out 0.3s both;
+}
+
+@keyframes eo-light {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes eo-flicker {
+  0% {
+    transform: scale(1, 1) rotate(-2deg);
+  }
+  45% {
+    transform: scale(0.95, 1.06) rotate(1.5deg);
+  }
+  100% {
+    transform: scale(1.03, 0.96) rotate(-1deg);
+  }
+}
+
+@keyframes eo-smoke {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.25;
+    transform: translateY(-8px);
+  }
+}
+
+/* --- The piles: el on the left, la on the right --- */
+
+.eo-piles {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.eo-pile {
+  position: relative;
+  height: 112px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--ink);
+  transition: transform 0.15s ease;
+}
+
+.eo-pile .face {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 0 10px 18px -10px rgb(0 0 0 / 0.6);
+}
+
+/* The frame line, broken as the suit's cards have it: once for copas,
+   three times for bastos */
+.eo-pile .face::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1.5px solid var(--ink);
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 7px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--ink), var(--ink)) top / 100% 1.5px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) bottom / 100% 1.5px no-repeat;
+  -webkit-mask:
+    linear-gradient(#000, #000) center / 100% calc(100% - 4px) no-repeat,
+    var(--breaks) top / 100% 2px no-repeat,
+    var(--breaks) bottom / 100% 2px no-repeat;
+  mask:
+    linear-gradient(#000, #000) center / 100% calc(100% - 4px) no-repeat,
+    var(--breaks) top / 100% 2px no-repeat,
+    var(--breaks) bottom / 100% 2px no-repeat;
+}
+
+.eo-pile.la {
+  --breaks: linear-gradient(90deg, #000 0 44%, transparent 44% 56%, #000 56%);
+}
+
+.eo-pile.el {
+  --breaks: linear-gradient(
+    90deg,
+    #000 0 22%,
+    transparent 22% 30%,
+    #000 30% 46%,
+    transparent 46% 54%,
+    #000 54% 70%,
+    transparent 70% 78%,
+    #000 78%
+  );
+}
+
+.eo-pile .layer {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper-2);
+  transform: translate(
+    calc(var(--i) * var(--side) * 2.5px),
+    calc(var(--i) * 3px)
+  );
+}
+
+.eo-pile.el {
+  --side: -1;
+}
+
+.eo-pile.la {
+  --side: 1;
+}
+
+.eo-pile .suit {
+  width: 46px;
+  height: 62px;
+  flex: none;
+}
+
+.eo-pile b {
+  font-family: 'Rye', serif;
+  font-weight: 400;
+  font-size: 46px;
+  line-height: 1;
+  padding-bottom: 4px;
+}
+
+.eo-pile.el b {
+  color: var(--blue);
+}
+
+.eo-pile.la b {
+  color: var(--red);
+}
+
+.eo-pile kbd {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  width: 24px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--ink-2);
+  border-radius: 5px;
+  color: var(--ink-2);
+}
+
+.eo-pile.el kbd {
+  right: auto;
+  left: 12px;
+}
+
+.eo-pile kbd svg {
+  width: 14px;
+  height: 14px;
+}
+
+.eo-pile:not(:disabled):hover,
+.eo-pile.near {
+  transform: translateY(-4px);
+}
+
+.eo-pile.near .face {
+  box-shadow:
+    0 0 0 4px var(--ochre),
+    0 10px 18px -10px rgb(0 0 0 / 0.6);
+}
+
+.eo-pile:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.eo-piles.idle .eo-pile {
+  cursor: default;
+}
+
+/* --- After a wrong answer --- */
+
+.eo-after {
+  margin-top: 22px;
+  min-height: 112px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+}
+
+.eo .eo-speak {
+  flex: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+.eo .eo-after .eo-speak {
+  width: 52px;
+  height: 52px;
+}
+
+.eo .eo-after .eo-speak svg {
+  width: 22px;
+  height: 22px;
+}
+
+.eo-hint {
+  margin: 14px 0 0;
+  min-height: 1.4em;
+  text-align: center;
+  font-style: italic;
+  font-size: 16px;
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
+}
+
+/* --- Buttons --- */
+
+.eo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ochre);
+  color: var(--ink);
+  font-family: 'Alegreya', serif;
+  font-weight: 700;
+  font-size: 19px;
+  text-decoration: none;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.1s ease;
+}
+
+.eo-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.eo-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.eo-link {
+  font-size: 17px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- Panels: too few words, and the end --- */
+
+.eo-panel {
+  position: relative;
+  margin: 22px auto 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 26px 22px 24px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 16px 30px -14px rgb(0 0 0 / 0.6);
+}
+
+.eo-panel::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.eo-panel .kick {
+  margin: 0;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+.eo-panel h2 {
+  margin: 4px 0 6px;
+  font-family: 'Gloock', serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.eo-panel p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.eo-panel h3 {
+  margin: 22px 0 8px;
+  font-family: 'Gloock', serif;
+  font-weight: 400;
+  font-size: 21px;
+}
+
+.eo-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eo-panel li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 11px 0;
+  border-top: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.eo-panel li b {
+  font-family: 'Gloock', serif;
+  font-weight: 400;
+  font-size: 22px;
+}
+
+.eo-panel li .mean {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.eo-panel li .rule {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.eo-panel li i[lang='es'] {
+  font-weight: 700;
+}
+
+.eo-panel .acts {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+}
+
+.eo-result .eo-candle {
+  --tall: 0px;
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  width: 58px;
+  height: 64px;
+}
+
+.eo-result .eo-candle .stick {
+  width: 58px;
+}
+
+/* --- A wider screen --- */
+
+@media (min-width: 720px) {
+  .eo-col {
+    padding: 26px 24px 30px;
+  }
+
+  .eo-top h1 {
+    font-size: 40px;
+  }
+
+  .eo-top h1 small {
+    font-size: 17px;
+  }
+
+  .eo-table {
+    grid-template-columns: 120px minmax(0, 1fr) 120px;
+    gap: 24px;
+  }
+
+  .eo-spot {
+    max-width: 330px;
+  }
+
+  .eo-deck {
+    width: 96px;
+    justify-self: center;
+  }
+
+  .eo-candle {
+    --tall: 240px;
+    --thick: 24px;
+  }
+
+  .eo-candle .stick {
+    width: 100px;
+  }
+
+  .eo-candle .flame,
+  .eo-candle .smoke {
+    width: 32px;
+    margin-left: -16px;
+  }
+
+  .eo-piles {
+    max-width: 560px;
+    width: 100%;
+    margin: 28px auto 0;
+    gap: 26px;
+  }
+
+  .eo-pile {
+    height: 132px;
+  }
+
+  .eo-after {
+    margin-top: 28px;
+    min-height: 132px;
+  }
+
+  .eo-pile .suit {
+    width: 54px;
+    height: 72px;
+  }
+
+  .eo-pile b {
+    font-size: 56px;
+  }
+
+  .eo-panel {
+    padding: 34px 36px 30px;
+  }
+
+  .eo-panel h2 {
+    font-size: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eo-deal,
+  .eo-card.turned,
+  .eo-candle.lit .flame,
+  .eo-candle.out .smoke {
+    animation: none;
+  }
+
+  .eo-flip {
+    transition: none;
+  }
+
+  .eo-leave {
+    display: none;
+  }
+}

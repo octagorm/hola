@@ -7,6 +7,8 @@ import { ALL_CHAPTERS } from '../src/app/data/stories'
 import { DESIGNED, SAMPLE, VOICES } from '../src/app/data/voices'
 import { DECK, spanish } from '../src/app/lib/cadaver'
 import { SAID } from '../src/app/lib/letras'
+import { SENTENCES } from '../src/app/data/orden'
+import { linesOf } from '../src/app/lib/orden'
 import { speechItems, speechKey } from '../src/app/lib/spoken'
 import { plain, tokens } from '../src/app/lib/text'
 
@@ -35,6 +37,7 @@ describe('what is said aloud', () => {
       ...lines.map(plain),
       ...DECK.map(spanish),
       ...SAID,
+      ...SENTENCES.flatMap((s) => linesOf(s).map(plain)),
       SAMPLE,
     ]
     for (const t of said) expect(texts.has(t), t).toBe(true)

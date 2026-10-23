@@ -461,6 +461,8 @@ export type GameIconId =
   | 'tapas'
   | 'porpara'
   | 'tiempos'
+  | 'elola'
+  | 'orden'
 
 export function GameIcon({
   id,
@@ -690,6 +692,60 @@ export function GameIcon({
               transform="rotate(14 35 13.3)"
             />
           </g>
+        </>
+      )}
+      {id === 'elola' && (
+        <g stroke={INK} strokeWidth="1.5" strokeLinejoin="round">
+          <g transform="rotate(-11 14 26)">
+            <rect x="5" y="9" width="17" height="26" rx="2" fill={PAPER} />
+            <path
+              d="M12.6 31C12.2 26 11.6 20 11.2 16 11 13.5 12 12 13.5 12 15 12 16.2 13.5 16 16 15.7 20 15.1 26 14.6 31Z"
+              fill="#4f7fa8"
+              fillOpacity=".65"
+              strokeWidth="1.1"
+            />
+          </g>
+          <g transform="rotate(11 30 26)">
+            <rect x="22" y="9" width="17" height="26" rx="2" fill={PAPER} />
+            <path
+              d="M25.6 15H35.4C35.4 21 33.2 23.6 30.5 23.6 27.8 23.6 25.6 21 25.6 15Z"
+              fill="#c2402c"
+              fillOpacity=".6"
+              strokeWidth="1.1"
+            />
+            <path
+              d="M30.5 23.6V28.5M27.2 30H33.8"
+              fill="none"
+              strokeWidth="1.1"
+            />
+          </g>
+        </g>
+      )}
+      {id === 'orden' && (
+        <>
+          <g fill="none" stroke={INK} strokeWidth="1.5">
+            <rect x="4" y="5" width="36" height="34" fill={PAPER} />
+            <rect x="7.5" y="8.5" width="13" height="10" />
+            <rect x="23.5" y="8.5" width="13" height="10" />
+            <path d="M8.5 21.5H19.5M24.5 21.5H35.5" strokeWidth="1.2" />
+            <rect x="7" y="27" width="9" height="7" fill={PAPER} />
+            <rect x="17.5" y="27" width="9" height="7" fill={PAPER} />
+            <rect x="28" y="27" width="9" height="7" fill={PAPER} />
+          </g>
+          <circle cx="14" cy="13.5" r="2.8" fill="#d29a2e" opacity=".75" />
+          <path
+            d="M24.5 18 28.5 12.5 31.5 15.5 33.5 13 35.5 18Z"
+            fill="#4f7fa8"
+            opacity=".6"
+          />
+          <rect
+            x="18.3"
+            y="27.8"
+            width="7.4"
+            height="5.4"
+            fill="#c2402c"
+            opacity=".5"
+          />
         </>
       )}
       {id === 'tapas' && (

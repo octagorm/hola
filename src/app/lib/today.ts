@@ -51,6 +51,8 @@ export const DAILY_GAMES = [
   'tiempos',
   'letras',
   'cadena',
+  'elola',
+  'orden',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -65,6 +67,9 @@ export const NEEDS: Record<string, number> = {
   // with its Norwegian
   porpara: 0,
   tiempos: 0,
+  // (the lessons in order have eight nouns met by then, for ¿El o la?)
+  elola: 45,
+  orden: 60,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 
