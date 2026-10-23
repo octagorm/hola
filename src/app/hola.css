@@ -1919,6 +1919,37 @@ img.q-pic {
   border-color: var(--ochre);
 }
 
+/* A chapter read aloud: its buttons under the lines, and the line being
+   said washed in ochre */
+.q-aloud {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -4px;
+}
+
+.q-aloud .q-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.q-text p.aloud {
+  border-left-color: var(--red);
+  background: linear-gradient(
+    90deg,
+    rgba(210, 154, 46, 0.2),
+    rgba(210, 154, 46, 0) 85%
+  );
+}
+
+/* A story's drawing from the index, until it has painted pictures */
+.q-vignette {
+  display: block;
+  width: 132px;
+  height: 101px;
+  margin: 0 auto -8px;
+}
+
 .q-ask h3 {
   margin: 6px 0 14px;
   font-family: var(--display);

@@ -4,17 +4,21 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Pause,
+  Play,
+  Square,
   Volume2,
 } from 'lucide-react'
 import { STORY, subtitle } from '../data/stories'
 import { plain, wordIds } from '../lib/text'
-import { say, useVoices } from '../lib/speech'
+import { saidCount, say, stop, useVoices } from '../lib/speech'
+import { aloudFrom, readLine } from '../lib/aloud'
 import { useStore } from '../lib/store'
 import { blip } from '../lib/sound'
 import { shuffle } from '../lib/choices'
 import { TodayNext, useBack } from '../daily'
 import { Mixed, MixedKey, Page, roman } from '../ui'
-import { Scene, hasView } from '../art'
+import { Scene, TocArt, hasView, isTocId } from '../art'
 import type { Chapter, Story } from '../data/stories'
 import type { PageProps } from '../registry'
 
@@ -23,6 +27,15 @@ import type { PageProps } from '../registry'
 // card. After the chapter, three questions on what happened. The words
 // read without looking them up are counted as read. Every story's page is
 // this one: /#quijote, and a chapter /#quijote/molinos.
+//
+// A chapter can be read aloud by the narrator, line after line from the
+// line at hand (lib/aloud.ts): each line is marked and kept in sight while
+// it is said. A word looked up makes the reading wait after its line, and
+// anything else said over a line pauses it.
+
+// The narrator's voice, for reading aloud: the recordings, or the
+// browser's Spanish voice where a line has none
+const NARRATOR = { say: (text: string) => say(text), count: saidCount, stop }
 
 export default function StoryPage({ id, arg }: PageProps) {
   const story = STORY[id]
@@ -36,7 +49,8 @@ export default function StoryPage({ id, arg }: PageProps) {
 }
 
 // The picture above a chapter, or above the story's chapters: Don
-// Quijote's in ink (art.tsx), the others' painted
+// Quijote's in ink (art.tsx), the others' painted, and until they are, the
+// story's drawing from the index as a vignette
 function Picture({ story, c }: { story: Story; c?: Chapter }) {
   if (story.id === 'quijote')
     return (
@@ -47,11 +61,15 @@ function Picture({ story, c }: { story: Story; c?: Chapter }) {
       />
     )
   const img = c?.img ?? story.chapters[0]?.img
-  return img ? <img className="q-strip q-pic" src={img} alt="" /> : null
+  if (img) return <img className="q-strip q-pic" src={img} alt="" />
+  return isTocId(story.id) ? (
+    <TocArt id={story.id} className="q-vignette" />
+  ) : null
 }
 
 function Chapters({ story }: { story: Story }) {
   const { bank } = useStore()
+  const { hear } = useVoices()
   const next = story.chapters.find((c) => bank.read[c.id] === undefined)
   return (
     <Page es={story.es} title={story.no}>
@@ -60,6 +78,8 @@ function Chapters({ story }: { story: Story }) {
         <p className="q-intro">
           {story.intro} Ordene du ikke har møtt ennå står på norsk, i spansk
           rekkefølge, og blir spanske etter hvert som du lærer dem.
+          {hear !== false &&
+            ' Trykk «Les høyt» i et kapittel, så leser fortelleren det for deg, linje for linje.'}
         </p>
         <ol className="q-chapters">
           {story.chapters.map((c, i) => {
@@ -107,6 +127,10 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
   const [right, setRight] = useState(0)
   const tapped = useRef(new Set<string>())
   const nowLine = useRef<HTMLParagraphElement>(null)
+  // Reading aloud: not, reading, or paused at the line it was on
+  const [aloud, setAloud] = useState<'off' | 'on' | 'paused'>('off')
+  // A word looked up: reading aloud waits after the line it is on
+  const hold = useRef(false)
 
   const options = useMemo(() => c.questions.map((q) => shuffle([...q.a])), [c])
 
@@ -114,16 +138,45 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
   const next = () => {
     if (phase !== 'read') return
     if (shown < c.lines.length) setShown(shown + 1)
-    else setPhase('ask')
+    else {
+      setAloud('off')
+      setPhase('ask')
+    }
   }
   const prev = () => {
     if (phase === 'read' && shown > 1) setShown(shown - 1)
   }
 
-  // The line just shown is kept in sight
+  // From the line at hand, or from the first when the last is reached
+  const readAloud = () => {
+    hold.current = false
+    if (aloud === 'off') setShown(aloudFrom(shown, c.lines.length))
+    setAloud('on')
+  }
+
+  // The line just shown is kept in sight; while read aloud, in the middle,
+  // so that the buttons under it are in sight too
   useEffect(() => {
-    nowLine.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [shown])
+    nowLine.current?.scrollIntoView({
+      block: aloud === 'on' ? 'center' : 'nearest',
+      behavior: 'smooth',
+    })
+  }, [shown, aloud])
+
+  // Read aloud: the line at hand, a pause, then the next, to the last
+  useEffect(() => {
+    if (aloud !== 'on' || phase !== 'read') return
+    const reading = readLine(plain(c.lines[shown - 1]), NARRATOR)
+    void reading.done.then((end) => {
+      if (end === 'cancelled') return
+      if (end === 'cut' || hold.current) {
+        hold.current = false
+        setAloud('paused')
+      } else if (shown < c.lines.length) setShown(shown + 1)
+      else setAloud('off')
+    })
+    return reading.cancel
+  }, [aloud, shown, phase, c])
 
   const finish = (score: number) => {
     setPhase('done')
@@ -213,9 +266,21 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
               <p
                 key={i}
                 ref={phase === 'read' && i === shown - 1 ? nowLine : undefined}
-                className={phase === 'read' && i === shown - 1 ? 'now' : ''}
+                className={
+                  phase !== 'read' || i !== shown - 1
+                    ? ''
+                    : aloud === 'on'
+                      ? 'now aloud'
+                      : 'now'
+                }
               >
-                <Mixed line={l} onPeek={(id) => tapped.current.add(id)} />
+                <Mixed
+                  line={l}
+                  onPeek={(id) => {
+                    tapped.current.add(id)
+                    hold.current = true
+                  }}
+                />
               </p>
             ))}
         </div>
@@ -256,6 +321,37 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                 <ChevronRight />
               </button>
             </nav>
+            {hear !== false && (
+              <div className="q-aloud">
+                {aloud === 'on' ? (
+                  <button
+                    type="button"
+                    className="q-btn ghost small"
+                    onClick={() => setAloud('paused')}
+                  >
+                    <Pause aria-hidden="true" /> Pause
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="q-btn small"
+                    onClick={readAloud}
+                  >
+                    <Play aria-hidden="true" />{' '}
+                    {aloud === 'paused' ? 'Fortsett' : 'Les høyt'}
+                  </button>
+                )}
+                {aloud !== 'off' && (
+                  <button
+                    type="button"
+                    className="q-btn ghost small"
+                    onClick={() => setAloud('off')}
+                  >
+                    <Square aria-hidden="true" /> Stopp
+                  </button>
+                )}
+              </div>
+            )}
             <MixedKey />
           </>
         )}

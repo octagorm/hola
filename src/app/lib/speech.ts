@@ -119,6 +119,11 @@ if (typeof window !== 'undefined' && typeof Audio !== 'undefined') {
 // Ends the recording playing now, and settles its promise
 let ending: (() => void) | null = null
 
+// How many things have been said, one more with each: a story read aloud
+// line after line tells by it that something else was said over a line
+let said = 0
+export const saidCount = () => said
+
 export function stop() {
   if (ending) {
     player?.pause()
@@ -133,6 +138,7 @@ export function stop() {
 // (some browsers' speech does not) is given up on after a while, so a game
 // waiting for it goes on.
 export function say(text: string, slow = false): Promise<void> {
+  said++
   stop()
   const speed = rate * (slow ? 0.7 : 1)
   const limit = new Promise<void>((resolve) =>

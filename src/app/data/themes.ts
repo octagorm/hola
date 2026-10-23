@@ -251,6 +251,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
           'José Zorrillas skuespill fra 1844 om forføreren Don Juan i Sevilla, som vedder om hvem som kan gjøre mest skade på ett år, og så forelsker seg i den unge doña Inés fra klosteret. Andre del foregår blant gravene, der de døde kommer tilbake, og derfor spilles stykket rundt allehelgensdag. Den eldre Don Juan fra 1600-tallet havner i helvete, men Zorrilla ga sin en annen slutt.',
       },
       {
+        lesson: 'becquer',
+        about:
+          'Gustavo Adolfo Bécquer skrev sagnene sine rundt 1860, flere av dem fra Soria: de dødes natt på fjellet der tempelridderne kjempet, en jeger som ser et par grønne øyne i en kilde i skogen, en dikter som følger en kvinne i hvitt gjennom gatene, og en blind organist i Sevilla julenatten. Ordene er de samme som i fortellingen Leyendas, der fire av sagnene fortelles enkelt.',
+      },
+      {
         lesson: 'llorona',
         about:
           'Et sagn fra Mexico, fortalt i store deler av Latin-Amerika: en kvinne som druknet barna sine da mannen forlot henne, går kledd i hvitt langs elver og innsjøer om natten og gråter «¡Ay, mis hijos!», å, mine barn. Barn får høre det for at de skal holde seg inne når det blir mørkt. En gammel meksikansk sang bærer navnet hennes, kjent i Chavela Vargas’ versjon.',

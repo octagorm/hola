@@ -65,7 +65,7 @@ vi.stubGlobal('speechSynthesis', {
   addEventListener: () => {},
 })
 
-const { say, setVoice, canHear, RECORDED, stop } =
+const { say, setVoice, canHear, RECORDED, stop, saidCount } =
   await import('../src/app/lib/speech')
 
 // The one element the recordings play in, once one has played
@@ -118,6 +118,15 @@ describe('saying Spanish aloud', () => {
     stop()
     await third
     expect(element?.paused).toBe(true)
+  })
+
+  it('counts what is said, so that a line read aloud knows it was cut', async () => {
+    const before = saidCount()
+    const p = say('el gato')
+    expect(saidCount()).toBe(before + 1)
+    stop()
+    await p
+    expect(saidCount()).toBe(before + 1)
   })
 
   it('falls back on the browser’s voice without a recording', async () => {

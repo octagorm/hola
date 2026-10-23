@@ -1,4 +1,5 @@
 import { CHAPTERS as QUIJOTE } from './quijote.ts'
+import { CHAPTERS as LEYENDAS } from './leyendas.ts'
 
 // The stories, each read a chapter at a time in mixed text
 // (games/story.tsx), with three questions after each chapter. Their lines
@@ -46,6 +47,14 @@ export const STORIES: Array<Story> = [
       'Miguel de Cervantes ga ut første del av Don Quijote i 1605, om en adelsmann som leser seg gal på ridderbøker og drar ut for å bli ridder selv. Her er begynnelsen fortalt enkelt på spansk.',
     of: 'romanens',
     chapters: QUIJOTE,
+  },
+  {
+    id: 'leyendas',
+    es: 'Leyendas',
+    no: 'Sagnene',
+    intro:
+      'Gustavo Adolfo Bécquer (1836–1870) fra Sevilla er en av Spanias mest elskede poeter. Ved siden av diktene, Rimas, skrev han Leyendas: sagn med spøkelser og ulykkelig kjærlighet, som kom i aviser i Madrid rundt 1860, flere av dem fra Soria. Han døde bare 34 år gammel, og vennene hans samlet dem i bok året etter. Her er fire av sagnene fortalt enkelt på spansk.',
+    chapters: LEYENDAS,
   },
 ]
 

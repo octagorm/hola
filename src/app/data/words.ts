@@ -1925,6 +1925,47 @@ const LIST: Array<Lesson & { words: string }> = [
       la plancha | strykejern, stekeplate
     `,
   },
+  {
+    id: 'becquer',
+    es: 'Leyendas de Bécquer',
+    no: 'Bécquers sagn',
+    words: `
+      la noche de difuntos | de dødes natt, natt til allesjelersdag
+      despertar | vekke | v
+      el doble | det dobbelte, sjelering
+      la campana | kirkeklokke, klokke
+      cazar | jakte | v
+      el monte | fjell, skogsås
+      el ánima | sjel (en avdødes) | f
+      el templario | tempelridder
+      morir | dø | v
+      sonar | lyde, ringe | v
+      solo | alene, bare | adj
+      otra vez | igjen | expr
+      entre | mellom, blant | prep
+      la joya | smykke
+      la banda | bånd, skjerf
+      pálido | blek | adj
+      seguir | følge, fortsette | v
+      el ciervo | hjort
+      herido | såret | adj
+      el cazador | jeger
+      el espíritu | ånd
+      el círculo | sirkel, ring
+      el poeta | dikter, poet
+      lleno | full | adj
+      el rayo | stråle, lyn
+      la gloria | ære, berømmelse
+      la misa del gallo | midnattsmesse
+      el organista | organist
+      el órgano | orgel, organ
+      como | som, slik som | conj
+      enfermo | syk | adj
+      la misa | messe
+      el silencio | stillhet
+      reírse | le | v
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {
