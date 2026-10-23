@@ -1,0 +1,728 @@
+/* El reloj blando: a travel poster of the 1930s, flat colours printed on
+   warm paper, a desert at the end of the day, and a soft gold watch */
+
+.rb {
+  --ink: #2e2340;
+  --ink-2: #65597a;
+  --paper: #f4e9d4;
+  --card: #fbf4e4;
+  --gold: #e3a83e;
+  --gold-2: #f8d78a;
+  --brown: #6b3f1d;
+  --terra: #c4552f;
+  --indigo: #3b3968;
+  --sage: #3f7a68;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Jost', system-ui, sans-serif;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(
+      900px 600px at 0% 0%,
+      rgba(255, 250, 238, 0.85),
+      transparent 70%
+    ),
+    radial-gradient(
+      900px 700px at 100% 100%,
+      rgba(226, 190, 140, 0.35),
+      transparent 70%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4  0 0 0 0 .3  0 0 0 0 .25  0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+
+.rb button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rb :focus-visible {
+  outline: 3px solid var(--terra);
+  outline-offset: 2px;
+}
+
+.rb .g-m {
+  color: #3d5fa8;
+}
+
+.rb .g-f {
+  color: var(--terra);
+}
+
+.rb-col {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 14px 28px;
+}
+
+/* --- The top --- */
+
+.rb-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.rb-round {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.rb-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.rb-top h1 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: 'Limelight', 'Jost', serif;
+  font-weight: 400;
+  font-size: 1.3rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.rb-top h1 small {
+  display: block;
+  margin-top: 4px;
+  font-family: 'Jost', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.rb-dials {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rb-dial {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.rb-dials circle,
+.rb-dials path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.rb-dials .later svg {
+  opacity: 0.3;
+}
+
+.rb-dials .now circle {
+  fill: var(--card);
+  stroke-width: 2.2;
+}
+
+.rb-dials .now svg {
+  animation: rb-tick 1.6s ease-in-out infinite;
+}
+
+.rb-dials .saved circle,
+.rb-result .saved .rb-dial circle {
+  fill: var(--gold);
+  stroke: var(--brown);
+}
+
+.rb-dials .saved .h,
+.rb-result .saved .rb-dial .h {
+  stroke: var(--brown);
+}
+
+.rb-dials .lost path,
+.rb-result .lost .rb-dial path {
+  fill: #d7b28a;
+  stroke: var(--brown);
+  stroke-width: 1.5;
+  opacity: 0.8;
+}
+
+@keyframes rb-tick {
+  50% {
+    transform: rotate(-8deg);
+  }
+}
+
+/* --- The poster --- */
+
+.rb-scene {
+  position: relative;
+  width: 100%;
+  height: clamp(210px, calc(100svh - 440px), 460px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: #e7d9bd;
+  box-shadow:
+    0 0 0 2px var(--ink),
+    5px 6px 0 rgba(46, 35, 64, 0.16);
+}
+
+.rb-scene > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The grain of the print over it all */
+.rb-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25  0 0 0 0 .18  0 0 0 0 .2  0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* A new watch drops onto the stone */
+.rb-clock {
+  animation: rb-in 0.85s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+
+@keyframes rb-in {
+  0% {
+    transform: translateY(-420px);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+  55% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0.4, 0.5, 1);
+  }
+  72% {
+    transform: translateY(-18px);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+  86% {
+    transform: translateY(0);
+  }
+  93% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Gold dripping from its lowest point */
+.rb-fall path {
+  fill: var(--gold);
+  stroke: var(--brown);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: rb-drip var(--dur, 2s) linear infinite;
+}
+
+.rb-fall path + path {
+  animation-delay: calc(var(--dur, 2s) / -2);
+}
+
+@keyframes rb-drip {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.2);
+    animation-timing-function: ease-out;
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(0) scale(0.85, 1);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  88% {
+    opacity: 1;
+    transform: translateY(var(--fall)) scale(0.75, 1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--fall)) scale(1.8, 0.25);
+  }
+}
+
+/* Light bursting out as the watch springs back */
+.rb-burst path {
+  fill: #fff0b8;
+}
+
+.rb-burst {
+  opacity: 0;
+  animation: rb-burst 1.7s ease-out 0.1s both;
+}
+
+@keyframes rb-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.55) rotate(0deg);
+  }
+  25% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3) rotate(24deg);
+  }
+}
+
+/* --- The word --- */
+
+.rb-side {
+  padding-top: 14px;
+}
+
+.rb-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rb-ask p {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.rb-drops {
+  display: flex;
+  gap: 3px;
+}
+
+.rb-drops svg {
+  display: block;
+  width: 11px;
+  height: 15px;
+}
+
+.rb-drops path {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+  opacity: 0.55;
+}
+
+.rb-drops .on path {
+  fill: var(--gold);
+  stroke: var(--brown);
+  opacity: 1;
+  animation: rb-pop 0.35s ease both;
+}
+
+.rb-mean {
+  margin: 4px 0 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.rb-word {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  margin: 8px 0 16px;
+}
+
+.rb-word .art {
+  padding-bottom: 7px;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.rb-word .slots {
+  display: flex;
+  gap: 5px;
+}
+
+.rb-word .slot {
+  display: grid;
+  place-items: end center;
+  width: min(34px, calc((100vw - 120px) / var(--n) - 5px));
+  height: 46px;
+  padding-bottom: 5px;
+  border-bottom: 4px solid var(--ink);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.rb-word .slot.open {
+  animation: rb-pop 0.35s ease both;
+}
+
+.rb-word .slot.gone {
+  color: var(--terra);
+  border-color: var(--terra);
+}
+
+.rb-word.solved .slot {
+  border-color: var(--gold);
+  animation: rb-hop 0.55s ease calc(var(--i) * 60ms + 0.2s) both;
+}
+
+@keyframes rb-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rb-hop {
+  40% {
+    transform: translateY(-9px);
+  }
+}
+
+/* --- The keyboard --- */
+
+.rb-keys {
+  display: grid;
+  gap: 7px;
+}
+
+.rb-keys > div {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.rb-keys button {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 44px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--card);
+  font-size: 1.12rem;
+  font-weight: 600;
+  box-shadow:
+    inset 0 -3px 0 rgba(46, 35, 64, 0.16),
+    0 0 0 1.5px var(--ink);
+  touch-action: manipulation;
+}
+
+.rb-keys button:active {
+  transform: translateY(1px);
+}
+
+.rb-keys button.hit {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.rb-keys button.miss {
+  background: transparent;
+  color: rgba(46, 35, 64, 0.32);
+  text-decoration: line-through;
+  box-shadow: 0 0 0 1.5px rgba(46, 35, 64, 0.2);
+}
+
+.rb-keys button:disabled {
+  cursor: default;
+}
+
+/* --- After a word --- */
+
+.rb-after {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 8px 4px;
+  text-align: center;
+  animation: rb-rise 0.4s ease both;
+}
+
+.rb-after .kick {
+  margin: 0;
+  font-family: 'Limelight', 'Jost', serif;
+  font-size: 1.7rem;
+  color: var(--sage);
+}
+
+.rb-after.lost .kick {
+  color: var(--terra);
+}
+
+.rb-after .said {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0 0;
+  font-size: 1.35rem;
+}
+
+.rb-after .note {
+  margin: 0 0 10px;
+  color: var(--ink-2);
+}
+
+@keyframes rb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.rb .rb-speak {
+  flex: none;
+  color: var(--ink);
+  background: var(--card);
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+
+/* --- Buttons and cards --- */
+
+.rb .rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--indigo);
+  color: #fbf4e4;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 3px 0 var(--ink);
+}
+
+.rb .rb-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rb .rb-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.rb .rb-link {
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.rb-card {
+  margin-top: 14px;
+  padding: 18px 18px 14px;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow:
+    0 0 0 2px var(--ink),
+    5px 6px 0 rgba(46, 35, 64, 0.16);
+  animation: rb-rise 0.45s ease both;
+}
+
+.rb-card .kick {
+  margin: 0 0 2px;
+  font-family: 'Limelight', 'Jost', serif;
+  font-size: 1.45rem;
+  color: var(--terra);
+}
+
+.rb-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.rb-card p {
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+
+.rb-card ul {
+  margin: 10px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.rb-card li {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1.5px dashed rgba(46, 35, 64, 0.2);
+}
+
+.rb-card li .rb-dial {
+  width: 24px;
+  height: 24px;
+}
+
+.rb-result li .rb-dial circle,
+.rb-result li .rb-dial path {
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.rb-card li .txt {
+  display: grid;
+  min-width: 0;
+}
+
+.rb-card li b {
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.rb-card li small {
+  color: var(--ink-2);
+  font-size: 0.88rem;
+}
+
+.rb-card .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 6px;
+}
+
+/* --- Wide screens: the poster on the left, the word on the right --- */
+
+@media (min-width: 900px) {
+  .rb-col {
+    max-width: 1080px;
+    padding: 18px 28px 36px;
+  }
+
+  .rb-top {
+    margin-bottom: 18px;
+  }
+
+  .rb-top h1 {
+    font-size: 1.9rem;
+  }
+
+  .rb-dial {
+    width: 26px;
+    height: 26px;
+  }
+
+  .rb-play {
+    display: grid;
+    grid-template-columns: auto minmax(340px, 1fr);
+    align-items: center;
+    gap: 48px;
+  }
+
+  .rb-scene {
+    aspect-ratio: 3 / 4;
+    height: auto;
+    width: min(510px, calc((100svh - 130px) * 0.75));
+    max-height: none;
+    border-radius: 3px;
+    border: 12px solid #fbf4e4;
+    box-shadow:
+      0 0 0 2px var(--ink),
+      12px 14px 0 rgba(46, 35, 64, 0.14);
+  }
+
+  .rb-side {
+    padding: 0;
+  }
+
+  .rb-mean {
+    font-size: 2.1rem;
+  }
+
+  .rb-word {
+    justify-content: flex-start;
+    min-height: 66px;
+    margin: 14px 0 26px;
+  }
+
+  .rb-word .art {
+    font-size: 1.8rem;
+  }
+
+  .rb-word .slot {
+    width: 42px;
+    height: 58px;
+    font-size: 2.2rem;
+  }
+
+  .rb-keys > div {
+    justify-content: flex-start;
+  }
+
+  .rb-keys > div:nth-child(2) {
+    padding-left: 12px;
+  }
+
+  .rb-keys > div:nth-child(3) {
+    padding-left: 36px;
+  }
+
+  .rb-keys button {
+    max-width: 48px;
+    height: 52px;
+  }
+
+  .rb-after {
+    justify-items: start;
+    text-align: left;
+    padding: 0;
+  }
+
+  .rb-play.over .rb-card {
+    margin-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb *,
+  .rb *::before,
+  .rb *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

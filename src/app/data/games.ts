@@ -56,6 +56,13 @@ export const GAME_INFO: Array<GameInfo> = [
     doing: 'finner ord gjemt blant flisene',
   },
   {
+    id: 'reloj',
+    es: 'El reloj blando',
+    no: 'Den myke klokken',
+    blurb: 'Gjett ordet før klokken smelter',
+    doing: 'redder ord før klokken smelter',
+  },
+  {
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',

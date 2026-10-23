@@ -149,6 +149,7 @@ const PAGES = [
   ['#rosco', 'El rosco'],
   ['#cadaver', 'Cadáver exquisito'],
   ['#sopa', 'Sopa de letras'],
+  ['#reloj', 'El reloj blando'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -418,6 +419,61 @@ await test(
     await page.getByRole('button', { name: 'En ny sopa' }).click()
     await page.getByRole('button', { name: 'Vis resten' }).click()
     await page.getByText('Las que faltaban').waitFor()
+  },
+  { learner: true },
+)
+
+// The words El reloj blando may be asking for, from the meaning, the
+// article and the number of letters
+async function relojAsked(page) {
+  const text = await page.locator('.rb-mean').textContent()
+  const n = await page.locator('.rb-word .slot').count()
+  const art = page.locator('.rb-word .art')
+  const a = (await art.count()) ? await art.textContent() : null
+  return byMeaning(text).filter(
+    (w) =>
+      [...w.bare].length === n &&
+      (a ? w.es.startsWith(`${a} `) : w.pos !== 'n'),
+  )
+}
+
+const relojKey = (page, k) =>
+  page.locator('.rb-keys button', { hasText: new RegExp(`^${k}$`) }).click()
+
+await test(
+  'El reloj blando saves words in time and loses one to the melting clock',
+  async (page) => {
+    await go(page, '#reloj')
+    await page.waitForSelector('.rb-keys')
+    for (let i = 0; i < 5; i++) {
+      const ws = await relojAsked(page)
+      expect(ws.length > 0, 'a word met, asked by its meaning')
+      const keys = [...new Set(ws.flatMap((w) => [...letters(w.bare)]))]
+      if (i === 1) {
+        // Seven letters not in it, and the clock has melted
+        const wrong = [...'QWXZJKYÑVBFHGPMC'].filter((k) => !keys.includes(k))
+        for (const k of wrong.slice(0, 7)) await relojKey(page, k)
+        await page.getByText('¡Se derritió!').waitFor()
+        expect(
+          await visible(page, '.rb-word .slot.gone'),
+          'the letters not found shown',
+        )
+      } else {
+        for (const [j, k] of keys.entries()) {
+          if (await visible(page, '.rb-after')) break
+          // (the first typed on the keyboard)
+          if (j === 0 && k !== 'Ñ') await page.keyboard.press(k.toLowerCase())
+          else await relojKey(page, k)
+        }
+        await page.getByText('¡A tiempo!').waitFor()
+      }
+      await page
+        .getByRole('button', { name: i < 4 ? 'Neste ord' : 'Se resultatet' })
+        .click()
+    }
+    await page.getByText('4 av 5 ord reddet').waitFor()
+    await page.getByRole('button', { name: 'Fem ord til' }).click()
+    await page.waitForSelector('.rb-keys')
   },
   { learner: true },
 )

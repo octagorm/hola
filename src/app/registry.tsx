@@ -77,6 +77,12 @@ export const PAGES = [
     Page: page(() => import('./games/sopa')),
   },
   {
+    id: 'reloj',
+    es: 'El reloj blando',
+    no: 'Den myke klokken',
+    Page: page(() => import('./games/reloj')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

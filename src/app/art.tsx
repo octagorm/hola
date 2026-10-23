@@ -449,7 +449,14 @@ export function TocArt({
 // --- The games ---
 
 export type GameIconId =
-  'palabra' | 'palabras' | 'crucigrama' | 'rosco' | 'cadaver' | 'sopa' | 'tapas'
+  | 'palabra'
+  | 'palabras'
+  | 'crucigrama'
+  | 'rosco'
+  | 'cadaver'
+  | 'sopa'
+  | 'reloj'
+  | 'tapas'
 
 export function GameIcon({
   id,
@@ -561,6 +568,40 @@ export function GameIcon({
               )),
             )}
           </g>
+        </>
+      )}
+      {id === 'reloj' && (
+        <>
+          <rect
+            x="2"
+            y="25"
+            width="23"
+            height="16"
+            fill="#4f7fa8"
+            opacity=".2"
+          />
+          <path
+            d="M7 25C6 17 13 11.5 20.5 11.5 29 11.5 34.5 17 34.5 25 34.5 30 33.5 34.5 31 38.5 28.5 35.5 28 31 25.5 27.5 24 25.5 21 25 7 25Z"
+            fill="#d29a2e"
+            opacity=".65"
+          />
+          <g
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M1.5 25H25V41.5" />
+            <path d="M7 25C6 17 13 11.5 20.5 11.5 29 11.5 34.5 17 34.5 25 34.5 30 33.5 34.5 31 38.5 28.5 35.5 28 31 25.5 27.5" />
+            <path d="M20.5 11.5V9" />
+            <circle cx="20.5" cy="7.3" r="1.7" />
+            <path d="M20.5 19.5V15.2M20.5 19.5 24.5 21.2" strokeWidth="1.4" />
+          </g>
+          <path
+            d="M31 40.2c.9 1.2 1.4 1.9 1.4 2.5a1.4 1.4 0 0 1-2.8 0c0-.6.5-1.3 1.4-2.5z"
+            fill={INK}
+          />
         </>
       )}
       {id === 'tapas' && (
