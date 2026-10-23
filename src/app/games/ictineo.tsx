@@ -160,7 +160,7 @@ export default function Ictineo({ arg }: PageProps) {
   }
 
   return (
-    <div className="ic">
+    <div className="ic-game">
       <IctineoDefs />
       <div className="ic-col">
         <header className="ic-top">

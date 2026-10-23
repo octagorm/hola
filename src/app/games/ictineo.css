@@ -4,7 +4,7 @@
    the time. A Caslon for the text, Playfair's small capitals for the
    headings. */
 
-.ic {
+.ic-game {
   --ink: #2a2017;
   --ink-2: #5e4c38;
   --paper: #efe4c8;
@@ -45,19 +45,19 @@
   overflow: hidden;
 }
 
-.ic button {
+.ic-game button {
   font: inherit;
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.ic :focus-visible {
+.ic-game :focus-visible {
   outline: 3px solid var(--copper);
   outline-offset: 3px;
 }
 
-.ic kbd {
+.ic-game kbd {
   display: inline-block;
   min-width: 1.6em;
   padding: 0 4px;
@@ -72,7 +72,7 @@
   color: var(--ink);
 }
 
-.ic .small {
+.ic-game .small {
   margin: 0;
   font-size: 14px;
   color: var(--ink-2);
@@ -171,7 +171,7 @@
   line-height: 1.5;
 }
 
-.ic .kick {
+.ic-game .kick {
   margin: 0 0 6px;
   font-family: var(--display);
   font-weight: 700;
@@ -226,7 +226,7 @@
   box-shadow: none;
 }
 
-.ic .ic-link {
+.ic-game .ic-link {
   border: 0;
   padding: 6px 2px;
   background: none;
@@ -349,7 +349,7 @@
 }
 
 /* (the high sea at Alicante) */
-.v-alicante .ic-boat.up {
+.ic-plate.v-alicante .ic-boat.up {
   animation: ic-bob-rough 1.9s ease-in-out infinite;
 }
 
@@ -899,19 +899,19 @@
 }
 
 /* The pictures of the controls: port red, starboard green, coral, lamp */
-.ic .port {
+.ic-game .port {
   fill: var(--port);
 }
 
-.ic .star {
+.ic-game .star {
   fill: var(--star);
 }
 
-.ic .coral {
+.ic-game .coral {
   stroke: var(--coral);
 }
 
-.ic .glow {
+.ic-game .glow {
   fill: var(--lamp);
   opacity: 0.7;
 }
@@ -1521,9 +1521,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ic *,
-  .ic *::before,
-  .ic *::after {
+  .ic-game *,
+  .ic-game *::before,
+  .ic-game *::after {
     animation-duration: 0.01s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01s !important;
