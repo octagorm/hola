@@ -113,6 +113,12 @@ export const PAGES = [
     Page: page(() => import('./games/elola')),
   },
   {
+    id: 'orden',
+    es: 'Orden',
+    no: 'Ordstilling',
+    Page: page(() => import('./games/orden')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

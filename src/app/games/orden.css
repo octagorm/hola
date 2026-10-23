@@ -1,0 +1,621 @@
+/* Orden: an aleluya, the Spanish broadsheet of the 1860s: a sheet of
+   small woodcuts in frames, coloured by hand in red, blue, yellow and
+   green, each with its line of verse in a box beneath. Each sentence put
+   in order prints its line and colours its picture. */
+
+.or {
+  --paper: #f4e8cb;
+  --paper-2: #e8d5aa;
+  --paper-3: #dcc597;
+  --ink: #221a12;
+  --ink-2: #5e4d3a;
+  --red: #b8361f;
+  --blue: #3a5f9a;
+  --yellow: #e0ad35;
+  --green: #6b8a3a;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Old Standard TT', Georgia, serif;
+  color: var(--ink);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 12% 18%, rgb(170 120 50 / 0.12), transparent 9%),
+    radial-gradient(circle at 86% 64%, rgb(170 120 50 / 0.1), transparent 7%),
+    radial-gradient(circle at 70% 12%, rgb(170 120 50 / 0.08), transparent 5%),
+    radial-gradient(
+      ellipse at 50% 40%,
+      var(--paper) 40%,
+      var(--paper-2) 85%,
+      var(--paper-3)
+    );
+  background-attachment: fixed;
+}
+
+.or :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.or :focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.or-col {
+  max-width: 680px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 16px 14px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- The top --- */
+
+.or-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.or-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.or-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.or-top h1 {
+  margin: 0;
+  font-family: 'Abril Fatface', 'Old Standard TT', serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--red);
+}
+
+.or-top h1 small {
+  display: block;
+  margin-top: 4px;
+  font-family: 'Old Standard TT', serif;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+/* The sheet so far: a small frame for each sentence */
+.or-strip {
+  margin-left: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 26px);
+  gap: 4px;
+}
+
+.or-strip i {
+  position: relative;
+  height: 19px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.or-strip i.at {
+  border-width: 2.5px;
+  border-color: var(--red);
+}
+
+.or-strip .or-vig {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- A sentence --- */
+
+.or-play {
+  display: flex;
+  flex-direction: column;
+  padding-top: clamp(18px, 4vh, 44px);
+}
+
+.or-no {
+  margin: 0 0 12px;
+  text-align: center;
+  font-style: italic;
+  font-size: 23px;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.or-no::before,
+.or-no::after {
+  color: var(--red);
+  font-style: normal;
+}
+
+.or-no::before {
+  content: '«';
+}
+
+.or-no::after {
+  content: '»';
+}
+
+/* A frame of the broadsheet: the picture, and the box for its line */
+.or-panel {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 460px;
+  border: 2.5px solid var(--ink);
+  background: var(--paper);
+  box-shadow:
+    0 0 0 3px var(--paper),
+    0 0 0 4.5px var(--ink);
+}
+
+.or-panel > .or-vig {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 120 / 70;
+  border-bottom: 2.5px solid var(--ink);
+}
+
+.or-caption {
+  min-height: 68px;
+  padding: 10px 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.or-slots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px 6px;
+}
+
+.or-mark {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--red);
+  padding: 0 1px;
+}
+
+.or-slot {
+  width: 46px;
+  height: 42px;
+  border-bottom: 2px dotted var(--ink-2);
+}
+
+.or-printed {
+  margin: 0;
+  text-align: center;
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 700;
+  text-wrap: balance;
+  animation: or-print 0.5s ease-out;
+}
+
+@keyframes or-print {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+    letter-spacing: 0.04em;
+  }
+}
+
+/* --- The tiles --- */
+
+.or-tray {
+  margin: 18px auto 0;
+  max-width: 520px;
+  min-height: 54px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 8px;
+}
+
+.or-tile {
+  position: relative;
+  min-height: 44px;
+  padding: 6px 13px 7px;
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  background: #fbf3dc;
+  box-shadow: 0 3px 0 var(--ink);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.or-tile:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.or-tile small {
+  position: absolute;
+  top: -9px;
+  left: -7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.or-slots .or-tile {
+  background: #fffaf0;
+}
+
+.or-tile.kept {
+  background: #e7edd6;
+  border-color: var(--green);
+  box-shadow: 0 3px 0 var(--green);
+}
+
+.or-tile.shake {
+  background: #f4d3c6;
+  border-color: var(--red);
+  box-shadow: 0 3px 0 var(--red);
+  animation: or-shake 0.45s ease-in-out;
+}
+
+@keyframes or-shake {
+  20% {
+    transform: translateX(-6px) rotate(-3deg);
+  }
+  45% {
+    transform: translateX(5px) rotate(2deg);
+  }
+  70% {
+    transform: translateX(-3px);
+  }
+}
+
+/* --- Buttons and notes --- */
+
+.or-acts {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+}
+
+.or-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 28px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--red);
+  color: #fbf3dc;
+  font-family: 'Old Standard TT', serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 3px 0 var(--ink);
+}
+
+.or .or-btn {
+  color: #fbf3dc;
+}
+
+.or-btn:disabled {
+  cursor: default;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  border-color: var(--ink-2);
+  box-shadow: 0 3px 0 var(--ink-2);
+}
+
+.or-btn:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.or-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.or-btn.quiet {
+  background: #fbf3dc;
+}
+
+.or .or-btn.quiet {
+  color: var(--ink);
+}
+
+.or-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 18px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.or-hint {
+  margin: 14px 0 0;
+  min-height: 1.4em;
+  text-align: center;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-2);
+}
+
+/* What the sentence shows, after it is put right */
+.or-point {
+  position: relative;
+  margin: 18px auto 0;
+  width: 100%;
+  max-width: 460px;
+  padding: 12px 16px 12px 44px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  font-size: 18px;
+  line-height: 1.4;
+  animation: or-print 0.6s ease-out 0.2s both;
+}
+
+.or-point::before {
+  content: '☞';
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  font-size: 24px;
+  color: var(--red);
+}
+
+.or-point i[lang='es'] {
+  font-weight: 700;
+}
+
+.or .or-speak {
+  background: #fbf3dc;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+/* --- The end: the sheet whole --- */
+
+.or-end {
+  margin-top: 18px;
+}
+
+.or-end .kick {
+  margin: 0;
+  text-align: center;
+  font-family: 'Abril Fatface', serif;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--red);
+}
+
+.or-end h2 {
+  margin: 6px 0 2px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 26px;
+}
+
+.or-end > p {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.or-sheet {
+  margin: 18px 0 0;
+  padding: 10px;
+  border: 2.5px solid var(--ink);
+  box-shadow:
+    0 0 0 3px var(--paper),
+    0 0 0 4.5px var(--ink);
+  background: var(--paper);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.or-sheet button {
+  position: relative;
+  padding: 0;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.or-sheet .or-vig {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 120 / 70;
+  border-bottom: 2px solid var(--ink);
+}
+
+.or-sheet span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 6px 8px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* A sentence put right at the first try gets a printer's star */
+.or-sheet .star {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+}
+
+.or-sheet .shown span {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+.or-end .or-acts {
+  margin-top: 24px;
+}
+
+/* --- The woodcuts, coloured; bare, before the colour is laid on --- */
+
+.or-vig {
+  --vr: var(--red);
+  --vb: var(--blue);
+  --vy: var(--yellow);
+  --vg: var(--green);
+  --vs: #d8e0d6;
+  --vp: #f8eed6;
+  --vk: var(--ink);
+}
+
+.or-vig.bare {
+  --vr: var(--vp);
+  --vb: var(--vp);
+  --vy: var(--vp);
+  --vg: var(--vp);
+  --vs: var(--vp);
+}
+
+.or-vig .r {
+  fill: var(--vr);
+  transition: fill 0.7s ease 0.6s;
+}
+
+.or-vig .b {
+  fill: var(--vb);
+  transition: fill 0.7s ease 0.45s;
+}
+
+.or-vig .y {
+  fill: var(--vy);
+  transition: fill 0.7s ease 0.3s;
+}
+
+.or-vig .g {
+  fill: var(--vg);
+  transition: fill 0.7s ease 0.15s;
+}
+
+.or-vig .s {
+  fill: var(--vs);
+  transition: fill 0.7s ease;
+}
+
+.or-vig .p {
+  fill: var(--vp);
+}
+
+.or-vig .k {
+  fill: var(--vk);
+}
+
+/* --- A wider screen --- */
+
+@media (min-width: 720px) {
+  .or-col {
+    max-width: 760px;
+    padding: 26px 24px 32px;
+  }
+
+  .or-panel,
+  .or-point {
+    max-width: 520px;
+  }
+
+  .or-top h1 {
+    font-size: 44px;
+  }
+
+  .or-top h1 small {
+    font-size: 18px;
+  }
+
+  .or-strip {
+    grid-template-columns: repeat(8, 34px);
+    gap: 6px;
+  }
+
+  .or-strip i {
+    height: 25px;
+  }
+
+  .or-no {
+    font-size: 28px;
+  }
+
+  .or-tile {
+    font-size: 23px;
+    min-height: 48px;
+  }
+
+  .or-printed {
+    font-size: 30px;
+  }
+
+  .or-sheet {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .or-tile.shake,
+  .or-printed,
+  .or-point {
+    animation: none;
+  }
+
+  .or-vig :is(.r, .b, .y, .g, .s) {
+    transition: none;
+  }
+}

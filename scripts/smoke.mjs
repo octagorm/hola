@@ -10,6 +10,8 @@ import { learnerBank } from './learner.mjs'
 import { WORDS, meaning } from '../src/app/data/words.ts'
 import { FORMS, makeable } from '../src/app/lib/letras.ts'
 import { letters, unaccent } from '../src/app/lib/spanish.ts'
+import { SENTENCES } from '../src/app/data/orden.ts'
+import { matchOf, tilesOf } from '../src/app/lib/orden.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -156,6 +158,7 @@ const PAGES = [
   ['#letras', 'Letras'],
   ['#cadena', 'Palabras encadenadas'],
   ['#elola', '¿El o la?'],
+  ['#orden', 'Orden'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -527,6 +530,80 @@ await test(
     await page.getByText('Ordene du bommet på').waitFor()
     await page.getByRole('button', { name: 'En runde til' }).click()
     await page.waitForSelector('.eo-deal')
+  },
+  { learner: true },
+)
+
+// The sentence Orden shows, found by its Norwegian
+async function ordenNow(page) {
+  const no = await page.locator('.or-no').textContent()
+  const s = SENTENCES.find((x) => x.no === no)
+  expect(!!s, `a sentence for «${no}»`)
+  return s
+}
+
+// Taps the tiles in the heap in this order
+async function ordenSet(page, words) {
+  for (const w of words)
+    await page
+      .locator('.or-tray')
+      .getByRole('button', { name: w, exact: true })
+      .first()
+      .click()
+}
+
+await test(
+  'Orden sets eight sentences in order, shows one, and prints the sheet',
+  async (page) => {
+    await go(page, '#orden')
+    for (let i = 0; i < 8; i++) {
+      const s = await ordenNow(page)
+      const right = tilesOf(s.line).map((t) => t.es)
+      if (i === 1) {
+        // Wrong twice, the second time from the start, and then shown
+        const wrong = [
+          [...right].reverse(),
+          [...right.slice(1), right[0]],
+          [right[1], right[0], ...right.slice(2)],
+        ].find((w) => matchOf(s, w) < 0)
+        await ordenSet(page, wrong)
+        await page.getByRole('button', { name: 'Sjekk' }).click()
+        await page.waitForSelector('.or-tile.shake')
+        await page.waitForSelector('.or-tile.shake', { state: 'detached' })
+        expect(await visible(page, '.or-point'), 'a hint after a mistake')
+        while (await visible(page, '.or-slots .or-tile'))
+          await page.locator('.or-slots .or-tile').first().click()
+        await ordenSet(page, wrong)
+        await page.getByRole('button', { name: 'Sjekk' }).click()
+        await page.getByRole('button', { name: 'Vis meg' }).click()
+      } else if (i === 2) {
+        // By the keys: each tile by its number in the heap, Enter to check
+        for (const w of right) {
+          const heap = await page.$$eval('.or-tray .or-tile', (els) =>
+            els.map((e) => e.lastChild?.textContent),
+          )
+          await page.keyboard.press(String(heap.indexOf(w) + 1))
+        }
+        await page.keyboard.press('Enter')
+      } else {
+        await ordenSet(page, right)
+        await page.getByRole('button', { name: 'Sjekk' }).click()
+      }
+      await page.waitForSelector('.or-printed')
+      if (i === 2) await page.keyboard.press('Enter')
+      else
+        await page
+          .getByRole('button', { name: i < 7 ? /^Neste/ : /^Se arket/ })
+          .click()
+    }
+    await page.getByText('¡Aleluya!').waitFor()
+    await page.getByText('7 av 8 på første forsøk').waitFor()
+    expect(
+      (await page.locator('.or-sheet .star').count()) === 7,
+      'a star for each sentence right at the first try',
+    )
+    await page.getByRole('button', { name: 'Et ark til' }).click()
+    await page.waitForSelector('.or-tray .or-tile')
   },
   { learner: true },
 )

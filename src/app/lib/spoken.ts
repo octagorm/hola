@@ -1,6 +1,7 @@
 import { WORDS } from '../data/words.ts'
 import { EPIGRAPH } from '../data/quijote.ts'
 import { ALL_CHAPTERS } from '../data/stories.ts'
+import { SENTENCES as ORDEN } from '../data/orden.ts'
 import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
 import { GAPS } from '../data/porpara.ts'
 import { SENTENCES, TIMES } from '../data/tiempos.ts'
@@ -8,6 +9,7 @@ import { DECK, spanish } from './cadaver.ts'
 import { whole } from './porpara.ts'
 import { plain as said } from './tiempos.ts'
 import { SAID } from './letras.ts'
+import { linesOf } from './orden.ts'
 import { plain, tokens } from './text.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
@@ -51,5 +53,8 @@ export function speechItems(): Array<SpeechItem> {
   for (const g of GAPS) add(LINE_VOICE, whole(g), 'line')
   for (const s of SENTENCES)
     for (const t of TIMES) add(LINE_VOICE, said(s, t), 'line')
+  // Orden's sentences, in the narrator's voice, in every order that is right
+  for (const s of ORDEN)
+    for (const line of linesOf(s)) add(LINE_VOICE, plain(line), 'line')
   return items
 }
