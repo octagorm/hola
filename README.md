@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-`npm run dev` starter Convex og Astro. Første gang ber Convex deg logge inn og velge prosjektet «hola», og skriver adressen i `.env.local`. Der må den hete `PUBLIC_CONVEX_URL` (står linjen `PUBLIC_CONVEX_URL=` der fra før, fyller Convex den inn). Uten den virker siden som før, bare uten innlogging.
+`npm run dev` starter Convex og Astro. Første gang ber Convex deg logge inn og velge prosjektet «hola», og skriver adressen i `.env.local`. Der må den hete `PUBLIC_CONVEX_URL` (står linjen `PUBLIC_CONVEX_URL=` der fra før, fyller Convex den inn). Uten den virker siden som før, bare uten innlogging. Google-innloggingen virker bare i produksjonen, som `npm run build` bruker (adressen står i `.env.production`).
 
 Nettlesertestene trenger Chromium én gang: `npx playwright install chromium`.
 

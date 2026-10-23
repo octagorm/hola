@@ -5,7 +5,7 @@
 //
 //   node scripts/smoke.mjs [part of a test's name, to run only those]
 import { chromium } from 'playwright'
-import { ORIGIN, routeDist } from './serve.mjs'
+import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 
 const proxy = process.env.HTTPS_PROXY
@@ -33,6 +33,7 @@ async function test(name, fn, { phone = false, learner = false } = {}) {
     acceptDownloads: true,
   })
   await routeDist(context)
+  await quietConvex(context)
   if (learner) {
     const bank = JSON.stringify(await learnerBank(Date.now()))
     await context.addInitScript((b) => {
@@ -148,6 +149,8 @@ const PAGES = [
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
   ['/om', 'Om Hola'],
+  ['/personvern', 'Personvern i Hola'],
+  ['/admin', 'Logg inn som administrator'],
   ['/ingensteds', '¿Dónde?'],
 ]
 
@@ -172,6 +175,20 @@ for (const phone of [false, true])
     },
     { phone, learner: true },
   )
+
+await test('signing in with Google is offered', async (page) => {
+  await go(page, '')
+  await page.getByRole('button', { name: 'Logg inn', exact: true }).click()
+  await page.getByRole('button', { name: 'Logg inn med Google' }).waitFor()
+  expect(
+    await visible(page, '.q-account-pop a[href="/personvern"]'),
+    'a link to the privacy page beside it',
+  )
+  await page.keyboard.press('Escape')
+  expect(!(await visible(page, '.q-account-pop')), 'closed by Escape')
+  await go(page, '#ajustes')
+  await page.getByRole('button', { name: 'Logg inn med Google' }).waitFor()
+})
 
 await test(
   'a review round ends with its words',

@@ -12,7 +12,7 @@
 // (default 1200), --out <dir> (default shots/).
 import { mkdirSync } from 'node:fs'
 import { chromium } from 'playwright'
-import { ORIGIN, routeDist } from './serve.mjs'
+import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 
 const args = process.argv.slice(2)
@@ -49,6 +49,7 @@ const context = await browser.newContext(
     : { viewport: { width: 1280, height: 900 } },
 )
 await routeDist(context)
+await quietConvex(context)
 if (learner) {
   const bank = JSON.stringify(await learnerBank(Date.now()))
   await context.addInitScript((b) => {

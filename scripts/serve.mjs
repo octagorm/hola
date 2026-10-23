@@ -47,6 +47,15 @@ export async function lookup(pathname) {
   return { path: join(ROOT, '404.html'), found: false }
 }
 
+// Convex, for a page built with accounts (.env.production): its socket is
+// answered here and left silent, as if the backend had not replied yet, and
+// its other requests are dropped, so the tests and screenshots never reach
+// production and nobody is signed in
+export async function quietConvex(context) {
+  await context.routeWebSocket(/\.convex\.cloud\//, () => {})
+  await context.route(/\.convex\.(cloud|site)\//, (route) => route.abort())
+}
+
 // Answers the browser's requests for the site from dist/
 export async function routeDist(context) {
   await context.route(`${ORIGIN}/**`, async (route) => {

@@ -5,9 +5,9 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-10",
   "vars": {
-    // Production's Convex site (the project «hola»); empty, the Worker
-    // passes nothing on
-    "CONVEX_SITE": "",
+    // Production's Convex site (the project «hola»), where /api/auth/* goes
+    // on to; empty, the Worker passes nothing on
+    "CONVEX_SITE": "https://careful-perch-235.eu-west-1.convex.site",
   },
   // The built files. Headers are in public/_headers.
   "assets": {
