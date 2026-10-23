@@ -463,6 +463,7 @@ export type GameIconId =
   | 'tiempos'
   | 'elola'
   | 'orden'
+  | 'rastro'
 
 export function GameIcon({
   id,
@@ -799,6 +800,44 @@ export function GameIcon({
             <path d="M2 6H13V38H2ZM16.5 6H27.5V38H16.5ZM31 6H42V38H31Z" />
             <path d="M2 28H13M16.5 28H27.5M31 28H42" />
           </g>
+        </>
+      )}
+      {id === 'rastro' && (
+        <>
+          <path d="M5 16 8 7H36L39 16Z" fill="#c2402c" opacity=".5" />
+          <g
+            fill="none"
+            stroke={INK}
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          >
+            <path d="M5 16 8 7H36L39 16" />
+            <path d="M5 16C6.7 19 10.1 19 11.8 16 13.5 19 16.9 19 18.6 16 20.3 19 23.7 19 25.4 16 27.1 19 30.5 19 32.2 16 33.9 19 37.3 19 39 16" />
+            <path d="M14.7 7 13 16M22 7V16M29.3 7 31 16" />
+            <path d="M8 19V38M36 19V38M6 30H38M3 38H41" />
+          </g>
+          <path
+            d="M12 30A5 5 0 0 1 22 30Z"
+            fill="#d29a2e"
+            fillOpacity=".7"
+            stroke={INK}
+            strokeWidth="1.2"
+          />
+          <circle
+            cx="29"
+            cy="26"
+            r="3.6"
+            fill={PAPER}
+            stroke={INK}
+            strokeWidth="1.2"
+          />
+          <path
+            d="M29 24V26L30.4 27"
+            stroke={INK}
+            strokeWidth="1"
+            fill="none"
+          />
         </>
       )}
     </svg>

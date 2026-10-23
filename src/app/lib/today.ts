@@ -53,6 +53,7 @@ export const DAILY_GAMES = [
   'cadena',
   'elola',
   'orden',
+  'tapas',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -70,6 +71,9 @@ export const NEEDS: Record<string, number> = {
   // (the lessons in order have eight nouns met by then, for ¿El o la?)
   elola: 45,
   orden: 60,
+  // The bar opens from the start, on the food and drink every bank begins
+  // with (El Rastro is not a step of the chapter: it meets words of its own)
+  tapas: 0,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 

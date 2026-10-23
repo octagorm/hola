@@ -131,6 +131,18 @@ export const PAGES = [
     Page: page(() => import('./games/orden')),
   },
   {
+    id: 'tapas',
+    es: 'Tapas',
+    no: 'Baren',
+    Page: page(() => import('./games/tapas')),
+  },
+  {
+    id: 'rastro',
+    es: 'El Rastro',
+    no: 'Loppemarkedet',
+    Page: page(() => import('./games/rastro')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

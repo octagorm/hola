@@ -11,6 +11,8 @@ import { plain as said } from './tiempos.ts'
 import { SAID } from './letras.ts'
 import { linesOf } from './orden.ts'
 import { plain, tokens } from './text.ts'
+import { tapasLines } from './tapas.ts'
+import { rastroLines } from './rastro.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
@@ -56,5 +58,12 @@ export function speechItems(): Array<SpeechItem> {
   // Orden's sentences, in the narrator's voice, in every order that is right
   for (const s of ORDEN)
     for (const line of linesOf(s)) add(LINE_VOICE, plain(line), 'line')
+  // The guests' orders and thanks in Tapas, and everything said at El
+  // Rastro, each in its speaker's voice; and in the teacher's, each form
+  // in them, for a tapped word's card
+  const spoken = [...tapasLines(), ...rastroLines()]
+  for (const { voice, line } of spoken) add(voice, plain(line), 'line')
+  for (const { line } of spoken)
+    for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   return items
 }

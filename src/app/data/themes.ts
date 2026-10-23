@@ -147,6 +147,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Ordene i fortellingen El viaje, reisen fra Madrid til Cadaqués, som ikke står i de andre emnene: paraplyen som er med «por si acaso», for sikkerhets skyld, tapasen som er gratis i Granada, utsikten over Alhambra, brannmennene i Alicante og tramontanaen, nordavinden i Cadaqués.',
       },
+      {
+        lesson: 'rastro',
+        about:
+          'El Rastro, loppemarkedet i Madrid, hver søndag og helligdag fra ni til tre: opptil 3500 boder nedover Ribera de Curtidores og rundt Plaza de Cascorro. Markedet vokste fram rundt byens slakteri på 1700-tallet, og navnet kommer derfra: rastro var et gammelt ord for slakteri. Her pruter man, og et godt kjøp er una ganga.',
+      },
     ],
   },
   {
