@@ -168,12 +168,14 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
   const stopAt = c.accuse && tries === null ? c.accuse.after : c.lines.length
 
   // Says a line, in its speaker's voice, its wave moving while it is said
-  const sayLine = (i: number, slow = false) => {
+  const sayLine = async (i: number, slow = false) => {
     const mine = ++talk.current
     setTalking(i)
-    return say(plain(c.lines[i]), slow).finally(() => {
+    try {
+      await say(plain(c.lines[i]), slow)
+    } finally {
       if (talk.current === mine) setTalking(null)
-    })
+    }
   }
 
   const next = () => {
