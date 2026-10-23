@@ -457,6 +457,8 @@ export type GameIconId =
   | 'sopa'
   | 'reloj'
   | 'tapas'
+  | 'porpara'
+  | 'tiempos'
 
 export function GameIcon({
   id,
@@ -613,6 +615,48 @@ export function GameIcon({
           </g>
           <circle cx="18" cy="27" r="3" fill="#c2402c" opacity=".6" />
           <circle cx="26" cy="26" r="3" fill="#d29a2e" opacity=".7" />
+        </>
+      )}
+      {id === 'porpara' && (
+        <g fill="none" stroke={INK} strokeWidth="1.6">
+          <path
+            d="M6.1 40V18.6A6 6 0 1 1 16.9 18.6V40Z"
+            fill="#c2402c"
+            fillOpacity=".45"
+          />
+          <path
+            d="M27.1 40V18.6A6 6 0 1 1 37.9 18.6V40Z"
+            fill="#4f7fa8"
+            fillOpacity=".45"
+          />
+          <path d="M3 40V6H20V40M24 40V6H41V40M1 40H43" />
+        </g>
+      )}
+      {id === 'tiempos' && (
+        <>
+          <rect
+            x="31"
+            y="6"
+            width="11"
+            height="22"
+            fill="#4f7fa8"
+            opacity=".45"
+          />
+          <g fill="none" stroke={INK} strokeWidth="1.6">
+            <path
+              d="M3.5 28A4 4 0 0 1 11.5 28Z"
+              fill="#d29a2e"
+              fillOpacity=".7"
+            />
+            <circle cx="22" cy="15" r="3.5" fill="#c2402c" fillOpacity=".6" />
+            <path
+              d="M37.7 11.2A4 4 0 1 0 37.7 18.8 4 4 0 0 1 37.7 11.2Z"
+              fill={PAPER}
+              strokeWidth="1.2"
+            />
+            <path d="M2 6H13V38H2ZM16.5 6H27.5V38H16.5ZM31 6H42V38H31Z" />
+            <path d="M2 28H13M16.5 28H27.5M31 28H42" />
+          </g>
         </>
       )}
     </svg>

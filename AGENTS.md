@@ -44,6 +44,8 @@ The games:
 | Cadáver exquisito | `games/cadaver.tsx`    | Absurd sentences from random parts, where the verb and the adjective must agree; 1969 pop |
 | Sopa de letras    | `games/sopa.tsx`       | A word search of words met, found from their meanings; azulejos with lemons               |
 | El reloj blando   | `games/reloj.tsx`      | Hangman where each wrong letter melts the watch; a desert poster of the 1930s             |
+| Por o para        | `games/porpara.tsx`    | Two doors, por and para, for the gap in a sentence; Alhambra arches in paper-cut          |
+| Ayer, hoy, mañana | `games/tiempos.tsx`    | A sentence moved between yesterday, today and tomorrow; a triptych of 1930s posters       |
 | Repaso, Nuevas    | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
 | Tus palabras      | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
 

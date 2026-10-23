@@ -150,6 +150,8 @@ const PAGES = [
   ['#cadaver', 'Cadáver exquisito'],
   ['#sopa', 'Sopa de letras'],
   ['#reloj', 'El reloj blando'],
+  ['#porpara', 'Por o para'],
+  ['#tiempos', 'Ayer, hoy, mañana'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -474,6 +476,37 @@ await test(
     await page.getByText('4 av 5 ord reddet').waitFor()
     await page.getByRole('button', { name: 'Fem ord til' }).click()
     await page.waitForSelector('.rb-keys')
+  },
+  { learner: true },
+)
+
+await test(
+  'Por o para opens a door for ten sentences, by touch and by key',
+  async (page) => {
+    await go(page, '#porpara')
+    for (let i = 0; i < 40 && !(await visible(page, '.pp-card')); i++) {
+      const next = page.locator('.pp-after .pp-btn')
+      if (await next.count()) await next.click()
+      else if (i % 4) await page.locator('.pp-door.para').click()
+      else await page.keyboard.press('ArrowLeft')
+      await page.waitForTimeout(60)
+    }
+    await page.getByText(/av 10 riktige/).waitFor()
+  },
+  { learner: true },
+)
+
+await test(
+  'Ayer, hoy, mañana moves eight sentences in time',
+  async (page) => {
+    await go(page, '#tiempos')
+    for (let i = 0; i < 40 && !(await visible(page, '.ah-card')); i++) {
+      const next = page.locator('.ah-after .ah-btn')
+      if (await next.count()) await next.click()
+      else await page.locator('.ah-opts button').first().click()
+      await page.waitForTimeout(60)
+    }
+    await page.getByText(/av 8 riktige/).waitFor()
   },
   { learner: true },
 )

@@ -15,6 +15,7 @@ import {
 } from '../src/app/lib/bank'
 import {
   DAILY_GAMES,
+  NEEDS,
   chapterLine,
   clueCount,
   plan,
@@ -165,7 +166,7 @@ describe('the day’s chapter', () => {
     const clues = clueCount(b)
     expect(clues).toBeLessThan(12)
     const games = DAILY_GAMES.filter((g) => ready(g, 25, clues))
-    expect(games).toEqual(['palabra', 'cadaver'])
+    expect(games).toEqual(DAILY_GAMES.filter((g) => !NEEDS[g]))
     for (const w of WORDS.slice(0, 60)) b.cards[w.id] = newCard(now)
     expect(DAILY_GAMES.every((g) => ready(g, 60, clueCount(b)))).toBe(true)
   })

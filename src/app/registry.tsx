@@ -83,6 +83,18 @@ export const PAGES = [
     Page: page(() => import('./games/reloj')),
   },
   {
+    id: 'porpara',
+    es: 'Por o para',
+    no: 'Por eller para',
+    Page: page(() => import('./games/porpara')),
+  },
+  {
+    id: 'tiempos',
+    es: 'Ayer, hoy, mañana',
+    no: 'I går, i dag, i morgen',
+    Page: page(() => import('./games/tiempos')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',
