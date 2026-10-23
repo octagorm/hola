@@ -253,7 +253,7 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
       {
         lesson: 'becquer',
         about:
-          'Gustavo Adolfo Bécquer skrev sagnene sine rundt 1860, flere av dem fra Soria: de dødes natt på fjellet der tempelridderne kjempet, en jeger som ser et par grønne øyne i en kilde i skogen, en dikter som følger en kvinne i hvitt gjennom gatene, og en blind organist i Sevilla julenatten. Ordene er de samme som i fortellingen Leyendas, der fire av sagnene fortelles enkelt.',
+          'Gustavo Adolfo Bécquer skrev sagnene sine rundt 1860, flere av dem fra Soria: de dødes natt på fjellet der tempelridderne kjempet, en jeger som ser et par grønne øyne i en kilde i skogen, en dikter som følger en kvinne i hvitt gjennom gatene, og en blind organist i Sevilla julenatten. Ordene er hentet fra fortellingen Leyendas, der fire av sagnene fortelles enkelt.',
       },
       {
         lesson: 'llorona',
