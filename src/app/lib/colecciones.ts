@@ -16,10 +16,11 @@ import type { Bank, Card } from './bank.ts'
 //
 // Learnt is the bank's «known» without its fading: a word whose reading
 // has lasted a day and a half or more (lib/bank.ts, KNOWN), however long
-// ago it was practised. So a keepsake is not wrapped up again, nor a
-// picture taken down, because the player was away for a week; only a real
-// slip, which cuts a word's memory, can take a word out of the count until
-// it is got right again.
+// ago it was practised; only a real slip, which cuts a word's memory, takes
+// a word out of the count until it is got right again. And a lesson once
+// finished stays so (keep, below): a keepsake is never wrapped up again,
+// nor a picture taken down, whether the player was away for a week or
+// slipped on a word.
 
 export const FINISHED_SHARE = 0.8
 
@@ -59,7 +60,7 @@ export function progressOf(bank: Bank, lesson: string): LessonProgress {
   }
   const size = ids.length
   const need = Math.ceil(FINISHED_SHARE * size)
-  const done = size > 0 && met === size && got >= need
+  const done = !!bank.kept[lesson] || (size > 0 && met === size && got >= need)
   return {
     lesson,
     size,
@@ -75,11 +76,24 @@ export function progressOf(bank: Bank, lesson: string): LessonProgress {
   }
 }
 
+// The lessons found finished, noted in the bank (bank.kept) so that they
+// stay finished whatever comes after: the store passes every change to the
+// bank through this, before and after it (lib/store.tsx)
+export function keep(bank: Bank, now: number): Bank {
+  let kept: Bank['kept'] | undefined
+  for (const lesson of Object.keys(IDS))
+    if (!bank.kept[lesson] && progressOf(bank, lesson).stage === 2)
+      (kept ??= { ...bank.kept })[lesson] = now
+  return kept ? { ...bank, kept } : bank
+}
+
 // How far a lesson has come, in a line
 export function howFar(p: LessonProgress): string {
   if (p.stage === 0) return `Ingen av de ${p.size} ordene er møtt ennå.`
   if (p.stage === 2)
-    return `Alle de ${p.size} ordene er møtt, og ${p.learnt} er lært.`
+    return p.met === p.size
+      ? `Alle de ${p.size} ordene er møtt, og ${p.learnt} er lært.`
+      : `Fullført, og ${p.learnt} av de ${p.size} ordene er lært nå.`
   const left = p.need - p.learnt
   if (p.met < p.size)
     return `${p.met} av ${p.size} ord er møtt, og ${p.learnt} er lært.`
@@ -88,7 +102,7 @@ export function howFar(p: LessonProgress): string {
 
 // The rule, as the pages say it
 export const RULE =
-  'Et emne er fullført når alle ordene er møtt og fire av fem er lært, det vil si husket i halvannet døgn eller mer.'
+  'Et emne er fullført når alle ordene er møtt og fire av fem er lært, det vil si husket i halvannet døgn eller mer. Da forblir det fullført, også om du bommer på et ord senere.'
 
 export interface Chest {
   id: string

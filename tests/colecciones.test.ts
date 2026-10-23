@@ -5,10 +5,11 @@ import { THEME, THEME_GROUPS } from '../src/app/data/themes'
 import { KEEPSAKE, KEEPSAKES, keepsakeOf } from '../src/app/data/cajones'
 import { MUSEO, PICTURE } from '../src/app/data/museo'
 import { MUSEO_PICTURES, SCENES } from '../src/app/data/museo-prompts'
-import { DAY, emptyBank, newCard } from '../src/app/lib/bank'
+import { DAY, answerCard, emptyBank, merge, newCard } from '../src/app/lib/bank'
 import {
   chests,
   howFar,
+  keep,
   progressOf,
   rooms,
   tally,
@@ -75,6 +76,30 @@ describe('the rule for a lesson', () => {
     const n = sizeOf('tapeo')
     const t = tally(bankWith('tapeo', n, n), ['tapeo', 'clima'])
     expect(t).toEqual({ begun: 1, done: 1, all: 2 })
+  })
+
+  it('stays finished after a slip, or a word forgotten', () => {
+    const n = sizeOf('tapeo')
+    const bank = keep(bankWith('tapeo', n, Math.ceil(0.8 * n)), NOW)
+    expect(bank.kept.tapeo).toBe(NOW)
+    const [first, second] = WORDS.filter((w) => w.lesson === 'tapeo')
+    const cards = { ...bank.cards }
+    cards[first.id] = answerCard(cards[first.id], ['leer'], false, NOW + DAY)
+    delete cards[second.id]
+    const after = { ...bank, cards }
+    expect(progressOf({ ...after, kept: {} }, 'tapeo').stage).toBe(1)
+    const p = progressOf(after, 'tapeo')
+    expect(p.stage).toBe(2)
+    expect(howFar(p)).toMatch(/^Fullført/)
+  })
+
+  it('is noted as finished only once it is, and kept in a merge', () => {
+    const n = sizeOf('tapeo')
+    const begun = bankWith('tapeo', n, 1)
+    expect(keep(begun, NOW)).toBe(begun)
+    const done = keep(bankWith('tapeo', n, n), NOW)
+    expect(merge(emptyBank(), done).kept).toEqual({ tapeo: NOW })
+    expect(merge(done, emptyBank()).kept).toEqual({ tapeo: NOW })
   })
 })
 

@@ -72,6 +72,9 @@ export interface Bank {
   // The lesson chosen as the theme (data/themes.ts), whose words today's
   // chapter meets before the rest, and when it was chosen; '' for none
   theme: { id: string; t: number }
+  // Lessons finished (lib/colecciones.ts), by id → when first finished: a
+  // keepsake unwrapped and a picture hung stay so, whatever comes after
+  kept: Record<string, number | undefined>
 }
 
 export type StepKind = 'review' | 'new' | 'game' | 'story' | 'listen'
@@ -115,6 +118,7 @@ export const emptyBank = (): Bank => ({
   path: null,
   start: 0,
   theme: { id: '', t: 0 },
+  kept: {},
 })
 
 export const DAY = 86_400_000
@@ -335,10 +339,10 @@ const keysOf = (...rs: Array<object | undefined>) =>
 
 // Two banks made one, as when a backup is read in: for each link of a word
 // the memory answered last (but never a card from the starting point over
-// one with answers), for days and scores the larger, and of two days'
-// sessions the later day's, or of the same day's the one further on, and
-// of two themes the one chosen last. A bank saved before a field existed
-// is read as having it empty.
+// one with answers), for days, scores and lessons finished the larger, and
+// of two days' sessions the later day's, or of the same day's the one
+// further on, and of two themes the one chosen last. A bank saved before a
+// field existed is read as having it empty.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const out = emptyBank()
   for (const id of keysOf(a.cards, b.cards)) {
@@ -346,7 +350,14 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
     const y = b.cards?.[id]
     out.cards[id] = !x ? y : !y ? x : both(x, y)
   }
-  for (const k of ['days', 'daily', 'best', 'palabra', 'read'] as const) {
+  for (const k of [
+    'days',
+    'daily',
+    'best',
+    'palabra',
+    'read',
+    'kept',
+  ] as const) {
     for (const id of keysOf(a[k], b[k]))
       out[k][id] = Math.max(a[k]?.[id] ?? 0, b[k]?.[id] ?? 0)
   }

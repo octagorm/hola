@@ -17,6 +17,7 @@ import {
   withStart,
 } from './bank'
 import { retheme } from './today'
+import { keep } from './colecciones'
 import { setVoice } from './speech'
 import { setEffects } from './sound'
 import type { ReactNode } from 'react'
@@ -115,11 +116,25 @@ export function useStore(): Store {
   return s
 }
 
+// A change to the bank, made so that a lesson finished before it stays
+// finished after it (keep, in lib/colecciones.ts)
+const keeping = (change: (b: Bank) => Bank) => (b: Bank) => {
+  const now = Date.now()
+  const was = keep(b, now)
+  const next = change(was)
+  return next === was ? was : keep(next, now)
+}
+
 export function BankProvider({ children }: { children: ReactNode }) {
   // (merged with nothing, so a bank kept by an older page is read as now,
   // and given the starting point if it has not had it)
-  const [bank, setBank] = useState<Bank>(() =>
+  const [bank, setRaw] = useState<Bank>(() =>
     withStart(merge(load(BANK_KEY, emptyBank()), emptyBank()), Date.now()),
+  )
+  // Every change to the bank goes through keeping
+  const setBank = useCallback(
+    (change: (b: Bank) => Bank) => setRaw(keeping(change)),
+    [],
   )
   const [settings, setAll] = useState<Settings>(() =>
     load(SETTINGS_KEY, DEFAULTS),
@@ -300,7 +315,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
   )
 
   const reset = useCallback(
-    () => setBank(withStart(emptyBank(), Date.now())),
+    () => setBank(() => withStart(emptyBank(), Date.now())),
     [],
   )
 
