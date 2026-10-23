@@ -119,12 +119,15 @@ const CHAPTERS = {
   },
 }
 
-// Every picture by its name, with its size, reference and description
+// Every picture by its name: the shape it is painted in (landscape,
+// portrait or square), the size it is cut to, the sketch whose style it
+// follows if any, and its description
 const PICTURES = Object.fromEntries(
   Object.entries(CHAPTERS).flatMap(([story, chapters]) =>
     Object.entries(chapters).map(([id, subject]) => [
       `stories/${story}/${id}`,
       {
+        shape: 'landscape',
         size: STRIP,
         ref: LOOK[story].ref,
         prompt: `${subject} ${LOOK[story].style} ${WIDE} ${NONE}`,
@@ -146,9 +149,8 @@ function paint(name) {
         '--out',
         full(name),
         '--shape',
-        'landscape',
-        '--ref',
-        p.ref,
+        p.shape,
+        ...(p.ref ? ['--ref', p.ref] : []),
         p.prompt,
       ],
       { stdio: ['ignore', 'ignore', 'pipe'] },
