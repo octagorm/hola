@@ -58,6 +58,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Skjemaer, stempler, køer og timeavtaler. Mariano José de Larra gjorde narr av byråkratiet i Vuelva usted mañana fra 1833, om en franskmann i Madrid som får høre «kom tilbake i morgen» igjen og igjen.',
       },
+      {
+        lesson: 'indicaciones',
+        about:
+          'Å vise vei i byen: den andre eller tredje gata, hjørnet, krysset og trafikklyset, foran, bak og overfor. Og å be taxisjåføren stoppe: Pare delante de la farmacia, por favor.',
+      },
     ],
   },
   {

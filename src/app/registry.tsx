@@ -155,6 +155,12 @@ export const PAGES = [
     Page: page(() => import('./games/numeros')),
   },
   {
+    id: 'taxi',
+    es: 'Taxi',
+    no: 'Taxi',
+    Page: page(() => import('./games/taxi')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

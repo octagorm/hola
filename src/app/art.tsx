@@ -465,6 +465,7 @@ export type GameIconId =
   | 'orden'
   | 'rastro'
   | 'numeros'
+  | 'taxi'
 
 export function GameIcon({
   id,
@@ -799,6 +800,56 @@ export function GameIcon({
           >
             7
           </text>
+        </>
+      )}
+      {id === 'taxi' && (
+        <>
+          <rect
+            x="22"
+            y="11"
+            width="6.5"
+            height="3.6"
+            fill="#d29a2e"
+            opacity=".75"
+            stroke={INK}
+            strokeWidth="1.1"
+          />
+          <path
+            d="M3.5 29.5C3.5 25.6 5.6 24.3 9 23.8L13.4 23.2 17.3 16.7C18.1 15.6 19.2 15 20.8 15H29.4C30.9 15 32 15.6 32.9 16.9L36.6 22.6C39.4 23.1 41 24.4 41 27.4V30.3C41 31.1 40.5 31.6 39.7 31.6H4.8C4 31.6 3.5 31.1 3.5 30.3Z"
+            fill={PAPER}
+            stroke={INK}
+            strokeWidth="1.5"
+          />
+          <path
+            d="M19.6 31.6 23.6 23.2H27.4L23.4 31.6Z"
+            fill="#c2402c"
+            opacity=".6"
+          />
+          <g stroke={INK} strokeWidth="1.1" strokeLinejoin="round">
+            <path
+              d="M15.8 22.6 19.2 17.2H24.4V22.6Z"
+              fill="#4f7fa8"
+              fillOpacity=".45"
+            />
+            <path
+              d="M26.4 17.2H29.8C30.7 17.2 31.3 17.6 31.8 18.4L34.3 22.6H26.4Z"
+              fill="#4f7fa8"
+              fillOpacity=".45"
+            />
+          </g>
+          {[12, 32.5].map((x) => (
+            <g key={x}>
+              <circle
+                cx={x}
+                cy="31.6"
+                r="4.3"
+                fill={PAPER}
+                stroke={INK}
+                strokeWidth="1.5"
+              />
+              <circle cx={x} cy="31.6" r="1.5" fill={INK} />
+            </g>
+          ))}
         </>
       )}
       {id === 'tapas' && (

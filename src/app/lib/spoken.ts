@@ -12,6 +12,7 @@ import { SAID } from './letras.ts'
 import { SAID as LAID, LINES_SAID } from './palabras.ts'
 import { linesOf } from './orden.ts'
 import { LOTTERY, DECK as NUMEROS } from './numeros.ts'
+import { SPOKEN as TAXI } from './taxi.ts'
 import { plain, tokens } from './text.ts'
 import { tapasLines } from './tapas.ts'
 import { rastroLines } from './rastro.ts'
@@ -73,5 +74,10 @@ export function speechItems(): Array<SpeechItem> {
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   // Números' sentences, each in its own voice, and the lottery sung
   for (const x of [...NUMEROS, ...LOTTERY]) add(x.voice, x.say, 'line')
+  // Taxi's passenger, in the passenger's voice; and in the teacher's, each
+  // form in what they say, for a tapped word's card
+  for (const x of TAXI) add(x.voice, x.text, 'line')
+  for (const x of TAXI)
+    for (const t of tokens(x.line)) if (t.id) add(WORD_VOICE, t.es, 'word')
   return items
 }

@@ -124,6 +124,13 @@ export const GAME_INFO: Array<GameInfo> = [
     blurb: 'Priser, klokkeslett og årstall, hørt og skrevet',
     doing: 'skriver ned tall som blir lest opp',
   },
+  {
+    id: 'taxi',
+    es: 'Taxi',
+    no: 'Taxi',
+    blurb: 'Kjør dit passasjeren ber om, sving for sving',
+    doing: 'kjører taxi dit passasjeren ber om',
+  },
 ]
 
 export const GAME: Record<string, GameInfo | undefined> = Object.fromEntries(

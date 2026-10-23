@@ -2003,6 +2003,25 @@ const LIST: Array<Lesson & { words: string }> = [
       ochenta | åtti | num
     `,
   },
+  {
+    id: 'indicaciones',
+    es: 'Indicaciones',
+    no: 'Veibeskrivelse',
+    words: `
+      segundo | andre | adj
+      tercero | tredje | adj
+      la esquina | hjørne
+      el cruce | kryss
+      el semáforo | trafikklys
+      delante de | foran | prep
+      detrás de | bak | prep
+      enfrente de | overfor | prep
+      al lado de | ved siden av | prep
+      cruzar | krysse, gå over | v
+      parar | stoppe | v
+      la farmacia | apotek
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

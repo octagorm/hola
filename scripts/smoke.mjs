@@ -169,6 +169,7 @@ const PAGES = [
   ['#rastro', 'El Rastro'],
   ['#palabras', 'Palabras'],
   ['#numeros', 'Números'],
+  ['#taxi', 'Taxi'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -1033,6 +1034,57 @@ await test(
     )
     await page.getByRole('button', { name: 'Seks til' }).click()
     await page.waitForSelector('.nu-field')
+  },
+  { phone: true, learner: true },
+)
+
+await test(
+  'Taxi drives a shift of five passengers',
+  async (page) => {
+    await go(page, '#taxi')
+    await page.getByRole('button', { name: 'Start vakten' }).click()
+    const stage = page.locator('.tx-stage')
+    let wrong = 0
+    for (let ride = 0; ride < 5; ride++) {
+      // The words of the first instruction shown, on the first ride
+      if (ride === 0) {
+        await page.getByRole('button', { name: 'Vis teksten' }).click()
+        await page.locator('.tx-line').waitFor()
+      }
+      // Each move tried in turn until the passenger takes it: a wrong one
+      // jolts the town and gets a complaint
+      while (!(await visible(page, '.tx-paid'))) {
+        await page.waitForSelector('.tx-paid, .tx-move:not([disabled])', {
+          timeout: 20000,
+        })
+        if (await visible(page, '.tx-paid')) break
+        for (const move of ['left', 'straight', 'right', 'stop']) {
+          const before = await stage.getAttribute('class')
+          await page.locator(`.tx-move.${move}`).click()
+          await page.waitForTimeout(150)
+          if ((await stage.getAttribute('class')) === before) break
+          wrong++
+          expect(await visible(page, '.tx-complaint'), 'a complaint')
+          // (the passenger's moment to say so)
+          await page.waitForTimeout(700)
+        }
+      }
+      const stars = await page.locator('.tx-paid .tx-stars svg.on').count()
+      expect(stars >= 1 && stars <= 5, `${stars} stars`)
+      await page.locator('.tx-paid .tx-btn').click()
+    }
+    expect(wrong > 0, 'some moves wrong')
+    await page.getByText('Vakten er over').waitFor()
+    expect(
+      (await page.locator('.tx-rides li').count()) === 5,
+      'the five rides listed',
+    )
+    const bank = JSON.parse(
+      await page.evaluate(() => localStorage.getItem('hola:bank:v1')),
+    )
+    expect(bank.best.taxi >= 5, `best ${bank.best.taxi}`)
+    await page.getByRole('button', { name: 'Ny vakt' }).click()
+    await page.locator('.tx-bubble').waitFor()
   },
   { phone: true, learner: true },
 )
