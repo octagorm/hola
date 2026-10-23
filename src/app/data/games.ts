@@ -117,6 +117,20 @@ export const GAME_INFO: Array<GameInfo> = [
     blurb: 'Prut på loppemarkedet i Madrid',
     doing: 'pruter på loppemarkedet i Madrid',
   },
+  {
+    id: 'sonidos',
+    es: 'Sonidos',
+    no: 'Lydene',
+    blurb: 'Lydene, og ord som nesten låter likt',
+    doing: 'skiller ord som nesten låter likt',
+  },
+  {
+    id: 'acento',
+    es: 'Acento',
+    no: 'Trykk og aksent',
+    blurb: 'Hvor trykket ligger, og når det får aksent',
+    doing: 'finner trykket og setter aksenten',
+  },
 ]
 
 export const GAME: Record<string, GameInfo | undefined> = Object.fromEntries(

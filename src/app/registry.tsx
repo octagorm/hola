@@ -149,6 +149,18 @@ export const PAGES = [
     Page: page(() => import('./games/palabras')),
   },
   {
+    id: 'sonidos',
+    es: 'Sonidos',
+    no: 'Lydene',
+    Page: page(() => import('./games/sonidos')),
+  },
+  {
+    id: 'acento',
+    es: 'Acento',
+    no: 'Trykk og aksent',
+    Page: page(() => import('./games/acento')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

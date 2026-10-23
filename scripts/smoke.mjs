@@ -13,6 +13,8 @@ import { letters, unaccent } from '../src/app/lib/spanish.ts'
 import { SENTENCES } from '../src/app/data/orden.ts'
 import { matchOf, tilesOf } from '../src/app/lib/orden.ts'
 import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
+import { dictable } from '../src/app/lib/sonidos.ts'
+import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -167,6 +169,8 @@ const PAGES = [
   ['#tapas', 'Tapas'],
   ['#rastro', 'El Rastro'],
   ['#palabras', 'Palabras'],
+  ['#sonidos', 'Sonidos'],
+  ['#acento', 'Acento'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -1057,6 +1061,160 @@ await test(
     await page.getByRole('button', { name: 'Gå til markedet' }).waitFor()
   },
   { learner: true },
+)
+
+// The word Sonidos' dictation says, by its meaning and its article, where
+// only one word has them
+async function dictadoWord(page) {
+  const hint = await page.locator('.so-hint').textContent()
+  const means = hint.slice(hint.indexOf('«') + 1, hint.lastIndexOf('»'))
+  const art = (await visible(page, '.so-sheet .art'))
+    ? await page.locator('.so-sheet .art').textContent()
+    : null
+  const ws = WORDS.filter(
+    (w) =>
+      dictable(w) &&
+      w.no.split(', ')[0] === means &&
+      (art ? w.es.startsWith(`${art} `) : w.pos !== 'n'),
+  )
+  return ws.length === 1 ? ws[0] : null
+}
+
+await test(
+  'Sonidos plays a sound of the chart, a round for the ear and a dictation',
+  async (page) => {
+    await go(page, '#sonidos')
+    // The chart: a sound, a word to hear it in, and the ear trained on it
+    await page.getByRole('tab', { name: /Abecedario/ }).click()
+    await page.getByRole('button', { name: 'r · rr' }).click()
+    await page.locator('.so-card .so-word').first().click()
+    await page.getByRole('button', { name: /Øv øret på/ }).click()
+    await page.getByText('Øver på').waitFor()
+    await page.getByRole('button', { name: 'Alle lydene' }).click()
+    // The ear: ten words, picked by touch and by key
+    for (let i = 0; i < 10; i++) {
+      await page.waitForSelector('.so-opt:not([disabled])')
+      if (i % 2) await page.keyboard.press('1')
+      else await page.locator('.so-opt').last().click()
+      await page.getByRole('button', { name: /^Neste/ }).click()
+    }
+    await page.getByText(/av 10 riktige/).waitFor()
+    await page.getByRole('button', { name: /En runde til/ }).click()
+    await page.waitForSelector('.so-opt:not([disabled])')
+    // The dictation: a word written right, the rest written wrong by the
+    // keys on the screen and the keyboard, or shown
+    await page.getByRole('tab', { name: /Dictado/ }).click()
+    let right = false
+    for (let i = 0; i < 8; i++) {
+      await page.waitForSelector('.so-typer')
+      if (!right)
+        await page.getByRole('button', { name: 'Hva betyr det?' }).click()
+      const w = right ? null : await dictadoWord(page)
+      if (w) {
+        await page.keyboard.type(unaccent(w.bare))
+        await page.getByRole('button', { name: 'Sjekk' }).click()
+        await page.getByText('¡Bien escrito!').waitFor()
+        right = true
+      } else if (i % 3 === 0) {
+        await page.getByRole('button', { name: 'Vis ordet' }).click()
+      } else if (i % 3 === 1) {
+        await page
+          .locator('.so-typer')
+          .getByRole('button', { name: 'Q', exact: true })
+          .click()
+        await page.getByRole('button', { name: 'Sjekk' }).click()
+      } else {
+        await page.keyboard.type('qq')
+        await page.keyboard.press('Enter')
+      }
+      await page.locator('.so-after').waitFor()
+      await page.getByRole('button', { name: /^Neste/ }).click()
+    }
+    expect(right, 'a word written right')
+    await page.getByText(/av 8 riktig skrevet/).waitFor()
+    await page.getByRole('button', { name: 'En diktat til' }).click()
+    await page.waitForSelector('.so-typer')
+  },
+  { learner: true },
+)
+
+// The syllables on Acento's lanterns, and the word they are, of the kinds
+// asked
+async function acentoWord(page, kinds) {
+  const syl = await page.locator('.ac-lantern .body').allTextContents()
+  const art = (await visible(page, '.ac-wire .art'))
+    ? await page.locator('.ac-wire .art').textContent()
+    : null
+  const w = WORDS.find(
+    (x) =>
+      untilde(x.bare) === syl.join('') &&
+      kinds.includes(kindOfWord(x.id)) &&
+      (art ? x.es.startsWith(`${art} `) : x.es === x.bare),
+  )
+  expect(w, `no word in ${syl.join('-')}`)
+  return wordItem(w)
+}
+
+await test(
+  'Acento finds the stress of ten words, opens a rule, and sets a mark',
+  async (page) => {
+    await go(page, '#acento')
+    await page.getByText('Llanas y agudas').waitFor()
+    await page.getByRole('button', { name: /Empezar/ }).click()
+    // Nine right, by touch and by key, and one wrong
+    for (let i = 0; i < 10; i++) {
+      await page.waitForSelector('.ac-lantern:not([disabled])')
+      const { stress } = await acentoWord(page, ['llana', 'aguda'])
+      const at = i === 3 ? (stress ? 0 : 1) : stress
+      if (i % 2) await page.keyboard.press(String(at + 1))
+      else await page.locator('.ac-lantern').nth(at).click()
+      await page.locator('.ac-after').waitFor()
+      await page.getByRole('button', { name: /^Neste/ }).click()
+    }
+    await page.getByText('9 av 10 riktige').waitFor()
+    await page.getByText('Ny regel:').waitFor()
+    await page.getByRole('button', { name: /Neste regel/ }).click()
+    // The second rule: the stress, and then the mark where it goes
+    await page.waitForSelector('.ac-lantern:not([disabled])')
+    expect(
+      (await page.locator('.ac-rule').textContent()) === '2',
+      'on the second rule',
+    )
+    const item = await acentoWord(page, ['llana', 'aguda', 'tilde'])
+    await page.locator('.ac-lantern').nth(item.stress).click()
+    await page.waitForSelector('.ac-letters .v:not([disabled])')
+    if (item.mark < 0)
+      await page.getByRole('button', { name: /Uten aksent/ }).click()
+    else {
+      const before = [...item.plain.join('').slice(0, item.mark)]
+      const v = before.filter((c) => /[aeiou]/.test(c)).length
+      await page.locator('.ac-letters .v').nth(v).click()
+    }
+    await page.getByText('¡Olé!').waitFor()
+  },
+  { learner: true },
+)
+
+await test(
+  'Acento’s lanterns hang inside a phone',
+  async (page) => {
+    await go(page, '#acento')
+    await page.getByRole('button', { name: /Empezar/ }).click()
+    for (let i = 0; i < 3; i++) {
+      await page.waitForSelector('.ac-lantern:not([disabled])')
+      const wide = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      )
+      expect(wide <= 0, `${wide}px too wide`)
+      for (const box of await page
+        .locator('.ac-lantern')
+        .evaluateAll((els) => els.map((e) => e.getBoundingClientRect())))
+        expect(box.left >= 0 && box.right <= 390, 'a lantern off the screen')
+      await page.locator('.ac-lantern').first().click()
+      await page.getByRole('button', { name: /^Neste/ }).click()
+    }
+  },
+  { phone: true, learner: true },
 )
 
 await test(

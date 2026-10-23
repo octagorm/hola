@@ -1,0 +1,936 @@
+/* Acento: a feria poster of the twenties. A navy night over the
+   fairground, paper lanterns on a wire for the syllables, the stressed one
+   lit red; a striped awning, cream cards, and the Giralda and the roofs of
+   the casetas in silhouette. Flat colour, no outlines. */
+
+.ac {
+  position: relative;
+  /* the wire goes from edge to edge, past the column */
+  overflow-x: clip;
+  --night: #1b2547;
+  --night-2: #131a35;
+  --night-3: #27345f;
+  --red: #d23b2b;
+  --red-2: #a52a1e;
+  --cream: #f5e8c7;
+  --cream-2: #e7d4a6;
+  --ochre: #e3a53a;
+  --sand: #e9c47c;
+  --ink: #18120e;
+  --ink-2: #5c4a3a;
+  --soft: #c9c2b0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: 'Jost', system-ui, sans-serif;
+  color: var(--cream);
+  background-color: var(--night);
+  background-image:
+    radial-gradient(circle, rgb(245 232 199 / 0.07) 2px, transparent 2.5px),
+    radial-gradient(
+      ellipse 120% 70% at 50% 0%,
+      var(--night-3) 0%,
+      var(--night) 55%,
+      var(--night-2) 100%
+    );
+  background-size:
+    34px 34px,
+    100% 100%;
+}
+
+.ac :where(button) {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ac :where(button:disabled) {
+  cursor: default;
+}
+
+.ac :focus-visible {
+  outline: 3px solid var(--ochre);
+  outline-offset: 3px;
+}
+
+.ac-col {
+  position: relative;
+  max-width: 760px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 14px 14px 176px;
+}
+
+/* --- The top --- */
+
+.ac-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ac-round {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--cream);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cream);
+}
+
+.ac-round svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ac-round.light {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  background: var(--cream);
+  color: var(--night);
+}
+
+.ac-round.light svg {
+  width: 24px;
+  height: 24px;
+}
+
+.ac-top h1 {
+  flex: 1;
+  margin: 0;
+  font-family: 'Rozha One', Georgia, serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--cream);
+}
+
+.ac-top h1 small {
+  display: block;
+  margin-top: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+/* The rule, as a lantern's number */
+.ac-rule {
+  width: 44px;
+  height: 50px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 46% / 42%;
+  background: var(--red);
+  color: var(--cream);
+  font-family: 'Rozha One', serif;
+  font-size: 24px;
+}
+
+/* The striped awning of a caseta, with its scalloped edge */
+.ac-awning {
+  height: 34px;
+  margin: 14px -14px 18px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--red) 0 22px,
+    var(--cream) 22px 44px
+  );
+  -webkit-mask:
+    radial-gradient(circle 11px at 11px 23px, #000 99%, transparent) 0 0 / 22px
+      34px repeat-x,
+    linear-gradient(#000, #000) 0 0 / 100% 23px no-repeat;
+  mask:
+    radial-gradient(circle 11px at 11px 23px, #000 99%, transparent) 0 0 / 22px
+      34px repeat-x,
+    linear-gradient(#000, #000) 0 0 / 100% 23px no-repeat;
+}
+
+/* --- Cards: the rules and the end of a round --- */
+
+.ac-card {
+  position: relative;
+  z-index: 1;
+  padding: 20px 18px 22px;
+  border-radius: 6px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.ac-card .kick {
+  margin: 0;
+  font-family: 'Rozha One', serif;
+  font-size: 18px;
+  color: var(--red);
+}
+
+.ac-card h2 {
+  margin: 2px 0 12px;
+  font-family: 'Rozha One', serif;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.ac-card h2 small {
+  display: block;
+  margin-top: 6px;
+  font-family: 'Jost', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.ac-card .text {
+  margin: 0 0 14px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.ac-card .how {
+  margin: 14px 0 16px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.ac-card .all {
+  margin: 0 0 14px;
+  font-family: 'Rozha One', serif;
+  color: var(--red);
+}
+
+.ac-card .all span {
+  font-family: 'Jost', sans-serif;
+  color: var(--ink-2);
+}
+
+/* The rules, as small lanterns */
+.ac-rules {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ac-rules button {
+  width: 40px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 46% / 42%;
+  background: var(--cream-2);
+  color: var(--ink);
+  font-family: 'Rozha One', serif;
+  font-size: 20px;
+}
+
+.ac-rules button.on {
+  background: var(--red);
+  color: var(--cream);
+}
+
+.ac-rules button.shut {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--cream-2);
+  color: var(--ink-2);
+}
+
+.ac-rules button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ac-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ac-examples button {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--cream-2);
+  color: var(--ink);
+  text-align: left;
+}
+
+.ac-examples button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--red-2);
+}
+
+.ac-examples button b {
+  font-size: 19px;
+}
+
+.ac-examples small {
+  width: 100%;
+  padding-left: 26px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* A word in syllables, the stressed one red */
+.ac-syl {
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.ac-syl i {
+  padding: 0 2px;
+  font-style: normal;
+  color: var(--ink-2);
+  opacity: 0.6;
+}
+
+.ac-syl b {
+  font-weight: 700;
+  color: var(--red);
+}
+
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 10px 24px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--red);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.ac-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ac-btn.ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--red);
+  color: var(--red-2);
+}
+
+.ac-link {
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font-size: 16px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- A round --- */
+
+.ac-play {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* The polka dots of the dancer's trail: one for each word */
+.ac-dots {
+  display: flex;
+  gap: 9px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.ac-dots li {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgb(245 232 199 / 0.35);
+}
+
+.ac-dots li.now {
+  box-shadow: inset 0 0 0 2px var(--cream);
+  scale: 1.25;
+}
+
+.ac-dots li.ok {
+  background: var(--red);
+  box-shadow: none;
+}
+
+.ac-dots li.no {
+  background: var(--cream);
+  box-shadow: none;
+}
+
+.ac-hear {
+  display: flex;
+  gap: 12px;
+}
+
+.ac-ask {
+  min-height: 1.3em;
+  margin: 14px 0 6px;
+  font-family: 'Rozha One', serif;
+  font-size: 23px;
+  line-height: 1.2;
+  color: var(--sand);
+}
+
+/* the verdict in the question's place */
+.ac-ask b {
+  font-weight: 400;
+}
+
+.ac-ask .ok {
+  color: var(--cream);
+}
+
+.ac-ask .no {
+  font-family: 'Jost', sans-serif;
+  font-weight: 600;
+  color: var(--soft);
+}
+
+/* The wire, from one side of the screen to the other, the lanterns
+   hanging from it: the larger the fewer */
+.ac-wire {
+  --size: min(112px, calc((100vw - 84px) / var(--n) - 6px));
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 6px;
+  align-self: stretch;
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+  min-height: calc(var(--size) * 1.18 + 84px);
+}
+
+.ac-wire .line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ac-wire .line path {
+  fill: none;
+  stroke: rgb(245 232 199 / 0.55);
+  stroke-width: 2;
+}
+
+.ac-wire .art {
+  align-self: center;
+  margin-right: 4px;
+  font-family: 'Rozha One', serif;
+  font-size: 22px;
+  color: var(--soft);
+}
+
+.ac-lantern {
+  position: relative;
+  flex: none;
+  width: var(--size);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* its string up to the wire */
+.ac-lantern::before {
+  content: '';
+  width: 2px;
+  height: 16px;
+  background: rgb(245 232 199 / 0.55);
+}
+
+.ac-lantern .body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1.18;
+  border-radius: 46% / 42%;
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle, var(--red) 2.6px, transparent 3.2px),
+    linear-gradient(
+      transparent 0 16%,
+      rgb(24 18 14 / 0.06) 16% 17%,
+      transparent 17% 83%,
+      rgb(24 18 14 / 0.06) 83% 84%,
+      transparent 84%
+    );
+  background-size:
+    16px 16px,
+    100% 100%;
+  background-position:
+    4px 4px,
+    0 0;
+  font-family: 'Rozha One', serif;
+  /* smaller for a long syllable, so that it stays inside */
+  font-size: calc(var(--size) * min(0.36, 1.35 / var(--len, 2)));
+  line-height: 1;
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    box-shadow 0.3s;
+}
+
+/* the cap at the top and the bottom */
+.ac-lantern .body::before,
+.ac-lantern .body::after {
+  content: '';
+  position: absolute;
+  left: 34%;
+  right: 34%;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--ochre);
+}
+
+.ac-lantern .body::before {
+  top: -3px;
+}
+
+.ac-lantern .body::after {
+  bottom: -3px;
+}
+
+/* the syllable on a clear patch in the middle */
+.ac-lantern .body {
+  text-shadow:
+    0 0 6px var(--cream),
+    0 0 3px var(--cream),
+    0 0 2px var(--cream);
+}
+
+.ac-lantern:not(:disabled):hover .body {
+  box-shadow: 0 0 0 4px rgb(233 196 124 / 0.35);
+}
+
+.ac-lantern:active:not(:disabled) .body {
+  translate: 0 2px;
+}
+
+.ac-lantern.lit .body {
+  background-color: var(--red);
+  background-image:
+    radial-gradient(circle, var(--cream) 2.6px, transparent 3.2px), none;
+  color: var(--cream);
+  text-shadow:
+    0 0 6px var(--red),
+    0 0 3px var(--red),
+    0 0 2px var(--red);
+  box-shadow:
+    0 0 0 6px rgb(227 165 58 / 0.25),
+    0 0 26px 6px rgb(227 165 58 / 0.35);
+  animation: ac-sway 1.6s ease-in-out;
+}
+
+.ac-lantern.wrong .body {
+  background-color: var(--cream-2);
+  opacity: 0.75;
+  animation: ac-shake 0.4s;
+}
+
+.ac-lantern kbd {
+  margin-top: 6px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--soft);
+}
+
+@keyframes ac-sway {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  30% {
+    rotate: 5deg;
+  }
+  65% {
+    rotate: -3deg;
+  }
+}
+
+@keyframes ac-shake {
+  25% {
+    translate: -4px 0;
+  }
+  75% {
+    translate: 4px 0;
+  }
+}
+
+/* A twin: the meaning, and the word below */
+.ac-twin .ask {
+  margin: 18px 0 4px;
+  font-size: 19px;
+  color: var(--soft);
+}
+
+.ac-twin .ask b {
+  font-family: 'Rozha One', serif;
+  font-weight: 400;
+  font-size: 30px;
+  color: var(--cream);
+}
+
+/* The letters of the word, its vowels to set the mark on */
+.ac-letters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ac-letters .word {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1px;
+  font-family: 'Rozha One', serif;
+  font-size: clamp(34px, 11vw, 54px);
+  line-height: 1;
+}
+
+.ac-letters .c {
+  padding: 18px 1px 10px;
+  color: var(--cream);
+}
+
+.ac-letters .v {
+  position: relative;
+  min-width: 40px;
+  padding: 18px 4px 10px;
+  border: 0;
+  border-bottom: 3px dotted var(--sand);
+  border-radius: 6px 6px 0 0;
+  background: rgb(245 232 199 / 0.08);
+  color: var(--sand);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.ac-letters .v:not(:disabled):hover {
+  background: rgb(245 232 199 / 0.18);
+}
+
+/* the accent mark, set */
+.ac-letters .v.marked::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 6px;
+  height: 18px;
+  translate: -20% 0;
+  rotate: 38deg;
+  border-radius: 3px;
+  background: var(--red);
+  animation: ac-drop 0.3s ease-out;
+}
+
+.ac-letters .v.wrong::before {
+  background: var(--soft);
+}
+
+.ac-letters .v.marked:not(.wrong) {
+  color: var(--cream);
+}
+
+.ac-letters .v kbd {
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  translate: -50% 0;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  color: var(--soft);
+}
+
+@keyframes ac-drop {
+  from {
+    translate: -20% -14px;
+    opacity: 0;
+  }
+}
+
+.ac-none {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  margin-top: 14px;
+  padding: 8px 20px;
+  border: 0;
+  border-radius: 99px;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--sand);
+  color: var(--sand);
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.ac-none kbd {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  color: var(--soft);
+}
+
+.ac-none.right {
+  background: var(--sand);
+  color: var(--night);
+}
+
+.ac-none.wrong {
+  box-shadow: inset 0 0 0 2px var(--soft);
+  color: var(--soft);
+  text-decoration: line-through;
+}
+
+/* After the answer: what is right, and why */
+.ac-after {
+  width: 100%;
+  margin-top: 18px;
+  padding: 16px 16px 18px;
+  border-radius: 6px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.ac-after .verdict {
+  margin: 0;
+}
+
+.ac-after .verdict .ok {
+  font-family: 'Rozha One', serif;
+  font-weight: 400;
+  font-size: 30px;
+  color: var(--red);
+}
+
+.ac-after .verdict .no {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.ac-after .written {
+  margin: 0;
+}
+
+.ac-after .verdict + .written {
+  margin-top: 6px;
+}
+
+.ac-after .written .ac-syl,
+.ac-after .written > b {
+  font-size: 28px;
+}
+
+.ac-after .written small {
+  display: block;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.ac-after .why {
+  margin: 10px auto 14px;
+  max-width: 32em;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* --- The end --- */
+
+.ac-result {
+  text-align: center;
+}
+
+.ac-result .kick {
+  font-size: 30px;
+}
+
+.ac-result h2 {
+  margin-bottom: 8px;
+}
+
+.ac-result p {
+  margin: 0 0 14px;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+.ac-result .opened {
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.ac-result .opened b {
+  font-family: 'Rozha One', serif;
+  font-weight: 400;
+  color: var(--red);
+}
+
+.ac-missed {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.ac-missed li {
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: var(--cream-2);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.ac-missed button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+}
+
+.ac-missed button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--red-2);
+}
+
+.ac-missed li > span {
+  display: block;
+}
+
+.ac-result .acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+/* --- The skyline --- */
+
+.ac-skyline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 170px;
+  pointer-events: none;
+}
+
+.ac-skyline .festoon {
+  fill: none;
+  stroke: rgb(245 232 199 / 0.35);
+  stroke-width: 1.5;
+}
+
+.ac-skyline .red ellipse {
+  fill: var(--red);
+}
+
+.ac-skyline .cream ellipse {
+  fill: var(--cream-2);
+}
+
+.ac-skyline .far {
+  fill: var(--night-3);
+}
+
+/* the casetas lit inside */
+.ac-skyline .door {
+  fill: var(--sand);
+}
+
+.ac-skyline .tower {
+  fill: var(--ochre);
+}
+
+.ac-skyline .win {
+  fill: var(--night-2);
+}
+
+/* the albero, the yellow sand of the fair */
+.ac-skyline .near {
+  fill: #c48a35;
+}
+
+@media (min-width: 720px) {
+  .ac-col {
+    padding: 24px 28px 186px;
+  }
+
+  .ac-awning {
+    margin: 18px 0 24px;
+  }
+
+  .ac-card {
+    padding: 26px 28px 28px;
+  }
+
+  .ac-wire {
+    --size: min(116px, calc((min(100vw, 760px) - 120px) / var(--n) - 14px));
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-lantern.lit .body,
+  .ac-lantern.wrong .body,
+  .ac-letters .v.marked::before {
+    animation: none;
+  }
+}

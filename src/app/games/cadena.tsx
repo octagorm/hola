@@ -9,9 +9,8 @@ import {
   link,
   nextOf,
   plan,
-  syllables,
 } from '../lib/cadena'
-import { letters } from '../lib/spanish'
+import { letters, syllables } from '../lib/spanish'
 import { blip } from '../lib/sound'
 import { say } from '../lib/speech'
 import { useStore } from '../lib/store'

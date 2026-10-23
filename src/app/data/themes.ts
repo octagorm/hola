@@ -297,6 +297,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Tungekrøllere å øve uttalen på, først sakte og så fortere: den rullende r-en i erre con erre cigarro, tr og gr i tres tristes tigres, og bl og cl i Pablito clavó un clavito.',
       },
+      {
+        lesson: 'sonidos',
+        about:
+          'Ord som skiller seg med bare én lyd: la casa er et hus og la caza en jakt, la ola en bølge og la olla en kjele, el peso en vekt og el beso et kyss. I Sonidos øver du øret på dem. Og to ord der u-en har prikker og sies: pingüino og vergüenza.',
+      },
     ],
   },
 ]
