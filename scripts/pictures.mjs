@@ -19,6 +19,7 @@
 import { spawn, execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
+import { MUSEO_PICTURES } from '../src/app/data/museo-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -135,6 +136,9 @@ const PICTURES = Object.fromEntries(
     ]),
   ),
 )
+
+// Tu museo's pictures, a print for each theme (data/museo-prompts.ts)
+Object.assign(PICTURES, MUSEO_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 
