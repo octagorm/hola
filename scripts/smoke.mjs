@@ -353,6 +353,7 @@ await test(
   'El rosco takes answers, passes and stops',
   async (page) => {
     await go(page, '#rosco')
+    await page.locator('.r6-egg').first().waitFor()
     expect(
       (await page.locator('.r6-egg').count()) >= 8,
       'eight letters or more',
@@ -1111,7 +1112,15 @@ await test(
         await page.getByRole('button', { name: 'Hva betyr det?' }).click()
       const w = right ? null : await dictadoWord(page)
       if (w) {
-        await page.keyboard.type(unaccent(w.bare))
+        // (a ñ by the key on the screen: Playwright's keyboard sends it as
+        // text, with no key pressed for the page to hear)
+        for (const c of unaccent(w.bare))
+          if (c === 'ñ')
+            await page
+              .locator('.so-typer')
+              .getByRole('button', { name: 'Ñ', exact: true })
+              .click()
+          else await page.keyboard.press(c)
         await page.getByRole('button', { name: 'Sjekk' }).click()
         await page.getByText('¡Bien escrito!').waitFor()
         right = true
