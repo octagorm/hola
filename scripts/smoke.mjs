@@ -12,6 +12,7 @@ import { FORMS, makeable } from '../src/app/lib/letras.ts'
 import { letters, unaccent } from '../src/app/lib/spanish.ts'
 import { SENTENCES } from '../src/app/data/orden.ts'
 import { matchOf, tilesOf } from '../src/app/lib/orden.ts'
+import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -163,6 +164,7 @@ const PAGES = [
   ['#cadena', 'Palabras encadenadas'],
   ['#elola', '¿El o la?'],
   ['#orden', 'Orden'],
+  ['#palabras', 'Palabras'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -768,6 +770,204 @@ await test(
     )
     await page.getByRole('button', { name: 'En kjede til' }).click()
     await page.waitForSelector('.en-step')
+  },
+  { learner: true },
+)
+
+// Palabras as it is kept in the browser, and its player's plays
+const palabrasGame = async (page) =>
+  JSON.parse(
+    await page.evaluate(() => localStorage.getItem('hola:palabras:v1')),
+  )
+
+// Waits for her turn, while El relojero thinks and plays, or for the end
+async function palabrasTurn(page) {
+  await page.waitForFunction(
+    () => {
+      const g = JSON.parse(localStorage.getItem('hola:palabras:v1') ?? 'null')
+      return g && (g.log.length % 2 === 0 || g.log.length >= 12)
+    },
+    null,
+    { timeout: 30000 },
+  )
+  await page.waitForTimeout(200)
+  return palabrasGame(page)
+}
+
+const palabrasMoves = (g, ok = () => true) =>
+  findMoves(g.board, g.racks[0], [...DICT.values()], new Set(DICT.keys()))
+    .filter(ok)
+    .sort((a, b) => b.score - a.score)
+
+// The rack's place of the tile for each square of a play, a blank's too
+function palabrasSlots(g, m) {
+  const free = [...g.racks[0]]
+  return m.cells.map((c) => {
+    const [t] = free.splice(
+      free.findIndex((x) => (c.b ? x.b : !x.b && x.l === c.l)),
+      1,
+    )
+    return g.racks[0].indexOf(t)
+  })
+}
+
+async function palabrasBlank(page, c) {
+  if (c.b)
+    await page
+      .locator('.pz-letters')
+      .getByRole('button', { name: c.l, exact: true })
+      .click()
+}
+
+await test(
+  'Palabras plays its twelve turns against El relojero, by key, touch and drag',
+  async (page) => {
+    await go(page, '#palabras')
+    await page.getByRole('button', { name: 'Begynn' }).click()
+    // Her six turns, each its own way. A rack with no play for the way
+    // swaps all its tiles instead, and the way waits for the next turn.
+    const ways = ['type', 'tap', 'drag', 'hint', 'swap', 'pass']
+    for (let turn = 0; turn < 6; turn++) {
+      const g = await palabrasTurn(page)
+      expect(g.log.length === turn * 2, `${g.log.length} turns at ${turn}`)
+      const laid = async () =>
+        page.waitForFunction(
+          (n) =>
+            JSON.parse(localStorage.getItem('hola:palabras:v1')).log.length > n,
+          g.log.length,
+        )
+      const swapAll = async (n) => {
+        await page.getByRole('button', { name: 'Bytt' }).click()
+        for (let k = 0; k < n; k++)
+          await page.locator('.pz-rtile').nth(k).click()
+        await page.getByRole('button', { name: `Bytt ${n}` }).click()
+        await laid()
+      }
+      if (turn === 0) {
+        // A word Hola does not know, kindly turned down: the tiles go back
+        const plain = g.racks[0].filter(
+          (t) => !t.b && t.l.length === 1 && t.l !== 'Ñ',
+        )
+        const junk = plain
+          .flatMap((a) => plain.map((b) => (a === b ? null : [a.l, b.l])))
+          .find((p) => p && !DICT.has(keyOf(p)))
+        if (junk) {
+          for (const l of junk) await page.keyboard.press(l)
+          await page.keyboard.press('Enter')
+          await page.getByText('Det ordet kjenner ikke Hola ennå').waitFor()
+          expect(
+            !(await page.locator('.pz-slot').count()),
+            'the tiles back on the rack',
+          )
+        }
+      }
+      const way = ways.shift()
+      if (way === 'swap') {
+        await swapAll(2)
+        continue
+      }
+      if (way === 'pass') {
+        await page.getByRole('button', { name: 'Stå over' }).click()
+        await page.getByRole('button', { name: 'Sikker?' }).click()
+        await laid()
+        continue
+      }
+      if (way === 'hint') {
+        await page.getByRole('button', { name: 'Tips' }).click()
+        const show = page.getByRole('button', { name: 'Vis ordet' })
+        if (await show.count()) {
+          await show.click()
+          await page.getByRole('button', { name: 'Legg ordet' }).click()
+        } else {
+          await page.getByRole('button', { name: 'Stå over' }).click()
+          await page.getByRole('button', { name: 'Sikker?' }).click()
+        }
+        await laid()
+        continue
+      }
+      // (Ñ is not on the keyboard a test types with)
+      const m = palabrasMoves(g, (x) =>
+        way === 'type' ? x.cells.every((c) => c.l !== 'Ñ') : true,
+      ).at(0)
+      if (!m) {
+        ways.unshift(way)
+        const i = ways.indexOf('swap')
+        if (i >= 0) ways.splice(i, 1)
+        await swapAll(g.racks[0].filter((t) => !t.b).length)
+        continue
+      }
+      if (way === 'type') {
+        // Typed from the word's first square, along the word
+        const first = m.cells[0].i
+        const dir =
+          m.cells.length > 1 && m.cells[1].i - first >= 11 ? 'down' : 'across'
+        for (let k = 0; k < 4; k++) {
+          const cur = page.locator('.pz-sq.cur')
+          const at = (await cur.count())
+            ? await cur.getAttribute('data-sq')
+            : -1
+          if (Number(at) === first && (await visible(page, `.pz-arrow.${dir}`)))
+            break
+          await page.locator(`[data-sq="${first}"]`).click()
+        }
+        for (const c of m.cells)
+          for (const ch of c.l) await page.keyboard.press(ch)
+      } else if (way === 'tap') {
+        // Tapped: a tile, then its square
+        await page.keyboard.press('Escape')
+        const slots = palabrasSlots(g, m)
+        for (const [k, c] of m.cells.entries()) {
+          await page.locator(`.pz-rtile[data-slot="${slots[k]}"]`).click()
+          await page.locator(`[data-sq="${c.i}"]`).click()
+          await palabrasBlank(page, c)
+        }
+      } else {
+        // Dragged from the rack to the board
+        const slots = palabrasSlots(g, m)
+        for (const [k, c] of m.cells.entries()) {
+          const from = await page
+            .locator(`.pz-rtile[data-slot="${slots[k]}"]`)
+            .boundingBox()
+          const to = await page.locator(`[data-sq="${c.i}"]`).boundingBox()
+          await page.mouse.move(
+            from.x + from.width / 2,
+            from.y + from.height / 2,
+          )
+          await page.mouse.down()
+          await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, {
+            steps: 8,
+          })
+          await page.mouse.up()
+          await palabrasBlank(page, c)
+        }
+      }
+      await page.getByRole('button', { name: 'Legg ordet' }).click()
+      await laid()
+      const after = await palabrasGame(page)
+      // (typed, a blank may stand on another square than it would)
+      expect(
+        way === 'type'
+          ? after.score[0] > g.score[0]
+          : after.score[0] === g.score[0] + m.score,
+        `scored ${after.score[0] - g.score[0]}, not ${m.score}`,
+      )
+    }
+    await page.getByText('Fin de la partida').waitFor({ timeout: 30000 })
+    const g = await palabrasGame(page)
+    expect(g.log.length === 12, `${g.log.length} turns`)
+    const bank = JSON.parse(
+      await page.evaluate(() => localStorage.getItem('hola:bank:v1')),
+    )
+    expect(bank.best.palabras === g.score[0], 'her score is her best')
+    // A word of the game, opened
+    const chip = page.locator('.pz-end .pz-chip').last()
+    if (await chip.count()) {
+      await chip.click()
+      await page.locator('.pz-card .pz-form').first().waitFor()
+      await page.keyboard.press('Escape')
+    }
+    await page.getByRole('button', { name: 'Nytt parti' }).click()
+    await page.getByRole('button', { name: 'Begynn' }).waitFor()
   },
   { learner: true },
 )
