@@ -280,6 +280,11 @@ export const THEME_GROUPS: Array<ThemeGroup> = [
         about:
           'Muiscaene i høylandet i dagens Colombia hadde en seremoni ved innsjøen Guatavita: en ny høvding ble dekket av gullstøv og ført ut på en flåte, der han ofret gull og smaragder i vannet. Ryktet om el dorado, den forgylte, ble til spanske erobreres jakt på et helt rike av gull. De fant det aldri, men plyndret muiscaene og lette gjennom jungelen i flere tiår.',
       },
+      {
+        lesson: 'caso',
+        about:
+          'Ordene i detektivhistorien El caso del reloj perdido som ikke står i de andre emnene: inspektøren med lupe og notatbok, sporet og tyven, lommeuret som stanset klokka kvart over fire, urmakeren som reparerer det, og et løfte om en overraskelse. Pass på halvtimene: a las nueve y media er klokka halv ti, ikke halv ni.',
+      },
     ],
   },
   {

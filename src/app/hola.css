@@ -2444,7 +2444,7 @@ img.q-pic {
   }
 
   .q-chapters a {
-    grid-template-columns: 38px minmax(0, 1fr) auto;
+    grid-template-columns: 50px minmax(0, 1fr) auto;
   }
 
   .q-chapters b {
