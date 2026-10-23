@@ -1955,7 +1955,12 @@ img.q-pic {
 }
 
 .q-text {
-  font-size: 23px;
+  font-size: 26px;
+}
+
+/* (the Norwegian over a word large enough to read without glasses) */
+.q-text .mx rt {
+  font-size: max(13px, 0.56em);
 }
 
 .q-text p {
@@ -2554,7 +2559,7 @@ img.q-pic {
   }
 
   .q-text {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .q-chap h2 {
