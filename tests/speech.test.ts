@@ -6,6 +6,7 @@ import { EPIGRAPH } from '../src/app/data/quijote'
 import { ALL_CHAPTERS } from '../src/app/data/stories'
 import { DESIGNED, SAMPLE, VOICES } from '../src/app/data/voices'
 import { DECK, spanish } from '../src/app/lib/cadaver'
+import { SAID } from '../src/app/lib/letras'
 import { speechItems, speechKey } from '../src/app/lib/spoken'
 import { plain, tokens } from '../src/app/lib/text'
 
@@ -33,6 +34,7 @@ describe('what is said aloud', () => {
       ),
       ...lines.map(plain),
       ...DECK.map(spanish),
+      ...SAID,
       SAMPLE,
     ]
     for (const t of said) expect(texts.has(t), t).toBe(true)

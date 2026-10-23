@@ -35,7 +35,11 @@ export const STEP: Record<
 
 // Games the chapter picks from, one a day in turn, once enough words are
 // met to make a round of them: for the crossword, the ring, the word
-// search and the soft clock, words that can be clues (data/words.ts)
+// search, the soft clock and the chain, words that can be clues
+// (data/words.ts). Letras wants enough words met for its letters to hold a
+// few of them; the chain, words enough that a chain of eight can be made of
+// them, as it first can about here when they are met lesson by lesson (a
+// new player has 288 from the start).
 export const DAILY_GAMES = [
   'palabra',
   'cadaver',
@@ -45,6 +49,8 @@ export const DAILY_GAMES = [
   'reloj',
   'porpara',
   'tiempos',
+  'letras',
+  'cadena',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -53,12 +59,14 @@ export const NEEDS: Record<string, number> = {
   rosco: 16,
   sopa: 12,
   reloj: 12,
+  letras: 40,
+  cadena: 210,
   // A round of either can be made from the start, since each sentence comes
   // with its Norwegian
   porpara: 0,
   tiempos: 0,
 }
-const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj'])
+const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 
 // The words met that can be clues, with any about to be met
 export const clueCount = (bank: Bank, extra: Array<Word> = []) =>
@@ -127,7 +135,7 @@ export function plan(
       ...(fading.length >= 4 ? {} : { arg: 'warm' }),
     })
   if (fresh.length) steps.push({ k: 'new', ids: fresh.map((w) => w.id) })
-  if (story && chapter) steps.push({ k: 'story', arg: chapter.id })
+  if (story) steps.push({ k: 'story', arg: chapter.id })
   else steps.push({ k: 'game', arg: games[turn % games.length] })
   if (hear && met >= LISTEN) steps.push({ k: 'listen' })
 

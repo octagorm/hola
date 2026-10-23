@@ -5,10 +5,11 @@
 //
 //   node scripts/smoke.mjs [part of a test's name, to run only those]
 import { chromium } from 'playwright'
-import { WORDS, meaning } from '../src/app/data/words.ts'
-import { letters } from '../src/app/lib/spanish.ts'
 import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
+import { WORDS, meaning } from '../src/app/data/words.ts'
+import { FORMS, makeable } from '../src/app/lib/letras.ts'
+import { letters, unaccent } from '../src/app/lib/spanish.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -152,6 +153,8 @@ const PAGES = [
   ['#reloj', 'El reloj blando'],
   ['#porpara', 'Por o para'],
   ['#tiempos', 'Ayer, hoy, mañana'],
+  ['#letras', 'Letras'],
+  ['#cadena', 'Palabras encadenadas'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -507,6 +510,107 @@ await test(
       await page.waitForTimeout(60)
     }
     await page.getByText(/av 8 riktige/).waitFor()
+  },
+  { learner: true },
+)
+
+await test(
+  'Letras takes words of the letters asked for, over three rounds',
+  async (page) => {
+    await go(page, '#letras')
+    for (let round = 0; round < 3; round++) {
+      await page.waitForSelector('.lt-asks')
+      // (V and K ask for a vowel and a consonant from the keyboard)
+      for (let i = 0; i < 9; i++) await page.keyboard.press(i % 2 ? 'k' : 'v')
+      await page.waitForSelector('.lt-acts')
+      const blocks = (await page.locator('.lt-block').allTextContents()).map(
+        (t) => t.trim(),
+      )
+      const words = FORMS.filter((f) => makeable(f.key, blocks)).sort(
+        (a, b) => b.key.length - a.key.length,
+      )
+      expect(words.length, `no word in ${blocks.join('')}`)
+      if (round === 0) {
+        const junk = blocks.slice(0, 3).join('')
+        if (!FORMS.some((f) => f.key === junk)) {
+          await page.keyboard.type(junk)
+          await page.getByRole('button', { name: 'Sjekk ordet' }).click()
+          await page.getByText('Det ordet kjenner ikke Hola ennå').waitFor()
+          for (let i = 0; i < 3; i++) await page.keyboard.press('Backspace')
+        }
+      }
+      if (round < 2) {
+        await page.keyboard.type(words[0].key)
+        await page.keyboard.press('Enter')
+        await page
+          .locator('.lt-word', { hasText: words[0].key })
+          .waitFor({ timeout: 3000 })
+      } else
+        await page
+          .getByRole('button', { name: 'Vis de lengste ordene' })
+          .click()
+      await page
+        .getByRole('button', {
+          name: round < 2 ? 'Neste runde' : 'Se hvordan det gikk',
+        })
+        .click()
+    }
+    await page.getByText('Fin de la partida').waitFor()
+    await page.getByRole('button', { name: 'Tre runder til' }).click()
+    await page.waitForSelector('.lt-asks')
+  },
+  { learner: true },
+)
+
+await test(
+  'Palabras encadenadas makes a chain of eight',
+  async (page) => {
+    await go(page, '#cadena')
+    await page.waitForSelector('.en-panel')
+    let typed = false
+    for (let i = 0; i < 80 && !(await visible(page, '.en-list')); i++) {
+      if (await visible(page, '.en-shown')) {
+        await page.getByRole('button', { name: /^Neste/ }).click()
+        continue
+      }
+      const opts = page.locator('.en-opts button:not([disabled])')
+      if (await opts.count()) {
+        await opts.first().click()
+        await page.waitForTimeout(150)
+        continue
+      }
+      if (typed) {
+        await page.getByRole('button', { name: 'Vet ikke' }).click()
+        continue
+      }
+      // Once, the word asked for typed from its meaning
+      const syl = (await page.locator('.en-from .link').textContent()).replace(
+        '…',
+        '',
+      )
+      const clue = await page.locator('.en-clue').textContent()
+      const means = clue.slice(clue.indexOf('«') + 1, clue.lastIndexOf('»'))
+      const w = WORDS.find(
+        (x) =>
+          meaning(x) === means && unaccent(x.bare).startsWith(unaccent(syl)),
+      )
+      expect(w, `no word on ${syl}- for «${means}»`)
+      const locked = await page.locator('.en-answer .lock').textContent()
+      await page.keyboard.type(letters(w.bare).slice(locked.length))
+      await page.keyboard.press('Enter')
+      await page
+        .locator('.en-note.ok, .en-list')
+        .first()
+        .waitFor({ timeout: 3000 })
+      typed = true
+    }
+    await page.getByText(/av 8 uten hjelp/).waitFor()
+    expect(
+      (await page.locator('button.en-flag').count()) === 9,
+      'nine flags hung',
+    )
+    await page.getByRole('button', { name: 'En kjede til' }).click()
+    await page.waitForSelector('.en-step')
   },
   { learner: true },
 )

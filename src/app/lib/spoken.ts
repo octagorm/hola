@@ -7,13 +7,15 @@ import { SENTENCES, TIMES } from '../data/tiempos.ts'
 import { DECK, spanish } from './cadaver.ts'
 import { whole } from './porpara.ts'
 import { plain as said } from './tiempos.ts'
+import { SAID } from './letras.ts'
 import { plain, tokens } from './text.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
-// it) and the sample in Settings; in the narrator's each line of the story,
-// each sentence of Cadáver exquisito's deck, each sentence of Por o para
-// (said once answered) and each of Ayer, hoy, mañana in all three times.
+// it), the plurals and an adjective's forms that Letras takes, and the
+// sample in Settings; in the narrator's each line of the story, each
+// sentence of Cadáver exquisito's deck, each sentence of Por o para (said
+// once answered) and each of Ayer, hoy, mañana in all three times.
 // scripts/audio.py makes the recordings with Gemini TTS; lib/speech.ts
 // plays them by their text, and falls back on the browser's own Spanish
 // voice where there is none.
@@ -42,6 +44,7 @@ export function speechItems(): Array<SpeechItem> {
   const lines = ALL_CHAPTERS.flatMap((c) => c.lines)
   for (const line of [EPIGRAPH.line, ...lines])
     for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+  for (const s of SAID) add(WORD_VOICE, s, 'word')
   add(WORD_VOICE, SAMPLE, 'line')
   for (const line of lines) add(LINE_VOICE, plain(line), 'line')
   for (const s of DECK) add(LINE_VOICE, spanish(s), 'line')

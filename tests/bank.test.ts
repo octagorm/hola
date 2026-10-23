@@ -159,7 +159,7 @@ describe('the day’s chapter', () => {
     expect(p.steps.some((s) => s.k === 'listen')).toBe(false)
   })
 
-  it('waits for words that make clues before the crossword and the ring', () => {
+  it('waits for words that make clues before the crossword, the ring and the chain', () => {
     // The first lesson is greetings, which make no clues
     const b = emptyBank()
     for (const w of WORDS.slice(0, 25)) b.cards[w.id] = newCard(now)
@@ -168,12 +168,17 @@ describe('the day’s chapter', () => {
     const games = DAILY_GAMES.filter((g) => ready(g, 25, clues))
     expect(games).toEqual(DAILY_GAMES.filter((g) => !NEEDS[g]))
     for (const w of WORDS.slice(0, 60)) b.cards[w.id] = newCard(now)
-    expect(DAILY_GAMES.every((g) => ready(g, 60, clueCount(b)))).toBe(true)
+    // The chain waits for words enough to make a chain of eight
+    expect(DAILY_GAMES.filter((g) => !ready(g, 60, clueCount(b)))).toEqual([
+      'cadena',
+    ])
+    for (const w of WORDS.slice(0, 260)) b.cards[w.id] = newCard(now)
+    expect(DAILY_GAMES.every((g) => ready(g, 260, clueCount(b)))).toBe(true)
   })
 
   it('gives every game its turn, on the days between the chapters too', () => {
     const b = emptyBank()
-    for (const w of WORDS.slice(0, 200)) b.cards[w.id] = newCard(now)
+    for (const w of WORDS.slice(0, 300)) b.cards[w.id] = newCard(now)
     const seen = new Set<string>()
     let stories = 0
     for (let d = 0; d < 2 * DAILY_GAMES.length; d++) {
