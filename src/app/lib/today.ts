@@ -43,6 +43,8 @@ export const DAILY_GAMES = [
   'rosco',
   'sopa',
   'reloj',
+  'porpara',
+  'tiempos',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -51,6 +53,10 @@ export const NEEDS: Record<string, number> = {
   rosco: 16,
   sopa: 12,
   reloj: 12,
+  // A round of either can be made from the start, since each sentence comes
+  // with its Norwegian
+  porpara: 0,
+  tiempos: 0,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj'])
 

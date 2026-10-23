@@ -63,6 +63,20 @@ export const GAME_INFO: Array<GameInfo> = [
     doing: 'redder ord før klokken smelter',
   },
   {
+    id: 'porpara',
+    es: 'Por o para',
+    no: 'Por eller para',
+    blurb: 'To dører: por eller para',
+    doing: 'velger mellom por og para',
+  },
+  {
+    id: 'tiempos',
+    es: 'Ayer, hoy, mañana',
+    no: 'I går, i dag, i morgen',
+    blurb: 'Samme setning i går, i dag og i morgen',
+    doing: 'flytter setninger mellom i går, i dag og i morgen',
+  },
+  {
     id: 'tapas',
     es: 'Tapas',
     no: 'Baren',

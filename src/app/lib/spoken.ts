@@ -2,15 +2,21 @@ import { WORDS } from '../data/words.ts'
 import { EPIGRAPH } from '../data/quijote.ts'
 import { ALL_CHAPTERS } from '../data/stories.ts'
 import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
+import { GAPS } from '../data/porpara.ts'
+import { SENTENCES, TIMES } from '../data/tiempos.ts'
 import { DECK, spanish } from './cadaver.ts'
+import { whole } from './porpara.ts'
+import { plain as said } from './tiempos.ts'
 import { plain, tokens } from './text.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
 // voice each word, each form of one in the story (a tapped word's card says
-// it) and the sample in Settings; in the narrator's each line of the story
-// and each sentence of Cadáver exquisito's deck. scripts/audio.py makes the
-// recordings with Gemini TTS; lib/speech.ts plays them by their text, and
-// falls back on the browser's own Spanish voice where there is none.
+// it) and the sample in Settings; in the narrator's each line of the story,
+// each sentence of Cadáver exquisito's deck, each sentence of Por o para
+// (said once answered) and each of Ayer, hoy, mañana in all three times.
+// scripts/audio.py makes the recordings with Gemini TTS; lib/speech.ts
+// plays them by their text, and falls back on the browser's own Spanish
+// voice where there is none.
 
 export interface SpeechItem {
   voice: string
@@ -39,5 +45,8 @@ export function speechItems(): Array<SpeechItem> {
   add(WORD_VOICE, SAMPLE, 'line')
   for (const line of lines) add(LINE_VOICE, plain(line), 'line')
   for (const s of DECK) add(LINE_VOICE, spanish(s), 'line')
+  for (const g of GAPS) add(LINE_VOICE, whole(g), 'line')
+  for (const s of SENTENCES)
+    for (const t of TIMES) add(LINE_VOICE, said(s, t), 'line')
   return items
 }
