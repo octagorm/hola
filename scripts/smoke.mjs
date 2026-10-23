@@ -15,6 +15,7 @@ import { matchOf, tilesOf } from '../src/app/lib/orden.ts'
 import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
 import { dictable } from '../src/app/lib/sonidos.ts'
 import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
+import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -173,6 +174,8 @@ const PAGES = [
   ['#palabras', 'Palabras'],
   ['#sonidos', 'Sonidos'],
   ['#acento', 'Acento'],
+  ['#numeros', 'Números'],
+  ['#taxi', 'Taxi'],
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
@@ -1295,6 +1298,118 @@ await test(
       await page.locator('.ac-lantern').first().click()
       await page.getByRole('button', { name: /^Neste/ }).click()
     }
+  },
+  { phone: true, learner: true },
+)
+
+// The numbers Números has dealt for the round, in order, from the ids it
+// keeps of the numbers heard (the round's kind one after another, then the
+// lottery's)
+async function numerosDealt(page) {
+  const ids = await page.evaluate(
+    () => JSON.parse(localStorage.getItem('hola:numeros:v1')).heard,
+  )
+  return ids.map((id) => [...DECK, ...LOTTERY].find((x) => x.id === id))
+}
+
+await test(
+  'Números takes six prices by ear and three numbers from the lottery',
+  async (page) => {
+    await go(page, '#numeros')
+    await page.getByRole('radio', { name: 'Priser' }).click()
+    await page.getByRole('button', { name: 'Begynn' }).click()
+    const items = await numerosDealt(page)
+    expect(
+      items.length === 9 &&
+        items.slice(0, 6).every((x) => x.kind === 'price') &&
+        items.slice(6).every((x) => x.kind === 'lottery'),
+      `dealt ${items.map((x) => x?.id)}`,
+    )
+    const pad = page.locator('.nu-pad')
+    for (const [n, item] of items.entries()) {
+      if (n === 6)
+        await page.getByRole('button', { name: 'Til trekningen' }).click()
+      await page.waitForSelector('.nu-field')
+      const keys = [...item.answer.replace(/ /g, '')]
+      if (n === 0) {
+        // By touch, a wrong digit taken back first
+        await pad.getByRole('button', { name: '9', exact: true }).click()
+        await pad.getByRole('button', { name: 'Visk ut' }).click()
+        for (const k of keys)
+          await pad.getByRole('button', { name: k, exact: true }).click()
+        await page.getByRole('button', { name: /Sjekk/ }).click()
+      } else {
+        // One wrong in each part, the rest right, by the keyboard
+        if (n === 2 || n === 8) keys[0] = String((Number(keys[0]) + 1) % 10)
+        for (const k of keys) await page.keyboard.press(k)
+        await page.keyboard.press('Enter')
+      }
+      await page
+        .locator(`.nu-verdict.${n === 2 || n === 8 ? 'no' : 'yes'} .answer`, {
+          hasText: item.answer,
+        })
+        .waitFor({ timeout: 3000 })
+      await page.keyboard.press('Enter')
+    }
+    await page.getByText('5 av 6 riktige').waitFor()
+    await page.getByText('Og 2 av 3 i trekningen.').waitFor()
+    expect(
+      (await page.locator('.nu-list li').count()) === 9,
+      'the nine numbers listed',
+    )
+    await page.getByRole('button', { name: 'Seks til' }).click()
+    await page.waitForSelector('.nu-field')
+  },
+  { phone: true, learner: true },
+)
+
+await test(
+  'Taxi drives a shift of five passengers',
+  async (page) => {
+    await go(page, '#taxi')
+    await page.getByRole('button', { name: 'Start vakten' }).click()
+    const stage = page.locator('.tx-stage')
+    let wrong = 0
+    for (let ride = 0; ride < 5; ride++) {
+      // The words of the first instruction shown, on the first ride
+      if (ride === 0) {
+        await page.getByRole('button', { name: 'Vis teksten' }).click()
+        await page.locator('.tx-line').waitFor()
+      }
+      // Each move tried in turn until the passenger takes it: a wrong one
+      // jolts the town and gets a complaint
+      while (!(await visible(page, '.tx-paid'))) {
+        await page.waitForSelector('.tx-paid, .tx-move:not([disabled])', {
+          timeout: 20000,
+        })
+        if (await visible(page, '.tx-paid')) break
+        for (const move of ['left', 'straight', 'right', 'stop']) {
+          const before = await stage.getAttribute('class')
+          await page.locator(`.tx-move.${move}`).click()
+          await page.waitForTimeout(150)
+          if ((await stage.getAttribute('class')) === before) break
+          wrong++
+          expect(await visible(page, '.tx-complaint'), 'a complaint')
+          // (the passenger's moment to say so)
+          await page.waitForTimeout(700)
+        }
+      }
+      const stars = await page.locator('.tx-paid .tx-stars svg.on').count()
+      expect(stars >= 1 && stars <= 5, `${stars} stars`)
+      await page.locator('.tx-paid .tx-btn').click()
+    }
+    expect(wrong > 0, 'some moves wrong')
+    await page.getByText('Vakten er over').waitFor()
+    expect(
+      (await page.locator('.tx-rides li').count()) === 5,
+      'the five rides listed',
+    )
+    const bank = JSON.parse(
+      await page.evaluate(() => localStorage.getItem('hola:bank:v1')),
+    )
+    expect(bank.best.taxi >= 5, `best ${bank.best.taxi}`)
+    await page.getByRole('button', { name: 'Ny vakt' }).click()
+    await page.locator('.tx-bubble').waitFor()
   },
   { phone: true, learner: true },
 )

@@ -16,6 +16,13 @@ export interface Voice {
 
 export const WORD_VOICE = 'Profesora'
 export const LINE_VOICE = 'Narrador'
+// Números: a woman and a man taking turns with the numbers in everyday
+// sentences, and the Christmas lottery sung as the San Ildefonso children
+// sing it
+export const NUMBER_VOICES = ['Lola', 'Andrés']
+export const LOTTERY_VOICE = 'Ildefonso'
+// Taxi: the passenger in the back
+export const TAXI_VOICE = 'Pasajero'
 
 // Voices designed from a description, each made once (their ids are kept
 // in scripts/voices.json; delete one to design it again)
@@ -113,6 +120,23 @@ export const VOICES: Record<string, Voice> = {
   Jordi: {
     base: 'Iapetus',
     style: 'a shy young watchmaker, gentle, at a calm pace',
+  },
+  Lola: {
+    base: 'Profesora',
+    style: 'an everyday sentence with a number in it, clear and natural',
+  },
+  Andrés: {
+    base: 'Narrador',
+    style: 'an everyday sentence with a number in it, clear and natural',
+  },
+  // A prebuilt voice, young, as the lottery's children are
+  Ildefonso: {
+    base: 'Leda',
+    style: 'a child singing out the Christmas lottery draw, in its sing-song',
+  },
+  Pasajero: {
+    base: 'Narrador',
+    style: 'a passenger in a Madrid taxi giving the way, polite and clear',
   },
 }
 

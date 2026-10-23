@@ -56,6 +56,8 @@ export const DAILY_GAMES = [
   'tapas',
   'sonidos',
   'acento',
+  'numeros',
+  'taxi',
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
@@ -81,6 +83,13 @@ export const NEEDS: Record<string, number> = {
   // lessons in order have by about here
   sonidos: 0,
   acento: 45,
+  // Heard and typed as digits: the number words are among those every
+  // player starts with
+  numeros: 0,
+  // Steered by ear: left, right, straight on and most of the places are
+  // among the words every player starts with, and the shift meets the rest
+  // (el cine, la farmacia, parar) as it starts
+  taxi: 0,
 }
 const BY_CLUES = new Set(['crucigrama', 'rosco', 'sopa', 'reloj', 'cadena'])
 
