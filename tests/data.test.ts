@@ -35,6 +35,13 @@ describe('the words', () => {
     expect(WORD['el día']?.g).toBe('m')
   })
 
+  it('are spelt in letters that can be typed and laid in a grid', () => {
+    // The accent keys and lib/spanish.ts know á é í ó ú ü ñ, so a word with
+    // another letter (Valencian à, Catalan ç) could never be typed right,
+    // and would lose that letter in the crossword and the ring
+    for (const w of WORDS) expect(w.es, w.id).toMatch(/^[a-zñáéíóúü ¿?¡!,]+$/i)
+  })
+
   it('are some hundreds', () => {
     expect(WORDS.length).toBeGreaterThan(450)
   })

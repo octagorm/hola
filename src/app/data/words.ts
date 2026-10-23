@@ -623,6 +623,699 @@ const LIST: Array<Lesson & { words: string }> = [
       despierto | våken | adj
     `,
   },
+  {
+    id: 'tapeo',
+    es: 'En el bar de tapas',
+    no: 'På tapasbaren',
+    words: `
+      la barra | bardisk
+      la terraza | uteservering, terrasse
+      la carta | meny, brev
+      la caña | liten fatøl
+      el refresco | brus
+      la bebida | drikk
+      la ración | porsjon
+      la media ración | halv porsjon
+      la servilleta | serviett
+      la ronda | runde
+      la propina | tips
+      pedir | bestille, be om | v
+      poner | sette, legge | v
+      probar | smake, prøve | v
+      picar | småspise, stikke | v
+      compartir | dele | v
+      invitar | spandere, invitere | v
+      cobrar | ta betalt | v
+      ¿qué te pongo? | hva skal det være? | expr
+      ¿me pones una caña? | kan jeg få en liten øl? | expr
+      para llevar | til å ta med | expr
+      ¡que aproveche! | god appetitt! | expr
+      la cuenta, por favor | kan jeg få regningen? | expr
+    `,
+  },
+  {
+    id: 'compras',
+    es: 'El mercado y la tienda',
+    no: 'Markedet og butikken',
+    words: `
+      el puesto | bod, stilling
+      la frutería | fruktbutikk
+      la carnicería | slakterbutikk
+      la pescadería | fiskebutikk
+      la panadería | bakeri
+      el supermercado | supermarked
+      la fruta | frukt
+      la verdura | grønnsaker
+      el kilo | kilo
+      el gramo | gram
+      medio | halv | adj
+      la docena | dusin
+      la bolsa | pose
+      el precio | pris
+      el euro | euro
+      la oferta | tilbud
+      la caja | kasse, eske
+      la tarjeta | bankkort, kort
+      el efectivo | kontanter
+      el cambio | vekslepenger, endring
+      costar | koste | v
+      pesar | veie | v
+      barato | billig | adj
+      caro | dyr | adj
+      fresco | fersk, kjølig | adj
+      maduro | moden | adj
+      ¿quién es el último? | hvem er sist i køen? | expr
+      ¿cuánto cuesta? | hva koster det? | expr
+      ¿algo más? | noe mer? | expr
+      hacer la compra | handle mat | expr
+    `,
+  },
+  {
+    id: 'transporte',
+    es: 'Tren, autobús y taxi',
+    no: 'Tog, buss og taxi',
+    words: `
+      el metro | T-bane, meter
+      el taxi | taxi, drosje
+      el taxista | taxisjåfør
+      el aeropuerto | flyplass
+      la parada | holdeplass, stopp
+      la línea | linje
+      el andén | perrong
+      la vía | spor, vei
+      el vagón | vogn
+      el asiento | sete, plass
+      la taquilla | billettluke
+      el horario | rutetabell, åpningstider
+      la salida | avgang, utgang
+      la llegada | ankomst
+      el retraso | forsinkelse
+      el conductor | sjåfør
+      la dirección | adresse, retning
+      coger | ta (bussen), gripe | v
+      subir | gå opp, gå på | v
+      bajar | gå ned, gå av | v
+      cambiar | bytte, endre | v
+      libre | ledig, fri | adj
+      directo | direkte | adj
+      próximo | neste | adj
+      ida y vuelta | tur-retur | expr
+      solo ida | bare én vei | expr
+      ¿a qué hora sale el tren? | når går toget? | expr
+    `,
+  },
+  {
+    id: 'parientes',
+    es: 'Parientes y fiestas',
+    no: 'Slekt og familiefester',
+    words: `
+      el nieto | barnebarn (gutt)
+      la nieta | barnebarn (jente)
+      los nietos | barnebarn
+      el sobrino | nevø
+      la sobrina | niese
+      el suegro | svigerfar
+      la suegra | svigermor
+      el yerno | svigersønn
+      la nuera | svigerdatter
+      el cuñado | svoger
+      la cuñada | svigerinne
+      la esposa | kone
+      la pareja | partner, par
+      el novio | kjæreste (mann), brudgom
+      la novia | kjæreste (kvinne), brud
+      el padrino | gudfar
+      la madrina | gudmor
+      la boda | bryllup
+      el bautizo | dåp
+      el cumpleaños | bursdag
+      la fiesta | fest
+      el regalo | gave
+      la Nochebuena | julaften
+      la Navidad | jul
+      la Nochevieja | nyttårsaften
+      celebrar | feire | v
+      casarse | gifte seg | v
+      cuidar | passe på, ta vare på | v
+      ¡felicidades! | gratulerer! | expr
+      ¡feliz cumpleaños! | gratulerer med dagen! | expr
+    `,
+  },
+  {
+    id: 'clima',
+    es: '¿Qué tiempo hace?',
+    no: 'Været og årstidene',
+    words: `
+      el clima | klima
+      el pronóstico | værvarsel
+      la temperatura | temperatur
+      el grado | grad
+      hace buen tiempo | det er fint vær | expr
+      hace sol | sola skinner | expr
+      hace calor | det er varmt | expr
+      hace frío | det er kaldt | expr
+      hace viento | det blåser | expr
+      soleado | solrik | adj
+      nublado | overskyet | adj
+      llover | regne | v
+      nevar | snø | v
+      la llovizna | yr
+      la tormenta | tordenvær, storm
+      el trueno | torden
+      el relámpago | lyn
+      el arcoíris | regnbue
+      el paraguas | paraply
+      mojado | våt | adj
+      seco | tørr | adj
+      húmedo | fuktig | adj
+      templado | mild, lunken | adj
+      la niebla | tåke
+      el granizo | hagl
+      la helada | frost
+      la ola de calor | hetebølge
+    `,
+  },
+  {
+    id: 'horarios',
+    es: 'Horarios españoles',
+    no: 'Spanske tider',
+    words: `
+      madrugar | stå opp tidlig | v
+      despertarse | våkne | v
+      levantarse | stå opp | v
+      el desayuno | frokost
+      desayunar | spise frokost | v
+      el café con leche | kaffe med melk
+      el cortado | kaffe med en skvett melk
+      la tostada | ristet brød
+      el almuerzo | formiddagsmat, lunsj
+      el bocadillo | baguettesmørbrød
+      el aperitivo | aperitiff
+      el mediodía | midt på dagen
+      el menú del día | dagens meny
+      la sobremesa | prat ved bordet etter maten
+      la siesta | middagslur
+      la merienda | ettermiddagsmat
+      la cena | kveldsmat, middag
+      cenar | spise kveldsmat | v
+      trasnochar | være oppe sent | v
+      la madrugada | småtimene
+      acostarse | legge seg | v
+      abierto | åpen | adj
+      cerrado | stengt | adj
+      el fin de semana | helg
+      el festivo | helligdag
+      las vacaciones | ferie
+      ¿qué hora es? | hva er klokka? | expr
+      son las dos | klokka er to | expr
+      a las diez | klokka ti | expr
+    `,
+  },
+  {
+    id: 'tramites',
+    es: 'Trámites y colas',
+    no: 'Byråkrati og køer',
+    words: `
+      la cola | kø
+      el turno | tur, skift
+      la ventanilla | luke, lite vindu
+      la cita previa | timeavtale
+      la oficina | kontor
+      el ayuntamiento | rådhus, kommune
+      el funcionario | offentlig ansatt
+      el trámite | formalitet
+      el papeleo | papirarbeid
+      el documento | dokument
+      el formulario | skjema
+      el apellido | etternavn
+      la fecha | dato
+      el móvil | mobil
+      el NIE | ID-nummer for utlendinger
+      la fotocopia | kopi
+      la firma | underskrift
+      el sello | stempel, frimerke
+      el justificante | bekreftelse, kvittering
+      el plazo | frist
+      rellenar | fylle ut | v
+      firmar | skrive under | v
+      solicitar | søke om | v
+      atender | betjene, ta imot | v
+      tardar | ta tid | v
+      ¿me puede ayudar? | kan De hjelpe meg? | expr
+      no funciona | det virker ikke | expr
+      vuelva usted mañana | kom tilbake i morgen | expr
+    `,
+  },
+  {
+    id: 'tapas',
+    es: 'Tapas y pintxos',
+    no: 'Tapas og pintxos',
+    words: `
+      el pintxo | baskisk smårett
+      el montadito | lite smørbrød
+      el palillo | tannpirker
+      la cazuela | leirgryte
+      las croquetas | kroketter
+      las patatas bravas | poteter med sterk saus
+      las patatas fritas | pommes frites, potetgull
+      la ensaladilla rusa | potetsalat med majones
+      las albóndigas | kjøttboller
+      los pimientos de Padrón | små grønne paprikaer
+      las gambas al ajillo | hvitløksreker
+      los calamares | blekksprutringer, akkar
+      los boquerones | ferske ansjoser
+      el alioli | hvitløksmajones
+      la salsa | saus
+      picante | sterk (om mat) | adj
+      frito | fritert | adj
+      casero | hjemmelaget | adj
+      a la plancha | stekt på plate | expr
+      ¿pica? | er det sterkt? | expr
+      ¿qué me recomienda? | hva anbefaler De? | expr
+    `,
+  },
+  {
+    id: 'paella',
+    es: 'La paella y los arroces',
+    no: 'Paella og risretter',
+    words: `
+      la paella | paella
+      la paellera | paellapanne
+      la leña | ved
+      el caldo | kraft, buljong
+      el azafrán | safran
+      el pimentón | paprikapulver
+      el romero | rosmarin
+      el conejo | kanin
+      las judías verdes | grønne bønner
+      el socarrat | sprøstekt ris i bunnen
+      el marisco | skalldyr, sjømat
+      la gamba | reke
+      el langostino | kongereke
+      el mejillón | blåskjell
+      la almeja | musling
+      la sepia | sepiablekksprut
+      el arroz negro | ris med blekksprutblekk
+      el arroz con leche | søt risgrøt
+      cocinar | lage mat | v
+      echar | ha i, helle, kaste | v
+      añadir | tilsette | v
+      hervir | koke | v
+      remover | røre (om) | v
+      a fuego lento | på svak varme | expr
+      en su punto | akkurat passe | expr
+    `,
+  },
+  {
+    id: 'tortilla',
+    es: 'La tortilla de patatas',
+    no: 'Tortilla de patatas',
+    words: `
+      la tortilla de patatas | potetomelett
+      la cebolla | løk
+      el aceite de oliva | olivenolje
+      la sartén | stekepanne
+      el bol | bolle
+      la receta | oppskrift, resept
+      pelar | skrelle | v
+      cortar | skjære, kutte | v
+      la rodaja | skive
+      fino | fin, tynn | adj
+      freír | steke (i olje) | v
+      pochar | steke langsomt | v
+      escurrir | la renne av, sile | v
+      la yema | eggeplomme
+      la clara | eggehvite
+      batir | piske | v
+      mezclar | blande | v
+      una pizca de sal | en klype salt | expr
+      darle la vuelta | snu den | expr
+      crudo | rå | adj
+      cuajado | stivnet | adj
+      jugoso | saftig | adj
+      ¿con cebolla o sin cebolla? | med eller uten løk? | expr
+    `,
+  },
+  {
+    id: 'churros',
+    es: 'Churros con chocolate',
+    no: 'Churros med sjokolade',
+    words: `
+      el churro | churros
+      la porra | tykk churros, kølle
+      la churrería | churrosbod
+      la masa | deig
+      la harina | mel
+      crujiente | sprø | adj
+      espolvorear | strø over | v
+      el chocolate | sjokolade
+      el chocolate a la taza | tykk drikkesjokolade
+      la taza | kopp
+      espeso | tykk (om væske) | adj
+      mojar | dyppe, gjøre våt | v
+      dulce | søt | adj
+      un chocolate con churros | en sjokolade med churros | expr
+      ¡qué rico! | så godt! | expr
+      el bizcocho | sukkerbrød
+      la magdalena | muffins
+      la galleta | kjeks
+      el flan | karamellpudding
+      el helado | iskrem
+      las torrijas | arme riddere
+      el roscón de Reyes | kakekrans til trettende dag jul
+    `,
+  },
+  {
+    id: 'embutidos',
+    es: 'Jamón, queso y embutidos',
+    no: 'Skinke, ost og pølser',
+    words: `
+      el embutido | spekepølse, pølsevarer
+      el jamón serrano | spekeskinke
+      el jamón ibérico | skinke av iberisk gris
+      el cerdo | gris
+      la bellota | eikenøtt
+      la dehesa | beitemark med eiker
+      la pata | bein (på dyr)
+      el jamonero | skinkestativ
+      la loncha | tynn skive
+      a cuchillo | skåret med kniv | expr
+      el chorizo | paprikapølse
+      el salchichón | pepperspekepølse
+      el lomo | svinekam
+      la morcilla | blodpølse
+      la sobrasada | smørbar pølse fra Mallorca
+      el fuet | tynn spekepølse
+      la salchicha | pølse
+      el queso manchego | sauost fra La Mancha
+      la oveja | sau
+      la cabra | geit
+      la vaca | ku
+      la tabla | fjøl, anretningsfat
+      la grasa | fett
+      curado | lagret, spekt | adj
+      tierno | mør, myk | adj
+      ahumado | røkt | adj
+      salado | salt (om smak) | adj
+      un poco más | litt mer | expr
+    `,
+  },
+  {
+    id: 'bebidas',
+    es: 'Vino, vermut, sidra y horchata',
+    no: 'Vin, vermut, sider og horchata',
+    words: `
+      el vino tinto | rødvin
+      el vino blanco | hvitvin
+      el vino rosado | rosévin
+      ¿tinto o blanco? | rødvin eller hvitvin? | expr
+      la copa | vinglass, drink
+      la uva | drue
+      la viña | vinmark
+      la cosecha | innhøsting, årgang
+      la bodega | vinkjeller
+      el sacacorchos | korketrekker
+      el cava | spansk musserende vin
+      el jerez | sherry
+      el vermut | vermut
+      el hielo | is, isbiter
+      el tinto de verano | rødvin med brus
+      la sangría | sangria
+      la sidra | sider
+      escanciar | skjenke | v
+      la horchata | jordmandeldrikk
+      la chufa | jordmandel
+      el mosto | druesaft
+      sin alcohol | alkoholfri | expr
+      brindar | skåle | v
+      ¡salud! | skål! | expr
+      servir | servere | v
+      borracho | full, beruset | adj
+      la resaca | bakrus
+    `,
+  },
+  {
+    id: 'latino',
+    es: 'Comida latinoamericana',
+    no: 'Latinamerikansk mat',
+    words: `
+      el maíz | mais
+      la tortilla de maíz | maistortilla
+      el taco | taco
+      el frijol | bønne
+      el aguacate | avokado
+      el guacamole | avokadodipp
+      el chile | chili
+      sin picante | ikke sterk | expr
+      el cilantro | koriander
+      la lima | lime
+      exprimir | presse | v
+      el ceviche | limemarinert rå fisk
+      la empanada | fylt pai
+      la arepa | maiskake
+      la papa | potet (i Latin-Amerika)
+      la yuca | kassava
+      el plátano macho | kokebanan
+      enrollar | rulle sammen | v
+      el asado | grillfest, stek
+      el mate | mate (urtete)
+      el dulce de leche | melkekaramell
+      el cacao | kakao
+      la piña | ananas
+      el maracuyá | pasjonsfrukt
+      para chuparse los dedos | til å slikke seg om munnen etter | expr
+    `,
+  },
+  {
+    id: 'cataluna',
+    es: 'Barcelona y Cataluña',
+    no: 'Barcelona og Catalonia',
+    words: `
+      el catalán | katalansk
+      el idioma | språk
+      bilingüe | tospråklig | adj
+      bon dia | god morgen (på katalansk) | expr
+      ¿hablas catalán? | snakker du katalansk? | expr
+      la Rambla | promenadegaten i Barcelona
+      el barrio | bydel, nabolag
+      gótico | gotisk | adj
+      el edificio | bygning
+      la fachada | fasade
+      la torre | tårn
+      el arquitecto | arkitekt
+      construir | bygge | v
+      el modernismo | katalansk jugendstil
+      la Sagrada Familia | Gaudís kirke
+      el Park Güell | Gaudís park
+      la Pedrera | Gaudís bygård (Casa Milà)
+      el trencadís | skårmosaikk
+      los castells | menneskepyramider
+      la sardana | katalansk ringdans
+      el día de Sant Jordi | Sant Jordi-dagen (roser og bøker)
+      la rosa | rose
+      la bandera | flagg
+      el pan con tomate | brød med tomat
+      la crema catalana | katalansk crème brûlée
+      el fútbol | fotball
+    `,
+  },
+  {
+    id: 'andalucia',
+    es: 'Andalucía',
+    no: 'Andalucía',
+    words: `
+      el sur | sør
+      la sierra | fjellkjede, sag
+      el olivo | oliventre
+      la Alhambra | maurisk borg i Granada
+      la mezquita | moské
+      árabe | arabisk | adj
+      el siglo | århundre
+      el arco | bue
+      el patio | indre gård
+      la fuente | fontene, kilde
+      el azulejo | glasert flis
+      a la sombra | i skyggen | expr
+      el abanico | vifte
+      el flamenco | flamenco, flamingo
+      la guitarra | gitar
+      el cante | flamencosang
+      el baile | dans
+      las palmas | håndklapp
+      ¡olé! | bravo! | int
+      ¿bailamos? | skal vi danse? | expr
+      la cueva | hule
+      la feria | folkefest, messe
+      la Semana Santa | påskeuka
+      la procesión | prosesjon
+      el gazpacho | kald tomatsuppe
+      el salmorejo | tykk kald tomatsuppe
+      la sardina | sardin
+      el espeto | sardinspyd
+      ojalá | forhåpentligvis, gid | int
+    `,
+  },
+  {
+    id: 'galicia',
+    es: 'Galicia y el Camino de Santiago',
+    no: 'Galicia og Caminoen til Santiago',
+    words: `
+      el peregrino | pilegrim
+      ¡buen camino! | god tur! | expr
+      la credencial | pilegrimspass
+      sellar | stemple | v
+      el albergue | herberge
+      la concha | skjell
+      la vieira | kamskjell
+      la flecha amarilla | gul pil (veimerke)
+      caminar | vandre, gå | v
+      la etapa | etappe
+      el kilómetro | kilometer
+      ¿cuántos kilómetros quedan? | hvor mange kilometer er det igjen? | expr
+      la mochila | ryggsekk
+      el bastón | stav, stokk
+      la ampolla | gnagsår, vannblemme
+      la catedral | katedral, domkirke
+      el apóstol | apostel
+      el botafumeiro | stort røkelseskar
+      el norte | nord
+      la costa | kyst
+      el faro | fyrtårn
+      el hórreo | stabbur
+      la gaita | sekkepipe
+      el pulpo | blekksprut
+      la tarta de Santiago | mandelkake fra Santiago
+      la morriña | hjemlengsel, vemod
+    `,
+  },
+  {
+    id: 'euskadi',
+    es: 'El País Vasco',
+    no: 'Baskerland',
+    words: `
+      el euskera | baskisk språk
+      vasco | baskisk | adj
+      kaixo | hei (på baskisk) | int
+      agur | ha det (på baskisk) | int
+      eskerrik asko | tusen takk (på baskisk) | expr
+      ir de pintxos | gå på pintxosrunde | expr
+      la gilda | spyd med oliven og ansjos
+      el txakoli | baskisk hvitvin
+      la sidrería | siderhus
+      el bacalao | klippfisk, torsk
+      la merluza | lysing
+      la chuleta | kotelett
+      el caserío | baskisk gård
+      la boina | alpelue
+      la pelota | ball
+      el frontón | pelotabane
+      la ría | elvemunning
+      la bahía | bukt
+      el barco | båt, skip
+      el pescador | fisker
+      el sirimiri | fint yr
+      el Guggenheim | kunstmuseet i Bilbao
+      el arte | kunst
+      la escultura | skulptur
+    `,
+  },
+  {
+    id: 'valencia',
+    es: 'Valencia: paella y Fallas',
+    no: 'Valencia: paella og Fallas',
+    words: `
+      la huerta | vannet jordbruksland
+      la acequia | vanningskanal
+      la barraca | hus med stråtak, brakke
+      el arrozal | rismark
+      el naranjo | appelsintre
+      el azahar | appelsinblomst
+      la fideuá | nudelpaella
+      las Fallas | Fallas-festen i mars
+      la falla | figurgruppe som brennes
+      el ninot | figur i en falla
+      la fallera | kvinne i fallasdrakt
+      el traje | drakt, dress
+      la ofrenda | blomsteroffer, offergave
+      el clavel | nellik
+      la mascletá | smellshow med kinaputter
+      el petardo | kinaputt
+      la pólvora | krutt
+      el ruido | bråk, støy
+      ¡qué ruido! | for et bråk! | expr
+      los fuegos artificiales | fyrverkeri
+      la Cremá | brenningen av fallas
+      quemar | brenne | v
+      el humo | røyk
+      el buñuelo | frityrbolle
+      la calabaza | gresskar
+      me encanta | jeg elsker det | expr
+    `,
+  },
+  {
+    id: 'murcia',
+    es: 'Murcia',
+    no: 'Murcia',
+    words: `
+      el limón | sitron
+      el limonero | sitrontre
+      el paparajote | frityrstekt sitronblad
+      la canela | kanel
+      el pimiento | paprika
+      la ñora | tørket rund paprika
+      el calabacín | squash
+      el zarangollo | squash og løk med egg
+      el pastel de carne | kjøttpai
+      la alcachofa | artisjokk
+      la lechuga | salathode
+      el melocotón | fersken
+      el albaricoque | aprikos
+      de temporada | i sesong | expr
+      regar | vanne | v
+      la sequía | tørke
+      ¡qué calor! | så varmt! | expr
+      la noria | pariserhjul, vannhjul
+      la seda | silke
+      el Mar Menor | saltvannslagune i Murcia
+      el caldero | gryte, risrett fra Mar Menor
+    `,
+  },
+  {
+    id: 'alicante',
+    es: 'Alicante',
+    no: 'Alicante',
+    words: `
+      el paseo marítimo | strandpromenade
+      la Explanada | promenaden med bølgemønster
+      el puerto | havn
+      el castillo de Santa Bárbara | borgen over Alicante
+      la Costa Blanca | den hvite kysten
+      la palmera | palme
+      ¿vamos a la playa? | skal vi gå til stranden? | expr
+      la arena | sand
+      la ola | bølge
+      nadar | svømme | v
+      bañarse | bade | v
+      tomar el sol | sole seg | expr
+      la toalla | håndkle
+      la sombrilla | parasoll
+      la hamaca | solseng, hengekøye
+      la crema solar | solkrem
+      moreno | solbrun, mørkhåret | adj
+      el chiringuito | strandbar
+      el turista | turist
+      el apartamento | ferieleilighet
+      el piso | leilighet, etasje
+      alquilar | leie | v
+      el arroz a banda | ris kokt i fiskekraft
+      el turrón | mandelnougat
+      la almendra | mandel
+      el almendro | mandeltre
+      la miel | honning
+      la hoguera | bål
+      la noche de San Juan | sankthansaften
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {
