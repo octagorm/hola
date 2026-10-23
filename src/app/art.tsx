@@ -431,7 +431,7 @@ export function TocArt({
             <>
               <circle cx="46" cy="52" r="24" fill={PAPER} fillOpacity=".4" />
               <circle cx="46" cy="52" r="19" />
-              <path d="M46 52V38M46 52 56 58" strokeWidth="2.5" />
+              <path d="M46 52H60M46 52 54 58" strokeWidth="2.5" />
               <path d="M46 35V33M63 52H65M46 69V71M27 52H29" />
               <path d="M42 28H50V23H42Z" fill={INK} />
               <circle cx="46" cy="18" r="4" />

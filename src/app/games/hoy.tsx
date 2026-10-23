@@ -250,12 +250,13 @@ function Part({ p, i }: { p: Path; i: number }) {
         </div>
         <h3>{c?.title}</h3>
         <p>
-          {c?.no}: {inWords(c?.lines.length ?? 0)} linjer, så tre spørsmål.
+          {c?.no}: {inWords(c?.lines.length ?? 0)} linjer
+          {story?.listen ? ' å høre' : ''}, så tre spørsmål.
         </p>
       </div>
       <div className="acts">
         <a className="q-btn" href={`#${story?.id ?? ''}/${s.arg}`}>
-          Les <ArrowRight />
+          {story?.listen ? 'Lytt' : 'Les'} <ArrowRight />
         </a>
         <button type="button" className="q-link" onClick={skip}>
           Hopp over
