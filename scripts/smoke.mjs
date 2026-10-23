@@ -1378,13 +1378,17 @@ await test(
     const stage = page.locator('.tx-stage')
     let wrong = 0
     for (let ride = 0; ride < 5; ride++) {
-      // The words of the first instruction shown, on the first ride
+      // The passenger's stars as it stands, under their portrait
+      const live = () => page.locator('.tx-who .tx-stars svg.on').count()
+      // The words of the first instruction shown, on the first ride, for a
+      // star
       if (ride === 0) {
         await page.getByRole('button', { name: 'Vis teksten' }).click()
         await page.locator('.tx-line').waitFor()
+        expect((await live()) === 4, 'a star less for the words shown')
       }
       // Each move tried in turn until the passenger takes it: a wrong one
-      // jolts the town and gets a complaint
+      // jolts the town, gets a complaint and costs a star
       while (!(await visible(page, '.tx-paid'))) {
         await page.waitForSelector('.tx-paid, .tx-move:not([disabled])', {
           timeout: 20000,
@@ -1392,11 +1396,16 @@ await test(
         if (await visible(page, '.tx-paid')) break
         for (const move of ['left', 'straight', 'right', 'stop']) {
           const before = await stage.getAttribute('class')
+          const had = await live()
           await page.locator(`.tx-move.${move}`).click()
           await page.waitForTimeout(150)
           if ((await stage.getAttribute('class')) === before) break
           wrong++
           expect(await visible(page, '.tx-complaint'), 'a complaint')
+          expect(
+            (await live()) === Math.max(1, had - 1),
+            'a star less for a wrong move',
+          )
           // (the passenger's moment to say so)
           await page.waitForTimeout(700)
         }

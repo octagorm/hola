@@ -254,6 +254,14 @@
   }
 }
 
+/* the passenger, and the stars they would give as it stands */
+.tx-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
 .tx-face {
   width: 54px;
   height: 54px;
@@ -721,6 +729,24 @@
 .tx-stars.small svg {
   width: 15px;
   height: 15px;
+}
+
+.tx-stars.tiny {
+  gap: 1px;
+}
+
+.tx-stars.tiny svg {
+  width: 11px;
+  height: 11px;
+  transition:
+    fill 0.4s,
+    color 0.4s,
+    transform 0.4s;
+}
+
+.tx-stars.tiny svg:not(.on) {
+  fill: rgba(20, 26, 63, 0.06);
+  transform: scale(0.8);
 }
 
 .tx-over {
