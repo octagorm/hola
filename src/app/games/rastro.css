@@ -1040,6 +1040,232 @@
   }
 }
 
+/* --- A phone: the stall, the talk and the moves on one screen, the print
+   made smaller on a short one rather than anything left out --- */
+
+@media (max-width: 600px) {
+  .ra-col {
+    padding: 10px 12px 12px;
+  }
+
+  .ra-top {
+    margin-bottom: 8px;
+  }
+
+  .ra-play,
+  .ra-stall {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .ra-stall > .ra-frame,
+  .ra-ready > .ra-frame {
+    width: min(100% - 10px, (100dvh - 470px) * 5 / 3);
+    min-width: min(100% - 10px, 240px);
+    margin: 5px auto;
+  }
+
+  .ra-talk {
+    padding: 8px;
+    gap: 6px;
+    min-height: 76px;
+    max-height: min(24dvh, 220px);
+  }
+
+  .ra-line .face {
+    width: 34px;
+    height: 38px;
+  }
+
+  .ra-line .said {
+    font-size: 17.5px;
+  }
+
+  .ra-moves,
+  .ra-grid {
+    gap: 6px;
+  }
+
+  .ra-move {
+    min-height: 52px;
+    padding: 5px 10px 6px;
+    line-height: 1.15;
+  }
+
+  .ra-move .es {
+    font-size: 16px;
+  }
+
+  .ra-move .no {
+    margin-top: 1px;
+    font-size: 13px;
+  }
+
+  .ra-move.leave {
+    min-height: 42px;
+  }
+
+  .ra-move.ask {
+    min-height: 62px;
+  }
+
+  .ra-move.ask .es {
+    font-size: 21px;
+  }
+
+  .ra-offer {
+    padding: 8px;
+  }
+
+  .ra-offer .head {
+    margin-bottom: 6px;
+  }
+
+  .ra-offer .chips button {
+    min-height: 52px;
+    padding: 5px 6px;
+  }
+
+  .ra-outcome {
+    padding: 10px 12px 12px;
+  }
+
+  .ra-outcome .ra-stars svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .ra-outcome .what {
+    font-size: 20px;
+  }
+
+  .ra-outcome .why {
+    margin-bottom: 8px;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  /* On the way in */
+  .ra-ready .ra-card {
+    margin-top: 12px;
+    padding: 12px 14px 14px;
+  }
+
+  .ra-ready .ra-card p {
+    margin-bottom: 8px;
+    font-size: 15.5px;
+    line-height: 1.4;
+  }
+
+  .ra-ready .ra-card p.small,
+  .ra-ready .ra-fresh {
+    font-size: 14px !important;
+  }
+
+  .ra-ready .ra-card .kick {
+    margin-bottom: 6px;
+    font-size: 24px;
+  }
+
+  .ra-want {
+    margin-bottom: 10px;
+  }
+
+  .ra-want li {
+    padding: 1px 2px;
+  }
+
+  .ra-want .pic {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ra-want .what {
+    font-size: 17px;
+  }
+
+  .ra-want .what .mx {
+    line-height: 1.7;
+  }
+}
+
+@media (max-width: 600px) and (max-height: 780px) {
+  .ra-col {
+    padding-top: 8px;
+  }
+
+  .ra-top h1 {
+    font-size: 29px;
+  }
+
+  .ra-top h1 small {
+    margin-top: 2px;
+    font-size: 14px;
+  }
+
+  .ra-round {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ra-stall > .ra-frame,
+  .ra-ready > .ra-frame {
+    width: min(100% - 10px, (100dvh - 515px) * 5 / 3);
+    min-width: min(100% - 10px, 230px);
+  }
+
+  .ra-ready > .ra-frame {
+    width: min(100% - 10px, (100dvh - 600px) * 5 / 3);
+    min-width: min(100% - 10px, 210px);
+  }
+
+  .ra-ready .ra-card {
+    margin-top: 10px;
+    padding: 10px 12px 12px;
+  }
+
+  .ra-ready .ra-card p {
+    margin-bottom: 6px;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .ra-ready .ra-card p.small,
+  .ra-ready .ra-fresh {
+    font-size: 13.5px !important;
+  }
+
+  .ra-ready .ra-card .kick {
+    font-size: 22px;
+  }
+
+  .ra-want {
+    margin-bottom: 8px;
+  }
+
+  .ra-want .pic {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ra-want li {
+    padding: 0 2px;
+  }
+
+  .ra-want .what .mx {
+    line-height: 1.75;
+  }
+
+  .ra-list li {
+    min-height: 36px;
+  }
+
+  .ra-talk {
+    min-height: 70px;
+    max-height: min(22dvh, 220px);
+  }
+}
+
 /* --- The seller, alive --- */
 
 /* The painted seller breathes, nods when pleased, shakes their head when
