@@ -30,6 +30,7 @@ import { TAPAS_PICTURES } from '../src/app/data/tapas-prompts.ts'
 import { CASO_PICTURES } from '../src/app/data/caso-prompts.ts'
 import { PALABRAS_PICTURES } from '../src/app/data/palabras-prompts.ts'
 import { NUMEROS_PICTURES } from '../src/app/data/numeros-prompts.ts'
+import { HOME_PICTURES } from '../src/app/data/home-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -226,8 +227,13 @@ Object.assign(PICTURES, TAPAS_PICTURES)
 Object.assign(PICTURES, CASO_PICTURES)
 Object.assign(PICTURES, PALABRAS_PICTURES)
 Object.assign(PICTURES, NUMEROS_PICTURES)
+// The home page's scene at four times of day (data/home-prompts.ts)
+Object.assign(PICTURES, HOME_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
+// A picture may take more than one reference, such as another painting
+// it must match
+const refs = (name) => [PICTURES[name].ref ?? []].flat()
 
 function paint(name) {
   const p = PICTURES[name]
@@ -241,7 +247,7 @@ function paint(name) {
         full(name),
         '--shape',
         p.shape,
-        ...[p.ref ?? []].flat().flatMap((r) => ['--ref', r]),
+        ...refs(name).flatMap((r) => ['--ref', r]),
         ...(p.cutout ? ['--transparent'] : []),
         p.prompt,
       ],
@@ -416,9 +422,19 @@ export const PICTURES: ReadonlySet<string> = new Set(${JSON.stringify(shown(made
       !existsSync(full(n)),
   )
   console.log(`${queue.length} to paint`)
-  await Promise.all(
-    Array.from({ length: 3 }, async () => {
-      while (queue.length) await paint(queue.shift())
-    }),
-  )
+  const run = (list) =>
+    Promise.all(
+      Array.from({ length: 3 }, async () => {
+        while (list.length) await paint(list.shift())
+      }),
+    )
+  // Those that follow another painting wait until it is made
+  const ready = (n) => refs(n).every((r) => existsSync(r))
+  const later = queue.filter((n) => !ready(n))
+  await run(queue.filter(ready))
+  for (const n of later.filter((n) => !ready(n)))
+    console.log(
+      `skipped ${n}: ${refs(n).find((r) => !existsSync(r))} is missing`,
+    )
+  await run(later.filter(ready))
 }

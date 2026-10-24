@@ -753,6 +753,113 @@ body.q-body {
   height: 100%;
 }
 
+/* The painted scene (sky.tsx): the paintings crossfading, and the sky
+   drawn over them */
+.q-sky {
+  position: relative;
+  overflow: hidden;
+}
+
+.q-sky .stage {
+  position: absolute;
+}
+
+.q-sky .stage img,
+.q-sky .stage svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.q-sky .stage img {
+  transition: opacity 2s linear;
+}
+
+.q-sky .star {
+  animation: q-sky-twinkle 5s ease-in-out infinite alternate;
+}
+
+.q-sky .cloud {
+  animation: q-sky-drift 600s linear infinite;
+}
+
+.q-sky .birds {
+  animation: q-sky-fly 80s linear infinite;
+}
+
+.q-sky .wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: q-sky-flap 0.7s ease-in-out infinite alternate;
+}
+
+.q-sky.paused * {
+  animation-play-state: paused;
+}
+
+.q-sky.still * {
+  animation: none;
+}
+
+@keyframes q-sky-twinkle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
+}
+
+@keyframes q-sky-drift {
+  from {
+    transform: translateX(var(--a));
+  }
+  to {
+    transform: translateX(var(--b));
+  }
+}
+
+/* across in the first third of the time, then a long while of empty sky */
+@keyframes q-sky-fly {
+  0% {
+    transform: translate(var(--a), 0);
+  }
+  32% {
+    transform: translate(var(--b), -30px);
+  }
+  100% {
+    transform: translate(var(--b), -30px);
+  }
+}
+
+@keyframes q-sky-flap {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .q-sky * {
+    animation: none;
+  }
+}
+
+/* The title in light ink over a dark sky */
+.q-hero:has(> .q-sky.wide.dark) h1,
+.q-hero:has(> .q-sky.wide.dark) .motto {
+  color: var(--paper);
+}
+
+.q-hero:has(> .q-sky.wide.dark) .motto em {
+  color: var(--paper-2);
+}
+
 .q-hero .head {
   position: relative;
   /* above the page below, for the account's popover */

@@ -35,6 +35,7 @@ import {
 } from './lib/today'
 import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
 import { AccountButton } from './account'
+import { PaintedScene, SCENE_PAINTED } from './sky'
 import { Colecciones } from './colecciones'
 import { useAccount } from './lib/account'
 import {
@@ -50,12 +51,17 @@ import {
 } from './ui'
 import type { GameIconId, TocId } from './art'
 
-// The home page, a page of an old book: La Mancha in ink at the top, and
-// under it four parts, one at a time, picked from a bar at the foot of a
-// phone's screen or under the picture on a larger one: today (today's
-// chapter, the story to go on with, the credential), the stories, the
-// games in three groups, and the words (the count, the themes and the
-// collections).
+// The home page, a page of an old book: La Mancha at the top, in ink or,
+// once painted, as a travel poster that follows the time of day
+// (sky.tsx), and under it four parts, one at a time, picked from a bar at
+// the foot of a phone's screen or under the picture on a larger one:
+// today (today's chapter, the story to go on with, the credential), the
+// stories, the games in three groups, and the words (the count, the
+// themes and the collections).
+
+// What lies over the painted scene on a larger screen, for its moon and
+// clouds to keep clear of
+const AVOID = '.head h1, .head .motto, .head .tools'
 
 type Tab = 'hoy' | 'leer' | 'jugar' | 'palabras'
 
@@ -257,7 +263,13 @@ export default function Home() {
   return (
     <div className={`q-home tab-${tab}`}>
       <section className="q-hero">
-        {!narrow && tab === 'hoy' && <Scene view="home" className="scene" />}
+        {!narrow &&
+          tab === 'hoy' &&
+          (SCENE_PAINTED ? (
+            <PaintedScene className="scene" avoid={AVOID} />
+          ) : (
+            <Scene view="home" className="scene" />
+          ))}
         <div className="head">
           <div>
             <h1>Hola</h1>
@@ -288,7 +300,13 @@ export default function Home() {
             <AccountButton />
           </div>
         </div>
-        {narrow && tab === 'hoy' && <Scene view="narrow" className="strip" />}
+        {narrow &&
+          tab === 'hoy' &&
+          (SCENE_PAINTED ? (
+            <PaintedScene narrow className="strip" />
+          ) : (
+            <Scene view="narrow" className="strip" />
+          ))}
       </section>
 
       <nav className="q-tabs" aria-label="Deler av forsiden">
