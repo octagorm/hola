@@ -11,7 +11,7 @@ describe('the library', () => {
       expect(LESSON[b.id]?.es, b.id).toBe(b.es)
     }
     for (const w of TAUGHT) expect(LESSON[w.lesson]?.book, w.id).toBeFalsy()
-    const met = toMeet({ ...emptyBank(), theme: { id: BOOKS[0].id, t: 1 } })
+    const met = toMeet({ ...emptyBank(), theme: { ids: [BOOKS[0].id], t: 1 } })
     expect(met.some((w) => LESSON[w.lesson]?.book)).toBe(false)
   })
 

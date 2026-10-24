@@ -231,25 +231,27 @@ await test('signing in with Google is offered', async (page) => {
   await page.getByRole('button', { name: 'Logg inn med Google' }).waitFor()
 })
 
-await test('a theme chosen gives today’s chapter its new words', async (page) => {
+await test('themes chosen give today’s chapter their new words', async (page) => {
   await go(page, '')
   await page.getByRole('button', { name: 'Ordene', exact: true }).click()
   await page.getByRole('tab', { name: /Historia/ }).click()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
-  await page.getByRole('button', { name: /Velg som tema/ }).click()
-  await page.getByText('Dagens tema').waitFor()
+  await page.getByRole('button', { name: /Velg emnet/ }).click()
+  await page.locator('.q-theme .chosen', { hasText: 'Valgt' }).waitFor()
   await go(page, '')
   // (the home page keeps the part it was left on)
   await page.getByRole('button', { name: 'I dag', exact: true }).click()
   await page.getByText('fra «Don Quijotes ord»').waitFor()
+  // A second, ticked on the home page itself
   await page.getByRole('button', { name: 'Ordene', exact: true }).click()
-  expect(
-    (await page.locator('.q-themes a.chosen').count()) === 1,
-    'the theme marked on the home page',
-  )
+  const picks = page.locator('.q-themes .pick[aria-pressed="true"]')
+  expect((await picks.count()) === 1, 'the theme ticked on the home page')
+  await page.locator('.q-themes .pick[aria-pressed="false"]').first().click()
+  await page.locator('.q-themes a.chosen').nth(1).waitFor()
+  expect((await page.locator('.q-themes a.chosen').count()) === 2, 'two chosen')
   await go(page, '#tema/mancha')
-  await page.getByRole('button', { name: 'Ikke lenger tema' }).click()
-  await page.getByRole('button', { name: /Velg som tema/ }).waitFor()
+  await page.getByRole('button', { name: 'Fjern' }).click()
+  await page.getByRole('button', { name: /Velg emnet/ }).waitFor()
 })
 
 await test(

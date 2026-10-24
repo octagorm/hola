@@ -57,7 +57,7 @@ export default function Museo() {
     } catch {
       // private mode
     }
-    return THEME[bank.theme.id]?.group.id ?? all[0].id
+    return THEME[bank.theme.ids[0] ?? '']?.group.id ?? all[0].id
   })
   const [open, setOpen] = useState<string | null>(null)
   const frames = useRef(new Map<string, HTMLButtonElement>())

@@ -69,9 +69,10 @@ export interface Bank {
   path: Path | null
   // The version of the starting point given (data/start.ts), 0 for none
   start: number
-  // The lesson chosen as the theme (data/themes.ts), whose words today's
-  // chapter meets before the rest, and when it was chosen; '' for none
-  theme: { id: string; t: number }
+  // The lessons chosen as themes (data/themes.ts), as many as wanted, in
+  // the order chosen, whose words today's chapter meets before the rest,
+  // and when the choice was last changed
+  theme: { ids: Array<string>; t: number }
   // Lessons finished (lib/colecciones.ts), by id → when first finished: a
   // keepsake unwrapped and a picture hung stay so, whatever comes after
   kept: Record<string, number | undefined>
@@ -130,7 +131,7 @@ export const emptyBank = (): Bank => ({
   read: {},
   path: null,
   start: 0,
-  theme: { id: '', t: 0 },
+  theme: { ids: [], t: 0 },
   kept: {},
   place: {},
 })
@@ -306,15 +307,30 @@ export function due(
 export const unmet = (bank: Bank, words: Array<Word> = WORDS) =>
   words.filter((w) => !bank.cards[w.id])
 
-// The words in the order today's chapter meets them: the chosen theme's
-// first, then the rest in lesson order
+// The words in the order today's chapter meets them: those not met of the
+// chosen themes first, a word from each in turn, so that a day's new
+// words come from all of them, then the rest in lesson order
 export function toMeet(bank: Bank): Array<Word> {
-  const id = bank.theme.id
-  if (!id) return TAUGHT
-  return [
-    ...TAUGHT.filter((w) => w.lesson === id),
-    ...TAUGHT.filter((w) => w.lesson !== id),
-  ]
+  const ids = bank.theme.ids
+  if (!ids.length) return TAUGHT
+  const lists = ids.map((id) =>
+    TAUGHT.filter((w) => w.lesson === id && !bank.cards[w.id]),
+  )
+  const first: Array<Word> = []
+  for (let i = 0; lists.some((l) => i < l.length); i++)
+    for (const l of lists) if (i < l.length) first.push(l[i])
+  return [...first, ...TAUGHT.filter((w) => !ids.includes(w.lesson))]
+}
+
+// The themes chosen in a bank as saved, which before several could be
+// chosen kept one, as { id, t }
+function themesOf(x: unknown): Bank['theme'] | null {
+  if (!x || typeof x !== 'object') return null
+  const o = x as { ids?: unknown; id?: unknown; t?: unknown }
+  const t = typeof o.t === 'number' ? o.t : 0
+  if (Array.isArray(o.ids))
+    return { ids: o.ids.filter((i) => typeof i === 'string'), t }
+  return { ids: typeof o.id === 'string' && o.id ? [o.id] : [], t }
 }
 
 // Words for a round of a game: up to `n` of them, weighted towards those
@@ -355,7 +371,7 @@ const keysOf = (...rs: Array<object | undefined>) =>
 // the memory answered last (but never a card from the starting point over
 // one with answers), for days, scores and lessons finished the larger, and
 // of two days' sessions the later day's, or of the same day's the one
-// further on, and of two themes the one chosen last. A bank saved before a
+// further on, and of two choices of themes the one made last. A bank saved before a
 // field existed is read as having it empty. Of two places in a text, the
 // later is kept, and a text once read to the end stays so.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
@@ -385,8 +401,8 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
     const done = Math.max(x?.done ?? 0, y?.done ?? 0)
     if (last) out.place[id] = done ? { ...last, done } : last
   }
-  const ta = a.theme ?? out.theme
-  const tb = b.theme ?? out.theme
+  const ta = themesOf(a.theme) ?? out.theme
+  const tb = themesOf(b.theme) ?? out.theme
   out.theme = tb.t > ta.t ? tb : ta
   return out
 }

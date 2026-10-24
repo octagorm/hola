@@ -10,6 +10,7 @@ import {
   merge,
   newCard,
   recall,
+  toMeet,
   weakest,
   withStart,
 } from '../src/app/lib/bank'
@@ -191,8 +192,11 @@ describe('the day’s chapter', () => {
   })
 })
 
-describe('a theme', () => {
-  const theme = (id: string, t = now) => ({ ...emptyBank(), theme: { id, t } })
+describe('the themes', () => {
+  const theme = (id: string, t = now) => ({
+    ...emptyBank(),
+    theme: { ids: [id], t },
+  })
 
   it('has today’s chapter meet its words before the rest', () => {
     const p = plan(theme('mancha'), now)
@@ -232,16 +236,34 @@ describe('a theme', () => {
     expect(retheme(begun, b)).toEqual(begun)
   })
 
-  it('is the one chosen last when two banks are merged', () => {
+  it('are the choice made last when two banks are merged', () => {
     const a = theme('mancha', now)
-    const b = theme('suenos', now + 1000)
-    expect(merge(a, b).theme.id).toBe('suenos')
-    expect(merge(b, a).theme.id).toBe('suenos')
-    // leaving a theme is a choice too
-    expect(merge(theme('', now + 2000), b).theme.id).toBe('')
-    // a bank saved before themes has none
+    const b = {
+      ...emptyBank(),
+      theme: { ids: ['suenos', 'mancha'], t: now + 1000 },
+    }
+    expect(merge(a, b).theme.ids).toEqual(['suenos', 'mancha'])
+    expect(merge(b, a).theme.ids).toEqual(['suenos', 'mancha'])
+    // leaving them all is a choice too
+    const none = { ...emptyBank(), theme: { ids: [], t: now + 2000 } }
+    expect(merge(none, b).theme.ids).toEqual([])
+    // a bank saved before themes has none, and one saved when one theme
+    // could be chosen has that one
     const old: Partial<Bank> = { cards: {} }
-    expect(merge(old, emptyBank()).theme).toEqual({ id: '', t: 0 })
-    expect(merge(old, a).theme.id).toBe('mancha')
+    expect(merge(old, emptyBank()).theme).toEqual({ ids: [], t: 0 })
+    expect(merge(old, a).theme.ids).toEqual(['mancha'])
+    const one = { theme: { id: 'tapas', t: now } } as unknown as Partial<Bank>
+    expect(merge(one, emptyBank()).theme).toEqual({ ids: ['tapas'], t: now })
+  })
+
+  it('give today’s new words from each chosen theme in turn', () => {
+    const b = { ...emptyBank(), theme: { ids: ['mancha', 'suenos'], t: now } }
+    const fresh = plan(b, now).steps.find((s) => s.k === 'new')?.ids ?? []
+    expect(fresh).toHaveLength(5)
+    const lessons = fresh.map((id) => WORD[id]?.lesson)
+    expect(lessons).toEqual(['mancha', 'suenos', 'mancha', 'suenos', 'mancha'])
+    // all of theirs before any other
+    const chosen = toMeet(b).map((w) => ['mancha', 'suenos'].includes(w.lesson))
+    expect(chosen.indexOf(false)).toBe(chosen.lastIndexOf(true) + 1)
   })
 })

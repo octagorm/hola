@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
+  Check,
   Headphones,
   Library,
   Music,
@@ -544,12 +545,15 @@ export default function Home() {
   )
 }
 
-// The themes, a group at a time: the group of the theme chosen first
+// The themes, a group at a time: the group of the theme chosen first, and
+// a mark on each group with a theme chosen
 function Themes() {
-  const { bank } = useStore()
+  const { bank, chooseTheme } = useStore()
   const groups = THEME_GROUPS.filter((g) => g.themes.length)
-  const chosenGroup = THEME[bank.theme.id]?.group.id
-  const [open, setOpen] = useState(chosenGroup ?? groups[0].id)
+  const chosenGroups = new Set(bank.theme.ids.map((id) => THEME[id]?.group.id))
+  const [open, setOpen] = useState(
+    THEME[bank.theme.ids[0] ?? '']?.group.id ?? groups[0].id,
+  )
   const group = groups.find((g) => g.id === open) ?? groups[0]
   return (
     <section className="q-themes">
@@ -559,7 +563,7 @@ function Themes() {
         </h4>
       </div>
       <p className="intro">
-        Velg et emne, så kommer de nye ordene i dagens økt derfra.
+        Velg ett eller flere emner, så kommer de nye ordene i dagens økt derfra.
       </p>
       <div className="tabs" role="tablist" aria-label="Emner">
         {groups.map((g) => (
@@ -575,7 +579,7 @@ function Themes() {
           >
             {g.es}
             <span>{g.no}</span>
-            {g.id === chosenGroup && <i title="Dagens tema er her" />}
+            {chosenGroups.has(g.id) && <i title="Et valgt emne er her" />}
           </button>
         ))}
       </div>
@@ -589,7 +593,7 @@ function Themes() {
           if (!lesson) return null
           const all = WORDS.filter((w) => w.lesson === t.lesson)
           const met = all.filter((w) => bank.cards[w.id]).length
-          const chosen = bank.theme.id === t.lesson
+          const chosen = bank.theme.ids.includes(t.lesson)
           return (
             <li key={t.lesson}>
               <a href={`#tema/${t.lesson}`} className={chosen ? 'chosen' : ''}>
@@ -600,13 +604,23 @@ function Themes() {
                   className="bar"
                 />
                 <em>
-                  {chosen
-                    ? 'Dagens tema'
-                    : met === all.length
-                      ? 'Alle møtt'
+                  {met === all.length
+                    ? 'Alle møtt'
+                    : chosen
+                      ? `Valgt · ${met} av ${all.length}`
                       : `${met} av ${all.length} ord`}
                 </em>
               </a>
+              {/* Chosen or not, right here: as many as wanted */}
+              <button
+                type="button"
+                className={`pick ${chosen ? 'on' : ''}`}
+                aria-pressed={chosen}
+                aria-label={`Velg ${lesson.es}`}
+                onClick={() => chooseTheme(t.lesson, !chosen)}
+              >
+                {chosen && <Check aria-hidden="true" />}
+              </button>
             </li>
           )
         })}

@@ -13,7 +13,7 @@ import type { PageProps } from '../registry'
 const LEVEL_NAME = ['ikke møtt', 'øver på', 'kjent']
 
 export default function Tema({ arg }: PageProps) {
-  const { bank, setTheme } = useStore()
+  const { bank, chooseTheme } = useStore()
   const theme = THEME[arg ?? '']
   const lesson = LESSON[arg ?? '']
   if (!theme || !lesson)
@@ -33,7 +33,7 @@ export default function Tema({ arg }: PageProps) {
   const met = words.filter((w) => bank.cards[w.id]).length
   const known = words.filter((w) => level(bank.cards[w.id], now) === 2).length
   const left = words.length - met
-  const chosen = bank.theme.id === lesson.id
+  const chosen = bank.theme.ids.includes(lesson.id)
 
   return (
     <Page es={lesson.es} title={lesson.no}>
@@ -50,14 +50,14 @@ export default function Tema({ arg }: PageProps) {
           {chosen ? (
             <>
               <span className="chosen">
-                <Check aria-hidden="true" /> Dagens tema
+                <Check aria-hidden="true" /> Valgt
               </span>
               <button
                 type="button"
                 className="q-link"
-                onClick={() => setTheme('')}
+                onClick={() => chooseTheme(lesson.id, false)}
               >
-                Ikke lenger tema
+                Fjern
               </button>
             </>
           ) : (
@@ -65,9 +65,9 @@ export default function Tema({ arg }: PageProps) {
               <button
                 type="button"
                 className="q-btn"
-                onClick={() => setTheme(lesson.id)}
+                onClick={() => chooseTheme(lesson.id, true)}
               >
-                Velg som tema <ArrowRight />
+                Velg emnet <ArrowRight />
               </button>
             )
           )}
@@ -81,8 +81,8 @@ export default function Tema({ arg }: PageProps) {
           {left === 0
             ? 'Alle ordene her er møtt. Nå gjelder det å holde dem ved like.'
             : chosen
-              ? 'De nye ordene i dagens økt kommer herfra, til alle er møtt.'
-              : 'Velg det, så kommer de nye ordene i dagens økt herfra, til alle er møtt.'}
+              ? 'De nye ordene i dagens økt kommer herfra og fra de andre emnene du har valgt, til alle er møtt.'
+              : 'Velg det, gjerne sammen med andre emner, så kommer de nye ordene i dagens økt herfra, til alle er møtt.'}
         </p>
       </section>
 

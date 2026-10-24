@@ -1262,12 +1262,16 @@ a.q-box:hover {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.q-themes li {
+  position: relative;
+}
+
 .q-themes li a {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2px 10px;
   height: 100%;
-  padding: 12px 10px;
+  padding: 12px 52px 12px 10px;
   border-bottom: 1px solid var(--line);
   color: inherit;
   text-decoration: none;
@@ -1311,6 +1315,34 @@ a.q-box:hover {
 
 .q-themes a.chosen em {
   color: var(--red);
+}
+
+/* A theme chosen or not, as a box to tick */
+.q-themes .pick {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.q-themes .pick.on {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.q-themes .pick svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 3;
 }
 
 .q-theme .about {
@@ -1564,7 +1596,11 @@ a.q-box:hover {
   }
 
   .q-themes li a {
-    padding: 10px 6px;
+    padding: 10px 48px 10px 6px;
+  }
+
+  .q-themes .pick {
+    right: 6px;
   }
 
   .q-themes b {
