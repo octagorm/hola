@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { WORD } from '../src/app/data/words'
 import { emptyBank, newCard, withStart } from '../src/app/lib/bank'
@@ -35,6 +36,15 @@ import {
   toMove,
   unknown,
 } from '../src/app/lib/palabras'
+import { HIM, PALABRAS_PICTURES } from '../src/app/data/palabras-prompts'
+import {
+  FACES,
+  RELOJERO,
+  SCENE_H,
+  SCENE_W,
+  TALLER,
+  relojeroFace,
+} from '../src/app/data/palabrasLayout'
 import { plural } from '../src/app/lib/spanish'
 import { speechItems } from '../src/app/lib/spoken'
 import type { Board, Game, Placed, Tile } from '../src/app/lib/palabras'
@@ -411,5 +421,32 @@ describe('Palabras: what a play says of the words', () => {
     bank.cards['la casa'] = newCard(now)
     expect(metEntries(bank).some((e) => e.key === key('casa'))).toBe(true)
     expect(metEntries(bank).some((e) => e.key === key('perro'))).toBe(false)
+  })
+})
+
+describe('Palabras: the paintings of El relojero', () => {
+  it('has his workshop and a sheet of four faces, and nothing else', () => {
+    expect(Object.keys(PALABRAS_PICTURES)).toEqual([TALLER, RELOJERO])
+    const sheet = PALABRAS_PICTURES[RELOJERO]
+    expect(sheet.parts).toEqual(FACES)
+    expect(sheet.cutout).toBe(true)
+    expect(sheet.prompt).toContain(HIM)
+    // the workshop is cut to the box he is shown in, not cut out
+    const taller = PALABRAS_PICTURES[TALLER]
+    expect(taller.cutout).toBeFalsy()
+    expect(taller.size).toBe(`${SCENE_W * 4}x${SCENE_H * 4}`)
+    expect(relojeroFace('think')).toBe('palabras/relojero-think')
+  })
+
+  it('has a face for each of his moods, and one to speak with', () => {
+    for (const mood of ['calm', 'think', 'glad', 'talk'])
+      expect(FACES, mood).toContain(mood)
+  })
+
+  it('is painted by the script, and the page never reads the prompts', () => {
+    const script = readFileSync('scripts/pictures.mjs', 'utf8')
+    expect(script).toContain('Object.assign(PICTURES, PALABRAS_PICTURES)')
+    const page = readFileSync('src/app/games/palabras.tsx', 'utf8')
+    expect(page).not.toMatch(/from '[^']*-prompts/)
   })
 })

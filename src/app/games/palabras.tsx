@@ -20,6 +20,7 @@ import {
   DICT,
   DIGRAPHS,
   LINES,
+  LINES_SAID,
   PREMIUM,
   RACK,
   SIZE,
@@ -44,6 +45,8 @@ import {
   toMove,
   unknown,
 } from '../lib/palabras'
+import { PICTURES } from '../data/pictures'
+import { FACES, FRAME, TALLER, relojeroFace } from '../data/palabrasLayout'
 import { blip } from '../lib/sound'
 import { say } from '../lib/speech'
 import { useStore } from '../lib/store'
@@ -51,6 +54,7 @@ import { TodayNext, useBack } from '../daily'
 import { Speak, useFont, useLetterKeys } from '../ui'
 import type { ReactNode, PointerEvent as ReactPointerEvent } from 'react'
 import type { Bank } from '../lib/bank'
+import type { Mood } from '../data/palabrasLayout'
 import type {
   Dir,
   Game,
@@ -378,16 +382,22 @@ function Play({
   // A drag just ended, so that the click after it is not a tap
   const dragged = useRef(false)
 
-  // What is said now; a new turn's words stop the last turn's
+  // What is said now; a new turn's words stop the last turn's. While one
+  // of his own lines is said, his painted mouth moves
   const talks = useRef(0)
   const herWords = useRef<Promise<void>>(Promise.resolve())
+  const [talking, setTalking] = useState(false)
   const talk = (texts: Array<string>): Promise<void> => {
     const n = ++talks.current
+    if (PAINTED) setTalking(false)
     if (!settings.autoplay) return Promise.resolve()
     return (async () => {
       for (const t of texts) {
         if (!t || talks.current !== n) continue
+        const his = PAINTED && HIS.has(t)
+        if (his) setTalking(true)
         await say(t)
+        if (his && talks.current === n) setTalking(false)
       }
     })()
   }
@@ -988,7 +998,11 @@ function Play({
       <div className="pz-grid">
         <section className="pz-him" aria-label="El relojero">
           <div className="pz-wall">
-            <Relojero mood={mood} />
+            <Relojero
+              mood={mood}
+              talking={talking}
+              shake={line === 'pass' || line === 'swap'}
+            />
           </div>
           <div className="pz-bubble" lang="es" aria-live="polite">
             <p>{LINES[line].es}</p>
@@ -1781,7 +1795,19 @@ function Dial({ g }: { g: Game }) {
 // El relojero, in clean line: an old watchmaker, bald with white tufts and
 // a white moustache, a loupe in one eye, a bow tie and a waistcoat with a
 // watch chain, and a wall clock behind him gone soft at the bottom
-function Relojero({ mood = 'calm' }: { mood?: 'calm' | 'think' | 'glad' }) {
+function Relojero({
+  mood = 'calm',
+  talking = false,
+  shake = false,
+}: {
+  mood?: Mood
+  // Saying one of his lines
+  talking?: boolean
+  // He cannot play, and passes or swaps
+  shake?: boolean
+}) {
+  if (PAINTED)
+    return <PaintedRelojero mood={mood} talking={talking} shake={shake} />
   const line = {
     stroke: '#1c1714',
     strokeWidth: 2.4,
@@ -1921,5 +1947,58 @@ function Relojero({ mood = 'calm' }: { mood?: 'calm' | 'think' | 'glad' }) {
         />
       </g>
     </svg>
+  )
+}
+
+// --- The paintings ---
+
+// El relojero is painted as a travel poster (scripts/pictures.mjs, from
+// data/palabras-prompts.ts): his workshop behind him, and his bust cut out
+// in four faces, laid over it. Until all of it is painted, the drawing
+// above stands in.
+const PAINTED =
+  PICTURES.has(TALLER) && FACES.every((f) => PICTURES.has(relojeroFace(f)))
+
+// His lines, said in his own voice; the words on the board are said in the
+// teacher's
+const HIS: ReadonlySet<string> = new Set(LINES_SAID)
+
+// His bust before his workshop, in the face of the mood: breathing, a nod
+// when glad, a shake of the head when he cannot play, pondering while he
+// thinks, and while he speaks a bob, with the speaking face over the calm
+// one every other moment, his mood's face coming back once it is said. The
+// nod and the shake are the outer box's, so that his speaking does not
+// start them again. Every face is there from the start, so that none waits
+// to load when it is wanted.
+function PaintedRelojero({
+  mood,
+  talking,
+  shake,
+}: {
+  mood: Mood
+  talking: boolean
+  shake: boolean
+}) {
+  return (
+    <div className="pz-painted" aria-hidden="true">
+      <img className="pz-taller" src={`/${TALLER}.webp`} alt="" />
+      <div
+        className={`pz-bust ${mood === 'glad' ? 'nod' : shake ? 'no' : ''}`}
+        style={{ aspectRatio: `${FRAME.w} / ${FRAME.h}` }}
+      >
+        <div className={`pz-face ${talking ? 'calm talking' : mood}`}>
+          {FACES.map((f) => (
+            <img
+              key={f}
+              className={f}
+              src={`/${relojeroFace(f)}.webp`}
+              alt=""
+              decoding="async"
+              draggable={false}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }

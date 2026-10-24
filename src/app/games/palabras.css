@@ -404,6 +404,160 @@
   }
 }
 
+/* Painted (games/palabras.tsx): his workshop filling the box, cut to the
+   widest one and seen to its middle in the others, and his bust standing
+   on its bottom edge in the middle */
+.pz-painted {
+  position: absolute;
+  inset: 0;
+}
+
+.pz-taller {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pz-bust {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 92%;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+}
+
+/* (the round portrait on a phone shows his face) */
+.pz-him .pz-bust {
+  top: 3%;
+  bottom: auto;
+  height: 185%;
+}
+
+@media (min-width: 1000px) {
+  .pz-him .pz-bust {
+    top: auto;
+    bottom: 0;
+    height: 92%;
+  }
+}
+
+.pz-bust.nod {
+  animation: pz-nod 0.6s ease-in-out;
+}
+
+.pz-bust.no {
+  animation: pz-no 0.5s ease-in-out;
+}
+
+.pz-face {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  animation: pz-breathe 3.2s ease-in-out infinite;
+}
+
+.pz-face.think {
+  animation: pz-ponder 3s ease-in-out infinite;
+}
+
+.pz-face.talking {
+  animation: pz-bob 0.5s ease-in-out infinite;
+}
+
+.pz-face img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  opacity: 0;
+  user-select: none;
+}
+
+.pz-face.calm img.calm,
+.pz-face.glad img.glad,
+.pz-face.think img.think {
+  opacity: 1;
+}
+
+.pz-face.talking img.talk {
+  animation: pz-yap 0.3s steps(1, end) infinite;
+}
+
+@keyframes pz-breathe {
+  50% {
+    transform: scale(1.006, 1.014);
+  }
+}
+
+@keyframes pz-bob {
+  50% {
+    transform: translateY(-1.2%) rotate(-0.6deg);
+  }
+}
+
+@keyframes pz-yap {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pz-nod {
+  30% {
+    transform: rotate(-3deg) translateY(1.5%);
+  }
+  65% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes pz-no {
+  20% {
+    transform: rotate(-3deg);
+  }
+  45% {
+    transform: rotate(3deg);
+  }
+  70% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+/* (his head tipped one way and the other over the board) */
+@keyframes pz-ponder {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  30% {
+    transform: rotate(-2.2deg) translateY(-0.6%);
+  }
+  70% {
+    transform: rotate(1.6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-bust,
+  .pz-face,
+  .pz-face img {
+    animation: none !important;
+  }
+
+  /* (the speaking face held while he speaks) */
+  .pz-face.talking img.talk {
+    opacity: 1;
+  }
+}
+
 .pz-bubble {
   position: relative;
   padding: 9px 13px 10px;
