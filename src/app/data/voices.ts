@@ -38,9 +38,6 @@ export const DESIGNED: Record<string, string> = {
   Remei:
     'A Spanish woman in her seventies, born and raised in Cadaqués on the coast of Catalonia, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in plaza and cielo): a bright, lively voice with a smile in it, a neighbour who loves to tell what she has seen, and always clear.',
   Laia: 'A Spanish woman in her twenties, born and raised in Cadaqués on the coast of Catalonia, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in azul and hacer): a clear, warm and natural young voice, friendly and a little shy.',
-  // The captain of the Ictíneo in El Ictíneo (data/ictineo.ts), a Catalan
-  Capitán:
-    'A Spanish man in his forties from Catalonia, a native speaker of Catalan speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in cerca and hélice) and a light Catalan colour: a calm, firm and warm voice, the captain of a small boat giving short orders clearly to his crew.',
 }
 
 export const VOICES: Record<string, Voice> = {
@@ -140,11 +137,6 @@ export const VOICES: Record<string, Voice> = {
   Pasajero: {
     base: 'Narrador',
     style: 'a passenger in a Madrid taxi giving the way, polite and clear',
-  },
-  // Narciso Monturiol, who gives the orders at the helm of the Ictíneo
-  Capitán: {
-    base: 'Capitán',
-    style: 'giving orders on a small boat, calm and firm, clear and unhurried',
   },
 }
 

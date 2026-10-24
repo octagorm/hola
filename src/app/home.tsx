@@ -112,7 +112,7 @@ const GAME_GROUPS: Array<{ es: string; no: string; ids: Array<string> }> = [
   {
     es: 'De oído',
     no: 'Lytting',
-    ids: ['numeros', 'tapas', 'rastro', 'taxi', 'sonidos', 'ictineo'],
+    ids: ['numeros', 'tapas', 'rastro', 'taxi', 'sonidos'],
   },
 ]
 

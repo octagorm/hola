@@ -179,12 +179,6 @@ export const PAGES = [
     Page: page(() => import('./games/taxi')),
   },
   {
-    id: 'ictineo',
-    es: 'El Ictíneo',
-    no: 'Ubåten',
-    Page: page(() => import('./games/ictineo')),
-  },
-  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

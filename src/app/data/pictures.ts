@@ -79,9 +79,4 @@ export const PICTURES: ReadonlySet<string> = new Set([
   'museo/falsos',
   'museo/trabalenguas',
   'museo/sonidos',
-  'ictineo/barcelona',
-  'ictineo/creus',
-  'ictineo/alicante',
-  'ictineo/noche',
-  'ictineo/cutaway',
 ])
