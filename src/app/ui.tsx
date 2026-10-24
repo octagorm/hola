@@ -16,7 +16,7 @@ import { say, useVoices } from './lib/speech'
 import { useStore } from './lib/store'
 import type { CSSProperties, ReactNode } from 'react'
 import type { Word } from './data/words'
-import type { Level, Link } from './lib/bank'
+import type { Level, Link, ThemeChoice } from './lib/bank'
 import type { Token } from './lib/text'
 
 // The pieces the pages share: the page frame, Spanish said aloud, mixed
@@ -488,6 +488,43 @@ export function LinkIcon({
 }
 
 // A bar drawn in three strokes of ink, as full as `share`
+// A theme's priority, from off to 3: a round of today's new words takes as
+// many from it (toMeet in lib/bank.ts)
+const PRIORITIES = [
+  { p: 0, label: 'Av', hint: 'Ikke valgt' },
+  { p: 1, label: '1', hint: 'Litt: ett ord per runde' },
+  { p: 2, label: '2', hint: 'Mer: to ord per runde' },
+  { p: 3, label: '3', hint: 'Mest: tre ord per runde' },
+] as const
+
+export function Priority({
+  p,
+  name,
+  onSet,
+}: {
+  p: number
+  name: string
+  onSet: (p: 0 | ThemeChoice['p']) => void
+}) {
+  return (
+    <span className="q-prio" role="radiogroup" aria-label={`Hvor mye ${name}`}>
+      {PRIORITIES.map((x) => (
+        <button
+          key={x.p}
+          type="button"
+          role="radio"
+          aria-checked={p === x.p}
+          title={x.hint}
+          className={p === x.p ? (x.p ? 'on' : 'off') : ''}
+          onClick={() => onSet(x.p)}
+        >
+          {x.label}
+        </button>
+      ))}
+    </span>
+  )
+}
+
 export function InkBar({
   share,
   color = 'var(--blue)',

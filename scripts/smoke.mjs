@@ -236,22 +236,34 @@ await test('themes chosen give today’s chapter their new words', async (page) 
   await page.getByRole('button', { name: 'Ordene', exact: true }).click()
   await page.getByRole('tab', { name: /Historia/ }).click()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
-  await page.getByRole('button', { name: /Velg emnet/ }).click()
-  await page.locator('.q-theme .chosen', { hasText: 'Valgt' }).waitFor()
+  const prio = (name) =>
+    page.getByRole('radiogroup', { name: `Hvor mye ${name}` })
+  await prio('La Mancha').getByRole('radio', { name: '1' }).click()
+  await page.locator('.q-theme .q-prio button.on', { hasText: '1' }).waitFor()
   await go(page, '')
   // (the home page keeps the part it was left on)
   await page.getByRole('button', { name: 'I dag', exact: true }).click()
   await page.getByText('fra «Don Quijotes ord»').waitFor()
-  // A second, ticked on the home page itself
+  // A second, at 3, chosen on the home page itself
   await page.getByRole('button', { name: 'Ordene', exact: true }).click()
-  const picks = page.locator('.q-themes .pick[aria-pressed="true"]')
-  expect((await picks.count()) === 1, 'the theme ticked on the home page')
-  await page.locator('.q-themes .pick[aria-pressed="false"]').first().click()
+  const on = page.locator('.q-themes .q-prio button.on')
+  expect((await on.count()) === 1, 'the theme chosen shows on the home page')
+  await page
+    .locator('.q-themes .q-prio:has(button.off)')
+    .first()
+    .getByRole('radio', { name: '3' })
+    .click()
   await page.locator('.q-themes a.chosen').nth(1).waitFor()
   expect((await page.locator('.q-themes a.chosen').count()) === 2, 'two chosen')
+  expect(
+    (await page
+      .locator('.q-themes .q-prio button.on', { hasText: '3' })
+      .count()) === 1,
+    'the second at 3',
+  )
   await go(page, '#tema/mancha')
-  await page.getByRole('button', { name: 'Fjern' }).click()
-  await page.getByRole('button', { name: /Velg emnet/ }).waitFor()
+  await prio('La Mancha').getByRole('radio', { name: 'Av' }).click()
+  await page.locator('.q-theme .q-prio button.off').waitFor()
 })
 
 await test(

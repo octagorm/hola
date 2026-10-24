@@ -21,7 +21,7 @@ import { keep } from './colecciones'
 import { setVoice } from './speech'
 import { setEffects } from './sound'
 import type { ReactNode } from 'react'
-import type { Bank, Level, Link, Path } from './bank'
+import type { Bank, Level, Link, Path, ThemeChoice } from './bank'
 
 // The word bank and the settings as React state, for every game at once,
 // both kept in this browser's localStorage. Nothing leaves the browser; a
@@ -138,10 +138,10 @@ interface Store {
   // was waiting for it is done
   played: (id: string) => void
   setPath: (f: (p: Path | null) => Path | null) => void
-  // A lesson chosen as a theme, or no longer: today's chapter meets the
-  // chosen themes' words first, from today's new words on if none of them
-  // is begun
-  chooseTheme: (lesson: string, on: boolean) => void
+  // A lesson chosen as a theme with a priority, or no longer (0): today's
+  // chapter meets the chosen themes' words first, from today's new words
+  // on if none of them is begun
+  chooseTheme: (lesson: string, p: 0 | ThemeChoice['p']) => void
   // A day's chapter finished, with points for it; only once a day
   finishDay: (day: string, bonus?: number) => void
   // A bank read in from a backup, merged with this one
@@ -356,13 +356,19 @@ export function BankProvider({ children }: { children: ReactNode }) {
   )
 
   const chooseTheme = useCallback(
-    (lesson: string, on: boolean) =>
+    (lesson: string, p: 0 | ThemeChoice['p']) =>
       setBank((b) => {
-        const rest = b.theme.ids.filter((id) => id !== lesson)
-        const ids = on ? [...rest, lesson] : rest
-        const next = { ...b, theme: { ids, t: Date.now() } }
-        const p = next.path
-        return p && p.d === today() ? { ...next, path: retheme(p, next) } : next
+        const was = b.theme.on
+        const on = !p
+          ? was.filter((x) => x.id !== lesson)
+          : was.some((x) => x.id === lesson)
+            ? was.map((x) => (x.id === lesson ? { id: lesson, p } : x))
+            : [...was, { id: lesson, p }]
+        const next = { ...b, theme: { on, t: Date.now() } }
+        const path = next.path
+        return path && path.d === today()
+          ? { ...next, path: retheme(path, next) }
+          : next
       }),
     [],
   )

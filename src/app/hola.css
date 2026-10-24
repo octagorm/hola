@@ -1271,7 +1271,7 @@ a.q-box:hover {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 2px 10px;
   height: 100%;
-  padding: 12px 52px 12px 10px;
+  padding: 12px 10px 54px;
   border-bottom: 1px solid var(--line);
   color: inherit;
   text-decoration: none;
@@ -1317,32 +1317,52 @@ a.q-box:hover {
   color: var(--red);
 }
 
-/* A theme chosen or not, as a box to tick */
-.q-themes .pick {
+/* A theme's priority, from off to 3, under the theme's line */
+.q-themes .q-prio {
   position: absolute;
-  top: 12px;
   right: 10px;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
+  bottom: 10px;
+}
+
+/* A theme's priority: off, 1, 2 or 3, in a row of small stamps */
+:where(.q-prio) {
+  display: inline-flex;
   border: 2px solid var(--ink);
   border-radius: 6px;
   background: var(--paper);
-  color: var(--paper);
+  overflow: hidden;
+}
+
+:where(.q-prio) button {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: none;
+  color: var(--ink-2);
+  font-family: var(--body);
+  font-size: 17px;
+  font-variant-numeric: lining-nums tabular-nums;
   cursor: pointer;
 }
 
-.q-themes .pick.on {
-  background: var(--red);
-  border-color: var(--red);
+:where(.q-prio) button:first-child {
+  border-left: 0;
 }
 
-.q-themes .pick svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 3;
+:where(.q-prio) button:hover {
+  color: var(--ink);
+}
+
+:where(.q-prio) button.on {
+  background: var(--red);
+  color: var(--paper);
+}
+
+:where(.q-prio) button.off {
+  background: rgba(203, 185, 152, 0.45);
+  color: var(--ink);
 }
 
 .q-theme .about {
@@ -1364,18 +1384,12 @@ a.q-box:hover {
   margin-top: 14px;
 }
 
-.q-theme .chosen {
+.q-theme .pick {
   display: inline-flex;
-  gap: 6px;
+  gap: 10px;
   align-items: center;
   font-family: var(--sc);
   font-size: 18px;
-  color: var(--red);
-}
-
-.q-theme .chosen svg {
-  width: 18px;
-  height: 18px;
 }
 
 .q-theme .note {
@@ -1596,10 +1610,10 @@ a.q-box:hover {
   }
 
   .q-themes li a {
-    padding: 10px 48px 10px 6px;
+    padding: 10px 6px 52px;
   }
 
-  .q-themes .pick {
+  .q-themes .q-prio {
     right: 6px;
   }
 

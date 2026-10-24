@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
-  Check,
   Headphones,
   Library,
   Music,
@@ -44,6 +43,7 @@ import {
   LinkIcon,
   Mixed,
   MixedKey,
+  Priority,
   Ring,
   percent,
   useMedia,
@@ -550,9 +550,9 @@ export default function Home() {
 function Themes() {
   const { bank, chooseTheme } = useStore()
   const groups = THEME_GROUPS.filter((g) => g.themes.length)
-  const chosenGroups = new Set(bank.theme.ids.map((id) => THEME[id]?.group.id))
+  const chosenGroups = new Set(bank.theme.on.map((x) => THEME[x.id]?.group.id))
   const [open, setOpen] = useState(
-    THEME[bank.theme.ids[0] ?? '']?.group.id ?? groups[0].id,
+    THEME[bank.theme.on[0]?.id ?? '']?.group.id ?? groups[0].id,
   )
   const group = groups.find((g) => g.id === open) ?? groups[0]
   return (
@@ -563,7 +563,8 @@ function Themes() {
         </h4>
       </div>
       <p className="intro">
-        Velg ett eller flere emner, så kommer de nye ordene i dagens økt derfra.
+        Velg ett eller flere emner, så kommer de nye ordene i dagens økt derfra:
+        tre ord fra et emne på 3 for hvert ord fra et på 1.
       </p>
       <div className="tabs" role="tablist" aria-label="Emner">
         {groups.map((g) => (
@@ -593,7 +594,8 @@ function Themes() {
           if (!lesson) return null
           const all = WORDS.filter((w) => w.lesson === t.lesson)
           const met = all.filter((w) => bank.cards[w.id]).length
-          const chosen = bank.theme.ids.includes(t.lesson)
+          const p = bank.theme.on.find((x) => x.id === t.lesson)?.p ?? 0
+          const chosen = p > 0
           return (
             <li key={t.lesson}>
               <a href={`#tema/${t.lesson}`} className={chosen ? 'chosen' : ''}>
@@ -612,15 +614,11 @@ function Themes() {
                 </em>
               </a>
               {/* Chosen or not, right here: as many as wanted */}
-              <button
-                type="button"
-                className={`pick ${chosen ? 'on' : ''}`}
-                aria-pressed={chosen}
-                aria-label={`Velg ${lesson.es}`}
-                onClick={() => chooseTheme(t.lesson, !chosen)}
-              >
-                {chosen && <Check aria-hidden="true" />}
-              </button>
+              <Priority
+                p={p}
+                name={lesson.es}
+                onSet={(to) => chooseTheme(t.lesson, to)}
+              />
             </li>
           )
         })}

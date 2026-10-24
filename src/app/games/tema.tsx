@@ -1,9 +1,8 @@
-import { ArrowRight, Check } from 'lucide-react'
 import { THEME } from '../data/themes'
 import { LESSON, WORDS, meaning } from '../data/words'
 import { level } from '../lib/bank'
 import { useStore } from '../lib/store'
-import { Es, InkBar, Page, Speak } from '../ui'
+import { Es, InkBar, Page, Priority, Speak } from '../ui'
 import type { PageProps } from '../registry'
 
 // A theme (data/themes.ts, /#tema/tapas): what it is about, its words and
@@ -33,7 +32,8 @@ export default function Tema({ arg }: PageProps) {
   const met = words.filter((w) => bank.cards[w.id]).length
   const known = words.filter((w) => level(bank.cards[w.id], now) === 2).length
   const left = words.length - met
-  const chosen = bank.theme.ids.includes(lesson.id)
+  const p = bank.theme.on.find((x) => x.id === lesson.id)?.p ?? 0
+  const chosen = p > 0
 
   return (
     <Page es={lesson.es} title={lesson.no}>
@@ -47,29 +47,15 @@ export default function Tema({ arg }: PageProps) {
           {met} av {words.length} ord møtt, {known} kjente.
         </p>
         <div className="acts">
-          {chosen ? (
-            <>
-              <span className="chosen">
-                <Check aria-hidden="true" /> Valgt
-              </span>
-              <button
-                type="button"
-                className="q-link"
-                onClick={() => chooseTheme(lesson.id, false)}
-              >
-                Fjern
-              </button>
-            </>
-          ) : (
-            left > 0 && (
-              <button
-                type="button"
-                className="q-btn"
-                onClick={() => chooseTheme(lesson.id, true)}
-              >
-                Velg emnet <ArrowRight />
-              </button>
-            )
+          {(chosen || left > 0) && (
+            <span className="pick">
+              Hvor mye herfra
+              <Priority
+                p={p}
+                name={lesson.es}
+                onSet={(to) => chooseTheme(lesson.id, to)}
+              />
+            </span>
           )}
           {left > 0 && (
             <a className="q-btn ghost" href={`#nuevas/${lesson.id}`}>
@@ -81,8 +67,8 @@ export default function Tema({ arg }: PageProps) {
           {left === 0
             ? 'Alle ordene her er møtt. Nå gjelder det å holde dem ved like.'
             : chosen
-              ? 'De nye ordene i dagens økt kommer herfra og fra de andre emnene du har valgt, til alle er møtt.'
-              : 'Velg det, gjerne sammen med andre emner, så kommer de nye ordene i dagens økt herfra, til alle er møtt.'}
+              ? `De nye ordene i dagens økt kommer herfra og fra de andre emnene du har valgt, ${p === 1 ? 'ett' : p === 2 ? 'to' : 'tre'} om gangen herfra, til alle er møtt.`
+              : 'Velg det, gjerne sammen med andre emner, så kommer de nye ordene i dagens økt herfra, til alle er møtt. Et emne på 3 gir tre ord for hvert ord fra et på 1.'}
         </p>
       </section>
 

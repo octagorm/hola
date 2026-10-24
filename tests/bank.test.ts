@@ -195,7 +195,7 @@ describe('the day’s chapter', () => {
 describe('the themes', () => {
   const theme = (id: string, t = now) => ({
     ...emptyBank(),
-    theme: { ids: [id], t },
+    theme: { on: [{ id, p: 1 as const }], t },
   })
 
   it('has today’s chapter meet its words before the rest', () => {
@@ -238,26 +238,41 @@ describe('the themes', () => {
 
   it('are the choice made last when two banks are merged', () => {
     const a = theme('mancha', now)
-    const b = {
-      ...emptyBank(),
-      theme: { ids: ['suenos', 'mancha'], t: now + 1000 },
-    }
-    expect(merge(a, b).theme.ids).toEqual(['suenos', 'mancha'])
-    expect(merge(b, a).theme.ids).toEqual(['suenos', 'mancha'])
+    const both = [
+      { id: 'suenos', p: 2 as const },
+      { id: 'mancha', p: 1 as const },
+    ]
+    const b = { ...emptyBank(), theme: { on: both, t: now + 1000 } }
+    expect(merge(a, b).theme.on).toEqual(both)
+    expect(merge(b, a).theme.on).toEqual(both)
     // leaving them all is a choice too
-    const none = { ...emptyBank(), theme: { ids: [], t: now + 2000 } }
-    expect(merge(none, b).theme.ids).toEqual([])
-    // a bank saved before themes has none, and one saved when one theme
-    // could be chosen has that one
+    const none = { ...emptyBank(), theme: { on: [], t: now + 2000 } }
+    expect(merge(none, b).theme.on).toEqual([])
+    // a bank saved before themes has none, and one saved before
+    // priorities has those it chose at 1
     const old: Partial<Bank> = { cards: {} }
-    expect(merge(old, emptyBank()).theme).toEqual({ ids: [], t: 0 })
-    expect(merge(old, a).theme.ids).toEqual(['mancha'])
+    expect(merge(old, emptyBank()).theme).toEqual({ on: [], t: 0 })
+    expect(merge(old, a).theme.on).toEqual([{ id: 'mancha', p: 1 }])
     const one = { theme: { id: 'tapas', t: now } } as unknown as Partial<Bank>
-    expect(merge(one, emptyBank()).theme).toEqual({ ids: ['tapas'], t: now })
+    expect(merge(one, emptyBank()).theme).toEqual({
+      on: [{ id: 'tapas', p: 1 }],
+      t: now,
+    })
+    const ids = {
+      theme: { ids: ['tapas', 'mancha'], t: now },
+    } as unknown as Partial<Bank>
+    expect(merge(ids, emptyBank()).theme.on).toEqual([
+      { id: 'tapas', p: 1 },
+      { id: 'mancha', p: 1 },
+    ])
   })
 
   it('give today’s new words from each chosen theme in turn', () => {
-    const b = { ...emptyBank(), theme: { ids: ['mancha', 'suenos'], t: now } }
+    const on = [
+      { id: 'mancha', p: 1 as const },
+      { id: 'suenos', p: 1 as const },
+    ]
+    const b = { ...emptyBank(), theme: { on, t: now } }
     const fresh = plan(b, now).steps.find((s) => s.k === 'new')?.ids ?? []
     expect(fresh).toHaveLength(5)
     const lessons = fresh.map((id) => WORD[id]?.lesson)
@@ -265,5 +280,26 @@ describe('the themes', () => {
     // all of theirs before any other
     const chosen = toMeet(b).map((w) => ['mancha', 'suenos'].includes(w.lesson))
     expect(chosen.indexOf(false)).toBe(chosen.lastIndexOf(true) + 1)
+  })
+
+  it('take as many words a round from a theme as its priority', () => {
+    const on = [
+      { id: 'mancha', p: 1 as const },
+      { id: 'suenos', p: 3 as const },
+    ]
+    const b = { ...emptyBank(), theme: { on, t: now } }
+    const lessons = toMeet(b)
+      .slice(0, 8)
+      .map((w) => w.lesson)
+    expect(lessons).toEqual([
+      'mancha',
+      'suenos',
+      'suenos',
+      'suenos',
+      'mancha',
+      'suenos',
+      'suenos',
+      'suenos',
+    ])
   })
 })

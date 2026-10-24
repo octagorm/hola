@@ -70,14 +70,19 @@ export interface Bank {
   // The version of the starting point given (data/start.ts), 0 for none
   start: number
   // The lessons chosen as themes (data/themes.ts), as many as wanted, in
-  // the order chosen, whose words today's chapter meets before the rest,
-  // and when the choice was last changed
-  theme: { ids: Array<string>; t: number }
+  // the order chosen, each with its priority (1–3), whose words today's
+  // chapter meets before the rest, and when the choice was last changed
+  theme: { on: Array<ThemeChoice>; t: number }
   // Lessons finished (lib/colecciones.ts), by id → when first finished: a
   // keepsake unwrapped and a picture hung stay so, whatever comes after
   kept: Record<string, number | undefined>
   // How far each text in the library (data/biblioteca.ts) is read, by id
   place: Record<string, Place | undefined>
+}
+
+export interface ThemeChoice {
+  id: string
+  p: 1 | 2 | 3
 }
 
 export interface Place {
@@ -131,7 +136,7 @@ export const emptyBank = (): Bank => ({
   read: {},
   path: null,
   start: 0,
-  theme: { ids: [], t: 0 },
+  theme: { on: [], t: 0 },
   kept: {},
   place: {},
 })
@@ -308,29 +313,46 @@ export const unmet = (bank: Bank, words: Array<Word> = WORDS) =>
   words.filter((w) => !bank.cards[w.id])
 
 // The words in the order today's chapter meets them: those not met of the
-// chosen themes first, a word from each in turn, so that a day's new
-// words come from all of them, then the rest in lesson order
+// chosen themes first, in rounds of as many from each as its priority, so
+// that a day's new words come from all of them, then the rest in lesson
+// order
 export function toMeet(bank: Bank): Array<Word> {
-  const ids = bank.theme.ids
-  if (!ids.length) return TAUGHT
-  const lists = ids.map((id) =>
-    TAUGHT.filter((w) => w.lesson === id && !bank.cards[w.id]),
-  )
+  const on = bank.theme.on
+  if (!on.length) return TAUGHT
+  const lists = on.map((x) => ({
+    p: x.p,
+    ws: TAUGHT.filter((w) => w.lesson === x.id && !bank.cards[w.id]),
+    at: 0,
+  }))
   const first: Array<Word> = []
-  for (let i = 0; lists.some((l) => i < l.length); i++)
-    for (const l of lists) if (i < l.length) first.push(l[i])
+  while (lists.some((l) => l.at < l.ws.length))
+    for (const l of lists)
+      for (let n = 0; n < l.p && l.at < l.ws.length; n++)
+        first.push(l.ws[l.at++])
+  const ids = on.map((x) => x.id)
   return [...first, ...TAUGHT.filter((w) => !ids.includes(w.lesson))]
 }
 
-// The themes chosen in a bank as saved, which before several could be
-// chosen kept one, as { id, t }
+// The themes chosen in a bank as saved: before priorities they were a list
+// of ids, and before several could be chosen one, as { id, t }; each of
+// those is read as priority 1
 function themesOf(x: unknown): Bank['theme'] | null {
   if (!x || typeof x !== 'object') return null
-  const o = x as { ids?: unknown; id?: unknown; t?: unknown }
+  const o = x as { on?: unknown; ids?: unknown; id?: unknown; t?: unknown }
   const t = typeof o.t === 'number' ? o.t : 0
-  if (Array.isArray(o.ids))
-    return { ids: o.ids.filter((i) => typeof i === 'string'), t }
-  return { ids: typeof o.id === 'string' && o.id ? [o.id] : [], t }
+  const one = (id: unknown): Array<ThemeChoice> =>
+    typeof id === 'string' && id ? [{ id, p: 1 }] : []
+  if (Array.isArray(o.on))
+    return {
+      on: o.on.flatMap((c: { id?: unknown; p?: unknown } | null) =>
+        c && typeof c.id === 'string' && [1, 2, 3].includes(c.p as number)
+          ? [{ id: c.id, p: c.p as ThemeChoice['p'] }]
+          : [],
+      ),
+      t,
+    }
+  if (Array.isArray(o.ids)) return { on: o.ids.flatMap(one), t }
+  return { on: one(o.id), t }
 }
 
 // Words for a round of a game: up to `n` of them, weighted towards those
