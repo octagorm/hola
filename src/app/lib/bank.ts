@@ -1,4 +1,4 @@
-import { WORDS } from '../data/words.ts'
+import { TAUGHT, WORDS } from '../data/words.ts'
 import { KNOWN_AT_START, PRACTISED_AT_START, START } from '../data/start.ts'
 import type { Word } from '../data/words.ts'
 
@@ -75,6 +75,17 @@ export interface Bank {
   // Lessons finished (lib/colecciones.ts), by id → when first finished: a
   // keepsake unwrapped and a picture hung stay so, whatever comes after
   kept: Record<string, number | undefined>
+  // How far each text in the library (data/biblioteca.ts) is read, by id
+  place: Record<string, Place | undefined>
+}
+
+export interface Place {
+  // The paragraph read up to, from 0
+  p: number
+  // When, ms
+  t: number
+  // Read to the end, ms: once
+  done?: number
 }
 
 export type StepKind = 'review' | 'new' | 'game' | 'story' | 'listen'
@@ -119,6 +130,7 @@ export const emptyBank = (): Bank => ({
   start: 0,
   theme: { id: '', t: 0 },
   kept: {},
+  place: {},
 })
 
 export const DAY = 86_400_000
@@ -296,10 +308,10 @@ export const unmet = (bank: Bank, words: Array<Word> = WORDS) =>
 // first, then the rest in lesson order
 export function toMeet(bank: Bank): Array<Word> {
   const id = bank.theme.id
-  if (!id) return WORDS
+  if (!id) return TAUGHT
   return [
-    ...WORDS.filter((w) => w.lesson === id),
-    ...WORDS.filter((w) => w.lesson !== id),
+    ...TAUGHT.filter((w) => w.lesson === id),
+    ...TAUGHT.filter((w) => w.lesson !== id),
   ]
 }
 
@@ -342,7 +354,8 @@ const keysOf = (...rs: Array<object | undefined>) =>
 // one with answers), for days, scores and lessons finished the larger, and
 // of two days' sessions the later day's, or of the same day's the one
 // further on, and of two themes the one chosen last. A bank saved before a
-// field existed is read as having it empty.
+// field existed is read as having it empty. Of two places in a text, the
+// later is kept, and a text once read to the end stays so.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const out = emptyBank()
   for (const id of keysOf(a.cards, b.cards)) {
@@ -363,6 +376,13 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   }
   out.path = laterPath(a.path ?? null, b.path ?? null)
   out.start = Math.max(a.start ?? 0, b.start ?? 0)
+  for (const id of keysOf(a.place, b.place)) {
+    const x = a.place?.[id]
+    const y = b.place?.[id]
+    const last = !x ? y : !y ? x : y.t > x.t ? y : x
+    const done = Math.max(x?.done ?? 0, y?.done ?? 0)
+    if (last) out.place[id] = done ? { ...last, done } : last
+  }
   const ta = a.theme ?? out.theme
   const tb = b.theme ?? out.theme
   out.theme = tb.t > ta.t ? tb : ta

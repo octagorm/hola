@@ -65,6 +65,12 @@ export const PAGES = [
     Page: page(() => import('./games/story')),
   },
   {
+    id: 'biblioteca',
+    es: 'Biblioteca',
+    no: 'Biblioteket',
+    Page: page(() => import('./games/biblioteca')),
+  },
+  {
     id: 'palabra',
     es: 'La palabra',
     no: 'Dagens ord',

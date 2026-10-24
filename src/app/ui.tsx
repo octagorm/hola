@@ -109,6 +109,10 @@ export function Es({ w, plain = false }: { w: Word; plain?: boolean }) {
 
 // --- Mixed text ---
 
+// The word joiner, and the marks that open what follows them
+const JOIN = '\u2060'
+const OPENING = new Set(['¡', '¿', '«', '—'])
+
 // A line of a story, every word in Spanish as the player knows it: with
 // the Norwegian over it until it is known (in brown while it is not met, in
 // blue while it is learnt), alone once known. A tap opens the word's card.
@@ -116,6 +120,7 @@ export function Mixed({
   line,
   className = '',
   onPeek,
+  explain,
   all,
   still = false,
 }: {
@@ -123,6 +128,8 @@ export function Mixed({
   className?: string
   // Told of each word tapped
   onPeek?: (id: string) => void
+  // More for the word's card: what this form is, and a note on it here
+  explain?: (t: Token) => Explained | undefined
   // Every word at one level, as for a line shown in full
   all?: Level
   // Nothing to tap, as inside something that is itself a button
@@ -135,7 +142,14 @@ export function Mixed({
     <span className={`mx ${className}`}>
       {toks.map((t, i) => {
         const space = spaceBefore(toks, i) ? ' ' : ''
-        if (!t.id) return space + t.es
+        // (punctuation held to the word it belongs to, so that a line never
+        // begins with a closing dash or ends with an opening one)
+        if (!t.id)
+          return (
+            (space || i === 0 ? space : JOIN) +
+            t.es +
+            (OPENING.has(t.no) ? JOIN : '')
+          )
         const id = t.id
         const lv = all ?? levelOf(id)
         const tap = still
@@ -146,13 +160,13 @@ export function Mixed({
               'data-peek': '',
               onClick: (e: React.MouseEvent<HTMLElement>) => {
                 onPeek?.(id)
-                peek(t, e.currentTarget)
+                peek(t, e.currentTarget, explain?.(t))
               },
               onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
                 if (e.key !== 'Enter' && e.key !== ' ') return
                 e.preventDefault()
                 onPeek?.(id)
-                peek(t, e.currentTarget)
+                peek(t, e.currentTarget, explain?.(t))
               },
             }
         return (
@@ -200,7 +214,14 @@ export function MixedKey() {
 
 // --- A word's card, opened from mixed text ---
 
-type Open = (t: Token, el: HTMLElement) => void
+// What a word's card can tell beyond the word: what this form of it is
+// ('decir i fortid: han, hun, De sa'), and a note on it where it stands
+export interface Explained {
+  form?: string
+  note?: string
+}
+
+type Open = (t: Token, el: HTMLElement, more?: Explained) => void
 
 const PeekCtx = createContext<Open>(() => {})
 
@@ -209,12 +230,13 @@ export const usePeek = () => useContext(PeekCtx)
 interface Peeked {
   t: Token
   el: HTMLElement
+  more?: Explained
 }
 
 export function PeekProvider({ children }: { children: ReactNode }) {
   const [p, setP] = useState<Peeked | null>(null)
   const open = useCallback<Open>(
-    (t, el) => setP((old) => (old?.el === el ? null : { t, el })),
+    (t, el, more) => setP((old) => (old?.el === el ? null : { t, el, more })),
     [],
   )
   useEffect(() => {
@@ -252,8 +274,8 @@ export function PeekProvider({ children }: { children: ReactNode }) {
   )
 }
 
-function PeekCard({ t, el, onClose }: Peeked & { onClose: () => void }) {
-  const { levelOf, meet } = useStore()
+function PeekCard({ t, el, more, onClose }: Peeked & { onClose: () => void }) {
+  const { levelOf, meet, know } = useStore()
   const box = useRef<HTMLDivElement>(null)
   const [at, setAt] = useState<CSSProperties>({ visibility: 'hidden' })
   const [arrow, setArrow] = useState<{ x: number; up: boolean }>({
@@ -313,22 +335,47 @@ function PeekCard({ t, el, onClose }: Peeked & { onClose: () => void }) {
         )}
         {meaning(w)}
       </p>
-      {lv === 0 ? (
-        <button
-          type="button"
-          className="q-btn ghost small"
-          onClick={() => {
-            meet([w.id])
-            onClose()
-          }}
-        >
-          Lær dette ordet
-        </button>
-      ) : (
-        <span className="q-sc text-[15px] text-[var(--ink-3)]">
-          {lv === 1 ? 'Øver på' : 'Kjent'}
-        </span>
+      {w.pos === 'n' && (
+        <p className="q-peek-more">
+          {w.g === 'f' ? 'Hunkjønn' : 'Hankjønn'}
+          {w.pl ? ', flertall' : ''}
+        </p>
       )}
+      {more?.form && <p className="q-peek-more">{more.form}</p>}
+      {more?.note && <p className="q-peek-note">{more.note}</p>}
+      {/* Known: the Norwegian over it goes, and it comes back in practice
+          now and then; to practise: it is met, with the Norwegian over it
+          until it is learnt */}
+      <div className="q-peek-acts">
+        {lv < 2 && (
+          <button
+            type="button"
+            className="q-btn small"
+            onClick={() => {
+              know([w.id])
+              onClose()
+            }}
+          >
+            Kan det
+          </button>
+        )}
+        {lv === 0 ? (
+          <button
+            type="button"
+            className="q-btn ghost small"
+            onClick={() => {
+              meet([w.id])
+              onClose()
+            }}
+          >
+            Øv på det
+          </button>
+        ) : (
+          <span className="q-sc text-[15px] text-[var(--ink-3)]">
+            {lv === 1 ? 'Øver på' : 'Kjent'}
+          </span>
+        )}
+      </div>
     </div>
   )
 }

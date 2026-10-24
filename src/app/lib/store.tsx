@@ -40,7 +40,12 @@ export interface Settings {
   music: boolean
   // New words a day, when not many are fading
   perDay: number
+  // The size of the text in the library's reader, a step of TEXT_SIZES
+  textSize: number
 }
+
+// The library's text sizes, in pixels
+export const TEXT_SIZES = [20, 23, 26, 30, 34]
 
 export const DEFAULTS: Settings = {
   voice: '',
@@ -50,6 +55,7 @@ export const DEFAULTS: Settings = {
   effects: true,
   music: false,
   perDay: 4,
+  textSize: 2,
 }
 
 const BANK_KEY = 'hola:bank:v1'
@@ -107,6 +113,9 @@ interface Store {
   setBest: (game: string, score: number) => void
   setPalabra: (day: string, guesses: number) => void
   setRead: (chapter: string, right: number) => void
+  // How far a text in the library is read: up to paragraph `p`, and
+  // whether to its end
+  setPlace: (text: string, p: number, done?: boolean) => void
   // A game or a chapter played to its end: a step of Today's chapter that
   // was waiting for it is done
   played: (id: string) => void
@@ -277,6 +286,24 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const setPlace = useCallback(
+    (text: string, p: number, done = false) =>
+      setBank((b) => {
+        const was = b.place[text]
+        if (was && was.p === p && (!done || was.done)) return b
+        const now = Date.now()
+        const end = was?.done ?? (done ? now : undefined)
+        return {
+          ...b,
+          place: {
+            ...b.place,
+            [text]: { p, t: now, ...(end ? { done: end } : {}) },
+          },
+        }
+      }),
+    [],
+  )
+
   const played = useCallback(
     (id: string) =>
       setBank((b) => {
@@ -356,6 +383,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       setBest,
       setPalabra,
       setRead,
+      setPlace,
       played,
       setPath,
       setTheme,
@@ -375,6 +403,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       setBest,
       setPalabra,
       setRead,
+      setPlace,
       played,
       setPath,
       setTheme,

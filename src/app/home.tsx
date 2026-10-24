@@ -14,6 +14,7 @@ import { STORY } from './data/stories'
 import { stageOf } from './data/camino'
 import { GAME_INFO } from './data/games'
 import { AUDIOBOOKS } from './data/lydbok'
+import { BOOKS } from './data/biblioteca'
 import { MADE, minutes } from './lib/lydbok'
 import { THEME, THEME_GROUPS } from './data/themes'
 import { LESSON, WORDS } from './data/words'
@@ -402,6 +403,20 @@ export default function Home() {
                 </span>
               </a>
             ))}
+
+            <a className="q-frame q-box q-audiobook" href="#biblioteca">
+              <Library aria-hidden="true" />
+              <span>
+                <h3>
+                  Biblioteca<span>biblioteket</span>
+                </h3>
+                <p>
+                  Korte tekster slik de ble skrevet ·{' '}
+                  {BOOKS.filter((b) => bank.place[b.id]?.done).length} av{' '}
+                  {BOOKS.length} lest
+                </p>
+              </span>
+            </a>
 
             <section className="q-toc">
               <h4>

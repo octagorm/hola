@@ -111,10 +111,13 @@ export interface Chest {
   lessons: Array<string>
 }
 
+// The lessons with a keepsake: all but the library's texts' words
+const KEPT = LESSONS.filter((l) => !l.book)
+
 // The chests of drawers: the first lessons, those that are no theme, in
 // one; then a chest for each group of themes, in the home page's order
 export function chests(): Array<Chest> {
-  const first = LESSONS.filter((l) => !THEME[l.id]).map((l) => l.id)
+  const first = KEPT.filter((l) => !THEME[l.id]).map((l) => l.id)
   return [
     { id: 'primero', es: 'Lo primero', no: 'Det første', lessons: first },
     ...THEME_GROUPS.map((g) => ({
@@ -145,6 +148,6 @@ export function tally(bank: Bank, lessons: Array<string>) {
   return { begun, done, all: lessons.length }
 }
 
-export const allLessons = () => LESSONS.map((l) => l.id)
+export const allLessons = () => KEPT.map((l) => l.id)
 export const allThemes = () =>
   rooms().flatMap((r) => r.themes.map((t) => t.lesson))

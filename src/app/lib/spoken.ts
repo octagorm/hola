@@ -7,6 +7,7 @@ import { GAPS } from '../data/porpara.ts'
 import { SENTENCES, TIMES } from '../data/tiempos.ts'
 import { KEEPSAKES } from '../data/cajones.ts'
 import { AUDIOBOOKS, spokenText, voiceOf } from '../data/lydbok.ts'
+import { BOOKS, sentencesOf } from '../data/biblioteca.ts'
 import { DECK, spanish } from './cadaver.ts'
 import { whole } from './porpara.ts'
 import { plain as said } from './tiempos.ts'
@@ -26,7 +27,8 @@ import { SAID as SONIDOS } from './sonidos.ts'
 // sample in Settings; in the narrator's each line of the stories (a line
 // one of a story's cast says, in theirs), each sentence of Cadáver
 // exquisito's deck, each sentence of Por o para (said
-// once answered) and each of Ayer, hoy, mañana in all three times.
+// once answered) and each of Ayer, hoy, mañana in all three times, and each
+// sentence of the library's texts.
 // scripts/audio.py makes the recordings with Gemini TTS; lib/speech.ts
 // plays them by their text, and falls back on the browser's own Spanish
 // voice where there is none.
@@ -105,5 +107,12 @@ export function speechItems(): Array<SpeechItem> {
           for (const t of tokens(p.line))
             if (t.id) add(WORD_VOICE, t.es, 'word')
     }
+  // The library's texts, a sentence at a time in the narrator's voice, and
+  // each form in them in the teacher's
+  for (const b of BOOKS)
+    for (const s of sentencesOf(b)) add(LINE_VOICE, plain(s), 'line')
+  for (const b of BOOKS)
+    for (const s of sentencesOf(b))
+      for (const t of tokens(s)) if (t.id) add(WORD_VOICE, t.es, 'word')
   return items
 }

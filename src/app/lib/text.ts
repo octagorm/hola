@@ -13,6 +13,8 @@ export interface Token {
   no: string
   name?: boolean
   punct?: boolean
+  // A note on the word here, by its key in the text's notes (data/biblioteca.ts)
+  note?: string
 }
 
 // Punctuation that sits against the word before it, and the word after
@@ -39,14 +41,20 @@ export function tokens(line: string): Array<Token> {
         const name = spaced(raw.slice(1))
         return { es: name, no: name, name: true }
       }
-      const [left, override] = raw.split('=') as [string, string | undefined]
+      const [body, note] = raw.split('#') as [string, string | undefined]
+      const [left, override] = body.split('=') as [string, string | undefined]
       const [form, link] = left.split('>') as [string, string | undefined]
       const es = spaced(form)
       const id = spaced(link ?? es.toLowerCase())
       const w = WORD[id]
       if (!w) throw new Error(`Not in the word bank: ${id} (in "${line}")`)
       const no = override ? spaced(override) : gloss(w)
-      return { es, id, no: isCapital(es) ? capital(no) : no }
+      return {
+        es,
+        id,
+        no: isCapital(es) ? capital(no) : no,
+        ...(note ? { note } : {}),
+      }
     })
   // A Norwegian that ends as the line goes on (¡qué rico! as «så godt!»
   // before «!») leaves the mark to the line, so that it is not shown twice

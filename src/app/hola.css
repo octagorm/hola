@@ -3044,3 +3044,113 @@ img.q-pic {
 .q-book-text h2.now {
   color: var(--red);
 }
+
+/* More on a word's card: its gender, what this form is, a note on it here */
+.q-peek .q-peek-more {
+  margin: -4px 0 8px;
+  font-size: 15px;
+  color: var(--ink-3);
+}
+
+.q-peek .q-peek-note {
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--ink);
+  background: rgba(210, 154, 46, 0.14);
+  border-left: 3px solid var(--ochre);
+}
+
+.q-peek-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+/* --- The library: a text on one page, with room for the Norwegian --- */
+
+.bk-head {
+  margin-bottom: 18px;
+}
+
+.bk-by {
+  margin: 0 0 4px;
+  text-align: center;
+  font-family: var(--sc);
+  font-size: 17px;
+  color: var(--ink-3);
+}
+
+.bk-text {
+  font-size: var(--bk-size, 26px);
+}
+
+.bk-text p {
+  margin: 0 0 0.9em;
+}
+
+/* (the Norwegian over a word large enough to read without glasses, and
+   the lines far enough apart for it) */
+.bk-text .mx {
+  line-height: 2.35;
+}
+
+.bk-text .mx rt {
+  font-size: max(13px, 0.56em);
+}
+
+.bk-text .aloud {
+  background: linear-gradient(
+    90deg,
+    rgba(210, 154, 46, 0.24),
+    rgba(210, 154, 46, 0.12)
+  );
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.bk-aloud {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  margin: 8px 0 18px;
+}
+
+.bk-resumed {
+  display: block;
+  margin: 0 0 2px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.bk-end {
+  margin-top: 12px;
+}
+
+.bk-source {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+
+.bk-source a {
+  color: inherit;
+}
+
+.q-round.bk-size span {
+  font-family: var(--display);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.q-round.bk-size.big span {
+  font-size: 25px;
+}
+
+.q-round.bk-size:disabled {
+  opacity: 0.4;
+}

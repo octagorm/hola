@@ -40,6 +40,9 @@ export interface Lesson {
   id: string
   es: string
   no: string
+  // The words of a text in the library (data/biblioteca.ts), met only
+  // there: not among today's new words, nor in Los cajones
+  book?: boolean
 }
 
 const LIST: Array<Lesson & { words: string }> = [
@@ -2101,6 +2104,52 @@ const LIST: Array<Lesson & { words: string }> = [
       el ancla | anker | f
     `,
   },
+  // The library's texts (data/biblioteca.ts): the words each needs beyond
+  // those before it, met only in the reader
+  {
+    id: 'testamento',
+    es: 'El testamento',
+    no: 'Testamentet',
+    book: true,
+    words: `
+      cierto | viss, sikker | adj
+      el lugareño | landsbyboer
+      estar a punto de | holde på å | expr
+      poco antes de | kort før | expr
+      olvidar | glemme | v
+      el testamento | testamente
+      los bienes | eiendeler, det man eier
+      apreciar | sette pris på | v
+      mío | min (etter ordet) | pron
+      después de | etter | prep
+      continuar | fortsette | v
+      deber | skulle, måtte, skylde | v
+      vender | selge | v
+      entregar | levere, gi | v
+      el dinero | penger
+      regalar | gi i gave | v
+      generosamente | gavmildt | adv
+      si | hvis, om | conj
+      conservar | beholde, ta vare på | v
+      guardar | passe på, gjemme | v
+      el animal | dyr
+      fiel | trofast | adj
+      servir de | være til, tjene som | expr
+      gran | stor (foran ordet) | adj
+      el consuelo | trøst
+      morirse | dø | v
+      obedecer | adlyde | v
+      ese | den, det (der) | det
+      juntos | sammen | adv
+      responder | svare | v
+      el duro | duro (mynt på fem pesetas)
+      el real | real (mynt, en kvart peseta)
+      aceptar | godta, ta imot | v
+      razonable | rimelig, fornuftig | adj
+      recibir | få, motta | v
+      así | slik, sånn | adv
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {
@@ -2148,10 +2197,11 @@ function parse(lesson: string, line: string): Word {
   return { id: es, es, no, pos: flag as Pos, lesson, bare: es }
 }
 
-export const LESSONS: Array<Lesson> = LIST.map(({ id, es, no }) => ({
+export const LESSONS: Array<Lesson> = LIST.map(({ id, es, no, book }) => ({
   id,
   es,
   no,
+  ...(book ? { book } : {}),
 }))
 
 export const WORDS: Array<Word> = LIST.flatMap((l) =>
@@ -2169,6 +2219,10 @@ export const WORD: Record<string, Word | undefined> = Object.fromEntries(
 export const LESSON: Record<string, Lesson | undefined> = Object.fromEntries(
   LESSONS.map((l) => [l.id, l]),
 )
+
+// The words a lesson of their own teaches, as today's chapter and Nye ord
+// meet them: all but the library's
+export const TAUGHT: Array<Word> = WORDS.filter((w) => !LESSON[w.lesson]?.book)
 
 // A word that can stand in the crossword and the ring of letters: one word,
 // and not a greeting, a saying or an article, which make poor clues

@@ -6,6 +6,8 @@
 //   word              a word in the bank, as written there
 //   form>id           a form of a word in the bank: dice>decir
 //   …=gloss           the Norwegian for it here: dice>decir=sier
+//   …#key             a note on it here, from the text's notes (only in
+//                     the library's texts, data/biblioteca.ts)
 //   ^Name             a name, shown as it is
 //   _                 a space inside a token: el_campo, Don_Quijote
 //   , . ; : ! ? ¡ ¿ « » …   punctuation, set against its neighbours

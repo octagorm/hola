@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { LESSON, WORD, WORDS } from '../data/words'
+import { LESSON, TAUGHT, WORD, WORDS } from '../data/words'
 import { unmet } from '../lib/bank'
 import { partKey } from '../lib/today'
 import { useStore } from '../lib/store'
@@ -31,7 +31,7 @@ export default function Nuevas({ arg }: PageProps) {
 function Round({ lesson, again }: { lesson?: string; again: () => void }) {
   const { bank } = useStore()
   const [ids] = useState(() =>
-    unmet(bank, lesson ? WORDS.filter((w) => w.lesson === lesson) : WORDS)
+    unmet(bank, lesson ? WORDS.filter((w) => w.lesson === lesson) : TAUGHT)
       .slice(0, FIVE)
       .map((w) => w.id),
   )

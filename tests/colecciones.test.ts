@@ -106,11 +106,16 @@ describe('the rule for a lesson', () => {
 describe('the chests of drawers', () => {
   it('hold every lesson once', () => {
     const ids = chests().flatMap((c) => c.lessons)
-    expect(ids.sort()).toEqual(LESSONS.map((l) => l.id).sort())
+    expect(ids.sort()).toEqual(
+      LESSONS.filter((l) => !l.book)
+        .map((l) => l.id)
+        .sort(),
+    )
   })
 
   it('give every lesson a keepsake of its own', () => {
-    for (const l of LESSONS) expect(KEEPSAKE[l.id], l.id).toBeDefined()
+    for (const l of LESSONS.filter((x) => !x.book))
+      expect(KEEPSAKE[l.id], l.id).toBeDefined()
     const lessons = KEEPSAKES.map((k) => k.lesson)
     expect(new Set(lessons).size).toBe(lessons.length)
     for (const id of lessons)
