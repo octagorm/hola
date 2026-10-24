@@ -1,6 +1,6 @@
 import { PICTURES } from '../data/pictures'
 import { TABLE } from '../data/rastroLayout'
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 
 // El Rastro is painted as travel posters (scripts/pictures.mjs, from
 // data/rastro-prompts.ts): a background for each stall, each seller cut out
@@ -1335,6 +1335,8 @@ function PaintedStall({
   className?: string
 }) {
   const table = 240 * TABLE[who ?? 'street']
+  // The seller is cut off at the table's edge, however they move
+  const edge = useId()
   const wareImg = ware && painted(`rastro/ware-${ware}`)
   return (
     <svg
@@ -1345,9 +1347,14 @@ function PaintedStall({
     >
       <image href={bg} width="400" height="240" />
       {who && (
-        <g key={who} transform={`translate(${130 - 54} ${table + 3 - 126})`}>
-          <g className="ra-who">
-            <SellerFrames who={who} mood={mood} talking={talking} w={108} />
+        <g clipPath={`url(#${edge})`}>
+          <clipPath id={edge}>
+            <rect width="400" height={table} />
+          </clipPath>
+          <g key={who} transform={`translate(${130 - 54} ${table + 3 - 126})`}>
+            <g className="ra-who">
+              <SellerFrames who={who} mood={mood} talking={talking} w={108} />
+            </g>
           </g>
         </g>
       )}
@@ -1357,7 +1364,7 @@ function PaintedStall({
             key={ware}
             href={wareImg}
             x={262 - 38}
-            y={table + 12 - 76}
+            y={table + 6 - 76}
             width="76"
             height="76"
           />
