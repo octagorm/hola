@@ -40,7 +40,7 @@ export function TodayNext({
   if (!step || !done) return null
   return (
     <a className={className} href="#hoy">
-      Videre i dagens kapittel <ArrowRight />
+      Videre i dagens økt <ArrowRight />
     </a>
   )
 }

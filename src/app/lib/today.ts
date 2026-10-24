@@ -364,8 +364,7 @@ export function chapterTitle(p: Path): string {
   return `${capital(inWords(minutesOf(p)))} minutter, ${n === 1 ? 'én del' : `${inWords(n)} deler`}`
 }
 
-// What the reader does in the day's chapter, as Cervantes heads his
-// chapters: «Hvori leseren henter tilbake seks ord som har bleknet, …»
+// What today's session asks, plainly: «Repeter seks ord, lær to nye, …»
 export function chapterLine(p: Path): string {
   const reviewed = p.steps.some((s) => s.k === 'review')
   const parts = p.steps.map((s) => {
@@ -373,22 +372,24 @@ export function chapterLine(p: Path): string {
     switch (s.k) {
       case 'review':
         return s.arg === 'warm'
-          ? `varmer opp med ${inWords(n, true)} ord`
-          : `henter tilbake ${inWords(n, true)} ord som har bleknet`
+          ? `varm opp med ${inWords(n, true)} ord`
+          : `repeter ${inWords(n, true)} ord`
       case 'new': {
         const lesson = LESSON[lessonOf(s.ids ?? []) ?? '']
         const from = lesson && THEME[lesson.id] ? ` fra «${lesson.no}»` : ''
-        return `møter ${inWords(n, true)} nye${reviewed ? '' : ' ord'}${from}`
+        return `lær ${inWords(n, true)} nye${reviewed ? '' : ' ord'}${from}`
       }
-      case 'game':
-        return GAME[s.arg ?? '']?.doing ?? 'spiller et ordspill'
+      case 'game': {
+        const g = GAME[s.arg ?? '']
+        return g ? `spill ${g.es}` : 'spill et spill'
+      }
       case 'story': {
         const c = CHAPTER[s.arg ?? '']?.chapter
-        return c ? `leser kapittelet «${c.no}»` : 'leser et kapittel'
+        return c ? `les «${c.title}»` : 'les et kapittel'
       }
       case 'listen':
-        return `hører ${inWords(LISTEN, true)} av dem uttalt`
+        return `lytt til ${inWords(LISTEN, true)} av dem`
     }
   })
-  return `Hvori leseren ${listOf(parts)}.`
+  return `${capital(listOf(parts))}.`
 }

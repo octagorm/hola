@@ -32,8 +32,8 @@ export default function Credencial() {
         <p className="q-intro">
           Fra {START} over Pyreneene, gjennom Navarra, La Rioja, Castilla og
           León og Galicia til Santiago de Compostela, og videre til Fisterra ved
-          havet: trettiseks etapper, én for hver dag du fullfører dagens
-          kapittel. Hver by stempler passet.
+          havet: trettiseks etapper, én for hver dag du fullfører dagens økt.
+          Hver by stempler passet.
         </p>
         <p className="q-label">
           {here} av {STAGES.length} etapper{' '}

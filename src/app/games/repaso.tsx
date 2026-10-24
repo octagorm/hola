@@ -36,7 +36,7 @@ function Round({ again }: { again: () => void }) {
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <a className="q-btn" href="#hoy">
-            Dagens kapittel <ArrowRight />
+            Dagens økt <ArrowRight />
           </a>
           <a className="q-btn ghost" href="#nuevas">
             Fem nye ord

@@ -148,7 +148,7 @@ await test('a new player goes through today’s chapter and gets a stamp', async
 
 const PAGES = [
   ['', 'Hola'],
-  ['#hoy', 'Capítulo'],
+  ['#hoy', 'Día'],
   ['#repaso', 'Repaso'],
   ['#nuevas', 'Palabras nuevas'],
   ['#nuevas/comida', 'Palabras nuevas'],

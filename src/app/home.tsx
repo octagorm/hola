@@ -41,7 +41,6 @@ import {
   MixedKey,
   Ring,
   percent,
-  roman,
   useMedia,
 } from './ui'
 import type { GameIconId, TocId } from './art'
@@ -314,17 +313,17 @@ export default function Home() {
               >
                 <Ring
                   shares={done ? p.steps.map(() => 1) : p.steps.map(share)}
-                  numeral={roman(chapterNo)}
+                  numeral={String(chapterNo)}
                 />
               </a>
               <div>
                 <div className="q-label">
-                  Capítulo de hoy <span>· Dagens kapittel</span>
+                  La clase de hoy <span>· Dagens økt</span>
                 </div>
-                <h2>{done ? 'Dagens kapittel er skrevet' : chapterTitle(p)}</h2>
+                <h2>{done ? 'Ferdig for i dag' : chapterTitle(p)}</h2>
                 <p className="drop">
                   {done
-                    ? `Hvori leseren har gjort dagens arbeid og fått stempelet fra ${stageOf(chapterNo).town}.`
+                    ? `Du har fått stempelet fra ${stageOf(chapterNo).town}. Ny økt i morgen.`
                     : chapterLine(p)}
                 </p>
               </div>
@@ -358,8 +357,8 @@ export default function Home() {
                   La credencial<span>pilegrimspasset</span>
                 </h3>
                 <p>
-                  Hver dag du fullfører dagens kapittel, går du en etappe av
-                  Caminoen til Santiago og får et stempel.{' '}
+                  Hver dag du fullfører dagens økt, går du en etappe av Caminoen
+                  til Santiago og får et stempel.{' '}
                   {walked
                     ? `Dag ${walked}: ${stageOf(walked).town}.`
                     : `Første etappe: over Pyreneene til ${stageOf(1).town}.`}
@@ -520,7 +519,7 @@ function Themes() {
         </h4>
       </div>
       <p className="intro">
-        Velg et emne, så kommer de nye ordene i dagens kapittel derfra.
+        Velg et emne, så kommer de nye ordene i dagens økt derfra.
       </p>
       <div className="tabs" role="tablist" aria-label="Emner">
         {groups.map((g) => (

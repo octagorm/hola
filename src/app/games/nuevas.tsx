@@ -44,8 +44,7 @@ function Round({ lesson, again }: { lesson?: string; again: () => void }) {
           {lesson ? 'Hele leksjonen er møtt' : 'Alle ordene er møtt'}
         </h2>
         <p className="q-muted mt-3">
-          Nå gjelder det å holde dem ved like, i dagens kapittel og i
-          repetisjonen.
+          Nå gjelder det å holde dem ved like, i dagens økt og i repetisjonen.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <a className="q-btn" href="#repaso">

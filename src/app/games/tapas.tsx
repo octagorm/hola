@@ -166,7 +166,7 @@ function TooFew() {
       <p className="kick">Cerrado</p>
       <p>
         Baren trenger flere ord for mat og drikke før den kan åpne. Møt dem i
-        dagens kapittel, eller velg baren som tema.
+        dagens økt, eller velg baren som tema.
       </p>
       <a className="tp-btn" href="#tema/tapeo">
         Ordene ved bardisken <ArrowRight />

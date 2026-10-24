@@ -18,8 +18,8 @@ const page = (load: () => Promise<{ default: ComponentType<PageProps> }>) =>
 export const PAGES = [
   {
     id: 'hoy',
-    es: 'Capítulo de hoy',
-    no: 'Dagens kapittel',
+    es: 'La clase de hoy',
+    no: 'Dagens økt',
     Page: page(() => import('./games/hoy')),
   },
   {

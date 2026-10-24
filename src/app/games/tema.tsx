@@ -81,8 +81,8 @@ export default function Tema({ arg }: PageProps) {
           {left === 0
             ? 'Alle ordene her er møtt. Nå gjelder det å holde dem ved like.'
             : chosen
-              ? 'De nye ordene i dagens kapittel kommer herfra, til alle er møtt.'
-              : 'Velg det, så kommer de nye ordene i dagens kapittel herfra, til alle er møtt.'}
+              ? 'De nye ordene i dagens økt kommer herfra, til alle er møtt.'
+              : 'Velg det, så kommer de nye ordene i dagens økt herfra, til alle er møtt.'}
         </p>
       </section>
 

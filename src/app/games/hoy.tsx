@@ -74,7 +74,7 @@ export default function Hoy() {
 
   if (!p)
     return (
-      <Page es="Capítulo de hoy" title="Dagens kapittel">
+      <Page es="La clase de hoy" title="Dagens økt">
         {null}
       </Page>
     )
@@ -85,15 +85,15 @@ export default function Hoy() {
   const chapterNo = walked + (bank.daily[day] ? 0 : 1)
 
   return (
-    <Page es={`Capítulo ${roman(chapterNo)}`} title="Dagens kapittel">
+    <Page es={`Día ${chapterNo}`} title="Dagens økt">
       <section className="q-hoy-head">
         <Ring
           shares={p.steps.map(share)}
-          numeral={roman(chapterNo)}
+          numeral={String(chapterNo)}
           size={92}
         />
         <div>
-          <h2>{done ? 'Dagens kapittel er skrevet' : chapterTitle(p)}</h2>
+          <h2>{done ? 'Ferdig for i dag' : chapterTitle(p)}</h2>
           <p>{chapterLine(p)}</p>
         </div>
       </section>
@@ -169,7 +169,7 @@ function Part({ p, i }: { p: Path; i: number }) {
         <p className="q-part-intro">
           {s.arg === 'warm'
             ? 'Ingen ord har bleknet ennå. Disse er de svakeste du har:'
-            : 'Disse ordene har bleknet siden sist. Hent dem tilbake før de glipper:'}
+            : 'Disse ordene holder du på å glemme. Repeter dem:'}
         </p>
         <Drill ids={s.ids ?? []} got={got} onItem={(id) => add([id])} />
       </section>
@@ -290,7 +290,7 @@ function Summary({ p }: { p: Path }) {
         <Stamp motif={stage.motif} n={n} className="fx-stamp" />
       </div>
       <div className="q-label">
-        Fin del capítulo <span>· kapittelet er ferdig</span>
+        ¡Hecho! <span>· ferdig for i dag</span>
       </div>
       <h3>{stage.town}</h3>
       <p className="q-muted">
@@ -299,7 +299,7 @@ function Summary({ p }: { p: Path }) {
 
       {sum.words.length > 0 && (
         <>
-          <h4>Ordene du hentet tilbake</h4>
+          <h4>Ordene du repeterte</h4>
           <ul className="q-gains">
             {sum.words.map((x) => {
               const w = WORD[x.id]
@@ -338,7 +338,7 @@ function Summary({ p }: { p: Path }) {
       </div>
       <p className="q-muted">
         {sum.tomorrow
-          ? `I morgen har ${sum.tomorrow} ord begynt å blekne, og de kommer tilbake i neste kapittel.`
+          ? `I morgen har ${sum.tomorrow} ord begynt å blekne, og de kommer tilbake i morgendagens økt.`
           : 'Ingen ord blekner før i morgen.'}
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
