@@ -12,6 +12,8 @@ export interface Voice {
   // How to say it, in a few words. Google's advice is to keep this to the
   // delivery: age, sex and accent belong to the voice.
   style: string
+  // The language it speaks, for the TTS: Castilian Spanish unless said
+  lang?: string
 }
 
 export const WORD_VOICE = 'Profesora'
@@ -27,6 +29,9 @@ export const TAXI_VOICE = 'Pasajero'
 // Voices designed from a description, each made once (their ids are kept
 // in scripts/voices.json; delete one to design it again)
 export const DESIGNED: Record<string, string> = {
+  // The audiobook's guide (data/lydbok.ts), who says in Norwegian what
+  // each chapter is about
+  Guía: 'A Norwegian woman in her fifties from Oslo, speaking Norwegian bokmål with a natural eastern Norwegian accent: a warm, calm and clear voice, like a good radio host reading to a friend.',
   Profesora:
     'A Spanish woman in her thirties, a native speaker from Madrid who teaches Spanish, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in zapato and cielo): a clear, warm and natural voice, friendly and patient, every sound crisp.',
   Narrador:
@@ -133,6 +138,14 @@ export const VOICES: Record<string, Voice> = {
   Ildefonso: {
     base: 'Leda',
     style: 'a child singing out the Christmas lottery draw, in its sing-song',
+  },
+  // The audiobook (data/lydbok.ts): the guide's Norwegian before each
+  // chapter; the story itself is the narrator's, and its people speak in
+  // the cast's voices
+  Guía: {
+    base: 'Guía',
+    style: 'introducing a chapter of an audiobook, warm and unhurried',
+    lang: 'Norwegian bokmål',
   },
   Pasajero: {
     base: 'Narrador',

@@ -170,7 +170,9 @@ def casting(cast, designed, ids):
         # Without "every word as written" a voice in character now and
         # then adds a word of its own (as Tian's do)
         manner = cast[it["voice"]]["style"] if it["voice"] in cast else LINE_STYLE
-        return f"Castilian Spanish, {manner}, every word as written"
+        # (the audiobook's guide speaks Norwegian: data/voices.ts, lang)
+        lang = cast.get(it["voice"], {}).get("lang", "Castilian Spanish")
+        return f"{lang}, {manner}, every word as written"
 
     return voice_of, style_of
 

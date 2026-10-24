@@ -179,6 +179,12 @@ export const PAGES = [
     Page: page(() => import('./games/taxi')),
   },
   {
+    id: 'lydbok',
+    es: 'Audiolibros',
+    no: 'Lydbøker',
+    Page: page(() => import('./games/lydbok')),
+  },
+  {
     id: 'ordbank',
     es: 'Tus palabras',
     no: 'Ordbank',

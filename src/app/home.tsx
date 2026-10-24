@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
+  Headphones,
   Library,
   Music,
   Puzzle,
@@ -12,6 +13,8 @@ import { EPIGRAPH } from './data/quijote'
 import { STORY } from './data/stories'
 import { stageOf } from './data/camino'
 import { GAME_INFO } from './data/games'
+import { AUDIOBOOKS } from './data/lydbok'
+import { MADE, minutes } from './lib/lydbok'
 import { THEME, THEME_GROUPS } from './data/themes'
 import { LESSON, WORDS } from './data/words'
 import { LINKS, counts, dayKey, linkShares } from './lib/bank'
@@ -378,6 +381,28 @@ export default function Home() {
 
         {tab === 'leer' && (
           <>
+            {AUDIOBOOKS.map((b) => (
+              <a
+                key={b.id}
+                className="q-frame q-box q-audiobook"
+                href={`#lydbok/${b.id}`}
+              >
+                <Headphones aria-hidden="true" />
+                <span>
+                  <h3>
+                    {b.es}
+                    <span>lydbok</span>
+                  </h3>
+                  <p>
+                    {b.no}
+                    {MADE[b.id]
+                      ? ` · ${minutes(MADE[b.id]?.seconds ?? 0)}`
+                      : ''}
+                  </p>
+                </span>
+              </a>
+            ))}
+
             <section className="q-toc">
               <h4>
                 Índice<small>Fortellingene</small>

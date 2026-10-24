@@ -6,6 +6,7 @@ import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
 import { GAPS } from '../data/porpara.ts'
 import { SENTENCES, TIMES } from '../data/tiempos.ts'
 import { KEEPSAKES } from '../data/cajones.ts'
+import { AUDIOBOOKS } from '../data/lydbok.ts'
 import { DECK, spanish } from './cadaver.ts'
 import { whole } from './porpara.ts'
 import { plain as said } from './tiempos.ts'
@@ -92,5 +93,17 @@ export function speechItems(): Array<SpeechItem> {
   // The keepsakes in Los cajones, said as a drawer is opened, in the
   // teacher's voice (most are words of the bank already)
   for (const k of KEEPSAKES) add(WORD_VOICE, k.es, 'word')
+  // The audiobooks: the guide's Norwegian, each chapter's title in the
+  // narrator's voice, the lines in their speakers', and each form in them
+  for (const b of AUDIOBOOKS)
+    for (const c of b.chapters) {
+      add('Guía', c.intro, 'line')
+      add(LINE_VOICE, c.title, 'line')
+      c.lines.forEach((line, i) =>
+        add(c.who?.[i] ?? LINE_VOICE, plain(line), 'line'),
+      )
+      for (const line of c.lines)
+        for (const t of tokens(line)) if (t.id) add(WORD_VOICE, t.es, 'word')
+    }
   return items
 }

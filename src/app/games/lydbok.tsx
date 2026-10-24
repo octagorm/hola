@@ -1,0 +1,249 @@
+import { useEffect, useRef, useState } from 'react'
+import { Download, Pause, Play, RotateCcw, RotateCw } from 'lucide-react'
+import { AUDIOBOOKS } from '../data/lydbok'
+import { BOOK, MADE, markAt, minutes } from '../lib/lydbok'
+import { stop } from '../lib/speech'
+import { Mixed, Page } from '../ui'
+import type { PageProps } from '../registry'
+import type { Audiobook } from '../data/lydbok'
+import type { Made } from '../lib/lydbok'
+
+// An audiobook (data/lydbok.ts): one file to play, with the chapter heard
+// shown in mixed text and the line heard marked, or to save and hear on a
+// walk. Where it was left is kept in this browser.
+
+const SPEEDS = [0.8, 0.9, 1]
+
+const clock = (s: number) => {
+  const m = Math.floor(s / 60)
+  return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`
+}
+
+const placeKey = (id: string) => `hola:lydbok:${id}`
+
+function savedPlace(id: string): number {
+  try {
+    return Number(localStorage.getItem(placeKey(id))) || 0
+  } catch {
+    return 0
+  }
+}
+
+function savePlace(id: string, t: number) {
+  try {
+    localStorage.setItem(placeKey(id), String(Math.floor(t)))
+  } catch {
+    // storage closed
+  }
+}
+
+export default function Lydbok({ arg }: PageProps) {
+  const book =
+    BOOK[arg ?? ''] ?? (AUDIOBOOKS.length === 1 ? AUDIOBOOKS[0] : undefined)
+  if (book) return <Book book={book} made={MADE[book.id]} />
+  return (
+    <Page es="Audiolibros" title="Lydbøker">
+      <ul className="q-books">
+        {AUDIOBOOKS.map((b) => (
+          <li key={b.id}>
+            <a href={`#lydbok/${b.id}`}>
+              <b>{b.es}</b>
+              <span>{b.no}</span>
+              {MADE[b.id] && <em>{minutes(MADE[b.id]?.seconds ?? 0)}</em>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Page>
+  )
+}
+
+function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
+  const audio = useRef<HTMLAudioElement>(null)
+  const [playing, setPlaying] = useState(false)
+  const [t, setT] = useState(() => savedPlace(book.id))
+  const [speed, setSpeed] = useState(1)
+  // The chapter shown: the one heard, or one picked to read
+  const [picked, setPicked] = useState<number | null>(null)
+  const now = made ? markAt(made, t) : null
+  const shown = picked ?? now?.[0] ?? 0
+  const chapter = book.chapters[shown]
+  const lineRef = useRef<HTMLParagraphElement>(null)
+
+  // Started where it was left
+  useEffect(() => {
+    const a = audio.current
+    if (a && t) a.currentTime = t
+    // (only on opening)
+  }, [])
+
+  // The line heard kept in view
+  const heard = now && now[0] === shown ? now[1] : null
+  useEffect(() => {
+    if (playing)
+      lineRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [heard, playing])
+
+  // The phone's lock screen names the book
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: book.es,
+      artist: 'Hola',
+      album: book.no,
+    })
+  }, [book])
+
+  const toggle = () => {
+    const a = audio.current
+    if (!a) return
+    if (a.paused) {
+      stop()
+      setPicked(null)
+      void a.play()
+    } else a.pause()
+  }
+
+  const seek = (to: number) => {
+    const a = audio.current
+    if (!a) return
+    a.currentTime = Math.max(0, Math.min(made?.seconds ?? 0, to))
+    setT(a.currentTime)
+    setPicked(null)
+  }
+
+  const startOf = (c: number) => made?.marks.find(([mc]) => mc === c)?.[2] ?? 0
+
+  return (
+    <Page es={book.es} title={book.no}>
+      <div className="q-book">
+        <p className="q-intro">{book.about}</p>
+        <p className="q-muted for">Skrevet ut fra {book.for}.</p>
+
+        {made ? (
+          <section className="q-frame q-player">
+            <audio
+              ref={audio}
+              src={`/${made.file}`}
+              preload="metadata"
+              onPlay={() => setPlaying(true)}
+              onPause={() => {
+                setPlaying(false)
+                savePlace(book.id, audio.current?.currentTime ?? 0)
+              }}
+              onEnded={() => savePlace(book.id, 0)}
+              onTimeUpdate={(e) => {
+                const at = e.currentTarget.currentTime
+                setT(at)
+                if (Math.floor(at) % 5 === 0) savePlace(book.id, at)
+              }}
+            />
+            <div className="row">
+              <button
+                type="button"
+                className="q-round"
+                aria-label="15 sekunder tilbake"
+                onClick={() => seek(t - 15)}
+              >
+                <RotateCcw />
+              </button>
+              <button
+                type="button"
+                className="q-round big dark"
+                aria-label={playing ? 'Pause' : 'Spill av'}
+                onClick={toggle}
+              >
+                {playing ? <Pause /> : <Play />}
+              </button>
+              <button
+                type="button"
+                className="q-round"
+                aria-label="15 sekunder fram"
+                onClick={() => seek(t + 15)}
+              >
+                <RotateCw />
+              </button>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={made.seconds}
+              step={1}
+              value={Math.min(t, made.seconds)}
+              aria-label="Hvor i boken"
+              onChange={(e) => seek(Number(e.target.value))}
+            />
+            <div className="times">
+              <span>{clock(t)}</span>
+              <span>{clock(made.seconds)}</span>
+            </div>
+            <div className="speeds" role="group" aria-label="Fart">
+              {SPEEDS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className={s === speed ? 'on' : ''}
+                  aria-pressed={s === speed}
+                  onClick={() => {
+                    setSpeed(s)
+                    if (audio.current) audio.current.playbackRate = s
+                  }}
+                >
+                  {s === 1 ? 'Vanlig' : `${Math.round(s * 100)} %`}
+                </button>
+              ))}
+            </div>
+            <a
+              className="q-btn ghost small save"
+              href={`/${made.file}`}
+              download={`${book.es}.mp3`}
+            >
+              <Download /> Last ned og hør på tur
+            </a>
+          </section>
+        ) : (
+          <p className="q-frame q-player none">
+            Lydboken er ikke lest inn ennå. Teksten kan leses her så lenge.
+          </p>
+        )}
+
+        <ol className="q-book-chapters">
+          {book.chapters.map((c, i) => (
+            <li key={i} className={i === shown ? 'on' : ''}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (made) seek(startOf(i))
+                  setPicked(i)
+                }}
+              >
+                <span className="n">{i + 1}</span>
+                <b>{c.title}</b>
+                <small>{c.no}</small>
+              </button>
+            </li>
+          ))}
+        </ol>
+
+        <section className="q-text q-book-text">
+          <p
+            className={`guide ${heard === -2 ? 'now' : ''}`}
+            ref={heard === -2 ? lineRef : undefined}
+          >
+            {chapter.intro}
+          </p>
+          <h2 className={heard === -1 ? 'now' : ''}>{chapter.title}</h2>
+          {chapter.lines.map((l, i) => (
+            <p
+              key={`${shown}-${i}`}
+              ref={heard === i ? lineRef : undefined}
+              className={heard === i ? 'now' : ''}
+            >
+              <Mixed line={l} onPeek={() => audio.current?.pause()} />
+            </p>
+          ))}
+        </section>
+      </div>
+    </Page>
+  )
+}
