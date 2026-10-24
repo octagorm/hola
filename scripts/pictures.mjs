@@ -187,11 +187,12 @@ function forWeb(name) {
     mkdirSync(dirname(`${WEB}/${n}.webp`), { recursive: true })
     return `${WEB}/${n}.webp`
   }
-  const fit = (input, n, gravity) =>
+  const webp = ['-quality', '80', '-strip']
+  // a sheet's parts come already cut to one box, which trimming would undo
+  const fit = (input, n, gravity, trim = true) =>
     execFileSync('magick', [
       ...input,
-      '-trim',
-      '+repage',
+      ...(trim ? ['-trim', '+repage'] : []),
       '-resize',
       p.size,
       '-background',
@@ -200,6 +201,7 @@ function forWeb(name) {
       gravity,
       '-extent',
       p.size,
+      ...webp,
       out(n),
     ])
   if (p.parts) {
@@ -224,13 +226,25 @@ function forWeb(name) {
         ],
         `${name}-${part}`,
         'south',
+        false,
       )
       console.log(out(`${name}-${part}`))
     })
     return
   }
   if (p.cutout) fit([full(name)], name, 'south')
-  else execFileSync('magick', [full(name), `${p.size}^`, p.size, out(name)])
+  else
+    execFileSync('magick', [
+      full(name),
+      '-resize',
+      `${p.size}^`,
+      '-gravity',
+      'center',
+      '-extent',
+      p.size,
+      ...webp,
+      out(name),
+    ])
   console.log(out(name))
 }
 
