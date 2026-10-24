@@ -1541,13 +1541,28 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.locator('.q-peek', { hasText: 'continuar i fortid' }).waitFor()
   await page.keyboard.press('Escape')
   // Spanish alone: no Norwegian over the words, which still open their card
-  await page.getByText('Bare spansk').click()
+  await page.getByRole('button', { name: 'Visning' }).click()
+  await page.getByRole('button', { name: 'Bare spansk' }).click()
+  await page.keyboard.press('Escape')
   expect((await page.locator('.bk-text ruby').count()) === 0, 'no Norwegian')
   await page.locator('.bk-text .kw', { hasText: 'testamento' }).first().click()
   await page.locator('.q-peek', { hasText: 'testamente' }).waitFor()
   await page.keyboard.press('Escape')
-  await page.getByText('Bare spansk').click()
-  await page.locator('.bk-text ruby').first().waitFor()
+  // Norwegian over every word, the known ones too
+  await page.getByRole('button', { name: 'Visning' }).click()
+  await page.getByRole('button', { name: 'Alle ord' }).click()
+  await page.keyboard.press('Escape')
+  await page
+    .locator('.bk-text ruby.kw', { hasText: 'lugareño' })
+    .first()
+    .waitFor()
+  await page.getByRole('button', { name: 'Visning' }).click()
+  await page.getByRole('button', { name: 'Ukjente ord' }).click()
+  await page.keyboard.press('Escape')
+  await page
+    .locator('.bk-text span.kw', { hasText: 'lugareño' })
+    .first()
+    .waitFor()
   // Scrolled on, and opened again where it was left
   await page.locator('.bk-text p').nth(7).scrollIntoViewIfNeeded()
   await page.evaluate(() => window.scrollBy(0, 300))
@@ -1558,6 +1573,33 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.getByText('regnet som lest').waitFor()
   await go(page, '#biblioteca')
   await page.locator('.q-chapters', { hasText: 'Lest' }).waitFor()
+})
+
+await test('a text in the library is read a page at a time', async (page) => {
+  await go(page, '#biblioteca/bolondron')
+  await page.getByRole('button', { name: 'Visning' }).click()
+  await page.getByRole('button', { name: 'Sider' }).click()
+  await page.keyboard.press('Escape')
+  const shown = () => page.locator('.bk-pages').textContent()
+  await page.locator('.bk-pages', { hasText: /^1 av \d+/ }).waitFor()
+  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowRight')
+  await page.locator('.bk-pages', { hasText: /^3 av/ }).waitFor()
+  // A tap in the margin, on the right
+  const box = await page.locator('.bk-view').boundingBox()
+  await page.mouse.click(box.x + box.width + 6, box.y + box.height / 2)
+  await page.locator('.bk-pages', { hasText: /^4 av/ }).waitFor()
+  // Opened again at the page it was left on, or near it
+  await page.waitForTimeout(300)
+  await page.reload()
+  await page.getByText('Her slapp du sist.').waitFor()
+  const at = Number((await shown())?.match(/^(\d+)/)?.[1])
+  expect(at >= 3, `opened at page ${at}`)
+  await page.keyboard.press('ArrowLeft')
+  expect(
+    Number((await shown())?.match(/^(\d+)/)?.[1]) === at - 1,
+    'turned back',
+  )
 })
 
 await test(

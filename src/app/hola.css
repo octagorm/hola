@@ -265,6 +265,12 @@ body.q-body {
   color: var(--nw);
 }
 
+/* (known, with the Norwegian over it all the same, faint) */
+.mx ruby.kw rt {
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+
 .mx .kw:hover,
 .mx .lw:hover,
 .mx .nw:hover {
@@ -3106,10 +3112,6 @@ img.q-pic {
   line-height: 1.6;
 }
 
-.bk-plain {
-  margin: 14px 0 6px;
-}
-
 .bk-hint {
   margin: 0;
   font-size: 16px;
@@ -3139,16 +3141,139 @@ img.q-pic {
   color: inherit;
 }
 
-.q-round.bk-size span {
+.bk-end {
+  break-inside: avoid;
+}
+
+/* As wide as chosen, whatever the size (the header keeps its own width) */
+.bk-page .q-main {
+  max-width: none;
+}
+
+.bk-read {
+  max-width: var(--bk-width, 700px);
+  margin: 0 auto;
+}
+
+.bk-text p {
+  orphans: 2;
+  widows: 2;
+}
+
+/* A page at a time: the text in columns, moved sideways a page at a time
+   (biblioteca.tsx sets their size), with the buttons under it */
+.bk-page.paged .q-main {
+  padding-bottom: 0;
+}
+
+.bk-page.paged .bk-view {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.bk-page.paged .bk-flow {
+  column-fill: auto;
+}
+
+.bk-flow-end {
+  display: block;
+  height: 1px;
+}
+
+.bk-pages {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  height: 32px;
+  text-align: center;
+  font-family: var(--sc);
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+/* (room in the margins for a tap that turns the page) */
+@media (max-width: 640px) {
+  .bk-page.paged .q-main {
+    padding-left: 26px;
+    padding-right: 26px;
+  }
+}
+
+/* «Aa»: the panel of choices for how the text is shown */
+.q-round.bk-panel-open span {
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 21px;
   line-height: 1;
 }
 
-.q-round.bk-size.big span {
-  font-size: 25px;
+.bk-panel {
+  position: fixed;
+  z-index: 30;
+  top: 72px;
+  right: max(16px, calc((100vw - 820px) / 2 + 16px));
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--paper-3);
 }
 
-.q-round.bk-size:disabled {
-  opacity: 0.4;
+.bk-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bk-row > span {
+  font-family: var(--sc);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.bk-seg {
+  display: flex;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bk-seg button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  font-family: var(--body);
+  font-size: 17px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.bk-seg button + button {
+  border-left: 2px solid var(--ink);
+}
+
+.bk-seg button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.bk-seg button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper-3);
+}
+
+/* (on a phone every width is the whole screen) */
+@media (max-width: 640px) {
+  .bk-wide {
+    display: none;
+  }
 }

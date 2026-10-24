@@ -122,6 +122,7 @@ export function Mixed({
   onPeek,
   explain,
   all,
+  glossAll = false,
   still = false,
 }: {
   line: string
@@ -132,6 +133,8 @@ export function Mixed({
   explain?: (t: Token) => Explained | undefined
   // Every word at one level, as for a line shown in full
   all?: Level
+  // The Norwegian over the known words too, faint
+  glossAll?: boolean
   // Nothing to tap, as inside something that is itself a button
   still?: boolean
 }) {
@@ -172,8 +175,11 @@ export function Mixed({
         return (
           <span key={i}>
             {space}
-            {lv < 2 ? (
-              <ruby className={lv === 0 ? 'nw' : 'lw'} {...tap}>
+            {lv < 2 || glossAll ? (
+              <ruby
+                className={lv === 0 ? 'nw' : lv === 1 ? 'lw' : 'kw'}
+                {...tap}
+              >
                 {t.es}
                 <rt>{t.no}</rt>
               </ruby>
@@ -190,11 +196,18 @@ export function Mixed({
 }
 
 // What mixed text's three ways of showing a word mean
-export function MixedKey() {
+export function MixedKey({ faint = false }: { faint?: boolean }) {
   return (
     <div className="mx-key">
       <span>
-        <b>Spansk</b> · kjent
+        {faint ? (
+          <b>
+            Spansk med <i style={{ color: 'var(--ink-3)' }}>grått</i> over
+          </b>
+        ) : (
+          <b>Spansk</b>
+        )}{' '}
+        · kjent
       </span>
       <span>
         <b>

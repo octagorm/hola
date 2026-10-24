@@ -42,13 +42,25 @@ export interface Settings {
   perDay: number
   // The size of the text in the library's reader, a step of TEXT_SIZES
   textSize: number
-  // The library's texts in Spanish alone, without the Norwegian over the
-  // words, the lines as close as in a book
-  plainText: boolean
+  // The Norwegian over the words in the library's texts: none, the lines as
+  // close as in a book; over the words not known yet; or over every word,
+  // faint over those known
+  gloss: 'none' | 'new' | 'all'
+  // The library's texts a page at a time, turned sideways, as in a book
+  paged: boolean
+  // How wide the library's text may be, a step of TEXT_WIDTHS
+  textWidth: number
 }
 
 // The library's text sizes, in pixels
 export const TEXT_SIZES = [20, 23, 26, 30, 34]
+
+// How wide the library's text may be, whatever its size
+export const TEXT_WIDTHS = [
+  { name: 'Smal', px: 560 },
+  { name: 'Middels', px: 700 },
+  { name: 'Bred', px: 900 },
+]
 
 export const DEFAULTS: Settings = {
   voice: '',
@@ -59,7 +71,9 @@ export const DEFAULTS: Settings = {
   music: false,
   perDay: 4,
   textSize: 2,
-  plainText: false,
+  gloss: 'new',
+  paged: false,
+  textWidth: 1,
 }
 
 const BANK_KEY = 'hola:bank:v1'
