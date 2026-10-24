@@ -38,6 +38,8 @@ export interface Audiobook {
   about: string
   // Whose words it was written from, and when: «ordene alle starter med»
   for: string
+  // The day it went out, its date in the podcast feed (lib/podcast.ts)
+  date: string
   chapters: Array<BookChapter>
 }
 
@@ -89,6 +91,7 @@ export const AUDIOBOOKS: Array<Audiobook> = [
     about:
       'Marta og Ingrid følger Berit fra Hamar, som bor en uke alene i en liten leilighet i Altea, en hvit by ved havet sør i Spania. Hun tar bussen, handler på markedet, drikker kaffe på baren, finner apoteket og blir kjent med naboen, og Marta og Ingrid plukker ut setningene du kan bruke selv.',
     for: 'ordene alle starter med i Hola, oktober 2026',
+    date: '2026-10-24',
     chapters: [
       {
         title: 'Un piso en Altea',

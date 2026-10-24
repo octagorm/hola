@@ -3051,6 +3051,57 @@ img.q-pic {
   color: var(--red);
 }
 
+.q-book-text p.jump {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .q-book-text p.jump:hover {
+    background: rgba(210, 154, 46, 0.1);
+  }
+}
+
+/* Following the audiobooks in a podcast app */
+.q-follow {
+  margin: 28px 0 8px;
+  padding-top: 14px;
+  border-top: 2px solid var(--ink);
+  font-size: 17px;
+}
+
+.q-follow h2 {
+  margin: 0 0 6px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.q-follow p {
+  margin: 8px 0;
+  color: var(--ink-2);
+}
+
+.q-follow .apps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.q-follow .feed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.q-follow code {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
 /* More on a word's card: its gender, what this form is, a note on it here */
 .q-peek .q-peek-more {
   margin: -4px 0 8px;
