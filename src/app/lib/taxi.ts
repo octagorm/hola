@@ -18,7 +18,7 @@ import type { Lot, Place, Turn } from '../data/taxi.ts'
 // would take to a place, told one instruction at a time, each asking for a
 // move at the next crossing or two (or at the next place passed), as the
 // passenger in the back would say it. Pure, so that the tests can drive
-// every ride; games/taxi.tsx plays it and games/taxiScene.ts draws it.
+// every ride; games/taxi.tsx plays it and games/taxiMap.tsx draws the map.
 
 // --- The town, in its own units (about half a metre) ---
 
@@ -31,10 +31,11 @@ export const PITCH = STREET + 2 * WALK + 2 * LOT
 // The taxi keeps this far right of the middle of the road: the middle of
 // its lane, between the centre line and the kerb
 export const LANE = 4.5
-// Where crossing (0, 0) is, with room round the grid for the town beyond
-export const ORIGIN = 3 * PITCH
-export const WORLD_W = 2 * ORIGIN + (NX - 1) * PITCH
-export const WORLD_H = 2 * ORIGIN + (NY - 1) * PITCH
+// The map is a square with a crossing-to-crossing's width of gardens round
+// the grid: so the five streets each way lie at one sixth, two sixths, …
+// five sixths of its width (scripts/pictures.mjs paints it so, as taxi/map)
+export const ORIGIN = PITCH
+export const MAP = 2 * ORIGIN + (NX - 1) * PITCH
 
 // Along a street, from the crossing it leaves: the two lots on either side,
 // where the street meets the next crossing, and where it leaves the last
@@ -277,6 +278,10 @@ export function instruct(
     expect: moves[k],
   })
   const last = lastTurn(route)
+  // the place the taxi sets out from is no place to look out for
+  const from = rightLots(edges[0])
+    .filter((r) => Math.abs(r.d - route.d0) < 1)
+    .map((r) => placeOn(r.lot)?.id)
   let k = 0
   while (k <= last) {
     let t = k
@@ -284,7 +289,9 @@ export function instruct(
     const side = moves[t] as Turn
     const s = t - k
     const at = ahead(edges[t])
-    const corner = placesAt(at.i, at.j).filter((p) => p.id !== to.id)
+    const corner = placesAt(at.i, at.j).filter(
+      (p) => p.id !== to.id && !from.includes(p.id),
+    )
     const place = corner.length
       ? corner[Math.floor(rand() * corner.length)]
       : undefined
@@ -456,10 +463,18 @@ export function plan(
   }
 }
 
-// Where the taxi waits for its first passenger: in front of a place
+// Where the taxi waits for its first passenger: in front of a place, on
+// the street that looks most into town
 export function spotAt(id: string): Spot {
-  const [first] = stopsFor(placeOf(id).lot)
-  return { edge: first.edge, d: first.d }
+  const mid = MAP / 2
+  const into = (x: { edge: Edge; d: number }) => {
+    const c = crossingXY(x.edge.i, x.edge.j)
+    const px = c.x + DX[x.edge.h] * x.d
+    const py = c.y + DY[x.edge.h] * x.d
+    return DX[x.edge.h] * (mid - px) + DY[x.edge.h] * (mid - py)
+  }
+  const [best] = stopsFor(placeOf(id).lot).sort((a, b) => into(b) - into(a))
+  return { edge: best.edge, d: best.d }
 }
 
 // Where a ride ends, for the next to start from
@@ -467,6 +482,18 @@ export const endOf = (r: Ride): Spot => ({
   edge: r.route.edges[r.route.edges.length - 1],
   d: r.route.dEnd,
 })
+
+// The moves a point of a ride can take: at a crossing, the ways on that
+// stay in town; at a place passed, on or stop
+export function movesAt(route: Route, p: Point): Array<Move> {
+  if (p.lot) return ['straight', 'stop']
+  const e = route.edges[p.edge]
+  const at = ahead(e)
+  return (['left', 'straight', 'right'] as const).filter((m) => {
+    const h = turned(e.h, m)
+    return inGrid(at.i + DX[h], at.j + DY[h])
+  })
+}
 
 // --- Judging a move ---
 

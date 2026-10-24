@@ -1376,9 +1376,14 @@ await test(
 )
 
 await test(
-  'Taxi drives a shift of five passengers',
+  'Taxi drives a shift of five passengers on the map',
   async (page) => {
     await go(page, '#taxi')
+    // the map, with a sign on each place, and a sign's word card
+    expect((await page.locator('.tx-sign').count()) === 10, 'ten signs')
+    await page.locator('.tx-sign', { hasText: 'ESTACIÓN' }).click()
+    await page.locator('.q-peek').waitFor()
+    await page.keyboard.press('Escape')
     await page.getByRole('button', { name: 'Start vakten' }).click()
     const stage = page.locator('.tx-stage')
     let wrong = 0
@@ -1392,17 +1397,22 @@ await test(
         await page.locator('.tx-line').waitFor()
         expect((await live()) === 4, 'a star less for the words shown')
       }
-      // Each move tried in turn until the passenger takes it: a wrong one
-      // jolts the town, gets a complaint and costs a star
+      // Each move the buttons offer tried in turn until the passenger takes
+      // it: a wrong one jolts the map, gets a complaint and costs a star
       while (!(await visible(page, '.tx-paid'))) {
         await page.waitForSelector('.tx-paid, .tx-move:not([disabled])', {
           timeout: 20000,
         })
         if (await visible(page, '.tx-paid')) break
+        // the ring on the map where the move is asked for (placed on the
+        // next frame)
+        await page.locator('.tx-mark').waitFor({ timeout: 2000 })
         for (const move of ['left', 'straight', 'right', 'stop']) {
+          const button = page.locator(`.tx-move.${move}`)
+          if (await button.isDisabled()) continue
           const before = await stage.getAttribute('class')
           const had = await live()
-          await page.locator(`.tx-move.${move}`).click()
+          await button.click()
           await page.waitForTimeout(150)
           if ((await stage.getAttribute('class')) === before) break
           wrong++
