@@ -78,7 +78,8 @@ const CAT = 'a fat ginger-and-white cat with long white whiskers'
 // What each chapter's picture shows
 const QUIJOTE =
   'Don Quijote, a tall, very thin old gentleman with a long grey moustache and pointed beard, in old, ill-fitting armour and an old helmet with a visor patched with pasteboard'
-const ROCINANTE = 'Rocinante, his bony old white-grey horse'
+const ROCINANTE =
+  'Rocinante, his old nag: a thin, bony, tired horse of a dull grey-brown, its ribs and hip bones plainly showing, its neck long and its head hanging low, nothing like a fine white steed'
 const SANCHO =
   'Sancho Panza, a short, round, cheerful peasant in a brown smock and a straw hat, on a small grey donkey'
 const CHAPTERS = {
