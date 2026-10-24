@@ -2150,6 +2150,201 @@ const LIST: Array<Lesson & { words: string }> = [
       así | slik, sånn | adv
     `,
   },
+  {
+    id: 'insaciable',
+    es: 'Un hombre insaciable',
+    no: 'En mann som aldri fikk nok',
+    book: true,
+    words: `
+      todavía | enda, ennå | adv
+      lo que | det som | expr
+      desear | ønske | v
+      satisfecho | fornøyd | adj
+      ni | heller ikke, eller | conj
+      tampoco | heller ikke | adv
+      cuando | når, da | conj
+      exclamar | rope, utbryte | v
+      demasiado | for mye, for | adv
+      ora | snart (… snart) | conj
+      bastante | nok, ganske | adv
+      el momento | øyeblikk
+      presentarse | dukke opp, presentere seg | v
+      mejor | bedre | adj
+      pues bien | vel, nå vel | expr
+      el extranjero | utlending, fremmed
+      el año que viene | neste år | expr
+      marzo | mars | expr
+      abril | april | expr
+      caluroso | varm, het | adj
+      tan | så | adv
+      al fin | til slutt | expr
+      la vendimia | druehøst
+      alguno | noen, en eller annen | det
+      ácido | sur | adj
+      el vinagre | eddik
+      agrio | sur, besk | adj
+      comprender | forstå | v
+    `,
+  },
+  {
+    id: 'palacio',
+    es: 'El palacio de Madrid',
+    no: 'Slottet i Madrid',
+    book: true,
+    words: `
+      el palacio | slott, palass
+      por todas partes | overalt | expr
+      nombrado | berømt, kjent | adj
+      la suma | sum
+      acabar | gjøre ferdig, slutte | v
+      en breve plazo | på kort tid | expr
+      convidar | invitere, by | v
+      el que | den som, det som | expr
+      concluir | fullføre, avslutte | v
+      contestar | svare | v
+      manifestar | si klart fra, vise | v
+      la promesa | løfte
+      aquel | den, det (der borte) | det
+      estimar | sette høyt, verdsette | v
+      la fama | ry, berømmelse
+      más que todo | mer enn noe annet | expr
+      negarse a | nekte å | v
+      obtener | få, oppnå | v
+      mandar | befale, sende | v
+      aprisionar | fengsle | v
+      sacar | ta ut, ta fram | v
+      para que | for at | conj
+      dirigir | lede, styre | v
+      ninguno | ingen | det
+      trazar | tegne, risse opp | v
+      el plano | plan, tegning
+      comunicar | fortelle, meddele | v
+      el conocimiento | kunnskap
+      estar sentado | sitte | expr
+      el criado | tjener
+      tener que | måtte | expr
+      dar de comer | gi mat, mate | expr
+      la manera | måte
+      sobre | på, over, om | prep
+      el pilar | søyle
+      formar | danne, forme | v
+      la cornisa | gesims
+      el busto | byste
+      según | ifølge | prep
+      la efigie | bilde, avbildning
+      la erección | oppføring, bygging
+      honrar | hedre | v
+    `,
+  },
+  {
+    id: 'ganga',
+    es: 'Buena ganga',
+    no: 'Et godt kjøp',
+    book: true,
+    words: `
+      el prendero | bruktkremmer
+      la cortesía | høflighet
+      hacer el favor de | være så snill å | expr
+      recoger | hente, plukke opp | v
+      con mucho gusto | med glede | expr
+      el valor | verdi, mot
+      examinar | undersøke | v
+      luego | så, etterpå | adv
+      el mueble | møbel
+      antes de | før | prep
+      marcharse | gå sin vei, dra | v
+      el cuidado | omhu, forsiktighet
+      volver a | gjøre igjen | expr
+      ofrecer | tilby | v
+      además de | i tillegg til | prep
+      pues | for, da, altså | conj
+      el secreto | hemmelighet
+      después | etterpå | adv
+      el comprador | kjøper
+      tal vez | kanskje | expr
+      esconder | gjemme | v
+      el dueño | eier
+      la prisa | hast
+      doscientos | to hundre | num
+      quinientos | fem hundre | num
+      confesar | tilstå | v
+      devolver | gi tilbake | v
+      desgraciado | ulykkelig, stakkars | adj
+      valer | være verdt | v
+      dejarse caer | la seg falle | expr
+      desesperado | fortvilet | adj
+      aunque | selv om | conj
+      la cárcel | fengsel
+      eso | det | pron
+      pasar | gå (om tid), skje | v
+      parecer | synes, virke | v
+      ah | å! | int
+      perderse | gå tapt, gå seg vill | v
+      infame | skammelig, nedrig | adj
+    `,
+  },
+  {
+    id: 'bolondron',
+    es: 'Don Juan Bolondrón',
+    no: 'Don Juan Bolondrón',
+    book: true,
+    words: `
+      una vez | en gang | expr
+      haber | finnes, være (había: det var) | v
+      el zapatero | skomaker
+      varios | flere | det
+      la mosca | flue
+      cerca de | nær | prep
+      la gota | dråpe
+      el golpe | slag
+      gritar | rope, skrike | v
+      dentro de | inne i | prep
+      el jabalí | villsvin
+      el mal | skade, det onde
+      el habitante | innbygger
+      comerse | spise opp | v
+      enviar | sende | v
+      fugarse | flykte, rømme | v
+      oh | å! | int
+      al instante | med en gang | expr
+      prepararse | gjøre seg klar | v
+      tiritar | skjelve | v
+      feroz | vill, glupsk | adj
+      el modo | måte
+      probable | sannsynlig | adj
+      el arma | våpen | f
+      la zapatería | skomakerverksted
+      furioso | rasende | adj
+      la rabia | raseri
+      tras | etter, bak | prep
+      meterse | gå inn, krype inn | v
+      donde | der, hvor | adv
+      reprender | skjenne på | v
+      derecho | rett, rett fram | adv
+      la causa | årsak, grunn
+      traer | bringe, ta med | v
+      vivo | levende | adj
+      cobardemente | feigt | adv
+      merecer | fortjene | v
+      la princesa | prinsesse
+      el cuarto | rom, kvarter
+      la vez | gang
+      la miseria | elendighet
+      la vida | liv
+      pasado | tidligere, forbi | adj
+      la comparación | sammenligning
+      la dicha | lykke
+      presente | nåværende, til stede | adj
+      en consecuencia | som følge, derfor | expr
+      la horma | lest (skomakerens form)
+      la lesna | syl
+      anoche | i går kveld, i natt | adv
+      la presencia | nærvær
+      atreverse a | våge å | v
+      el colmillo | hoggtann, støttann
+      el esposo | ektemann
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {

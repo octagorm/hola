@@ -18,7 +18,8 @@ import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
 import { LESSONS } from '../src/app/data/words.ts'
 
-const LESSON_COUNT = LESSONS.length
+// (the library's texts' words have no drawer)
+const LESSON_COUNT = LESSONS.filter((l) => !l.book).length
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -161,6 +162,8 @@ const PAGES = [
   ['#leyendas/leyendas-ojos', 'Leyendas'],
   ['#caso', 'El caso del reloj perdido'],
   ['#caso/caso-iglesia', 'El caso del reloj perdido'],
+  ['#biblioteca', 'Biblioteca'],
+  ['#biblioteca/ganga', 'Buena ganga'],
   ['#palabra', 'La palabra'],
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
@@ -1523,6 +1526,31 @@ await test(
   },
   { learner: true },
 )
+
+await test('a text in the library is read, and its place kept', async (page) => {
+  await go(page, '#biblioteca/testamento')
+  // A word not met: its card says what it is, and once known it stands
+  // alone, without the Norwegian over it
+  const word = page.locator('.bk-text ruby', { hasText: 'lugareño' }).first()
+  await word.click()
+  await page.locator('.q-peek', { hasText: 'landsbyboer' }).waitFor()
+  await page.getByRole('button', { name: 'Kan det' }).click()
+  await page.locator('.bk-text .kw', { hasText: 'lugareño' }).first().waitFor()
+  // A form, with what it is
+  await page.locator('.bk-text ruby', { hasText: 'continuó' }).first().click()
+  await page.locator('.q-peek', { hasText: 'continuar i fortid' }).waitFor()
+  await page.keyboard.press('Escape')
+  // Scrolled on, and opened again where it was left
+  await page.locator('.bk-text p').nth(7).scrollIntoViewIfNeeded()
+  await page.evaluate(() => window.scrollBy(0, 300))
+  await page.waitForTimeout(1200)
+  await page.reload()
+  await page.getByText('Her slapp du sist.').waitFor()
+  await page.getByRole('button', { name: 'Ferdig lest' }).click()
+  await page.getByText('regnet som lest').waitFor()
+  await go(page, '#biblioteca')
+  await page.locator('.q-chapters', { hasText: 'Lest' }).waitFor()
+})
 
 await test(
   'the word bank finds a word and opens it',

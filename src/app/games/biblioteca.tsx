@@ -1,9 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { BookOpen, Check, Pause, Play, Square } from 'lucide-react'
+import { BookOpen, Check } from 'lucide-react'
 import { BOOK, BOOKS, sentencesOf } from '../data/biblioteca'
 import { plain, wordIds } from '../lib/text'
-import { saidCount, say, stop, useVoices } from '../lib/speech'
-import { readLine } from '../lib/aloud'
 import { TEXT_SIZES, useStore } from '../lib/store'
 import { blip } from '../lib/sound'
 import { Mixed, MixedKey, Page } from '../ui'
@@ -18,9 +16,7 @@ import type { PageProps } from '../registry'
 // known yet. A tapped word's card says what its form is and, where the text
 // has one, a note on it, and can be told the word is known (the Norwegian
 // over it goes) or to be practised. The place read to is kept in the bank,
-// and the page opens there again. «Les høyt» reads it in the narrator's
-// voice, a sentence at a time from the paragraph at hand; and once read to
-// the end, the words met and read without being looked up count as read.
+// and the page opens there again. Once read to the end, the words met and read without being looked up count as read.
 
 export default function BibliotecaPage({ arg }: PageProps) {
   const book = arg ? BOOK[arg] : undefined
@@ -90,18 +86,8 @@ function Shelf() {
 function Reader({ book }: { book: Book }) {
   const { bank, settings, setSettings, setPlace, record, played, levelOf } =
     useStore()
-  const { hear } = useVoices()
   const place = bank.place[book.id]
   const sentences = useMemo(() => sentencesOf(book), [book])
-  // Where each paragraph's sentences begin, in the list of all of them
-  const starts = useMemo(() => {
-    let n = 0
-    return book.text.map((p) => {
-      const at = n
-      n += p.length
-      return at
-    })
-  }, [book])
   const paras = useRef<Array<HTMLParagraphElement | null>>([])
   const tapped = useRef(new Set<string>())
   // The paragraph at the top of the screen, as it is read
@@ -110,10 +96,6 @@ function Reader({ book }: { book: Book }) {
   const [resumed, setResumed] = useState(
     () => !!place && !place.done && place.p > 0,
   )
-  // Reading aloud: the sentence being said, and whether it goes on
-  const [aloud, setAloud] = useState<'off' | 'on' | 'paused'>('off')
-  const [line, setLine] = useState(0)
-  const hold = useRef(false)
   // Read to the end, with the words counted as read
   const [credited, setCredited] = useState<number | null>(null)
 
@@ -152,44 +134,7 @@ function Reader({ book }: { book: Book }) {
     }
   }, [book, setPlace])
 
-  // Read aloud: the sentence at hand, a pause, then the next, to the end
-  useEffect(() => {
-    if (aloud !== 'on') return
-    const reading = readLine(plain(sentences[line]), {
-      say: (text) => say(text),
-      count: saidCount,
-      stop,
-    })
-    void reading.done.then((end) => {
-      if (end === 'cancelled') return
-      if (end === 'cut' || hold.current) {
-        hold.current = false
-        setAloud('paused')
-      } else if (line + 1 < sentences.length) setLine(line + 1)
-      else setAloud('off')
-    })
-    return reading.cancel
-  }, [aloud, line, sentences])
-
-  // The sentence being read kept in sight
-  useEffect(() => {
-    if (aloud === 'off') return
-    document
-      .querySelector(`[data-s="${line}"]`)
-      ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
-  }, [aloud, line])
-
-  useEffect(() => () => stop(), [])
-
-  // From the paragraph at the top of the screen, or where it was paused
-  const readAloud = () => {
-    hold.current = false
-    if (aloud === 'off') setLine(starts[at.current] ?? 0)
-    setAloud('on')
-  }
-
   const finish = () => {
-    setAloud('off')
     setPlace(book.id, book.text.length - 1, true)
     // Words met and read without being looked up: read, a little
     const ids = new Set(sentences.flatMap(wordIds))
@@ -275,57 +220,19 @@ function Reader({ book }: { book: Book }) {
                   </button>
                 </span>
               )}
-              {para.map((s, j) => {
-                const n = starts[i] + j
-                return (
-                  <span
-                    key={j}
-                    data-s={n}
-                    className={aloud !== 'off' && n === line ? 'aloud' : ''}
-                  >
-                    {j > 0 && ' '}
-                    <Mixed
-                      line={s}
-                      explain={explain}
-                      onPeek={(id) => {
-                        tapped.current.add(id)
-                        hold.current = true
-                      }}
-                    />
-                  </span>
-                )
-              })}
+              {para.map((s, j) => (
+                <span key={j}>
+                  {j > 0 && ' '}
+                  <Mixed
+                    line={s}
+                    explain={explain}
+                    onPeek={(id) => tapped.current.add(id)}
+                  />
+                </span>
+              ))}
             </p>
           ))}
         </div>
-
-        {hear !== false && (
-          <div className="q-aloud bk-aloud">
-            {aloud === 'on' ? (
-              <button
-                type="button"
-                className="q-btn ghost small"
-                onClick={() => setAloud('paused')}
-              >
-                <Pause aria-hidden="true" /> Pause
-              </button>
-            ) : (
-              <button type="button" className="q-btn small" onClick={readAloud}>
-                <Play aria-hidden="true" />{' '}
-                {aloud === 'paused' ? 'Fortsett' : 'Les høyt'}
-              </button>
-            )}
-            {aloud !== 'off' && (
-              <button
-                type="button"
-                className="q-btn ghost small"
-                onClick={() => setAloud('off')}
-              >
-                <Square aria-hidden="true" /> Stopp
-              </button>
-            )}
-          </div>
-        )}
 
         <section className="q-frame q-card bk-end">
           <div className="q-label">

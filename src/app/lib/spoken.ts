@@ -22,13 +22,12 @@ import { rastroLines } from './rastro.ts'
 import { SAID as SONIDOS } from './sonidos.ts'
 
 // Everything Hola says aloud, with the voice that says it: in the teacher's
-// voice each word, each form of one in the story (a tapped word's card says
-// it), the plurals and an adjective's forms that Letras takes, and the
-// sample in Settings; in the narrator's each line of the stories (a line
+// voice each word, each form of one in the stories and the library's texts
+// (a tapped word's card says it), the plurals and an adjective's forms that
+// Letras takes, and the sample in Settings; in the narrator's each line of the stories (a line
 // one of a story's cast says, in theirs), each sentence of Cadáver
 // exquisito's deck, each sentence of Por o para (said
-// once answered) and each of Ayer, hoy, mañana in all three times, and each
-// sentence of the library's texts.
+// once answered) and each of Ayer, hoy, mañana in all three times.
 // scripts/audio.py makes the recordings with Gemini TTS; lib/speech.ts
 // plays them by their text, and falls back on the browser's own Spanish
 // voice where there is none.
@@ -107,10 +106,7 @@ export function speechItems(): Array<SpeechItem> {
           for (const t of tokens(p.line))
             if (t.id) add(WORD_VOICE, t.es, 'word')
     }
-  // The library's texts, a sentence at a time in the narrator's voice, and
-  // each form in them in the teacher's
-  for (const b of BOOKS)
-    for (const s of sentencesOf(b)) add(LINE_VOICE, plain(s), 'line')
+  // Each form in the library's texts, in the teacher's voice
   for (const b of BOOKS)
     for (const s of sentencesOf(b))
       for (const t of tokens(s)) if (t.id) add(WORD_VOICE, t.es, 'word')

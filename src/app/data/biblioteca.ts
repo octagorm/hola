@@ -1,4 +1,8 @@
 import { TESTAMENTO } from './libros/testamento.ts'
+import { INSACIABLE } from './libros/insaciable.ts'
+import { PALACIO } from './libros/palacio.ts'
+import { GANGA } from './libros/ganga.ts'
+import { BOLONDRON } from './libros/bolondron.ts'
 
 // The library: short texts as they were written, read a page at a time in
 // the reader (games/biblioteca.tsx), each word in Spanish with the Norwegian
@@ -33,7 +37,13 @@ export interface Book {
   notes: Record<string, string>
 }
 
-export const BOOKS: Array<Book> = [TESTAMENTO]
+export const BOOKS: Array<Book> = [
+  TESTAMENTO,
+  INSACIABLE,
+  PALACIO,
+  GANGA,
+  BOLONDRON,
+]
 
 export const BOOK: Record<string, Book | undefined> = Object.fromEntries(
   BOOKS.map((b) => [b.id, b]),
