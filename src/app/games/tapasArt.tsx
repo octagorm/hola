@@ -1,6 +1,23 @@
+import { PICTURES } from '../data/pictures'
+import {
+  BAR,
+  COUNTER_AT,
+  FACES,
+  FRAME,
+  GUEST_W,
+  SCENE_H,
+  SCENE_W,
+  guestFace,
+  itemPicture,
+} from '../data/tapasLayout'
 import type { ReactNode } from 'react'
 
-// Tapas's pictures, in the clean lines of a ligne claire comic: an even
+// Tapas is painted as travel posters (scripts/pictures.mjs, from
+// data/tapas-prompts.ts): the bar seen from behind its counter, each guest
+// cut out in four faces, and each drink and dish cut out, laid over one
+// another below. Until they are painted, the drawings that follow stand in.
+//
+// The drawings are in the clean lines of a ligne claire comic: an even
 // black outline and flat colours, no shading but a second flat tone. The
 // bar (hams on the beam, the green lamp, bottles on the shelves, azulejos
 // to shoulder height, a steel counter), the four regulars who order at it,
@@ -652,8 +669,19 @@ const ITEM_ART: Record<string, ReactNode> = {
   ),
 }
 
-// A drink or a dish as drawn, for a box of 64 placed where it is wanted
+// A drink or a dish as painted or drawn, for a box of 64 placed where it
+// is wanted
 export function ItemShape({ id }: { id: string }) {
+  if (ITEMS_PAINTED)
+    return (
+      <image
+        href={painted(itemPicture(id))}
+        x="2"
+        y="2"
+        width="60"
+        height="60"
+      />
+    )
   return (
     <g
       stroke={OUT}
@@ -682,7 +710,8 @@ export function ItemPic({
 
 // --- The regulars ---
 
-export type Mood = 'talk' | 'wait' | 'happy' | 'hmm'
+// wait, talk, happy and hmm, each a face on a painted guest's sheet
+export type Mood = (typeof FACES)[number]
 
 interface Look {
   skin: string
@@ -864,6 +893,56 @@ const LOOKS: Record<string, Look> = {
 
 export const GUEST_NAMES = Object.keys(LOOKS)
 
+// --- The paintings ---
+
+// A painting's address, once it is painted
+function painted(name: string) {
+  return PICTURES.has(name) ? `/${name}.webp` : undefined
+}
+
+// The drinks and dishes, the guests and the bar are each painted only once
+// all of them are, so that neither the carta nor the day mixes paintings
+// and drawings
+const ITEMS_PAINTED = Object.keys(ITEM_ART).every((id) =>
+  PICTURES.has(itemPicture(id)),
+)
+const GUESTS_PAINTED = GUEST_NAMES.every((who) =>
+  FACES.every((face) => PICTURES.has(guestFace(who, face))),
+)
+const BAR_PAINTED = PICTURES.has(BAR) && GUESTS_PAINTED && ITEMS_PAINTED
+
+// A guest's cut-out, GUEST_W wide from (0, 0), in the face of the mood,
+// breathing; while ordering the speaking face is shown over the waiting
+// one every other moment, and while they speak with another face they bob
+function GuestFrames({
+  who,
+  mood,
+  talking,
+}: {
+  who: string
+  mood: Mood
+  talking: boolean
+}) {
+  const h = (GUEST_W * FRAME.h) / FRAME.w
+  return (
+    <g className={`tp-paint ${mood} ${talking ? 'talking' : ''}`}>
+      <image
+        href={painted(guestFace(who, mood === 'talk' ? 'wait' : mood))}
+        width={GUEST_W}
+        height={h}
+      />
+      {mood === 'talk' && (
+        <image
+          className="tp-mo"
+          href={painted(guestFace(who, 'talk'))}
+          width={GUEST_W}
+          height={h}
+        />
+      )}
+    </g>
+  )
+}
+
 function Face({ look, mood }: { look: Look; mood: Mood }) {
   return (
     <>
@@ -962,8 +1041,20 @@ export function GuestFace({
   className?: string
 }) {
   return (
-    <svg className={className} viewBox="-40 -42 80 80" aria-hidden="true">
-      <GuestShape who={who} mood="wait" />
+    <svg
+      className={className}
+      viewBox={GUESTS_PAINTED ? '120 0 240 240' : '-40 -42 80 80'}
+      aria-hidden="true"
+    >
+      {GUESTS_PAINTED ? (
+        <image
+          href={painted(guestFace(who, 'wait'))}
+          width={FRAME.w}
+          height={FRAME.h}
+        />
+      ) : (
+        <GuestShape who={who} mood="wait" />
+      )}
     </svg>
   )
 }
@@ -1073,6 +1164,109 @@ function trayPlaces(n: number): Array<{ x: number; y: number; s: number }> {
   return [...row(front, 206, 0.66, 40), ...row(n - front, 196, 0.56, 34)]
 }
 
+// The tray on the counter with what has been put there, each thing taken
+// off by a touch; in flat colours with no outline over the painted bar
+function Tray({
+  tray,
+  onTake,
+  serving,
+  flat = false,
+}: {
+  tray: Array<string>
+  onTake?: (i: number) => void
+  serving: boolean
+  flat?: boolean
+}) {
+  const places = trayPlaces(tray.length)
+  // (the back row is drawn first, so the front one stands before it)
+  const order = tray
+    .map((id, i) => ({ id, i, p: places[i] }))
+    .sort((a, b) => a.p.y - b.p.y)
+  return (
+    <g className={`tp-tray ${serving ? 'served' : ''}`}>
+      <ellipse
+        cx="200"
+        cy="232"
+        rx="150"
+        ry="15"
+        fill={flat ? '#56646b' : '#3f454d'}
+      />
+      <ellipse
+        cx="200"
+        cy="229"
+        rx="142"
+        ry="11"
+        fill={flat ? '#7d8b8f' : '#5a616b'}
+        strokeWidth="1.4"
+      />
+      {order.map(({ id, i, p }) => (
+        <g
+          key={`${id}-${i}`}
+          transform={`translate(${p.x - 32 * p.s} ${p.y + 28 - 64 * p.s})`}
+          onClick={() => onTake?.(i)}
+        >
+          {/* (moved by its own group, as a style's transform would
+              take the place of the one above) */}
+          <g className="tp-on">
+            <g transform={`scale(${p.s})`}>
+              <rect width="64" height="64" fill="transparent" stroke="none" />
+              <ItemShape id={id} />
+            </g>
+          </g>
+        </g>
+      ))}
+    </g>
+  )
+}
+
+// The painted bar: the room beyond the counter, the guest standing behind
+// it, and the tray on it
+function PaintedBar({
+  guest,
+  mood,
+  talking,
+  tray,
+  onTake,
+  serving,
+}: {
+  guest: string | null
+  mood: Mood
+  talking: boolean
+  tray: Array<string>
+  onTake?: (i: number) => void
+  serving: boolean
+}) {
+  const counter = SCENE_H * COUNTER_AT
+  const h = (GUEST_W * FRAME.h) / FRAME.w
+  return (
+    <svg
+      className="tp-scene"
+      viewBox={`0 0 ${SCENE_W} ${SCENE_H}`}
+      role="img"
+      aria-label="Baren, sett fra innsiden av disken"
+    >
+      <image
+        href={painted(BAR)}
+        width={SCENE_W}
+        height={SCENE_H}
+        preserveAspectRatio="xMidYMid slice"
+      />
+      {guest && (
+        <g className={`tp-guest ${mood}`} key={guest}>
+          <g
+            transform={`translate(${(SCENE_W - GUEST_W) / 2} ${counter + 3 - h})`}
+          >
+            <GuestFrames who={guest} mood={mood} talking={talking} />
+          </g>
+        </g>
+      )}
+      <g stroke="none">
+        <Tray tray={tray} onTake={onTake} serving={serving} flat />
+      </g>
+    </svg>
+  )
+}
+
 // The bar as the player sees it from behind the counter: the guest across
 // it, and the tray on it with what has been put there. A thing on the
 // tray is taken off by a touch.
@@ -1082,6 +1276,7 @@ export function BarScene({
   tray,
   onTake,
   serving = false,
+  talking = false,
 }: {
   guest: string | null
   mood: Mood
@@ -1090,12 +1285,20 @@ export function BarScene({
   onTake?: (i: number) => void
   // Served: the tray goes over the counter
   serving?: boolean
+  // The guest is speaking
+  talking?: boolean
 }) {
-  const places = trayPlaces(tray.length)
-  // (the back row is drawn first, so the front one stands before it)
-  const order = tray
-    .map((id, i) => ({ id, i, p: places[i] }))
-    .sort((a, b) => a.p.y - b.p.y)
+  if (BAR_PAINTED)
+    return (
+      <PaintedBar
+        guest={guest}
+        mood={mood}
+        talking={talking}
+        tray={tray}
+        onTake={onTake}
+        serving={serving}
+      />
+    )
   return (
     <svg
       className="tp-scene"
@@ -1165,38 +1368,7 @@ export function BarScene({
         <path d="M0 196h400v5H0z" fill="#e8ecef" />
         <path d="M0 240h400" stroke="#9aa3ab" strokeWidth="1.4" />
         {/* the tray */}
-        <g className={`tp-tray ${serving ? 'served' : ''}`}>
-          <ellipse cx="200" cy="232" rx="150" ry="15" fill="#3f454d" />
-          <ellipse
-            cx="200"
-            cy="229"
-            rx="142"
-            ry="11"
-            fill="#5a616b"
-            strokeWidth="1.4"
-          />
-          {order.map(({ id, i, p }) => (
-            <g
-              key={`${id}-${i}`}
-              transform={`translate(${p.x - 32 * p.s} ${p.y + 28 - 64 * p.s})`}
-              onClick={() => onTake?.(i)}
-            >
-              {/* (moved by its own group, as a style's transform would
-                  take the place of the one above) */}
-              <g className="tp-on">
-                <g transform={`scale(${p.s})`}>
-                  <rect
-                    width="64"
-                    height="64"
-                    fill="transparent"
-                    stroke="none"
-                  />
-                  <ItemShape id={id} />
-                </g>
-              </g>
-            </g>
-          ))}
-        </g>
+        <Tray tray={tray} onTake={onTake} serving={serving} />
       </g>
     </svg>
   )

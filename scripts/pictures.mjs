@@ -26,6 +26,7 @@ import {
 } from '../src/app/data/museo-prompts.ts'
 import { PARK, PLACES, SQUARE } from '../src/app/data/taxi.ts'
 import { RASTRO_PICTURES } from '../src/app/data/rastro-prompts.ts'
+import { TAPAS_PICTURES } from '../src/app/data/tapas-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -198,6 +199,8 @@ Object.assign(PICTURES, MUSEO_PICTURES)
 // `cutout` is painted on a transparent background and trimmed, and a sheet
 // with `parts` is cut apart into one picture for each
 Object.assign(PICTURES, RASTRO_PICTURES)
+// Tapas's bar, guests and drinks and dishes (data/tapas-prompts.ts)
+Object.assign(PICTURES, TAPAS_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 

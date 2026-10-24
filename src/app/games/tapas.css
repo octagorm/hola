@@ -641,6 +641,29 @@
   animation: tp-talk 0.32s steps(1) infinite reverse;
 }
 
+/* The painted guest breathes, shakes their head a little when puzzled,
+   and bobs while speaking with another face than the ordering one; while
+   ordering, the speaking face flickers over the waiting one */
+.tp-paint {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: tp-breathe 3.2s ease-in-out infinite;
+}
+
+.tp-paint.hmm {
+  animation:
+    tp-shake 0.45s ease-in-out,
+    tp-breathe 3.2s ease-in-out 0.45s infinite;
+}
+
+.tp-paint.talking:not(.talk) {
+  animation: tp-bob 0.5s ease-in-out infinite;
+}
+
+.tp-mo {
+  animation: tp-talk 0.32s steps(1) infinite;
+}
+
 .tp-on {
   cursor: pointer;
   animation: tp-drop 0.22s ease-out;
@@ -669,6 +692,30 @@
   }
   50% {
     visibility: hidden;
+  }
+}
+
+@keyframes tp-breathe {
+  50% {
+    transform: scale(1.006, 1.014);
+  }
+}
+
+@keyframes tp-shake {
+  20% {
+    transform: rotate(-3deg);
+  }
+  45% {
+    transform: rotate(3deg);
+  }
+  70% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+@keyframes tp-bob {
+  50% {
+    transform: translateY(-1.2%) rotate(-0.6deg);
   }
 }
 
@@ -710,7 +757,8 @@
   .tp *::before {
     animation: none !important;
   }
-  .tp-mouth .open {
+  .tp-mouth .open,
+  .tp-mo {
     visibility: hidden !important;
   }
 }

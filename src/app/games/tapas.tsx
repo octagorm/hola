@@ -375,6 +375,7 @@ function Bar({
           tray={tray}
           onTake={take}
           serving={right}
+          talking={talking}
         />
         {!right && <Tip left={left} ear={byEar && tries === 0} />}
       </div>

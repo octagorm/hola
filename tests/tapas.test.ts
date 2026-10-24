@@ -18,6 +18,14 @@ import {
   tipOf,
 } from '../src/app/lib/tapas'
 import { emptyBank, newCard, withStart } from '../src/app/lib/bank'
+import { TAPAS_PICTURES } from '../src/app/data/tapas-prompts'
+import {
+  BAR,
+  COUNTER_AT,
+  FACES,
+  guestSheet,
+  itemPicture,
+} from '../src/app/data/tapasLayout'
 import { speechItems } from '../src/app/lib/spoken'
 import { plain, tokens, wordIds } from '../src/app/lib/text'
 
@@ -81,6 +89,24 @@ describe('the bar in Tapas', () => {
         if (t.id) expect(items.has(t.es), t.es).toBe(true)
     }
     for (const g of GUESTS) expect(THANKS[g], g).toBeTruthy()
+  })
+})
+
+describe('the paintings of the bar', () => {
+  it('has a picture for the bar, every guest and every drink and dish', () => {
+    const names = Object.keys(TAPAS_PICTURES)
+    expect(names).toContain(BAR)
+    for (const g of GUESTS)
+      expect(TAPAS_PICTURES[guestSheet(g)].parts, g).toEqual(FACES)
+    for (const item of ITEMS)
+      expect(TAPAS_PICTURES[itemPicture(item.id)].cutout, item.id).toBe(true)
+    // each its own name, and nothing else
+    expect(names.length).toBe(1 + GUESTS.length + ITEMS.length)
+  })
+
+  it('tells where the counter lies', () => {
+    expect(TAPAS_PICTURES[BAR].prompt).toMatch(/about 77 per cent/)
+    expect(COUNTER_AT).toBeCloseTo(0.784)
   })
 })
 
