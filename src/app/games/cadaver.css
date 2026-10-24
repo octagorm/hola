@@ -580,8 +580,63 @@
 }
 
 @media (max-height: 720px) and (max-width: 600px) {
+  .c6-col {
+    padding-top: 8px;
+    padding-bottom: 10px;
+  }
+
+  .c6-top h1 {
+    font-size: 20px;
+  }
+
+  .c6-top h1 small {
+    margin-top: 3px;
+    font-size: 10px;
+  }
+
+  .c6-round {
+    width: 40px;
+    height: 40px;
+  }
+
   .c6-pic {
-    max-height: 170px;
+    max-height: 140px;
+    margin-top: 10px;
+    margin-inline: auto;
+  }
+
+  .c6-count {
+    margin-top: 6px;
+  }
+
+  .c6-folds {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .c6-fold {
+    min-height: 44px;
+  }
+
+  .c6-fold b {
+    padding: 4px 0;
+    font-size: 21px;
+  }
+
+  .c6-hint {
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-size: 13.5px;
+    line-height: 1.3;
+  }
+
+  .c6-opts {
+    margin-top: 10px;
+    gap: 10px;
+  }
+
+  .c6-opts button {
+    height: 50px;
   }
 }
 
