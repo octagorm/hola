@@ -183,11 +183,13 @@ const BLOCKS = [...new Set(PLACES.map((p) => `${p.lot.bx},${p.lot.by}`))].map(
   },
 )
 const TOWN = `A town plan of a small Spanish town quarter seen from straight above, as on a map: roofs, streets and treetops seen from directly overhead, with no perspective, no horizon and no sides of buildings showing. The streets form an exact square grid that must be kept precisely: five straight streets run from top to bottom and five from left to right, all of the same width, about one twenty-seventh of the picture's width, with their centre lines at exactly one sixth, two sixths, three sixths, four sixths and five sixths of the way across and down. They cross at twenty-five crossings, each with zebra crossings on its sides; the outermost streets close the grid as a ring, and no street goes beyond them. Inside the ring are sixteen equal square blocks, four by four, each edged with a narrow pale pavement and divided into four equal square corner lots, most of them houses with hipped terracotta tile roofs, now and then a small courtyard with a tree. Outside the ring, filling the outer sixth of the picture on every side, a belt of gardens with rows of round plane trees. Counting blocks from the top left, ${blockOf(SQUARE)} is the town square: open pale paving with a round fountain in the middle and a tree at each corner; and ${blockOf(PARK)} is a small park of lawns with two crossing gravel paths and round trees. Ten buildings stand out from the houses, each filling exactly one corner lot of its block: ${BLOCKS.join('; and ')}. The streets are empty: no cars and no people. Soft morning light with short shadows.`
+// Painted from the town the game draws itself (scripts/taxi-layout.mjs),
+// since from words alone the grid came out too large for the picture
 PICTURES['taxi/map'] = {
   shape: 'square',
   size: '2048x2048',
-  ref: POSTER_REF,
-  prompt: `${TOWN} ${POSTER} Square format, with the grid filling it as described, right to its edges. ${NONE}`,
+  ref: ['design/sketches/taxi-layout.png', POSTER_REF],
+  prompt: `The first attached image is the exact plan of the town to paint: follow its layout precisely, as a tracing. Keep every street, crossing, block, lot, the belt of gardens round the outside, the square, the park and each special building exactly where it is in the plan and at the same size, so that the painting could be laid over the plan and every street would match; do not add, move, widen or extend any street, and keep the garden belt as wide as in the plan. Take only the style from the second attached image. ${TOWN} ${POSTER} Square format. ${NONE}`,
 }
 
 // Tu museo's pictures, a print for each theme (data/museo-prompts.ts)
@@ -211,7 +213,7 @@ function paint(name) {
         full(name),
         '--shape',
         p.shape,
-        ...(p.ref ? ['--ref', p.ref] : []),
+        ...[p.ref ?? []].flat().flatMap((r) => ['--ref', r]),
         ...(p.cutout ? ['--transparent'] : []),
         p.prompt,
       ],

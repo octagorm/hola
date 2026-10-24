@@ -104,7 +104,7 @@ node scripts/pictures.mjs stories/caso    # paint those missing whose names begi
 node scripts/pictures.mjs --web           # cut them to shape into public/ and list them
 ```
 
-Each takes a minute or two and counts against the plan's limits. The full-size paintings stay in `.cache/pictures/`; delete one there to paint it again. `--web` saves each as `public/<name>.webp`, cut to the shape it is shown in, and lists the names in `data/pictures.ts`, so that a page shows a picture only once it is made, and its drawing until then: a chapter of a story takes `stories/<story>/<chapter id>`, and a picture in Tu museo `museo/<lesson>`. Give each picture a subject of its own, so that the museum does not repeat a story's chapter. Look at each picture before committing it, and paint again what is off. Commit the `.webp` files and `data/pictures.ts`.
+Each takes a minute or two and counts against the plan's limits. The full-size paintings stay in `.cache/pictures/`; delete one there to paint it again. `--web` saves each as `public/<name>.webp`, cut to the shape it is shown in, and lists the names in `data/pictures.ts`, so that a page shows a picture only once it is made, and its drawing until then: a chapter of a story takes `stories/<story>/<chapter id>`, and a picture in Tu museo `museo/<lesson>`. Taxi's town, `taxi/map`, is painted from the plan the game draws itself, `design/sketches/taxi-layout.png` (made by `node scripts/taxi-layout.mjs`; make it again when the town changes), so that its streets land where the game's are. Give each picture a subject of its own, so that the museum does not repeat a story's chapter. Look at each picture before committing it, and paint again what is off. Commit the `.webp` files and `data/pictures.ts`.
 
 ## The look
 
