@@ -796,7 +796,7 @@ function Dictado({ onProgress }: { onProgress: (p: Progress | null) => void }) {
           )}
           <p className="mean">
             <span lang="es">
-              <Es w={w} />
+              <Es w={w} peek />
             </span>{' '}
             betyr «{gloss(w)}»
           </p>

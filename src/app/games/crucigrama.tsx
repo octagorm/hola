@@ -605,7 +605,7 @@ function Result({
         {p.entries.map((x, i) => (
           <li key={i} className={solved.includes(i) ? '' : 'miss'}>
             <b lang="es">
-              <Es w={x.word} />
+              <Es w={x.word} peek />
             </b>
             <span>{meaning(x.word)}</span>
             <Speak

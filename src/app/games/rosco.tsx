@@ -348,7 +348,7 @@ function Result({
               <li key={c.letter}>
                 <i>{c.letter}</i>
                 <b lang="es">
-                  <Es w={c.word} />
+                  <Es w={c.word} peek />
                 </b>
                 <span>
                   {meaning(c.word)}

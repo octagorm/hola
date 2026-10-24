@@ -225,6 +225,15 @@ body.q-body {
   padding: 10px 16px 64px;
 }
 
+/* A word shown once answered, whose tap opens its card (Es with peek);
+   weak, so that a game's own look stands */
+:where(.es-peek) {
+  cursor: pointer;
+  text-decoration: underline dotted 1.5px;
+  text-underline-offset: 0.2em;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* --- Mixed text --- */
 
 .mx {

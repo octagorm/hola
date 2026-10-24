@@ -71,7 +71,7 @@ function Round({ lesson, again }: { lesson?: string; again: () => void }) {
               w && (
                 <li key={id}>
                   <b>
-                    <Es w={w} />
+                    <Es w={w} peek />
                   </b>
                   <span>{w.no}</span>
                 </li>

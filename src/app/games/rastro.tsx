@@ -205,7 +205,7 @@ function Ready({
                 <span key={id}>
                   {i > 0 && ' · '}
                   <span lang="es">
-                    <Es w={w} />
+                    <Es w={w} peek />
                   </span>{' '}
                   – <i>{gloss(w)}</i>
                 </span>

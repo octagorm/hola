@@ -493,7 +493,7 @@ function Result({
             {missed.map((w) => (
               <li key={w.id}>
                 <b lang="es">
-                  <Es w={w} />
+                  <Es w={w} peek />
                 </b>
                 <span className="mean">{gloss(w)}</span>
                 <Speak

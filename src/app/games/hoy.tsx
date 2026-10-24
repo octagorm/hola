@@ -308,7 +308,7 @@ function Summary({ p }: { p: Path }) {
                 <li key={x.id}>
                   <LinkIcon link={x.link} className="i" />
                   <b>
-                    <Es w={w} />
+                    <Es w={w} peek />
                   </b>
                   <span
                     title={`${LINK_NAME[x.link].es}: hvor lenge det sitter`}

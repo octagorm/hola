@@ -62,7 +62,7 @@ function Round({ again }: { again: () => void }) {
               w && (
                 <li key={g.id} className={g.right ? '' : 'miss'}>
                   <b>
-                    <Es w={w} />
+                    <Es w={w} peek />
                   </b>
                   <span>{w.no}</span>
                 </li>

@@ -587,7 +587,7 @@ function End({
                 {l.w.bare.slice(from)}
               </b>
               <span>
-                <Es w={l.w} /> · {meaning(l.w)}
+                <Es w={l.w} peek /> · {meaning(l.w)}
               </span>
               <Speak
                 text={l.w.es}

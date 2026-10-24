@@ -388,7 +388,7 @@ function After({
       <p className="kick">{solved ? '¡A tiempo!' : '¡Se derritió!'}</p>
       <p className="said">
         <b lang="es">
-          <Es w={w} />
+          <Es w={w} peek />
         </b>
         <Speak text={w.es} small label={`Hør ${w.es}`} className="rb-speak" />
       </p>
@@ -443,7 +443,7 @@ function Result({
               <Dial melted={!d?.saved} />
               <span className="txt">
                 <b lang="es">
-                  <Es w={w} />
+                  <Es w={w} peek />
                 </b>
                 <small>
                   {meaning(w)} ·{' '}

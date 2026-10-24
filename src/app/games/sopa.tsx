@@ -449,7 +449,7 @@ function Board({
                       {shown ? (
                         <span className="txt">
                           <b lang="es">
-                            <Es w={h.word} />
+                            <Es w={h.word} peek />
                           </b>
                           <small>{meaning(h.word)}</small>
                         </span>

@@ -99,13 +99,52 @@ export function Speak({
 // A noun's article in its gender's colour, so that it is learnt with the
 // word: blue for el, red for la. `plain` leaves the colour off, where the
 // gender is what is asked.
-export function Es({ w, plain = false }: { w: Word; plain?: boolean }) {
+export function Es({
+  w,
+  plain = false,
+  peek = false,
+}: {
+  w: Word
+  plain?: boolean
+  // A tap opens the word's card, as in mixed text: where the word is shown
+  // once it is answered, never where it is the question
+  peek?: boolean
+}) {
   const a = article(w)
-  if (!a || plain) return <>{w.es}</>
+  const shown =
+    !a || plain ? (
+      w.es
+    ) : (
+      <>
+        <span className={w.g === 'f' ? 'g-f' : 'g-m'}>{a.art}</span> {a.rest}
+      </>
+    )
+  if (!peek) return <>{shown}</>
+  return <EsPeek w={w}>{shown}</EsPeek>
+}
+
+function EsPeek({ w, children }: { w: Word; children: ReactNode }) {
+  const open = usePeek()
+  const t = { es: w.es, id: w.id, no: meaning(w) }
   return (
-    <>
-      <span className={w.g === 'f' ? 'g-f' : 'g-m'}>{a.art}</span> {a.rest}
-    </>
+    <span
+      className="es-peek"
+      role="button"
+      tabIndex={0}
+      data-peek=""
+      onClick={(e) => {
+        e.stopPropagation()
+        open(t, e.currentTarget)
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault()
+        e.stopPropagation()
+        open(t, e.currentTarget)
+      }}
+    >
+      {children}
+    </span>
   )
 }
 

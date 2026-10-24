@@ -1649,6 +1649,25 @@ await test('the audiobook is read along on asking, and followed in an app', asyn
 })
 
 await test(
+  'an answer waits to be read, and its word opens its card',
+  async (page) => {
+    await go(page, '#repaso')
+    await page.locator('.q-choice').first().click()
+    await page.waitForTimeout(1600)
+    await page.locator('.q-after').waitFor()
+    await page.locator('.q-after .es-peek').click()
+    await page.locator('.q-peek').waitFor()
+    await page.keyboard.press('Escape')
+    await page
+      .locator('.q-after')
+      .getByRole('button', { name: /Neste/ })
+      .click()
+    await page.locator('.q-after').waitFor({ state: 'detached' })
+  },
+  { learner: true },
+)
+
+await test(
   'the word bank finds a word and opens it',
   async (page) => {
     await go(page, '#ordbank')

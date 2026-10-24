@@ -287,7 +287,7 @@ function Board({
           <p className="kick">{won ? '¡Lo tienes!' : 'Ordet var'}</p>
           <div className="word">
             <b lang="es">
-              <Es w={w} />
+              <Es w={w} peek />
             </b>
             <Speak text={w.es} small className="g5-speak" />
           </div>

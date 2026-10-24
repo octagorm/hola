@@ -100,7 +100,7 @@ export default function Tema({ arg }: PageProps) {
                 <div className="row">
                   <i className={`lv lv${lv}`} title={LEVEL_NAME[lv]} />
                   <b lang="es">
-                    <Es w={w} />
+                    <Es w={w} peek />
                   </b>
                   <span>{meaning(w)}</span>
                 </div>

@@ -143,13 +143,8 @@ export function Question({
     if (answered) onDone(answered.right)
   }
 
-  // A right pick goes on by itself after a moment
-  useEffect(() => {
-    if (!answered?.right) return
-    if (answered.verdict && answered.verdict !== 'right') return
-    const t = setTimeout(() => next.current(), kind === 'escribir' ? 1300 : 950)
-    return () => clearTimeout(t)
-  }, [answered, kind])
+  // (an answer, right or wrong, waits for Neste, so that what it says can
+  // be read and its word tapped)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -318,14 +313,14 @@ export function Question({
               <>
                 <b>{praise}</b>{' '}
                 <span>
-                  <Es w={w} /> · {meaning(w)}
+                  <Es w={w} peek /> · {meaning(w)}
                 </span>
               </>
             ) : (
               <>
                 <b>{verdictLine(answered, kind)}</b>{' '}
                 <span>
-                  <Es w={w} /> · {meaning(w)}
+                  <Es w={w} peek /> · {meaning(w)}
                 </span>
               </>
             )}
