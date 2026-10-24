@@ -1600,6 +1600,7 @@ await test('a text in the library is read a page at a time', async (page) => {
     Number((await shown())?.match(/^(\d+)/)?.[1]) === at - 1,
     'turned back',
   )
+})
 
 await test('the audiobook is read along on asking, and followed in an app', async (page) => {
   await go(page, '#lydbok/altea')
