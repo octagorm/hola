@@ -30,6 +30,7 @@ export const PICTURES: ReadonlySet<string> = new Set([
   'stories/caso/caso-relojeria',
   'stories/caso/caso-portlligat',
   'stories/caso/caso-playa',
+  'taxi/map',
   'museo/tapeo',
   'museo/compras',
   'museo/transporte',
