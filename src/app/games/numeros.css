@@ -1561,3 +1561,252 @@
     animation: none;
   }
 }
+
+/* --- A phone --- */
+
+@media (max-width: 600px) {
+  .nu-col {
+    padding-bottom: 12px;
+  }
+
+  .nu-reveal .nu-portrait {
+    width: 72px;
+    margin-bottom: 4px;
+  }
+
+  .nu-verdict .answer {
+    font-size: 36px;
+  }
+
+  .nu-said .es {
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .nu-prize {
+    gap: 4px 12px;
+    margin-bottom: 8px;
+  }
+
+  .nu-prize .nu-pball {
+    padding: 8px 18px;
+    font-size: 20px;
+  }
+
+  .nu-parts li {
+    padding: 5px 10px;
+  }
+}
+
+/* A short phone: the ticket and the balls a little smaller, so that a
+   number to hear, the keys and the answer fit on one screen */
+@media (max-width: 600px) and (max-height: 780px) {
+  .nu-col {
+    padding: 8px 14px 10px;
+  }
+
+  .nu-play,
+  .nu-start {
+    margin-top: 8px;
+  }
+
+  .nu-band {
+    height: 16px;
+  }
+
+  .nu-head {
+    margin-top: 4px;
+  }
+
+  .nu-listen {
+    margin: 6px 0 2px;
+  }
+
+  .nu-listen.faced {
+    min-height: 80px;
+  }
+
+  .nu-listen .nu-portrait,
+  .nu-reveal .nu-portrait {
+    width: 68px;
+  }
+
+  .nu-listen .nu-portrait {
+    right: calc(50% + 50px);
+  }
+
+  .nu-listen .nu-round {
+    left: calc(50% + 52px);
+  }
+
+  .nu-listen .nu-bombo {
+    right: calc(50% + 46px);
+    width: 80px;
+    height: 60px;
+  }
+
+  .nu-hear {
+    width: 80px;
+    height: 80px;
+  }
+
+  .nu-hear svg {
+    width: 26px;
+    height: 26px;
+    padding: 9px;
+  }
+
+  .nu-field {
+    min-height: 54px;
+    margin: 6px 14px 8px;
+    padding-bottom: 6px;
+  }
+
+  .nu-field .digits {
+    font-size: 40px;
+  }
+
+  .nu-field.phone .digits {
+    font-size: 32px;
+  }
+
+  .nu-pad-wrap {
+    margin-top: 10px;
+  }
+
+  .nu-pad {
+    grid-template-columns: repeat(3, 60px);
+    gap: 8px 20px;
+  }
+
+  .nu-ball {
+    width: 60px;
+    height: 60px;
+  }
+
+  .nu-ball span {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+
+  .nu-btn {
+    margin-top: 10px;
+    padding: 11px 26px;
+  }
+
+  .nu-btn.big {
+    margin-top: 14px;
+    padding: 13px 30px;
+  }
+
+  .nu-hint {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  .nu-reveal {
+    margin: 6px 6px 8px;
+  }
+
+  .nu-reveal .nu-portrait {
+    margin-bottom: 4px;
+  }
+
+  .nu-verdict {
+    margin: 2px 0 6px;
+    font-size: 17px;
+  }
+
+  .nu-verdict .answer {
+    font-size: 34px;
+  }
+
+  .nu-said .es {
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .nu-no {
+    margin-top: 4px;
+    font-size: 15px;
+  }
+
+  .nu-apart {
+    margin-top: 8px;
+  }
+
+  .nu-parts {
+    gap: 6px;
+  }
+
+  .nu-parts li {
+    padding: 4px 9px;
+  }
+
+  .nu-parts .es {
+    font-size: 16px;
+  }
+
+  .nu-parts .val {
+    margin-top: 0;
+    font-size: 17px;
+  }
+
+  .nu-face {
+    width: 100px;
+    height: 100px;
+  }
+
+  .nu-prize {
+    gap: 4px 12px;
+    margin-bottom: 6px;
+  }
+
+  .nu-prize .nu-pball {
+    padding: 7px 16px;
+    font-size: 19px;
+  }
+
+  .nu-prize b {
+    font-size: 18px;
+  }
+
+  .nu-intro {
+    padding: 4px 12px 10px;
+  }
+
+  .nu-intro h2 {
+    margin: 4px 0;
+    font-size: 25px;
+  }
+
+  .nu-intro p {
+    margin-top: 6px;
+    font-size: 16.5px;
+    line-height: 1.4;
+  }
+
+  .nu-intro p.small {
+    font-size: 15px;
+  }
+
+  .nu-seal {
+    width: 96px;
+    height: 96px;
+  }
+
+  .nu-intro .nu-portrait.big {
+    width: 100px;
+    margin-top: 6px;
+  }
+
+  .nu-kinds {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .nu-kinds button {
+    padding: 6px 13px;
+  }
+}
