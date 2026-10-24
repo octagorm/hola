@@ -1,7 +1,7 @@
-import {  useId } from 'react'
+import { useId } from 'react'
 import { PICTURES } from '../data/pictures'
 import { TABLE } from '../data/rastroLayout'
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react'
 
 // El Rastro is painted as travel posters (scripts/pictures.mjs, from
 // data/rastro-prompts.ts): a background for each stall, each seller cut out
