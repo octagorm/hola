@@ -7,8 +7,8 @@ import { tokens } from '../src/app/lib/text'
 import type { Audiobook } from '../src/app/data/lydbok'
 
 // About how long a text takes to say, at the hosts' and the narrator's
-// calm pace: letters a second
-const PACE = 12
+// calm pace: letters a second (as the first book was read, 7.4)
+const PACE = 7.4
 
 const said = (text: string) => text.replace(/[\W\d_]/g, '').length / PACE
 

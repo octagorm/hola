@@ -11,7 +11,8 @@ export interface Made {
   marks: Array<[number, number, number]>
 }
 
-export const MADE = TIMES as Record<string, Made | undefined>
+// (JSON reads the marks as plain arrays, not as triples)
+export const MADE = TIMES as unknown as Record<string, Made | undefined>
 
 export const BOOK: Record<string, Audiobook | undefined> = Object.fromEntries(
   AUDIOBOOKS.map((b) => [b.id, b]),

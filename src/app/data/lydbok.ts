@@ -43,7 +43,7 @@ export interface Audiobook {
 
 // The pauses in an audiobook, in seconds: after a host's line, after a
 // line of the story, and between chapters
-export const PAUSE = { host: 0.5, line: 1.1, chapter: 2.2 }
+export const PAUSE = { host: 0.5, line: 0.9, chapter: 2.2 }
 
 // What a part says, as the recording has it
 export const spokenText = (p: Part) => ('host' in p ? p.text : plain(p.line))
@@ -99,7 +99,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Marta: I dag følger vi Berit fra Hamar. Hun skal bo en uke i Altea, en hvit by ved havet, ikke langt fra Alicante.',
           'Ingrid: Helt alene? Det er modig.',
           'Marta: Sola, alene. Først skal hun ta bussen. Hør etter la parada, holdeplassen, la tarjeta, kortet, og el euro, euro.',
-          'Ingrid: Og så hører jeg ofte claro. Hva betyr det?',
           'Marta: Claro betyr selvfølgelig, og det hører du hele tiden i Spania. Til slutt: el piso er en leilighet, og segundo betyr andre. Vamos.',
           '^Berit es>ser=er una_señora>la_señora=en_dame de=fra ^Hamar , en=i ^Noruega .',
           'Hoy=i_dag llega>llegar=kommer_hun a=til ^España , sola>solo=alene , para=for una_semana>la_semana=ei_uke .',
@@ -124,10 +123,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Berit: — Muchas_gracias=tusen_takk , ^Vicente .',
           'Ingrid: Det første Berit sier på bussen, kan jeg bruke selv: ¿Este autobús va a Altea?',
           'Marta: Ja, og du kan bytte ut navnet: ¿Este autobús va a Alicante? Si quieres, dilo tú: ¿Este autobús va a Altea?',
-          'Ingrid: ¿Puedo pagar con tarjeta? Den kommer jeg til å trenge.',
-          'Marta: Og svaret er nesten alltid: claro. Dilo tú: ¿Puedo pagar con tarjeta?',
-          'Ingrid: Og segundo B, hva betyr det?',
-          'Marta: Det er adressen: andre etasje, dør B. Og nettopp den døra blir et lite problem i kveld.',
         ]),
       },
       {
@@ -138,7 +133,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Ingrid: Og naboen, hva heter det?',
           'Marta: El vecino, og en kvinne er la vecina. Du hører også la verdad, sannheten, og ¿verdad?, som betyr ikke sant?',
           'Marta: Og så tre ord til: reírse er å le, el español er spansk, og despacio er sakte.',
-          'Ingrid: Despacio. Det ordet trenger jeg.',
           'A_las_ocho>ocho=klokka_åtte , ^Berit vuelve>volver=kommer_tilbake a_casa>la_casa=hjem . Sube>subir=hun_går_opp al=til segundo>segundo=andre piso>el_piso=etasje .',
           'Allí=der hay>hay=er_det dos=to puertas>la_puerta=dører : la=den ^A y la=den ^B .',
           '^Berit está>estar=er muy=veldig cansada>cansado=trøtt . Va>ir=hun_går a=til la_puerta=døra ^A , pero la_llave=nøkkelen no=ikke abre>abrir=åpner .',
@@ -157,12 +151,9 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Maribel: — Mañana=i_morgen es>ser=er martes>el_martes=tirsdag , y los_martes>el_martes=om_tirsdagen hay>hay=er_det mercado>el_mercado=marked en=i ^Altea . ¿ Vamos>ir=skal_vi_gå las_dos>dos=sammen ?',
           'Berit: — ¡ Sí=ja ! ¿ A_qué_hora>la_hora=når ?',
           'Maribel: — A_las_diez>diez=klokka_ti . ¡ Hasta_mañana=vi_ses_i_morgen , vecina>el_vecino=nabo !',
-          'Ingrid: Stakkars Berit. Men lo siento mucho er godt å kunne.',
           'Marta: Lo siento betyr beklager. Og når du ikke forstår: ¿Puede hablar más despacio, por favor? Si quieres, dilo tú.',
           'Ingrid: ¿Puede hablar más despacio, por favor?',
           'Marta: Perfecto. Og hørte du háblame de tú? Maribel vil at de skal si du til hverandre. Med naboer går det fort i Spania.',
-          'Ingrid: Så hun sier tú til Maribel, men usted til Vicente?',
-          'Marta: Akkurat. Usted til folk du ikke kjenner, særlig eldre folk. Og i morgen er det tirsdag, og marked.',
         ]),
       },
       {
@@ -190,11 +181,7 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'La_calle=gata sube>subir=går_oppover , y ^Berit está>estar=er cansada>cansado=sliten . ^Maribel , no=ikke : ¡ ella=hun sube>subir=går_opp muy=veldig rápido=fort !',
           'Ingrid: Så når jeg skal stille meg i kø, sier jeg: ¿Quién es el primero?',
           'Marta: Nesten, Ingrid! Du spør ikke hvem som er først, men hvem som er sist: ¿Quién es el último?',
-          'Marta: Så vet du hvem du skal stå etter.',
-          'Ingrid: Å ja. ¿Quién es el último?',
-          'Marta: Muy bien. Si quieres, dilo tú: ¿Quién es el último?',
           'Marta: Og når det er din tur: un kilo de tomates, por favor. Dilo tú.',
-          'Ingrid: Og ¿Quiere bolsa? betyr vil du ha pose. No, gracias, tengo una. Jeg har med egen pose.',
           'Marta: Bien. I morgen går Berit alene på bar, og der lærer hun kanskje den viktigste setningen i Spania.',
         ]),
       },
@@ -214,7 +201,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Berit: — Perdón=unnskyld . ¿ Puede>poder=kan_De hablar=snakke más=mer despacio=sakte , por_favor=er_De_snill ?',
           'Amparo: — ¡ Claro=selvfølgelig ! ¿ En=i … taza>la_taza=kopp … o=eller en=i … vaso>el_vaso=glass ?',
           'Berit: — En=i taza>la_taza=kopp , por_favor=takk . Y una=en tostada>la_tostada=skive_ristet_brød con=med tomate>el_tomate=tomat y aceite>el_aceite=olje .',
-          'El_café=kaffen está>estar=er muy=veldig caliente=varm , y la_tostada=brødskiva , muy=veldig rica>rico=god .',
           '^Per llama>llamar=ringer al=til móvil>el_móvil=mobilen de=til ^Berit . En=i ^Hamar llueve>llover=regner_det , y hace>hacer=er_det mucho=veldig frío>el_frío=kaldt .',
           '^Berit habla>hablar=snakker de=om la_lluvia=regnet y del=om gato>el_gato=katten … pero no=ikke habla>hablar=snakker del=om sol>el_sol=sola .',
           'Berit: — La_cuenta=regningen , por_favor=takk .',
@@ -224,12 +210,9 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Berit: — ¡ Sí=ja ! ¿ Cómo=hvordan lo_sabe>saber=vet_De_det ?',
           'Amparo: — ¡ Aquí=her , todo_el_pueblo>el_pueblo=hele_byen lo_sabe>saber=vet_det !',
           'Ingrid: Neste gang sier jeg: ¿Me pones un café con leche?',
-          'Marta: Det kan du godt si! Mange sier ¿me pones? på baren, med tú, og det er helt vanlig i Spania.',
           'Marta: Berit sier ¿me pone?, med usted. Det er litt høfligere, og alltid riktig.',
           'Ingrid: Og hvorfor spør hun om kopp eller glass?',
           'Marta: Mange spanjoler drikker kaffen i et lite glass, en vaso. Si quieres, dilo tú: ¿Me pone un café con leche, por favor?',
-          'Ingrid: Og når jeg skal betale: la cuenta, por favor. Aquí tiene.',
-          'Marta: Aquí tiene betyr vær så god, når du gir noe til noen. Dilo tú: aquí tiene. Og nå: hva skjer når man går i sola uten hatt?',
         ]),
       },
       {
@@ -258,10 +241,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Y en=i una_tienda>la_tienda=en_butikk de=på la_plaza=torget , ^Berit compra>comprar=kjøper … ¡ dos=to sombreros>el_sombrero=hatter ! Uno=en para=til ella=henne , y uno=en para=til ^Per .',
           'Ingrid: Den vil jeg huske: ¿Hay una farmacia cerca?',
           'Marta: Den kan du bruke om alt mulig: ¿Hay un banco cerca? ¿Hay un bar cerca? Si quieres, dilo tú: ¿Hay una farmacia cerca?',
-          'Ingrid: Og svaret var todo recto, y en la esquina, a la derecha. Rett fram, og til høyre på hjørnet.',
-          'Marta: Ja, og a la izquierda er til venstre. Dilo tú: tengo una ampolla en el pie.',
-          'Ingrid: Tengo una ampolla en el pie. Den håper jeg å slippe å si.',
-          'Marta: Ojalá. Og nå ber Maribel Berit på middag. Men når?',
         ]),
       },
       {
@@ -289,12 +268,8 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Berit: — ¿ A_las_diez>diez=klokka_ti ? ¡ En=i ^Noruega , a_las_diez>diez=klokka_ti , yo=jeg ya=allerede duermo>dormir=sover !',
           'Las_dos>dos=de_to se_ríen>reírse=ler .',
           'Maribel: — Ahora=nå , vamos_a>ir=skal_vi tomar=ta algo=noe al=på bar>el_bar=baren de=til ^Amparo . Y a_las_diez>diez=klokka_ti , ¡ la_cena=middagen !',
-          'Ingrid: Klokka ti! Da har jeg lagt meg.',
-          'Marta: I Spania spiser mange middag klokka ni eller ti om kvelden. Lunsjen, la comida, spiser man gjerne klokka to eller tre.',
           'Ingrid: Og vamos a tomar algo?',
           'Marta: Det betyr skal vi ta noe, et glass eller en kaffe. Den setningen er gull verdt. Si quieres, dilo tú: ¿Vamos a tomar algo?',
-          'Ingrid: ¿Vamos a tomar algo? Og son las siete betyr klokka er sju.',
-          'Marta: Perfecto. Nå går de til baren til Amparo, og så hjem til Maribel.',
         ]),
       },
       {
@@ -302,7 +277,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
         no: 'Middag klokka ti',
         parts: scene(ALTEA, [
           'Marta: Det er lørdag kveld, og gatene er fulle av folk. Hør etter nadie, ingen, og la cebolla, løk.',
-          'Ingrid: Løk? Det høres ikke så spennende ut.',
           'Marta: Du aner ikke hvor mye spanjoler krangler om løk i tortillaen! Og decir betyr å si: no dice nada, hun sier ingenting.',
           'Marta: Når Amparo snakker til dem begge, sier hun ¿qué tomáis?, hva vil dere ha. Det er vosotros, slik man sier dere i Spania.',
           'Las_dos>dos=de_to van>ir=går al=til bar>el_bar=baren de=til ^Amparo , con=med ^Coco .',
@@ -310,8 +284,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Amparo: — ¡ Hola=hei , vecinas>el_vecino=naboer ! ¿ Qué=hva tomáis>tomar=vil_dere_ha ?',
           'Maribel: — Dos=to vinos>el_vino=glass blancos>blanco=hvitvin , y unas>una=noen aceitunas>la_aceituna=oliven , por_favor=takk .',
           'A_las_nueve>nueve=klokka_ni , en=i la_calle=gata hay>hay=er_det mucha>mucho=mye gente>la_gente=folk … ¡ y nadie=ingen cena>cenar=spiser_middag !',
-          'Berit: — ¡ Aquí=her , a_las_nueve>nueve=klokka_ni , los_niños>el_niño=barna no=ikke duermen>dormir=sover !',
-          'Maribel: — ¡ No=nei , mujer>la_mujer=kjære_deg ! ¡ Es>ser=det_er sábado>el_sábado=lørdag !',
           'A_las_diez>diez=klokka_ti , en=i casa>la_casa=huset de=til ^Maribel , hay>hay=er_det una_tortilla>la_tortilla=en_omelett de=med patatas>la_patata=poteter , una_ensalada>la_ensalada=en_salat , pan>el_pan=brød y queso>el_queso=ost .',
           'Berit: — ¿ La_tortilla=omeletten tiene>tener=har cebolla>la_cebolla=løk ?',
           'Maribel: — ¡ Claro=selvfølgelig ! En=i esta>este=dette casa>la_casa=huset , la_tortilla=omeletten es>ser=er con=med cebolla>la_cebolla=løk .',
@@ -319,14 +291,9 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'Maribel: — Es>ser=det_er la_tortilla=omeletten de=til mi=min madre>la_madre=mor . ¿ Y el_piso=leiligheten ? ¿ Todo=alt bien=bra ?',
           'Berit: — Muy=veldig bien=bra . Y ^Vicente es>ser=er muy=veldig simpático=hyggelig .',
           '^Maribel se_ríe>reírse=ler , y no=ikke dice>decir=sier nada=noe .',
-          'Hablan>hablar=de_snakker y hablan>hablar=snakker . ^Maribel habla>hablar=snakker despacio=sakte , y ^Berit entiende>entender=forstår mucho=mye .',
           'A_las_doce>doce=klokka_tolv , ^Berit vuelve>volver=går_tilbake a=til su=sin puerta>la_puerta=dør : la=den ^B , ¡ claro=selvfølgelig !',
-          'Ingrid: Con cebolla eller sin cebolla, hva er riktig?',
-          'Marta: Begge deler! Mange vil ha løk, andre sier at en ekte tortilla er sin cebolla. Jeg er con cebolla, como Maribel.',
           'Ingrid: Og ¡Qué rica está la tortilla! er fint å si til den som har laget maten.',
           'Marta: Det beste du kan si. Si quieres, dilo tú: ¡Qué rica está la tortilla!',
-          'Ingrid: Men hvorfor ler Maribel når Berit snakker om Vicente?',
-          'Marta: Det får vi vite i morgen. Det er Berits siste dag.',
         ]),
       },
       {
@@ -362,9 +329,6 @@ export const AUDIOBOOKS: Array<Audiobook> = [
           'En=i ^Hamar , ^Per espera>esperar=venter con=med el_gato=katten . Y llueve>llover=det_regner , claro=selvfølgelig .',
           'Ingrid: Stakkars Per. Nå må han lære spansk han også.',
           'Marta: Med hatt! Ta med deg to setninger fra i dag: ¡Hasta pronto!, vi ses snart, og ¿Vuelves el año que viene?, kommer du tilbake neste år?',
-          'Ingrid: El año que viene, året som kommer. Det betyr neste år?',
-          'Marta: Akkurat. Si quieres, dilo tú: ¡Hasta pronto!',
-          'Ingrid: Takk for at du hørte på. Hør gjerne en gang til, og les teksten i appen hvis du vil se ordene.',
           'Marta: Gracias por escuchar. ¡Hasta pronto!',
           'Ingrid: ¡Hasta pronto!',
         ]),

@@ -16,7 +16,7 @@ part begins, for the page to follow; files no book uses any more are
 removed. A book with a recording missing is left as it was, and the
 missing texts are named.
 
-Needs ffmpeg.
+Needs ffmpeg, and the repo's node_modules for prettier.
 """
 
 import hashlib
@@ -104,6 +104,8 @@ def main():
             f.unlink()
             print(f"removed {f.name}")
     TIMES.write_text(json.dumps(times, indent=1, ensure_ascii=False) + "\n")
+    # (in the repo's own style, as format:check wants it)
+    subprocess.run(["npx", "prettier", "--write", str(TIMES)], cwd=ROOT, check=True, capture_output=True)
 
 
 if __name__ == "__main__":
