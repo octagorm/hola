@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { WORD } from '../src/app/data/words'
 import { LOTTERY_VOICE, NUMBER_VOICES, VOICES } from '../src/app/data/voices'
@@ -26,6 +27,18 @@ import {
   worth,
 } from '../src/app/lib/numeros'
 import { speechItems } from '../src/app/lib/spoken'
+import {
+  NUMEROS_PICTURES,
+  SPEAKER_LOOKS,
+} from '../src/app/data/numeros-prompts'
+import {
+  FACES,
+  MADRID,
+  SORTEO,
+  SPEAKERS,
+  placeOf,
+  speakerSheet,
+} from '../src/app/data/numerosLayout'
 import type { Item, Kind } from '../src/app/lib/numeros'
 
 // The same numbers every run
@@ -478,5 +491,37 @@ describe('dealing', () => {
     const mixed = roundKinds('all', seeded(4))
     expect(mixed).toHaveLength(ROUND)
     expect(new Set(mixed).size).toBeGreaterThanOrEqual(4)
+  })
+})
+
+describe('the paintings of Números', () => {
+  it('has a place and a sheet of faces for everyone who speaks', () => {
+    const names = Object.keys(NUMEROS_PICTURES)
+    expect(names).toContain(MADRID)
+    expect(names).toContain(SORTEO)
+    const voices = new Set([...DECK, ...LOTTERY].map((x) => x.voice))
+    expect([...voices].sort()).toEqual([...SPEAKERS].sort())
+    for (const who of SPEAKERS) {
+      const p = NUMEROS_PICTURES[speakerSheet(who)]
+      expect(p.parts, who).toEqual(FACES)
+      expect(p.cutout, who).toBe(true)
+      expect(SPEAKER_LOOKS[who].faces, who).toHaveLength(FACES.length)
+      expect(names, who).toContain(placeOf(who))
+    }
+    expect(placeOf(LOTTERY_VOICE)).toBe(SORTEO)
+    for (const who of NUMBER_VOICES) expect(placeOf(who)).toBe(MADRID)
+    // each its own name, and nothing else
+    expect(names.length).toBe(2 + SPEAKERS.length)
+    expect(new Set(names.map((n) => n.split('-')[0])).size).toBe(names.length)
+  })
+
+  it('keeps the prompts out of the page', () => {
+    for (const file of [
+      'src/app/games/numeros.tsx',
+      'src/app/data/numerosLayout.ts',
+    ])
+      expect(readFileSync(file, 'utf8'), file).not.toMatch(
+        /from '[^']*-prompts/,
+      )
   })
 })

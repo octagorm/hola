@@ -1205,6 +1205,229 @@
   color: var(--sepia);
 }
 
+/* --- The portrait, once painted (numeros.tsx) ---
+   Whoever says the number, as the portrait on a banknote: a bust in an
+   engraved oval, with the place painted behind it. Before the answer it
+   stands beside the button that says the number again, where the drum
+   stands in the draw while it is drawn; after the answer it is above the
+   verdict. */
+
+.nu-portrait {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 88px;
+  aspect-ratio: 360 / 420;
+  overflow: hidden;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: var(--green-4);
+  box-shadow: 0 3px 0 var(--line);
+}
+
+/* the engraved rings round it, over the painting */
+.nu-portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px var(--green-3);
+  pointer-events: none;
+}
+
+.nu.gold .nu-portrait::after {
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px var(--gold-2);
+}
+
+.nu-portrait .place {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nu-listen.faced {
+  min-height: 103px;
+}
+
+.nu-listen .nu-portrait {
+  position: absolute;
+  right: calc(50% + 58px);
+}
+
+.nu-reveal .nu-portrait {
+  margin: 0 auto 8px;
+}
+
+.nu-intro .nu-portrait.big {
+  width: 132px;
+  margin: 10px auto 2px;
+}
+
+/* The bust stands on the oval's lower edge; the nod or the shake on the
+   outer part, once, the breathing and the bob on the inner */
+.nu-react {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 0;
+  transform-origin: 50% 100%;
+}
+
+.nu-react.glad {
+  animation: nu-nod 0.5s ease-in-out;
+}
+
+.nu-react.kind {
+  animation: nu-shake 0.7s ease-in-out;
+}
+
+.nu-bust {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  animation: nu-breathe 3.2s ease-in-out infinite;
+}
+
+.nu-bust img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  opacity: 0;
+}
+
+.nu-bust.f-wait img.wait,
+.nu-bust.f-glad img.glad,
+.nu-bust.f-kind img.kind {
+  opacity: 1;
+}
+
+/* Speaking: the speaking face over the other every other moment, and a
+   little bob; Ildefonso holds his note, swaying */
+.nu-bust.talking {
+  animation: nu-bob 0.5s ease-in-out infinite;
+}
+
+.nu-bust.talking img.talk {
+  animation: nu-yap 0.3s steps(1, end) infinite;
+}
+
+.nu-bust.talking.sings {
+  animation: nu-sway 1.6s ease-in-out infinite;
+}
+
+.nu-bust.talking.sings img.talk {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes nu-breathe {
+  50% {
+    transform: scale(1.008, 1.018);
+  }
+}
+
+@keyframes nu-bob {
+  50% {
+    transform: translateY(-1.5%) rotate(-0.8deg);
+  }
+}
+
+@keyframes nu-sway {
+  25% {
+    transform: rotate(-1.5deg);
+  }
+  75% {
+    transform: rotate(1.5deg);
+  }
+}
+
+@keyframes nu-yap {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes nu-nod {
+  35% {
+    transform: translateY(4%) rotate(-1deg);
+  }
+  70% {
+    transform: translateY(-1%);
+  }
+}
+
+@keyframes nu-shake {
+  20% {
+    transform: rotate(-3deg);
+  }
+  45% {
+    transform: rotate(3deg);
+  }
+  70% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+@media (min-width: 480px) {
+  .nu-portrait {
+    width: 112px;
+  }
+
+  .nu-listen.faced {
+    min-height: 131px;
+  }
+
+  .nu-intro .nu-portrait.big {
+    width: 160px;
+  }
+}
+
+@media (min-width: 900px) {
+  .nu-portrait {
+    width: 150px;
+  }
+
+  .nu-listen.faced {
+    min-height: 175px;
+  }
+
+  .nu-listen .nu-portrait {
+    right: calc(50% + 74px);
+  }
+
+  .nu-intro .nu-portrait.big {
+    width: 180px;
+  }
+}
+
+/* Without motion: still, the speaking face shown while they speak */
+@media (prefers-reduced-motion: reduce) {
+  .nu-react.glad,
+  .nu-react.kind,
+  .nu-bust,
+  .nu-bust.talking,
+  .nu-bust.talking.sings {
+    animation: none;
+  }
+
+  .nu-bust.talking img.talk {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* --- A wide screen: the ticket and the keys side by side --- */
 
 @media (min-width: 900px) {

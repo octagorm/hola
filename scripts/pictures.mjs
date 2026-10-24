@@ -29,6 +29,7 @@ import { RASTRO_PICTURES } from '../src/app/data/rastro-prompts.ts'
 import { TAPAS_PICTURES } from '../src/app/data/tapas-prompts.ts'
 import { CASO_PICTURES } from '../src/app/data/caso-prompts.ts'
 import { PALABRAS_PICTURES } from '../src/app/data/palabras-prompts.ts'
+import { NUMEROS_PICTURES } from '../src/app/data/numeros-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -207,6 +208,7 @@ Object.assign(PICTURES, TAPAS_PICTURES)
 // speaks (data/caso-prompts.ts)
 Object.assign(PICTURES, CASO_PICTURES)
 Object.assign(PICTURES, PALABRAS_PICTURES)
+Object.assign(PICTURES, NUMEROS_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 

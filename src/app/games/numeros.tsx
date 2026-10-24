@@ -32,6 +32,17 @@ import { say, stop, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
 import { TodayNext, useBack } from '../daily'
 import { useFont } from '../ui'
+import { PICTURES } from '../data/pictures'
+import {
+  BUST_TOP,
+  FACES,
+  MADRID,
+  SORTEO,
+  placeOf,
+  speakerFace,
+} from '../data/numerosLayout'
+import { LOTTERY_VOICE, NUMBER_VOICES } from '../data/voices'
+import type { Face } from '../data/numerosLayout'
 import type { Item, Kind } from '../lib/numeros'
 import './numeros.css'
 
@@ -40,7 +51,8 @@ import './numeros.css'
 // Then the sentence is shown, and the number taken apart, each piece with
 // its Spanish words. Six to a round, and then three numbers of Spain's
 // Christmas lottery, sung as the San Ildefonso children sing them. Drawn as
-// an engraved lottery ticket: fine green lines, a seal, sepia numbers.
+// an engraved lottery ticket: fine green lines, a seal, sepia numbers; once
+// painted, whoever says the number is the portrait on the note.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap'
@@ -328,8 +340,16 @@ export default function Numeros() {
                         {item.say}
                       </p>
                     )}
-                    <div className="nu-listen">
-                      {phase === 'bonus' && <Bombo spinning={talking} />}
+                    <div
+                      className={
+                        painted(item) ? 'nu-listen faced' : 'nu-listen'
+                      }
+                    >
+                      {painted(item) ? (
+                        <Portrait who={item.voice} talking={talking} />
+                      ) : (
+                        phase === 'bonus' && <Bombo spinning={talking} />
+                      )}
                       <button
                         type="button"
                         className={`nu-hear ${talking ? 'on' : ''}`}
@@ -358,6 +378,7 @@ export default function Numeros() {
                   <Reveal
                     item={item}
                     result={done}
+                    talking={talking}
                     onHear={(slow) => play(item, slow)}
                   />
                 )}
@@ -607,16 +628,25 @@ function Keypad({
 function Reveal({
   item,
   result,
+  talking,
   onHear,
 }: {
   item: Item
   result: Result
+  talking: boolean
   onHear: (slow: boolean) => void
 }) {
   const { hear } = useVoices()
   const typedShown = shown(result.typed, item)
   return (
     <div className="nu-reveal">
+      {painted(item) && (
+        <Portrait
+          who={item.voice}
+          face={result.right ? 'glad' : 'kind'}
+          talking={talking}
+        />
+      )}
       <p className={`nu-verdict ${result.right ? 'yes' : 'no'}`}>
         <span className="mark">{result.right ? <Check /> : <X />}</span>
         {result.right ? (
@@ -714,7 +744,11 @@ function Draw({
           <p className="kick">
             {score} av {of} riktige
           </p>
-          <Bombo spinning />
+          {LOTTERY_PAINTED ? (
+            <Portrait who={LOTTERY_VOICE} big />
+          ) : (
+            <Bombo spinning />
+          )}
           <h2 lang="es">El sorteo de Navidad</h2>
           <p>
             Hver 22. desember synger barna fra San Ildefonso-skolen i Madrid
@@ -837,6 +871,62 @@ function End({
         ))}
       </ol>
     </main>
+  )
+}
+
+// --- The portrait ---
+
+// Whether the speakers of a kind of number are painted (scripts/pictures.mjs,
+// from data/numeros-prompts.ts): the place behind them and every face of
+// each who speaks there. Until they are, the ticket is as it always was.
+const paintedAll = (place: string, who: Array<string>) =>
+  PICTURES.has(place) &&
+  who.every((w) => FACES.every((f) => PICTURES.has(speakerFace(w, f))))
+const SENTENCES_PAINTED = paintedAll(MADRID, NUMBER_VOICES)
+const LOTTERY_PAINTED = paintedAll(SORTEO, [LOTTERY_VOICE])
+const painted = (item: Item) =>
+  item.kind === 'lottery' ? LOTTERY_PAINTED : SENTENCES_PAINTED
+
+// Who says the number, as the portrait on a banknote: their bust in an oval
+// vignette before the place, breathing. While they speak, the speaking face
+// shows over the other every other moment (Ildefonso holds his sung note),
+// and once answered they nod with a glad face, or give a small shake of
+// the head with a kind one. Every face is there from the start, so that
+// none waits to load when it is wanted.
+function Portrait({
+  who,
+  face = 'wait',
+  talking = false,
+  big = false,
+}: {
+  who: string
+  face?: Face
+  talking?: boolean
+  big?: boolean
+}) {
+  const sings = who === LOTTERY_VOICE
+  return (
+    <span className={`nu-portrait ${big ? 'big' : ''}`} aria-hidden="true">
+      <img className="place" src={`/${placeOf(who)}.webp`} alt="" />
+      <span
+        className={`nu-react ${face}`}
+        style={{ top: `${BUST_TOP * 100}%` }}
+      >
+        <span
+          className={`nu-bust f-${face} ${talking ? 'talking' : ''} ${sings ? 'sings' : ''}`}
+        >
+          {FACES.map((f) => (
+            <img
+              key={f}
+              className={f}
+              src={`/${speakerFace(who, f)}.webp`}
+              alt=""
+              decoding="async"
+            />
+          ))}
+        </span>
+      </span>
+    </span>
   )
 }
 
