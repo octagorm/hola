@@ -183,6 +183,19 @@ describe('the scene', () => {
     expect(moonPlace(-6.5, wide.view, [], 30)).toBeNull()
   })
 
+  it('keeps above the sails over the mills', () => {
+    const { mills } = SCENE
+    let over = 0
+    for (let h = -5.9; h < 6; h += 0.25) {
+      const at = moonPlace(h, wide.view, [], 30)
+      if (!at || at.x < mills.x0 * SCENE.width - 30) continue
+      if (at.x > mills.x1 * SCENE.width + 30) continue
+      over++
+      expect(at.y + 30, `${h}`).toBeLessThanOrEqual(mills.top * H + 0.01)
+    }
+    expect(over).toBeGreaterThan(0)
+  })
+
   it('passes under a button in the way', () => {
     const at = moonPlace(0, wide.view, [], 30)
     if (!at) throw new Error('no moon')

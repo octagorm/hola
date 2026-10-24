@@ -14,19 +14,21 @@ export const SCENE = {
   width: 1536,
   height: 1024,
   // The point kept in view when the picture is cropped to its box
-  focus: { x: 0.5, y: 0.5 },
+  focus: { x: 0.5, y: 0.51 },
   // On a phone the strip shows only the middle of the picture, this share
   // of its width, so the riders and the mills are not too small
   narrowSpan: 0.72,
   // The band of open sky where the moon travels, rising at the left (east,
-  // looking south over the plain) and setting at the right
+  // looking south over the plain) and setting at the right; over the
+  // mills it keeps above their sails
   moon: { y0: 0.26, y1: 0.47 },
   // Where stars may shine and clouds drift: sky only, above the mills
-  stars: { y0: 0.04, y1: 0.46 },
-  clouds: { y0: 0.27, y1: 0.42 },
-  // Where the riders are, and the ridge of windmills, for the prompts
-  riders: { x0: 0.28, x1: 0.44, y0: 0.58, y1: 0.69 },
-  mills: { x0: 0.5, x1: 0.86, top: 0.47, ridge: 0.6 },
+  stars: { y0: 0.04, y1: 0.37 },
+  clouds: { y0: 0.23, y1: 0.35 },
+  // Where the riders are, and the ridge of windmills, as the day painting
+  // has them, for the prompts of the others
+  riders: { x0: 0.31, x1: 0.42, y0: 0.58, y1: 0.71 },
+  mills: { x0: 0.55, x1: 0.96, top: 0.37, ridge: 0.51 },
   // The far horizon, left of the ridge
   horizon: 0.55,
 } as const
@@ -228,6 +230,12 @@ export function moonPlace(
   const x = band.x0 + ((hour + 6) / 12) * (band.x1 - band.x0)
   const high = Math.cos((hour / 6) * (Math.PI / 2))
   let y = band.y1 - high * (band.y1 - band.y0)
+  // Over the mills, above their sails, or not at all if that is out of view
+  const { mills } = SCENE
+  if (x > mills.x0 * SCENE.width - r && x < mills.x1 * SCENE.width + r) {
+    y = Math.min(y, mills.top * SCENE.height - r)
+    if (y < band.y0) return null
+  }
   // Smaller things in the way (the buttons): passed below, or above
   for (const a of grown) {
     if (x < a.x0 || x > a.x1 || y < a.y0 || y > a.y1) continue

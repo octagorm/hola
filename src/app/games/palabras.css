@@ -432,9 +432,9 @@
 
 /* (the round portrait on a phone shows his face) */
 .pz-him .pz-bust {
-  top: 3%;
+  top: 4%;
   bottom: auto;
-  height: 185%;
+  height: 150%;
 }
 
 @media (min-width: 1000px) {
