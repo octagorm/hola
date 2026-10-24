@@ -615,6 +615,85 @@
   }
 }
 
+/* On a phone the clue card steps through every clue, so the list of them
+   gives way, and the grid, the clue and the keyboard share one screen */
+@media (max-width: 600px) {
+  .d4-list {
+    display: none;
+  }
+
+  .d4-grid {
+    width: min(
+      100% - 16px,
+      var(--c) * 60px,
+      (100dvh - 430px) * var(--c) / var(--r)
+    );
+  }
+}
+
+@media (max-width: 600px) and (max-height: 780px) {
+  .d4-col {
+    padding: 10px 8px 8px;
+  }
+
+  .d4-top h1 {
+    font-size: 28px;
+  }
+
+  .d4-top h1 small {
+    margin-top: 2px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .d4-round {
+    width: 40px;
+    height: 40px;
+  }
+
+  .d4-time {
+    padding: 8px 12px;
+  }
+
+  .d4-grid {
+    width: min(
+      100% - 16px,
+      var(--c) * 60px,
+      (100dvh - 350px) * var(--c) / var(--r)
+    );
+    margin-top: 10px;
+  }
+
+  .d4-clue {
+    margin-top: 10px;
+    padding: 4px 6px;
+  }
+
+  .d4-clue .mean {
+    font-size: 17px;
+    margin: 0;
+  }
+
+  .d4-keys {
+    padding-top: 10px;
+    gap: 6px;
+  }
+
+  .d4-keys button {
+    height: 40px;
+  }
+
+  .d4-help {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .d4-help .d4-link {
+    font-size: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .d4-grid button.bad,
   .d4-card {
