@@ -3163,6 +3163,29 @@ img.q-pic {
   line-height: 1.6;
 }
 
+.bk-flourish {
+  display: block;
+  width: min(340px, 86%);
+  height: auto;
+  margin: 26px auto 6px;
+  color: var(--ink-2);
+  fill: currentColor;
+}
+
+.bk-flourish .line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* (the mouse pointer gone with the title, until the mouse moves) */
+.bk-page.bk-still,
+.bk-page.bk-still * {
+  cursor: none !important;
+}
+
 .bk-hint {
   margin: 0;
   font-size: 16px;

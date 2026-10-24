@@ -1527,10 +1527,16 @@ await test(
   { learner: true },
 )
 
+// The reader's choices, behind «Aa», which a scroll up brings back
+const choices = async (page) => {
+  await page.evaluate(() => window.scrollBy(0, -300))
+  await page.getByRole('button', { name: 'Visning' }).click()
+}
+
 await test('a text in the library is read, and its place kept', async (page) => {
   await go(page, '#biblioteca/testamento')
   // (scrolled, rather than a page at a time as it opens)
-  await page.getByRole('button', { name: 'Visning' }).click()
+  await choices(page)
   await page.getByRole('button', { name: 'Rull' }).click()
   await page.keyboard.press('Escape')
   // A word not met: its card says what it is, and once known it stands
@@ -1541,11 +1547,15 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.getByRole('button', { name: 'Kan det' }).click()
   await page.locator('.bk-text .kw', { hasText: 'lugareño' }).first().waitFor()
   // A form, with what it is
-  await page.locator('.bk-text ruby', { hasText: 'continuó' }).first().click()
+  const form = page.locator('.bk-text ruby', { hasText: 'continuó' }).first()
+  // (a scroll closes a word's card, so the word is brought into view first)
+  await form.scrollIntoViewIfNeeded()
+  await page.waitForTimeout(400)
+  await form.click()
   await page.locator('.q-peek', { hasText: 'continuar i fortid' }).waitFor()
   await page.keyboard.press('Escape')
   // Spanish alone: no Norwegian over the words, which still open their card
-  await page.getByRole('button', { name: 'Visning' }).click()
+  await choices(page)
   await page.getByRole('button', { name: 'Bare spansk' }).click()
   await page.keyboard.press('Escape')
   expect((await page.locator('.bk-text ruby').count()) === 0, 'no Norwegian')
@@ -1553,14 +1563,14 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.locator('.q-peek', { hasText: 'testamente' }).waitFor()
   await page.keyboard.press('Escape')
   // Norwegian over every word, the known ones too
-  await page.getByRole('button', { name: 'Visning' }).click()
+  await choices(page)
   await page.getByRole('button', { name: 'Alle ord' }).click()
   await page.keyboard.press('Escape')
   await page
     .locator('.bk-text ruby.kw', { hasText: 'lugareño' })
     .first()
     .waitFor()
-  await page.getByRole('button', { name: 'Visning' }).click()
+  await choices(page)
   await page.getByRole('button', { name: 'Ukjente ord' }).click()
   await page.keyboard.press('Escape')
   await page

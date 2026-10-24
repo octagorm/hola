@@ -131,6 +131,8 @@ function Reader({ book }: { book: Book }) {
   const [panel, setPanel] = useState(false)
   // The title and «Aa» over the text, out of the way once reading goes on
   const [controls, setControls] = useState(true)
+  // The mouse pointer goes with them, until the mouse moves
+  const [still, setStill] = useState(false)
   // Opened where it was left, if that was not the start
   const [resumed, setResumed] = useState(
     () => !!place && !place.done && (place.p > 0 || !!place.w),
@@ -226,7 +228,8 @@ function Reader({ book }: { book: Book }) {
       v.style.height = ''
       f.style.cssText = ''
       // From pages to the scroll: to the word that was read
-      if (wasPaged.current && anchor.current?.isConnected)
+      if (wasPaged.current && pager.current.index === 0) window.scrollTo(0, 0)
+      else if (wasPaged.current && anchor.current?.isConnected)
         window.scrollTo(
           0,
           anchor.current.getBoundingClientRect().top + window.scrollY - 100,
@@ -308,7 +311,10 @@ function Reader({ book }: { book: Book }) {
       last = window.scrollY
       way = Math.sign(d) === Math.sign(way) ? way + d : d
       if (window.scrollY < 8 || way < -12) setControls(true)
-      else if (way > 12) setControls(false)
+      else if (way > 12) {
+        setControls(false)
+        setStill(true)
+      }
       window.clearTimeout(timer)
       timer = window.setTimeout(
         () =>
@@ -329,6 +335,7 @@ function Reader({ book }: { book: Book }) {
     (step: number) => {
       turnTo(pager.current.index + step)
       setControls(false)
+      setStill(true)
       // (a word's card left open would point at the page turned away)
       window.dispatchEvent(new Event('scroll'))
     },
@@ -368,11 +375,28 @@ function Reader({ book }: { book: Book }) {
       if (paged && e.clientX < v.left) turn(-1)
       else if (paged && e.clientX > v.right) turn(1)
       else if (e.clientX >= v.left && e.clientX <= v.right)
-        setControls((shown) => !shown)
+        setControls((shown) => {
+          setStill(shown)
+          return !shown
+        })
     }
     window.addEventListener('click', onClick)
     return () => window.removeEventListener('click', onClick)
   }, [paged, turn])
+
+  // The pointer back once the mouse moves (not when the page moves under a
+  // mouse held still, which browsers also tell of)
+  useEffect(() => {
+    if (!still) return
+    let from: { x: number; y: number } | null = null
+    const onMove = (e: MouseEvent) => {
+      from ??= { x: e.clientX, y: e.clientY }
+      if (Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6)
+        setStill(false)
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [still])
 
   // A swipe turns the page
   const from = useRef<{ x: number; y: number } | null>(null)
@@ -433,7 +457,7 @@ function Reader({ book }: { book: Book }) {
       es={book.es}
       title={book.no}
       back="#biblioteca"
-      className={`bk-page${paged ? ' paged' : ''}${controls || panel ? '' : ' bk-hidden'}`}
+      className={`bk-page${paged ? ' paged' : ''}${controls || panel ? '' : ' bk-hidden'}${still && !panel ? ' bk-still' : ''}`}
       style={
         {
           '--bk-size': `${size}px`,
@@ -551,6 +575,7 @@ function Reader({ book }: { book: Book }) {
               ) : (
                 <MixedKey faint={gloss === 'all'} />
               )}
+              <Flourish />
             </header>
 
             <div className={`bk-text${bare ? ' plain' : ''}`}>
@@ -651,5 +676,28 @@ function Reader({ book }: { book: Book }) {
         )}
       </div>
     </Page>
+  )
+}
+
+// The ornament between the text's introduction and the text: a rule that
+// thins to each side, curls, and a diamond in the middle, in ink
+function Flourish() {
+  const half = (
+    <>
+      <path d="M6 14 L116 12.8 Q119.5 14 116 15.2 Z" />
+      <path
+        className="line"
+        d="M146 14 C139 14 133 7.5 126.5 9.5 C122 11 122.5 16.5 127 16.5 C130.5 16.5 131 12.5 128.2 12"
+      />
+      <circle cx="140.5" cy="19.5" r="1.4" />
+    </>
+  )
+  return (
+    <svg className="bk-flourish" viewBox="0 0 320 28" aria-hidden="true">
+      {half}
+      <g transform="matrix(-1 0 0 1 320 0)">{half}</g>
+      <path className="line" d="M160 5 L168.5 14 L160 23 L151.5 14 Z" />
+      <circle cx="160" cy="14" r="2.6" />
+    </svg>
   )
 }
