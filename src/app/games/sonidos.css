@@ -1126,6 +1126,298 @@
   }
 }
 
+/* A phone: the set a little lower, so that a round for the ear and the
+   dictation each fit on one screen under it; the chart may scroll */
+@media (max-width: 600px) {
+  .so-col {
+    padding: 10px 10px 14px;
+  }
+
+  .so-set {
+    padding: 8px 10px 10px;
+  }
+
+  .so-top h1 {
+    padding: 3px 16px 4px;
+  }
+
+  .so-top h1 .brand {
+    font-size: 30px;
+  }
+
+  .so-top h1 small {
+    font-size: 11px;
+  }
+
+  .so-knob {
+    width: 40px;
+    height: 40px;
+  }
+
+  .so-dial {
+    margin-top: 8px;
+  }
+
+  .so-keys {
+    margin-top: 10px;
+  }
+
+  .so-keys button {
+    min-height: 46px;
+    padding: 4px 4px 8px;
+  }
+
+  .so-main {
+    margin-top: 14px;
+  }
+
+  .so-panel {
+    padding: 12px 12px 14px;
+  }
+
+  .so-speaker .grille {
+    width: 112px;
+    height: 112px;
+    margin: 12px 12px 18px;
+  }
+
+  .so-opt {
+    min-height: 76px;
+    padding: 9px 6px 11px;
+  }
+
+  .so-after {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .so-after .note,
+  .so-after .mean {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .so-dict .so-speaker .grille {
+    width: 88px;
+    height: 88px;
+    margin: 10px 12px 16px;
+  }
+
+  .so-dict .so-speaker .cap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .so-dict .so-sheet {
+    min-height: 60px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .so-sheet .line {
+    font-size: 34px;
+  }
+
+  .so-tools {
+    min-height: 36px;
+    margin: 4px 0 2px;
+  }
+
+  .so-typer button {
+    min-height: 44px;
+  }
+
+  .so-dict .check {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 600px) and (max-height: 780px) {
+  .so-col {
+    padding-top: 6px;
+    padding-bottom: 10px;
+  }
+
+  .so-set {
+    padding: 6px 8px 8px;
+    border-radius: 20px 20px 14px 14px;
+  }
+
+  .so-top h1 .brand {
+    font-size: 26px;
+  }
+
+  .so-top h1 small {
+    font-size: 10px;
+  }
+
+  .so-knob {
+    width: 36px;
+    height: 36px;
+  }
+
+  .so-dial {
+    margin-top: 6px;
+    padding: 3px;
+  }
+
+  .so-dial .band.round {
+    height: 34px;
+  }
+
+  .so-keys {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .so-keys button {
+    min-height: 38px;
+    padding: 3px 4px 7px;
+  }
+
+  .so-keys button b {
+    font-size: 15px;
+  }
+
+  .so-keys button small {
+    margin-top: 0;
+    font-size: 11px;
+  }
+
+  .so-main {
+    margin-top: 10px;
+  }
+
+  .so-panel {
+    padding: 8px 10px 10px;
+  }
+
+  .so-focus {
+    margin-bottom: 2px;
+    padding: 2px 2px 2px 12px;
+    font-size: 14px;
+  }
+
+  .so-focus button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .so-speaker .grille {
+    width: 80px;
+    height: 80px;
+    margin: 10px 12px 15px;
+  }
+
+  .so-speaker .cap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .so-speaker .cap svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .so-ask {
+    margin: 0 0 8px;
+    font-size: 19px;
+  }
+
+  .so-opts {
+    gap: 8px;
+  }
+
+  .so-opt {
+    min-height: 62px;
+    padding: 6px 4px 9px;
+    gap: 2px;
+  }
+
+  .so-opt .es {
+    font-size: 24px;
+  }
+
+  .so-opts.n3 .so-opt .es {
+    font-size: 21px;
+  }
+
+  .so-opt small {
+    font-size: 13px;
+  }
+
+  .so-after {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .so-after .verdict {
+    font-size: 19px;
+  }
+
+  .so-after .note,
+  .so-after .mean {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .so-after .pair {
+    gap: 6px;
+  }
+
+  .so-after .so-word {
+    min-height: 38px;
+  }
+
+  .so-after .so-btn {
+    min-height: 44px;
+  }
+
+  .so-dict .so-speaker .grille {
+    width: 70px;
+    height: 70px;
+    margin: 9px 11px 14px;
+  }
+
+  .so-dict .so-speaker .cap {
+    width: 34px;
+    height: 34px;
+  }
+
+  .so-dict .so-sheet {
+    min-height: 52px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .so-sheet .line {
+    font-size: 30px;
+  }
+
+  .so-tools {
+    min-height: 32px;
+    margin: 2px 0 0;
+  }
+
+  .so-hint {
+    font-size: 15px;
+  }
+
+  .so-typer {
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .so-typer button {
+    min-height: 40px;
+    font-size: 19px;
+  }
+
+  .so-dict .check {
+    margin-top: 8px;
+  }
+}
+
 @media (max-width: 380px) {
   .so-top h1 .brand {
     font-size: 30px;
