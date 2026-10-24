@@ -5,6 +5,7 @@ import type { Book } from '../biblioteca.ts'
 
 export const TESTAMENTO: Book = {
   id: 'testamento',
+  shelf: 'cuentos',
   es: 'El testamento',
   no: 'Testamentet',
   by: 'Spansk folkefortelling',

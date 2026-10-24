@@ -175,6 +175,7 @@ export const KEEPSAKES: Array<Keepsake> = [
     art: 'ring',
     es: 'el anillo',
     no: 'ring',
+    word: 'el anillo',
     line: 'En giftering av gull, arvet fra en bestemor.',
   },
   {

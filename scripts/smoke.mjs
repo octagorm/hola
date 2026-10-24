@@ -1586,7 +1586,7 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.getByRole('button', { name: 'Ferdig lest' }).click()
   await page.getByText('regnet som lest').waitFor()
   await go(page, '#biblioteca')
-  await page.locator('.q-chapters', { hasText: 'Lest' }).waitFor()
+  await page.locator('.q-chapters em svg').first().waitFor()
 })
 
 await test('a text in the library is read a page at a time', async (page) => {

@@ -1879,6 +1879,34 @@ img.q-pic {
   line-height: 1.55;
 }
 
+.bk-shelf {
+  margin-top: 30px;
+}
+
+.bk-shelf h2 {
+  margin: 0;
+  font-family: var(--sc);
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+}
+
+.bk-shelf h2 small {
+  display: block;
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 17px;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+
+.bk-shelf > p {
+  margin: 6px 0 12px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
 .q-chapters {
   list-style: none;
   margin: 0;

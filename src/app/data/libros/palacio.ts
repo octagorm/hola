@@ -6,6 +6,7 @@ import type { Book } from '../biblioteca.ts'
 
 export const PALACIO: Book = {
   id: 'palacio',
+  shelf: 'cuentos',
   es: 'El palacio de Madrid',
   no: 'Slottet i Madrid',
   by: 'Sagn fra Madrid',

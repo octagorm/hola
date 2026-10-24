@@ -6,6 +6,7 @@ import type { Book } from '../biblioteca.ts'
 
 export const GANGA: Book = {
   id: 'ganga',
+  shelf: 'cuentos',
   es: 'Buena ganga',
   no: 'Et godt kjøp',
   by: 'Fortelling om et lurendreieri',

@@ -411,7 +411,7 @@ export default function Home() {
                   Biblioteca<span>biblioteket</span>
                 </h3>
                 <p>
-                  Korte tekster slik de ble skrevet ·{' '}
+                  Folkefortellinger og en krim ·{' '}
                   {BOOKS.filter((b) => bank.place[b.id]?.done).length} av{' '}
                   {BOOKS.length} lest
                 </p>
