@@ -995,3 +995,68 @@ button.en-flag {
     height: 44px;
   }
 }
+
+/* A short phone: the verbena drawn a little smaller and the card tighter,
+   so that the step, its answer and the keys fit on one screen */
+@media (max-width: 600px) and (max-height: 780px) {
+  .en-top {
+    padding-top: 8px;
+  }
+
+  .en-scene {
+    zoom: 0.75;
+  }
+
+  .en-col {
+    padding: 8px 12px 8px;
+    gap: 8px;
+  }
+
+  .en-panel {
+    padding: 10px 14px 10px;
+  }
+
+  .en-from {
+    margin-top: 6px;
+  }
+
+  .en-clue {
+    margin: 4px 0 6px;
+    font-size: 22px;
+  }
+
+  .en-clue small {
+    margin-bottom: 2px;
+    font-size: 13.5px;
+    line-height: 1.3;
+  }
+
+  .en-opts button {
+    min-height: 54px;
+    padding: 6px 6px 14px;
+  }
+
+  .en-answer {
+    min-height: 44px;
+  }
+
+  .en-note {
+    margin-top: 6px;
+  }
+
+  .en-acts {
+    margin-top: 8px;
+  }
+
+  .en-btn {
+    min-height: 40px;
+  }
+
+  .en-keys {
+    gap: 5px;
+  }
+
+  .en-keys button {
+    height: 40px;
+  }
+}
