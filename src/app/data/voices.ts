@@ -29,9 +29,11 @@ export const TAXI_VOICE = 'Pasajero'
 // Voices designed from a description, each made once (their ids are kept
 // in scripts/voices.json; delete one to design it again)
 export const DESIGNED: Record<string, string> = {
-  // The audiobook's guide (data/lydbok.ts), who says in Norwegian what
-  // each chapter is about
-  Guía: 'A Norwegian woman in her fifties from Oslo, speaking Norwegian bokmål with a natural eastern Norwegian accent: a warm, calm and clear voice, like a good radio host reading to a friend.',
+  // The audiobooks' hosts (data/lydbok.ts), who talk in both languages
+  Marta:
+    'A Spanish woman in her forties from Madrid who has lived many years in Oslo: she speaks Castilian Spanish with distinción (z, and c before e or i, said as θ) as her own language, and fluent Norwegian bokmål with a light Spanish colour. A warm, bright and clear voice, a good teacher on the radio, every Spanish word crisp.',
+  Ingrid:
+    'A Norwegian woman in her sixties from Oslo, speaking Norwegian bokmål with a natural eastern Norwegian accent, who is learning Spanish and says Spanish words carefully and well, as a keen learner does. A warm, friendly voice with a smile in it, unhurried and clear.',
   Profesora:
     'A Spanish woman in her thirties, a native speaker from Madrid who teaches Spanish, speaking Castilian Spanish with distinción (z, and c before e or i, said as θ, as in zapato and cielo): a clear, warm and natural voice, friendly and patient, every sound crisp.',
   Narrador:
@@ -139,13 +141,18 @@ export const VOICES: Record<string, Voice> = {
     base: 'Leda',
     style: 'a child singing out the Christmas lottery draw, in its sing-song',
   },
-  // The audiobook (data/lydbok.ts): the guide's Norwegian before each
-  // chapter; the story itself is the narrator's, and its people speak in
-  // the cast's voices
-  Guía: {
-    base: 'Guía',
-    style: 'introducing a chapter of an audiobook, warm and unhurried',
-    lang: 'Norwegian bokmål',
+  // The audiobooks' hosts (data/lydbok.ts): their talk goes between
+  // Norwegian and Spanish within a line; the story itself is the
+  // narrator's, and its people speak in the cast's voices
+  Marta: {
+    base: 'Marta',
+    style: 'a podcast host teaching Spanish, warm and lively, at a calm pace',
+    lang: 'Norwegian bokmål and Castilian Spanish, each word in its own language as written',
+  },
+  Ingrid: {
+    base: 'Ingrid',
+    style: 'a podcast host learning Spanish, warm and curious, at a calm pace',
+    lang: 'Norwegian bokmål and Castilian Spanish, each word in its own language as written',
   },
   Pasajero: {
     base: 'Narrador',

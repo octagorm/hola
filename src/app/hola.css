@@ -3018,10 +3018,15 @@ img.q-pic {
   background: rgba(210, 154, 46, 0.14);
 }
 
-.q-book-text .guide {
-  font-style: italic;
-  font-size: 0.78em;
+.q-book-text .host {
+  font-size: 0.74em;
   color: var(--ink-2);
+}
+
+.q-book-text .host b {
+  font-family: var(--sc);
+  font-weight: 400;
+  color: var(--red);
 }
 
 .q-book-text h2 {

@@ -3,8 +3,8 @@ import { AUDIOBOOKS } from '../data/lydbok.ts'
 import type { Audiobook } from '../data/lydbok.ts'
 
 // A book put together by scripts/lydbok.py: its file in public/, how long
-// it is, and when each part begins (chapter, line: -2 the guide's
-// Norwegian, -1 the title; seconds)
+// it is, and when each part begins (chapter, part: -1 the title;
+// seconds)
 export interface Made {
   file: string
   seconds: number

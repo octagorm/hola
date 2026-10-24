@@ -9,7 +9,8 @@ import type { Audiobook } from '../data/lydbok'
 import type { Made } from '../lib/lydbok'
 
 // An audiobook (data/lydbok.ts): one file to play, with the chapter heard
-// shown in mixed text and the line heard marked, or to save and hear on a
+// shown (the hosts' talk as it is said, the story in mixed text) and the
+// part heard marked, or to save and hear on a
 // walk. Where it was left is kept in this browser.
 
 const SPEEDS = [0.8, 0.9, 1]
@@ -226,20 +227,25 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
         </ol>
 
         <section className="q-text q-book-text">
-          <p
-            className={`guide ${heard === -2 ? 'now' : ''}`}
-            ref={heard === -2 ? lineRef : undefined}
+          <h2
+            className={heard === -1 ? 'now' : ''}
+            ref={heard === -1 ? lineRef : undefined}
           >
-            {chapter.intro}
-          </p>
-          <h2 className={heard === -1 ? 'now' : ''}>{chapter.title}</h2>
-          {chapter.lines.map((l, i) => (
+            {chapter.title}
+          </h2>
+          {chapter.parts.map((p, i) => (
             <p
               key={`${shown}-${i}`}
               ref={heard === i ? lineRef : undefined}
-              className={heard === i ? 'now' : ''}
+              className={`${'host' in p ? 'host' : 'story'} ${heard === i ? 'now' : ''}`}
             >
-              <Mixed line={l} onPeek={() => audio.current?.pause()} />
+              {'host' in p ? (
+                <>
+                  <b>{p.host}</b> {p.text}
+                </>
+              ) : (
+                <Mixed line={p.line} onPeek={() => audio.current?.pause()} />
+              )}
             </p>
           ))}
         </section>

@@ -1,26 +1,29 @@
 import { describe, expect, it } from 'vitest'
-import { AUDIOBOOKS, PAUSE } from '../src/app/data/lydbok'
+import { AUDIOBOOKS, PAUSE, spokenText } from '../src/app/data/lydbok'
 import { KNOWN_AT_START, PRACTISED_AT_START } from '../src/app/data/start'
 import { VOICES } from '../src/app/data/voices'
 import { MADE, markAt } from '../src/app/lib/lydbok'
-import { plain, tokens } from '../src/app/lib/text'
+import { tokens } from '../src/app/lib/text'
+import type { Audiobook } from '../src/app/data/lydbok'
 
-// About how long a text takes to say slowly: letters a second
-const PACE = 11
+// About how long a text takes to say, at the hosts' and the narrator's
+// calm pace: letters a second
+const PACE = 12
 
 const said = (text: string) => text.replace(/[\W\d_]/g, '').length / PACE
 
 // How long a book will be, roughly, before it is read in
-const estimate = (b: (typeof AUDIOBOOKS)[number]) =>
+const estimate = (b: Audiobook) =>
   b.chapters.reduce(
     (n, c) =>
       n +
-      said(c.intro) +
-      PAUSE.intro +
       said(c.title) +
-      PAUSE.title +
-      c.lines.reduce((m, l) => m + said(plain(l)) + PAUSE.line, 0) +
-      PAUSE.chapter,
+      PAUSE.line +
+      c.parts.reduce(
+        (m, p) =>
+          m + said(spokenText(p)) + ('host' in p ? PAUSE.host : PAUSE.line),
+        0,
+      ),
     0,
   )
 
@@ -34,13 +37,24 @@ describe('the audiobooks', () => {
 
   for (const b of AUDIOBOOKS) {
     describe(b.es, () => {
-      it('has every word in the bank, and every speaker in the cast', () => {
+      it('has the story’s words in the bank, and every voice in the cast', () => {
         for (const c of b.chapters) {
-          expect(c.intro.length, c.title).toBeGreaterThan(40)
-          for (const l of c.lines) expect(() => tokens(l), l).not.toThrow()
-          for (const who of c.who ?? [])
-            if (who) expect(VOICES[who], who).toBeTruthy()
-          expect((c.who ?? []).length).toBeLessThanOrEqual(c.lines.length)
+          expect(
+            c.parts.some((p) => 'host' in p),
+            c.title,
+          ).toBe(true)
+          expect(
+            c.parts.some((p) => 'line' in p),
+            c.title,
+          ).toBe(true)
+          for (const p of c.parts)
+            if ('host' in p) {
+              expect(p.text.trim().length, c.title).toBeGreaterThan(0)
+              expect(VOICES[p.host], p.host).toBeTruthy()
+            } else {
+              expect(() => tokens(p.line), p.line).not.toThrow()
+              if (p.who) expect(VOICES[p.who], p.who).toBeTruthy()
+            }
         }
       })
 
@@ -55,10 +69,12 @@ describe('the audiobooks', () => {
         const seen = new Set<string>()
         for (const c of b.chapters) {
           const fresh = new Set(
-            c.lines.flatMap((l) =>
-              tokens(l).flatMap((t) =>
-                t.id && !START.has(t.id) && !seen.has(t.id) ? [t.id] : [],
-              ),
+            c.parts.flatMap((p) =>
+              'line' in p
+                ? tokens(p.line).flatMap((t) =>
+                    t.id && !START.has(t.id) && !seen.has(t.id) ? [t.id] : [],
+                  )
+                : [],
             ),
           )
           expect(
@@ -69,12 +85,12 @@ describe('the audiobooks', () => {
         }
       })
 
-      it('is followed line by line once it is read in', () => {
+      it('is followed part by part once it is read in', () => {
         const made = MADE[b.id]
         if (!made) return
-        const parts = b.chapters.reduce((n, c) => n + c.lines.length + 2, 0)
+        const parts = b.chapters.reduce((n, c) => n + c.parts.length + 1, 0)
         expect(made.marks.length).toBe(parts)
-        expect(markAt(made, 0)).toEqual([0, -2])
+        expect(markAt(made, 0)).toEqual([0, -1])
       })
     })
   }
