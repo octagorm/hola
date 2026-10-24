@@ -31,6 +31,7 @@ import { CASO_PICTURES } from '../src/app/data/caso-prompts.ts'
 import { PALABRAS_PICTURES } from '../src/app/data/palabras-prompts.ts'
 import { NUMEROS_PICTURES } from '../src/app/data/numeros-prompts.ts'
 import { HOME_PICTURES } from '../src/app/data/home-prompts.ts'
+import { ICON_PICTURES } from '../src/app/data/icon-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -230,6 +231,8 @@ Object.assign(PICTURES, PALABRAS_PICTURES)
 Object.assign(PICTURES, NUMEROS_PICTURES)
 // The home page's scene at four times of day (data/home-prompts.ts)
 Object.assign(PICTURES, HOME_PICTURES)
+// The home page's small squares, a story's and a game's (data/icon-prompts.ts)
+Object.assign(PICTURES, ICON_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 // A picture may take more than one reference, such as another painting

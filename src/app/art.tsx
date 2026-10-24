@@ -1,5 +1,9 @@
+import { PICTURES } from './data/pictures'
+import { TOC_IDS, gameIconPicture, tocPicture } from './data/icons'
 import type { ReactNode } from 'react'
 import type { Motif } from './data/camino'
+import type { GameIconId, TocId } from './data/icons'
+import './artPaint.css'
 
 // Hola's pictures, drawn in ink with a wash of colour: the plain of La
 // Mancha with Don Quijote, Sancho and the windmills; the pictures of the
@@ -322,12 +326,28 @@ function Inn() {
 
 // --- The index ---
 
-export type TocId = 'quijote' | 'viaje' | 'leyendas' | 'caso'
+export type { TocId }
 
-const TOC_IDS = new Set<string>(['quijote', 'viaje', 'leyendas', 'caso'])
+const TOC = new Set<string>(TOC_IDS)
 
 // Whether a story has a drawing of its own in the index
-export const isTocId = (id: string): id is TocId => TOC_IDS.has(id)
+export const isTocId = (id: string): id is TocId => TOC.has(id)
+
+// A square painting in the same svg as the drawing, so that the box the
+// page gives it stays as it is: fitted whole and centred in a box that is
+// wider than it is tall, filling a square one
+function Painted({ name, className }: { name: string; className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 100 100" aria-hidden="true">
+      <image
+        className="ap-paint"
+        href={`/${name}.webp`}
+        width="100"
+        height="100"
+      />
+    </svg>
+  )
+}
 
 export function TocArt({
   id,
@@ -336,6 +356,8 @@ export function TocArt({
   id: TocId
   className?: string
 }) {
+  if (PICTURES.has(tocPicture(id)))
+    return <Painted name={tocPicture(id)} className={className} />
   const ink = (children: ReactNode) => (
     <g
       filter="url(#q-ink)"
@@ -448,26 +470,7 @@ export function TocArt({
 
 // --- The games ---
 
-export type GameIconId =
-  | 'palabra'
-  | 'palabras'
-  | 'crucigrama'
-  | 'rosco'
-  | 'cadaver'
-  | 'sopa'
-  | 'reloj'
-  | 'letras'
-  | 'cadena'
-  | 'tapas'
-  | 'porpara'
-  | 'tiempos'
-  | 'elola'
-  | 'orden'
-  | 'rastro'
-  | 'sonidos'
-  | 'acento'
-  | 'numeros'
-  | 'taxi'
+export type { GameIconId }
 
 export function GameIcon({
   id,
@@ -476,6 +479,8 @@ export function GameIcon({
   id: GameIconId
   className?: string
 }) {
+  if (PICTURES.has(gameIconPicture(id)))
+    return <Painted name={gameIconPicture(id)} className={className} />
   return (
     <svg className={className} viewBox="0 0 44 44" aria-hidden="true">
       {id === 'palabra' && (

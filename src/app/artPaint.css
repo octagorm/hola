@@ -1,0 +1,6 @@
+/* The index's and the games' small paintings (art.tsx), each a square
+   poster stamp in the box the page gives its drawing, with its corners a
+   little rounded */
+.ap-paint {
+  clip-path: inset(0 round 5px);
+}
