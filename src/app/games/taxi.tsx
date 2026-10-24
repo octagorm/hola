@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,18 +12,21 @@ import {
   Volume2,
 } from 'lucide-react'
 import { FIRST_STOP, FIRST_WORDS, PLACES, SAY } from '../data/taxi'
+import { PICTURES } from '../data/pictures'
 import { WORD, gloss } from '../data/words'
 import { blip } from '../lib/sound'
 import { stop as hush, say, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
 import { plain, tokens } from '../lib/text'
 import {
+  MAP,
+  PITCH,
   ahead,
   crossingXY,
   endOf,
   euros,
-  fare,
   judge,
+  movesAt,
   pathOf,
   plan,
   spotAt,
@@ -31,36 +34,47 @@ import {
 } from '../lib/taxi'
 import { TodayNext, useBack } from '../daily'
 import { Mixed, useFont, usePeek } from '../ui'
-import { PASSENGERS, taxiScene } from './taxiScene'
+import { Cab, FlatMap, Roads, lotMiddle } from './taxiMap'
 import type { Move, Path, Point, Ride, Spot } from '../lib/taxi'
-import type { Rider, TaxiScene, TaxiView } from './taxiScene'
 import type { Level } from '../lib/bank'
 import './taxi.css'
 
 // Taxi: a passenger gets in and says where to, then how to get there, one
 // instruction at a time and by ear: «Todo recto», «En la próxima, a la
 // derecha», «En la segunda calle, a la izquierda», «Pare delante del cine,
-// por favor». Steer with the arrows, one move for each crossing (and, on
-// the last stretch, one for each place passed on the right, until the one
-// asked for). A wrong move gets a polite complaint and the instruction
+// por favor». The town is a map seen from straight above, a travel poster's
+// town plan (taxiMap.tsx, or the painting taxi/map once it is made), and it
+// turns under the taxi, which always points up the screen, so that left
+// and right are the player's own. Steer with four big buttons, one move for
+// each crossing (and, on the last stretch, one for each place passed on
+// the right, until the one asked for); a move that cannot be made there
+// is greyed out. A wrong move gets a polite complaint and the instruction
 // again. A shift is five rides; each passenger gives up to five stars, one
 // fewer for each wrong move and one fewer if the words were shown rather
 // than heard, and shows under their portrait what they would give as the
-// ride goes. The town is lib/taxi.ts, its drawing taxiScene.ts: the Gran
-// Vía at dusk, as on a poster of the thirties.
+// ride goes.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Josefin+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap'
 
 const SHIFT = 5
+// The passengers, by the hat they wear
+const PASSENGERS = 5
+// The painted map, once it is made
+const PAINTED = PICTURES.has('taxi/map') ? '/taxi/map.webp' : null
 // The taxi waits this far short of a crossing, behind the zebra
-const HOLD = 10
+const HOLD = 12
 // Speeds in the town's units (about half a metre) a second, and how fast
 // they change
 const CRUISE = 34
 const TURNING = 20
 const ACCEL = 45
 const DECEL = 70
+// The taxi's size on the map, and where it stands on the screen: in the
+// middle, two thirds of the way down, so that more of the way ahead shows
+const CAR_W = 8
+const CAR_L = 15
+const CAR_Y = 0.68
 // What a move says about the words of the instruction it follows. There
 // are four moves to choose from (left, straight on, right, stop), so a move
 // made right on an instruction heard says what a word picked from a few
@@ -113,19 +127,21 @@ const CONTROLS: Array<{
   },
 ]
 
-const ARROWS: Record<string, string> = {
-  ArrowLeft: '←',
-  ArrowUp: '↑',
-  ArrowRight: '→',
-  ArrowDown: '↓',
-}
-
 // A point of a ride, with how far along the path it is and whose it is
 interface Flat extends Point {
   s: number
   // the instruction it belongs to, and its place in it
   ii: number
   pi: number
+}
+
+// The passenger walking between the pavement and the taxi
+interface Rider {
+  from: { x: number; y: number }
+  to: { x: number; y: number }
+  t0: number
+  ms: number
+  who: number
 }
 
 interface RideState {
@@ -148,11 +164,11 @@ interface RideState {
   arrived: boolean
   spot: Spot
   recent: Array<string>
-  meter: number
   // the passenger, by hat; -1 before the first
   who: number
-  aboard: number | null
   rider: Rider | null
+  // the way the map is turned, following the taxi's heading
+  turn: number | null
 }
 
 interface Result {
@@ -166,16 +182,17 @@ const flatten = (ride: Ride, path: Path): Array<Flat> =>
     ins.points.map((p, pi) => ({ ...p, s: path.sOf(p), ii, pi })),
   )
 
-// The passenger walking between the pavement and the taxi's right side
+// The passenger walking from the pavement on the right into the taxi, or
+// out of it
 function walk(path: Path, s: number, out: boolean, who: number): Rider {
   const p = path.at(s)
   const at = (d: number) => ({
-    x: p.x - Math.sin(p.a) * 1.2 + Math.cos(p.a) * d,
-    y: p.y + Math.cos(p.a) * 1.2 + Math.sin(p.a) * d,
+    x: p.x + Math.cos(p.a) * d,
+    y: p.y + Math.sin(p.a) * d,
   })
   return {
-    from: at(out ? 2.4 : 7),
-    to: at(out ? 7.5 : 2.4),
+    from: at(out ? 1 : 8),
+    to: at(out ? 9 : 1),
     t0: performance.now(),
     ms: out ? 1100 : 800,
     who,
@@ -190,8 +207,16 @@ const glossOf = (id: string) => {
   return w ? gloss(w) : id
 }
 
-// A word on a button or a card as the player knows it: in Norwegian until
-// met, in Spanish with the Norwegian under it while learnt, then Spanish
+// The shortest way round from one angle to another
+const toward = (from: number, to: number) => {
+  let d = (to - from) % (2 * Math.PI)
+  if (d > Math.PI) d -= 2 * Math.PI
+  if (d < -Math.PI) d += 2 * Math.PI
+  return d
+}
+
+// A word on a button as the player knows it: in Norwegian until met, in
+// Spanish with the Norwegian under it while learnt, then Spanish
 function Word({ id, es, level }: { id: string; es: string; level: Level }) {
   if (level === 0) return <span className="tx-w no">{glossOf(id)}</span>
   return (
@@ -201,6 +226,8 @@ function Word({ id, es, level }: { id: string; es: string; level: Level }) {
     </span>
   )
 }
+
+const HATS = ['#3b4a7a', '#8a4e36', '#4d6a52', '#6a4a72', '#6e6252']
 
 export default function Taxi() {
   useFont(FONTS)
@@ -216,9 +243,9 @@ export default function Taxi() {
   const [rideNo, setRideNo] = useState(0)
   const [who, setWho] = useState(0)
   const [at, setAt] = useState(-1)
-  // whether a move is asked for: from an instruction told until it is
-  // followed to its end
-  const [asked, setAsked] = useState(false)
+  // the moves the point ahead can take, while one is asked for: from an
+  // instruction told until it is followed to its end
+  const [allowed, setAllowed] = useState<Array<Move>>([])
   const [shown, setShown] = useState(false)
   const [complaint, setComplaint] = useState<string | null>(null)
   const [thanks, setThanks] = useState<string | null>(null)
@@ -228,12 +255,15 @@ export default function Taxi() {
   const [nudge, setNudge] = useState(0)
   // the stars this passenger would give, as it stands
   const [rating, setRating] = useState(5)
+  const [blink, setBlink] = useState<'left' | 'right' | null>(null)
+  // the map's scale, CSS pixels to the town's unit, and the stage's size
+  const [view, setView] = useState({ k: 2, w: 360, h: 420 })
 
   const box = useRef<HTMLDivElement>(null)
-  const canvas = useRef<HTMLCanvasElement>(null)
-  const anchor = useRef<HTMLSpanElement>(null)
-  const meterEl = useRef<HTMLSpanElement>(null)
-  const scene = useRef<TaxiScene | null>(null)
+  const world = useRef<HTMLDivElement>(null)
+  const car = useRef<HTMLDivElement>(null)
+  const markEl = useRef<HTMLSpanElement>(null)
+  const riderEl = useRef<HTMLSpanElement>(null)
   const timers = useRef<Array<number>>([])
   const talkTurn = useRef(0)
   const first = spotAt(FIRST_STOP)
@@ -253,19 +283,15 @@ export default function Taxi() {
     arrived: false,
     spot: first,
     recent: [],
-    meter: 0,
     who: -1,
-    aboard: null,
     rider: null,
+    turn: null,
   })
   // Without a Spanish voice the lines are shown, and cost nothing
   const mute = hear === false
-  // The Norwegian under a sign while its word is new
-  const captions: Partial<Record<string, string>> = {}
-  for (const p of PLACES) if (levelOf(p.id) < 2) captions[p.id] = glossOf(p.id)
   // The latest of everything the loop and the timers call back into
-  const latest = useRef({ store, phase, rideNo, results, captions, mute })
-  latest.current = { store, phase, rideNo, results, captions, mute }
+  const latest = useRef({ store, phase, rideNo, results, mute, view, blink })
+  latest.current = { store, phase, rideNo, results, mute, view, blink }
 
   // Five, one fewer for each wrong move and one if the words were read,
   // never none
@@ -302,6 +328,20 @@ export default function Taxi() {
     return talkTurn.current === me
   }
 
+  // The moves the next point can take, if it belongs to the instruction
+  // being told
+  const pending = () => {
+    const s = st.current
+    const p = s.flat[s.cleared] as Flat | undefined
+    if (!s.ride || !p || p.ii !== s.at) return null
+    return p
+  }
+  const ask = () => {
+    const p = pending()
+    const r = st.current.ride
+    setAllowed(p && r ? movesAt(r.route, p) : [])
+  }
+
   // --- A ride ---
 
   const nextInstruction = () => {
@@ -314,7 +354,7 @@ export default function Taxi() {
     const { bank: b, meet } = latest.current.store
     meet(ins.words.filter((id) => !b.cards[id]))
     setAt(s.at)
-    setAsked(true)
+    ask()
     setShown(s.shown)
     setComplaint(null)
     void talk([ins.line])
@@ -343,29 +383,26 @@ export default function Taxi() {
     s.read = false
     s.missed = new Set()
     s.arrived = false
-    s.meter = 0
     // a new passenger, in another hat
     s.who =
       s.who < 0
         ? Math.floor(Math.random() * PASSENGERS)
         : (s.who + 1 + Math.floor(Math.random() * 2)) % PASSENGERS
-    s.aboard = null
     s.rider = walk(s.path, 0, false, s.who)
     const me = s.rider
     later(() => {
-      if (st.current.rider === me) st.current.aboard = me.who
+      if (st.current.rider === me) st.current.rider = null
     }, me.ms)
     setWho(s.who)
     setRide(r)
     setRideNo(no)
     setAt(-1)
-    setAsked(false)
+    setAllowed([])
     setShown(s.shown)
     setComplaint(null)
     setThanks(null)
     setRating(5)
     setPhase('ride')
-    if (meterEl.current) meterEl.current.textContent = euros(fare(1))
     later(() => void open(r), me.ms + 250)
   }
 
@@ -384,11 +421,15 @@ export default function Taxi() {
     if (!r) return
     const stars = starsNow()
     s.spot = endOf(r)
-    s.aboard = null
     s.rider = walk(s.path, s.path.len, true, s.who)
+    const me = s.rider
+    later(() => {
+      if (st.current.rider === me) st.current.rider = null
+    }, me.ms + 400)
     const line = SAY.thanks[Math.floor(Math.random() * SAY.thanks.length)]
     setThanks(line)
     setComplaint(null)
+    setAllowed([])
     setResults((rs) => [...rs, { place: r.to.id, fare: r.fare, stars }])
     setPhase('paid')
     blip('win')
@@ -416,9 +457,9 @@ export default function Taxi() {
     const s = st.current
     if (latest.current.phase !== 'ride' || !s.ride || s.at < 0) return
     if (performance.now() < s.quietUntil) return
-    const p = s.flat[s.cleared] as Flat | undefined
-    // nothing asked for yet: the next instruction is still to come
-    if (!p || p.ii !== s.at) {
+    const p = pending()
+    // nothing asked for yet, or a move that cannot be made here
+    if (!p || !movesAt(s.ride.route, p).includes(m)) {
       blip('tap')
       return
     }
@@ -430,14 +471,13 @@ export default function Taxi() {
       s.cleared++
       setComplaint(null)
       blip('right')
+      ask()
       // the instruction followed: its words understood, but for any
       // already missed in it
-      if (p.pi === ins.points.length - 1) {
-        setAsked(false)
+      if (p.pi === ins.points.length - 1)
         for (const id of ins.words)
           if (!s.missed.has(id) && lv(id) > 0)
             record(id, true, s.shown ? READ : HEARD, link)
-      }
       return
     }
     s.mistakes++
@@ -480,7 +520,7 @@ export default function Taxi() {
     setRating(starsNow())
   }
 
-  // --- The loop: the taxi moves, the town is drawn round it ---
+  // --- The loop: the taxi moves, the map turns and slides under it ---
 
   const stepTaxi = (dt: number) => {
     const s = st.current
@@ -517,125 +557,121 @@ export default function Taxi() {
     }
   }
 
-  const viewOf = (): TaxiView => {
+  // Everything that moves, placed: the map under the taxi, the ring where
+  // the next move is asked for, the passenger walking
+  const place = (dt: number, now: number) => {
     const s = st.current
+    const { k, w, h } = latest.current.view
     const pose = s.path.at(s.s)
+    // the map turns after the taxi, a little behind it through a bend
+    s.turn =
+      s.turn === null
+        ? pose.a
+        : s.turn + toward(s.turn, pose.a) * Math.min(1, dt * 7)
+    const turn = s.turn
+    const el = world.current
+    if (el) {
+      el.style.transform = `translate(${w / 2}px, ${h * CAR_Y}px) rotate(${-turn}rad) translate(${-pose.x * k}px, ${-pose.y * k}px)`
+      el.style.setProperty('--turn', `${turn}rad`)
+    }
+    if (car.current)
+      car.current.style.transform = `translate(-50%, -50%) rotate(${pose.a - turn}rad)`
+    // the ring
     const ph = latest.current.phase
+    const m = markEl.current
     const next = s.flat[s.cleared] as Flat | undefined
-    // the next turn already answered, coming up
+    if (m) {
+      if (ph === 'ride' && s.ride && next && next.ii === s.at) {
+        let x: number
+        let y: number
+        let r: number
+        if (next.lot) {
+          const p = s.path.at(next.s)
+          x = p.x + Math.cos(p.a) * 6.5
+          y = p.y + Math.sin(p.a) * 6.5
+          r = 4
+        } else {
+          const c = crossingXY(
+            ahead(s.ride.route.edges[next.edge]).i,
+            ahead(s.ride.route.edges[next.edge]).j,
+          )
+          x = c.x
+          y = c.y
+          r = 9.5
+        }
+        m.style.display = 'block'
+        m.style.left = `${x * k}px`
+        m.style.top = `${y * k}px`
+        m.style.width = m.style.height = `${2 * r * k}px`
+      } else m.style.display = 'none'
+    }
+    // the passenger walking
+    const re = riderEl.current
+    if (re) {
+      const rd = s.rider
+      if (rd) {
+        const t = Math.min(1, (now - rd.t0) / rd.ms)
+        const e = t * t * (3 - 2 * t)
+        re.style.display = 'block'
+        re.style.left = `${(rd.from.x + (rd.to.x - rd.from.x) * e) * k}px`
+        re.style.top = `${(rd.from.y + (rd.to.y - rd.from.y) * e) * k}px`
+        re.style.setProperty('--hat', HATS[rd.who % HATS.length])
+      } else re.style.display = 'none'
+    }
+    // the indicator for a turn already taken, coming up
     const coming = s.flat.find(
-      (p, k) => k < s.cleared && p.s + 4 > s.s && !p.lot,
+      (p, n) => n < s.cleared && p.s + 4 > s.s && !p.lot,
     )
-    const blink =
-      coming && coming.expect !== 'straight' && coming.s - s.s < 60
+    const b =
+      ph === 'ride' &&
+      coming &&
+      coming.expect !== 'straight' &&
+      coming.s - s.s < 60
         ? (coming.expect as 'left' | 'right')
         : null
-    let mark: TaxiView['mark'] = null
-    if (ph === 'ride' && s.ride && next && next.ii === s.at) {
-      if (next.lot) {
-        const p = s.path.at(next.s)
-        mark = {
-          x: p.x + Math.cos(p.a) * 5.6,
-          y: p.y + Math.sin(p.a) * 5.6,
-          r: 2.6,
-        }
-      } else {
-        const c = ahead(s.ride.route.edges[next.edge])
-        mark = { ...crossingXY(c.i, c.j), r: 6.2 }
-      }
-    }
-    const riding = ph === 'ride' && s.at >= 0
-    const waiting = riding && s.v < 1 && !!next
-    return {
-      pose,
-      blink: riding ? blink : null,
-      brake:
-        waiting ||
-        (riding &&
-          s.v > 0 &&
-          !!next &&
-          next.s - (next.lot ? 0 : HOLD) - s.s < 14),
-      hazard: !riding,
-      mark,
-      rider: s.rider,
-      aboard: s.aboard,
-      captions: latest.current.captions,
+    if (b !== latest.current.blink) {
+      latest.current.blink = b
+      setBlink(b)
     }
   }
 
-  useEffect(() => {
-    const c = canvas.current
+  // The stage's size, and the scale: about two blocks across the narrower
+  // side
+  useLayoutEffect(() => {
     const b = box.current
-    if (!c || !b) return
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const sc = taxiScene(c, still)
-    scene.current = sc
-    let drawn = false
-    // (a canvas resized is blank until drawn again: at once, before it is
-    // seen)
+    if (!b) return
     const measure = () => {
-      sc.resize(b.clientWidth, b.clientHeight)
-      if (drawn) sc.draw(performance.now(), viewOf())
+      const w = b.clientWidth
+      const h = b.clientHeight
+      const k = Math.max(1.6, Math.min(3, Math.min(w, h) / (2.1 * PITCH)))
+      setView((v) => (v.w === w && v.h === h && v.k === k ? v : { k, w, h }))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(b)
-    let visible = true
-    const io = new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting
-    })
-    io.observe(b)
-    let raf = 0
-    let last = performance.now()
-    // A taxi that has stood still a while, with nobody walking, is drawn
-    // half as often: what moves then (a ring, the lights) moves slowly
-    let movedAt = 0
-    const frame = (now: number) => {
-      raf = requestAnimationFrame(frame)
-      const s = st.current
-      if (s.v > 0.01 || (s.rider && now - s.rider.t0 < s.rider.ms + 300))
-        movedAt = now
-      const gap = now - movedAt > 1500 ? 32 : 15
-      if (now - last < gap && drawn) return
-      const dt = Math.min(0.05, (now - last) / 1000)
-      last = now
-      if ((!visible || document.hidden) && drawn) return
-      stepTaxi(dt)
-      // the meter, a street at a time
-      if (s.ride && latest.current.phase === 'ride') {
-        const streets = s.path.starts.filter((x) => x <= s.s + 0.01).length
-        if (streets !== s.meter) {
-          s.meter = streets
-          if (meterEl.current)
-            meterEl.current.textContent = euros(fare(streets))
-        }
-      }
-      sc.draw(now, viewOf())
-      drawn = true
-    }
-    raf = requestAnimationFrame(frame)
-    return () => {
-      cancelAnimationFrame(raf)
-      ro.disconnect()
-      io.disconnect()
-    }
-    // the loop reads everything through refs
+    return () => ro.disconnect()
   }, [])
 
-  // A sign tapped in the town: its word's card
-  const onTown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const sc = scene.current
-    const a = anchor.current
-    if (!sc || !a) return
-    const r = e.currentTarget.getBoundingClientRect()
-    const hit = sc.signAt(e.clientX - r.left, e.clientY - r.top)
-    if (!hit) return
-    a.style.left = `${hit.x}px`
-    a.style.top = `${hit.y}px`
-    a.style.width = `${hit.w}px`
-    a.style.height = `${hit.h}px`
-    peek(tokenOf(hit.id), a)
-  }
+  // the map placed again at once when the stage changes size
+  useLayoutEffect(() => {
+    place(0, performance.now())
+  })
+
+  useEffect(() => {
+    let raf = 0
+    let last = performance.now()
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      const dt = Math.min(0.05, (now - last) / 1000)
+      last = now
+      if (document.hidden) return
+      stepTaxi(dt)
+      place(dt, now)
+    }
+    raf = requestAnimationFrame(frame)
+    return () => cancelAnimationFrame(raf)
+    // the loop reads everything through refs
+  }, [])
 
   // Arrows and 1–4 steer, Space says it again, Enter starts and goes on
   useEffect(() => {
@@ -662,7 +698,7 @@ export default function Taxi() {
       e.preventDefault()
       steer(c.move)
       const el = document.querySelector<HTMLElement>(`[data-move="${c.move}"]`)
-      if (el) {
+      if (el && !el.hasAttribute('disabled')) {
         el.classList.remove('pressed')
         void el.offsetWidth
         el.classList.add('pressed')
@@ -683,6 +719,7 @@ export default function Taxi() {
   const total = results.reduce((t, x) => t + x.fare, 0)
   const stars = results.reduce((t, x) => t + x.stars, 0)
   const lastResult = results[results.length - 1] as Result | undefined
+  const { k } = view
 
   return (
     <div className="tx">
@@ -695,107 +732,130 @@ export default function Taxi() {
             Taxi<small>Taxi</small>
           </h1>
           {phase !== 'ready' && (
-            <div className="tx-tally">
-              <span
-                className="tx-dots"
-                aria-label={`Passasjer ${Math.min(rideNo + 1, SHIFT)} av ${SHIFT}`}
-              >
-                {Array.from({ length: SHIFT }, (_, i) => (
-                  <i
-                    key={i}
-                    className={
-                      i < results.length ? 'done' : i === rideNo ? 'now' : ''
-                    }
-                  />
-                ))}
-              </span>
-              <span className="tx-total" aria-label="Tjent så langt">
-                {euros(total)}
-              </span>
-            </div>
+            <span
+              className="tx-dots"
+              aria-label={`Passasjer ${Math.min(rideNo + 1, SHIFT)} av ${SHIFT}`}
+            >
+              {Array.from({ length: SHIFT }, (_, i) => (
+                <i
+                  key={i}
+                  className={
+                    i < results.length ? 'done' : i === rideNo ? 'now' : ''
+                  }
+                />
+              ))}
+            </span>
           )}
         </header>
+
+        {(phase === 'ride' || phase === 'paid') && ride && (
+          <div className="tx-bubble" key={rideNo}>
+            <div className="tx-who">
+              <Portrait who={who} talking={talking} />
+              {phase === 'ride' && <Stars n={rating} tiny />}
+            </div>
+            <div className="tx-say">
+              {complaint && phase === 'ride' && (
+                <p className="tx-complaint" lang="es">
+                  <Mixed line={complaint} />
+                </p>
+              )}
+              {line && lineShown ? (
+                <p className="tx-line" lang="es">
+                  <Mixed line={line} />
+                </p>
+              ) : (
+                <button type="button" className="tx-show" onClick={show}>
+                  <Eye /> Vis teksten
+                </button>
+              )}
+            </div>
+            <div className="tx-hear">
+              <button
+                type="button"
+                className={`tx-icon ${talking ? 'on' : ''}`}
+                onClick={() => hearAgain()}
+                aria-label="Hør igjen"
+                title="Hør igjen (mellomrom)"
+              >
+                <Volume2 />
+              </button>
+              <button
+                type="button"
+                className="tx-icon slow"
+                onClick={() => hearAgain(true)}
+                aria-label="Hør det sakte"
+                title="Hør det sakte"
+              >
+                <Snail />
+              </button>
+            </div>
+          </div>
+        )}
 
         <div
           ref={box}
           className={`tx-stage ${nudge % 2 ? 'jolt-a' : nudge ? 'jolt-b' : ''}`}
+          role="group"
+          aria-label="Kartet over byen"
         >
-          <canvas
-            ref={canvas}
-            className="tx-town"
-            onClick={onTown}
-            aria-label="Byen sett bakfra taxien"
-            role="img"
-          />
-          <span ref={anchor} className="tx-anchor" data-peek="" />
-          <div className="tx-grain" aria-hidden="true" />
-
-          {(phase === 'ride' || phase === 'paid') && ride && (
-            <div className="tx-bubble" key={rideNo}>
-              <div className="tx-who">
-                <Portrait who={who} talking={talking} />
-                {phase === 'ride' && <Stars n={rating} tiny />}
-              </div>
-              <div className="tx-say">
-                {complaint && phase === 'ride' && (
-                  <p className="tx-complaint" lang="es">
-                    <Mixed line={complaint} />
-                  </p>
-                )}
-                {line && lineShown ? (
-                  <p className="tx-line" lang="es">
-                    <Mixed line={line} />
-                  </p>
-                ) : (
-                  <p className="tx-listen">
-                    <span>Lytt, og styr.</span>
-                    <button type="button" className="tx-show" onClick={show}>
-                      <Eye /> Vis teksten
-                    </button>
-                  </p>
-                )}
-              </div>
-              <div className="tx-hear">
+          <div
+            ref={world}
+            className="tx-world"
+            style={{ width: MAP * k, height: MAP * k }}
+          >
+            {PAINTED ? (
+              <>
+                <img className="tx-flat" src={PAINTED} alt="" />
+                <Roads />
+              </>
+            ) : (
+              <FlatMap />
+            )}
+            <span ref={markEl} className="tx-mark" />
+            <span ref={riderEl} className="tx-rider" />
+            {PLACES.map((p) => {
+              const c = lotMiddle(p.lot)
+              return (
                 <button
+                  key={p.id}
                   type="button"
-                  className={`tx-icon ${talking ? 'on' : ''}`}
-                  onClick={() => hearAgain()}
-                  aria-label="Hør igjen"
-                  title="Hør igjen (mellomrom)"
+                  className="tx-sign"
+                  data-peek=""
+                  data-place={p.id}
+                  style={{ left: c.x * k, top: c.y * k }}
+                  onClick={(e) => peek(tokenOf(p.id), e.currentTarget)}
                 >
-                  <Volume2 />
+                  <b lang="es">{p.sign}</b>
+                  {levelOf(p.id) < 2 && <small>{glossOf(p.id)}</small>}
                 </button>
-                <button
-                  type="button"
-                  className="tx-icon"
-                  onClick={() => hearAgain(true)}
-                  aria-label="Hør det sakte"
-                  title="Hør det sakte"
-                >
-                  <Snail />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {(phase === 'ride' || phase === 'paid') && (
-            <div className="tx-meter" aria-label="Taksameteret">
-              <small>Tarifa</small>
-              <span ref={meterEl}>{euros(fare(1))}</span>
-            </div>
-          )}
+              )
+            })}
+          </div>
+          <div
+            ref={car}
+            className="tx-car"
+            style={{
+              left: view.w / 2,
+              top: view.h * CAR_Y,
+              width: CAR_W * k,
+              height: CAR_L * k,
+            }}
+          >
+            <Cab blink={blink} />
+          </div>
         </div>
 
-        {/* what is done under the town: the start, the controls, a fare
+        {/* what is done under the map: the start, the controls, a fare
             paid, the shift's end */}
         <div className="tx-dock">
           {phase === 'ready' && (
             <section className="tx-card tx-intro">
               <p>
-                Du kjører taxi i en by som Madrid. Passasjeren sier på spansk
-                hvor turen går, og så veien dit, litt om gangen: lytt, og styr
-                med pilene i hvert kryss. Til slutt stopper du foran stedet du
-                ble bedt om.
+                Du kjører taxi i en liten spansk by. Passasjeren sier på spansk
+                hvor turen går, og så veien dit, litt om gangen. Lytt, og trykk
+                i hvert kryss: til venstre, rett fram eller til høyre. Til slutt
+                stopper du foran stedet du ble bedt om.
               </p>
               <p className="soft">
                 Fem passasjerer på en vakt, og opptil fem stjerner fra hver: én
@@ -822,8 +882,9 @@ export default function Taxi() {
                   type="button"
                   data-move={c.move}
                   className={`tx-move ${c.move}`}
-                  disabled={!asked}
+                  disabled={!allowed.includes(c.move)}
                   aria-label={glossOf(c.id)}
+                  aria-keyshortcuts={c.key}
                   onPointerDown={(e) => {
                     // at once on a touch, without waiting for the click
                     if (e.pointerType === 'mouse' && e.button !== 0) return
@@ -837,20 +898,11 @@ export default function Taxi() {
                     steer(c.move)
                   }}
                 >
-                  <kbd>{ARROWS[c.key]}</kbd>
                   <c.Icon className="ic" />
                   <Word id={c.id} es={c.es} level={levelOf(c.id)} />
                 </button>
               ))}
             </div>
-          )}
-
-          {phase === 'ride' && (
-            <p className="tx-keys">
-              <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> svinger eller kjører rett
-              fram i neste kryss, <kbd>↓</kbd> stopper, og <kbd>mellomrom</kbd>{' '}
-              sier det igjen. Den gylne ringen viser hvor neste valg gjelder.
-            </p>
           )}
 
           {phase === 'paid' && lastResult && (
@@ -928,30 +980,27 @@ function Stars({
   )
 }
 
-// The passenger, as a silhouette against the dusk in a round frame, in
-// the hat drawn in the back of the taxi
+// The passenger, as a silhouette against a poster's evening sky in a round
+// frame, in their hat
 function Portrait({ who, talking }: { who: number; talking: boolean }) {
   const hat = who % PASSENGERS
-  const ink = '#141a3f'
+  const ink = '#24323f'
   return (
     <span className={`tx-face ${talking ? 'talking' : ''}`} aria-hidden="true">
       <svg viewBox="0 0 64 64">
         <defs>
-          <linearGradient id="tx-dusk" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#3f3f8c" />
-            <stop offset="0.6" stopColor="#c5657a" />
-            <stop offset="1" stopColor="#f39a52" />
+          <linearGradient id="tx-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#8fb3a4" />
+            <stop offset="0.65" stopColor="#e8c79a" />
+            <stop offset="1" stopColor="#e39a68" />
           </linearGradient>
         </defs>
-        <circle cx="32" cy="32" r="30" fill="url(#tx-dusk)" />
-        <path
-          d="M9 64C11 49 21 44.5 32 44.5S53 49 55 64Z"
-          fill={['#3b4a7a', '#7a4b3a', '#4d5a4a', '#5a4a6e', '#6e6252'][hat]}
-        />
+        <circle cx="32" cy="32" r="30" fill="url(#tx-sky)" />
+        <path d="M9 64C11 49 21 44.5 32 44.5S53 49 55 64Z" fill={HATS[hat]} />
         <path
           d="M9 64C11 49 21 44.5 32 44.5S53 49 55 64Z"
           fill={ink}
-          opacity=".55"
+          opacity=".45"
         />
         <rect x="28" y="35" width="8" height="11" fill={ink} />
         <ellipse cx="32" cy="30" rx="8.5" ry="10" fill={ink} />
@@ -962,7 +1011,7 @@ function Portrait({ who, talking }: { who: number; talking: boolean }) {
               d="M23 22V14Q23 10.5 27 10.5L32 12.5 37 10.5Q41 10.5 41 14V22Z"
               fill={ink}
             />
-            <rect x="23" y="18.5" width="18" height="2.4" fill="#e0ac45" />
+            <rect x="23" y="18.5" width="18" height="2.4" fill="#c9583a" />
           </>
         )}
         {hat === 1 && (
@@ -989,14 +1038,14 @@ function Portrait({ who, talking }: { who: number; talking: boolean }) {
         )}
         {hat === 4 && (
           <>
-            <ellipse cx="32" cy="22" rx="15" ry="2.8" fill="#d9c79a" />
+            <ellipse cx="32" cy="22" rx="15" ry="2.8" fill="#e6d3a3" />
             <rect
               x="23"
               y="14.5"
               width="18"
               height="7.5"
               rx="1"
-              fill="#d9c79a"
+              fill="#e6d3a3"
             />
             <rect x="23" y="18.6" width="18" height="2.2" fill={ink} />
           </>

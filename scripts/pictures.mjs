@@ -24,6 +24,7 @@ import {
   POSTER,
   POSTER_REF,
 } from '../src/app/data/museo-prompts.ts'
+import { PARK, PLACES, SQUARE } from '../src/app/data/taxi.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -138,6 +139,55 @@ const PICTURES = Object.fromEntries(
     ]),
   ),
 )
+
+// Taxi's town (games/taxi.tsx): one square map, seen from straight above,
+// that the game turns and slides under the taxi, at up to about 3 CSS
+// pixels to the town's unit of lib/taxi.ts (the map is 432 units square),
+// so twice that or more for sharp screens. The game draws its streets
+// faintly over it and puts its own signs on the places, so the painting
+// has no lettering, and its grid has to be where lib/taxi.ts has it: five
+// streets each way at one sixth, two sixths, … five sixths of the width,
+// 16 units of 432 wide, with the places (data/taxi.ts) in the corner lots
+// they are in there.
+const ORD = ['first', 'second', 'third', 'fourth']
+const CORNER = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
+const BUILDING = {
+  bank: 'a bank, a stately building with a flat dark slate roof and a square skylight',
+  bar: 'a bar, a small building with a terrace of café tables under round red-and-cream umbrellas on its two street sides',
+  church:
+    'a church, a cross-shaped roof of pale stone with a small round dome where the arms meet and a square bell tower',
+  cinema:
+    'a cinema, a flat plum-coloured roof with a red-and-cream striped awning along the street',
+  hotel:
+    'a hotel, a cream building with a roof terrace and a small turquoise pool',
+  hospital: 'a hospital, an H-shaped white building round small lawns',
+  pharmacy: 'a pharmacy, a small building with a green cross on its roof',
+  market:
+    'a covered market, a roof of long red-and-cream and green-and-cream striped awnings',
+  museum:
+    'a museum, a classical cream building round a square courtyard garden with a colonnade',
+  station:
+    'a small railway station, a long iron-and-glass roof over its platforms',
+}
+const blockOf = (b) =>
+  `the block in the ${ORD[b.bx]} column and ${ORD[b.by]} row`
+const BLOCKS = [...new Set(PLACES.map((p) => `${p.lot.bx},${p.lot.by}`))].map(
+  (key) => {
+    const here = PLACES.filter((p) => `${p.lot.bx},${p.lot.by}` === key).sort(
+      (a, b) => a.lot.q - b.lot.q,
+    )
+    return `in ${blockOf(here[0].lot)}, ${here
+      .map((p) => `${BUILDING[p.kind]} (its ${CORNER[p.lot.q]} lot)`)
+      .join('; ')}`
+  },
+)
+const TOWN = `A town plan of a small Spanish town quarter seen from straight above, as on a map: roofs, streets and treetops seen from directly overhead, with no perspective, no horizon and no sides of buildings showing. The streets form an exact square grid that must be kept precisely: five straight streets run from top to bottom and five from left to right, all of the same width, about one twenty-seventh of the picture's width, with their centre lines at exactly one sixth, two sixths, three sixths, four sixths and five sixths of the way across and down. They cross at twenty-five crossings, each with zebra crossings on its sides; the outermost streets close the grid as a ring, and no street goes beyond them. Inside the ring are sixteen equal square blocks, four by four, each edged with a narrow pale pavement and divided into four equal square corner lots, most of them houses with hipped terracotta tile roofs, now and then a small courtyard with a tree. Outside the ring, filling the outer sixth of the picture on every side, a belt of gardens with rows of round plane trees. Counting blocks from the top left, ${blockOf(SQUARE)} is the town square: open pale paving with a round fountain in the middle and a tree at each corner; and ${blockOf(PARK)} is a small park of lawns with two crossing gravel paths and round trees. Ten buildings stand out from the houses, each filling exactly one corner lot of its block: ${BLOCKS.join('; and ')}. The streets are empty: no cars and no people. Soft morning light with short shadows.`
+PICTURES['taxi/map'] = {
+  shape: 'square',
+  size: '2048x2048',
+  ref: POSTER_REF,
+  prompt: `${TOWN} ${POSTER} Square format, with the grid filling it as described, right to its edges. ${NONE}`,
+}
 
 // Tu museo's pictures, a print for each theme (data/museo-prompts.ts)
 Object.assign(PICTURES, MUSEO_PICTURES)
