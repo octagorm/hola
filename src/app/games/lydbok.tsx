@@ -1,17 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
-import { Download, Pause, Play, RotateCcw, RotateCw } from 'lucide-react'
+import {
+  Check,
+  Copy,
+  FileText,
+  Pause,
+  Play,
+  RotateCcw,
+  RotateCw,
+} from 'lucide-react'
 import { AUDIOBOOKS } from '../data/lydbok'
 import { BOOK, MADE, markAt, minutes } from '../lib/lydbok'
+import { APPS, FEED } from '../lib/podcast'
 import { stop } from '../lib/speech'
 import { Mixed, Page } from '../ui'
 import type { PageProps } from '../registry'
 import type { Audiobook } from '../data/lydbok'
 import type { Made } from '../lib/lydbok'
 
-// An audiobook (data/lydbok.ts): one file to play, with the chapter heard
-// shown (the hosts' talk as it is said, the story in mixed text) and the
-// part heard marked, or to save and hear on a
-// walk. Where it was left is kept in this browser.
+// An audiobook (data/lydbok.ts): one file to play, its chapters to jump
+// to, and, for whoever wants to read along, the chapter heard (the hosts'
+// talk as it is said, the story in mixed text) with the part heard marked
+// and each part a place to jump to. The books are a podcast too
+// (lib/podcast.ts), to follow in an app. Where it was left, and whether
+// the text is shown, are kept in this browser.
 
 const SPEEDS = [0.8, 0.9, 1]
 
@@ -27,6 +38,24 @@ function savedPlace(id: string): number {
     return Number(localStorage.getItem(placeKey(id))) || 0
   } catch {
     return 0
+  }
+}
+
+const TEXT_KEY = 'hola:lydbok:tekst'
+
+function savedText(): boolean {
+  try {
+    return localStorage.getItem(TEXT_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function saveText(on: boolean) {
+  try {
+    localStorage.setItem(TEXT_KEY, on ? '1' : '0')
+  } catch {
+    // storage closed
   }
 }
 
@@ -66,6 +95,8 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
   const [speed, setSpeed] = useState(1)
   // The chapter shown: the one heard, or one picked to read
   const [picked, setPicked] = useState<number | null>(null)
+  const [reading, setReading] = useState(savedText)
+  const [copied, setCopied] = useState(false)
   const now = made ? markAt(made, t) : null
   const shown = picked ?? now?.[0] ?? 0
   const chapter = book.chapters[shown]
@@ -81,9 +112,9 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
   // The line heard kept in view
   const heard = now && now[0] === shown ? now[1] : null
   useEffect(() => {
-    if (playing)
+    if (playing && reading)
       lineRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
-  }, [heard, playing])
+  }, [heard, playing, reading])
 
   // The phone's lock screen names the book
   useEffect(() => {
@@ -113,7 +144,27 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
     setPicked(null)
   }
 
-  const startOf = (c: number) => made?.marks.find(([mc]) => mc === c)?.[2] ?? 0
+  const startOf = (c: number, part = -1) =>
+    made?.marks.find(([mc, mp]) => mc === c && mp === part)?.[2] ?? 0
+
+  // A part of the text tapped: heard from there, unless a word was tapped
+  // to see its card
+  const jump = (e: React.MouseEvent, part: number) => {
+    if (!made || (e.target as Element).closest('[data-peek]')) return
+    seek(startOf(shown, part))
+    const a = audio.current
+    if (a?.paused) {
+      stop()
+      void a.play()
+    }
+  }
+
+  const copy = () => {
+    void navigator.clipboard.writeText(FEED).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   return (
     <Page es={book.es} title={book.no}>
@@ -194,13 +245,17 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
                 </button>
               ))}
             </div>
-            <a
+            <button
+              type="button"
               className="q-btn ghost small save"
-              href={`/${made.file}`}
-              download={`${book.es}.mp3`}
+              aria-pressed={reading}
+              onClick={() => {
+                setReading(!reading)
+                saveText(!reading)
+              }}
             >
-              <Download /> Last ned og hør på tur
-            </a>
+              <FileText /> {reading ? 'Skjul teksten' : 'Les med'}
+            </button>
           </section>
         ) : (
           <p className="q-frame q-player none">
@@ -226,28 +281,58 @@ function Book({ book, made }: { book: Audiobook; made: Made | undefined }) {
           ))}
         </ol>
 
-        <section className="q-text q-book-text">
-          <h2
-            className={heard === -1 ? 'now' : ''}
-            ref={heard === -1 ? lineRef : undefined}
-          >
-            {chapter.title}
-          </h2>
-          {chapter.parts.map((p, i) => (
-            <p
-              key={`${shown}-${i}`}
-              ref={heard === i ? lineRef : undefined}
-              className={`${'host' in p ? 'host' : 'story'} ${heard === i ? 'now' : ''}`}
+        {(reading || !made) && (
+          <section className="q-text q-book-text">
+            <h2
+              className={heard === -1 ? 'now' : ''}
+              ref={heard === -1 ? lineRef : undefined}
             >
-              {'host' in p ? (
-                <>
-                  <b>{p.host}</b> {p.text}
-                </>
-              ) : (
-                <Mixed line={p.line} onPeek={() => audio.current?.pause()} />
-              )}
-            </p>
-          ))}
+              {chapter.title}
+            </h2>
+            {chapter.parts.map((p, i) => (
+              <p
+                key={`${shown}-${i}`}
+                ref={heard === i ? lineRef : undefined}
+                className={`${'host' in p ? 'host' : 'story'} ${heard === i ? 'now' : ''} ${made ? 'jump' : ''}`}
+                onClick={(e) => jump(e, i)}
+              >
+                {'host' in p ? (
+                  <>
+                    <b>{p.host}</b> {p.text}
+                  </>
+                ) : (
+                  <Mixed line={p.line} onPeek={() => audio.current?.pause()} />
+                )}
+              </p>
+            ))}
+          </section>
+        )}
+
+        <section className="q-follow">
+          <h2>Følg i en podkastapp</h2>
+          <p>
+            Velg appen du bruker på telefonen, så kommer nye lydbøker dit av seg
+            selv.
+          </p>
+          <div className="apps">
+            {APPS.map((a) => (
+              <a key={a.app} className="q-btn ghost small" href={a.href}>
+                {a.app}
+              </a>
+            ))}
+          </div>
+          <p>I en annen app legger du til podkasten med adressen:</p>
+          <div className="feed">
+            <code>{FEED}</code>
+            <button
+              type="button"
+              className="q-round"
+              aria-label="Kopier adressen"
+              onClick={copy}
+            >
+              {copied ? <Check /> : <Copy />}
+            </button>
+          </div>
         </section>
       </div>
     </Page>

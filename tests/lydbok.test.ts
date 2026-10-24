@@ -30,9 +30,11 @@ const estimate = (b: Audiobook) =>
 const START = new Set([...KNOWN_AT_START, ...PRACTISED_AT_START])
 
 describe('the audiobooks', () => {
-  it('have ids of their own', () => {
+  it('have ids of their own, and the day each went out', () => {
     const ids = AUDIOBOOKS.map((b) => b.id)
     expect(new Set(ids).size).toBe(ids.length)
+    for (const b of AUDIOBOOKS)
+      expect(b.date, b.id).toMatch(/^\d{4}-\d\d-\d\d$/)
   })
 
   for (const b of AUDIOBOOKS) {

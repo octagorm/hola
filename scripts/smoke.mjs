@@ -1560,6 +1560,40 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.locator('.q-chapters', { hasText: 'Lest' }).waitFor()
 })
 
+await test('the audiobook is read along on asking, and followed in an app', async (page) => {
+  await go(page, '#lydbok/altea')
+  // The text only when asked for, and kept so
+  expect((await page.locator('.q-book-text').count()) === 0, 'no text at first')
+  await page.getByRole('button', { name: 'Les med' }).click()
+  const line = page.locator('.q-book-text p.jump').nth(6)
+  await line.waitFor()
+  // A line tapped is heard from where it begins
+  await page.waitForFunction(
+    () => document.querySelector('audio')?.duration > 0,
+  )
+  await line.click()
+  await page.waitForFunction(
+    () => document.querySelector('audio')?.currentTime > 5,
+  )
+  await page.locator('.q-book-text p.now').waitFor()
+  await page.reload()
+  await page.locator('.q-book-text').waitFor()
+  // The podcast's feed names the book, its file and its chapters
+  await page.locator('.q-follow a', { hasText: 'Pocket Casts' }).waitFor()
+  const feed = await page.evaluate(() =>
+    fetch('/podcast.xml').then((r) => r.text()),
+  )
+  expect(feed.includes('<title>Una semana en Altea</title>'), 'the book')
+  expect(/enclosure url="[^"]+\/lydbok\/altea-/.test(feed), 'its file')
+  const chapters = feed.match(/podcast:chapters url="[^"]+(\/podcast\/[^"]+)"/)
+  expect(chapters, 'its chapters')
+  const json = await page.evaluate(
+    (path) => fetch(path).then((r) => r.json()),
+    chapters[1],
+  )
+  expect(json.chapters.length === 8, 'eight chapters')
+})
+
 await test(
   'the word bank finds a word and opens it',
   async (page) => {

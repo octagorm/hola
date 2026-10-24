@@ -1,4 +1,5 @@
-// The app's icons as PNG, drawn from public/app/icon.svg in Chromium:
+// The app's icons as PNG, and the podcast's cover (public/podcast/,
+// lib/podcast.ts) as JPEG, drawn from public/app/icon.svg in Chromium:
 //
 //   node scripts/icons.mjs
 //
@@ -17,6 +18,8 @@ const ICONS = [
   { file: 'icon-512.png', size: 512, svg },
   { file: 'maskable-512.png', size: 512, svg: square },
   { file: 'apple-touch-icon.png', size: 180, svg: square },
+  // (podcast apps ask for a square of 1400 to 3000 pixels)
+  { file: '../podcast/cover.jpg', size: 1400, svg: square },
 ]
 
 const browser = await chromium.launch()
@@ -27,7 +30,11 @@ for (const icon of ICONS) {
   await page.setContent(
     `<style>html,body{margin:0;background:transparent}svg{display:block;width:${icon.size}px;height:${icon.size}px}</style>${icon.svg}`,
   )
-  await page.screenshot({ path: `${DIR}${icon.file}`, omitBackground: true })
+  const jpeg = icon.file.endsWith('.jpg')
+  await page.screenshot({
+    path: `${DIR}${icon.file}`,
+    ...(jpeg ? { type: 'jpeg', quality: 88 } : { omitBackground: true }),
+  })
   await page.close()
   console.log(`public/app/${icon.file}`)
 }

@@ -17,6 +17,8 @@ const TYPES = {
   '.css': 'text/css',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.xml': 'application/rss+xml; charset=utf-8',
   '.json': 'application/json',
   '.mp3': 'audio/mpeg',
   '.webmanifest': 'application/manifest+json',
@@ -56,16 +58,37 @@ export async function quietConvex(context) {
   await context.route(/\.convex\.(cloud|site)\//, (route) => route.abort())
 }
 
-// Answers the browser's requests for the site from dist/
+// Answers the browser's requests for the site from dist/, a part of a file
+// when asked for one, as the audiobook's player does to jump
 export async function routeDist(context) {
   await context.route(`${ORIGIN}/**`, async (route) => {
     const { path, found } = await lookup(
       new URL(route.request().url()).pathname,
     )
+    const body = await readFile(path)
+    const contentType = TYPES[extname(path)] ?? 'application/octet-stream'
+    const range = /^bytes=(\d*)-(\d*)$/.exec(
+      (await route.request().headerValue('range')) ?? '',
+    )
+    if (found && range) {
+      const start = Number(range[1] || 0)
+      const end = Math.min(Number(range[2] || body.length - 1), body.length - 1)
+      await route.fulfill({
+        status: 206,
+        contentType,
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Range': `bytes ${start}-${end}/${body.length}`,
+        },
+        body: body.subarray(start, end + 1),
+      })
+      return
+    }
     await route.fulfill({
       status: found ? 200 : 404,
-      contentType: TYPES[extname(path)] ?? 'application/octet-stream',
-      body: await readFile(path),
+      contentType,
+      headers: found ? { 'Accept-Ranges': 'bytes' } : {},
+      body,
     })
   })
 }
