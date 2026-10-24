@@ -24,6 +24,8 @@ import {
   POSTER,
   POSTER_REF,
 } from '../src/app/data/museo-prompts.ts'
+import { PARK, PLACES, SQUARE } from '../src/app/data/taxi.ts'
+import { RASTRO_PICTURES } from '../src/app/data/rastro-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -139,8 +141,61 @@ const PICTURES = Object.fromEntries(
   ),
 )
 
+// Taxi's town (games/taxi.tsx): one square map, seen from straight above,
+// that the game turns and slides under the taxi, at up to about 3 CSS
+// pixels to the town's unit of lib/taxi.ts (the map is 432 units square),
+// so twice that or more for sharp screens. The game draws its streets
+// faintly over it and puts its own signs on the places, so the painting
+// has no lettering, and its grid has to be where lib/taxi.ts has it: five
+// streets each way at one sixth, two sixths, … five sixths of the width,
+// 16 units of 432 wide, with the places (data/taxi.ts) in the corner lots
+// they are in there.
+const ORD = ['first', 'second', 'third', 'fourth']
+const CORNER = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
+const BUILDING = {
+  bank: 'a bank, a stately building with a flat dark slate roof and a square skylight',
+  bar: 'a bar, a small building with a terrace of café tables under round red-and-cream umbrellas on its two street sides',
+  church:
+    'a church, a cross-shaped roof of pale stone with a small round dome where the arms meet and a square bell tower',
+  cinema:
+    'a cinema, a flat plum-coloured roof with a red-and-cream striped awning along the street',
+  hotel:
+    'a hotel, a cream building with a roof terrace and a small turquoise pool',
+  hospital: 'a hospital, an H-shaped white building round small lawns',
+  pharmacy: 'a pharmacy, a small building with a green cross on its roof',
+  market:
+    'a covered market, a roof of long red-and-cream and green-and-cream striped awnings',
+  museum:
+    'a museum, a classical cream building round a square courtyard garden with a colonnade',
+  station:
+    'a small railway station, a long iron-and-glass roof over its platforms',
+}
+const blockOf = (b) =>
+  `the block in the ${ORD[b.bx]} column and ${ORD[b.by]} row`
+const BLOCKS = [...new Set(PLACES.map((p) => `${p.lot.bx},${p.lot.by}`))].map(
+  (key) => {
+    const here = PLACES.filter((p) => `${p.lot.bx},${p.lot.by}` === key).sort(
+      (a, b) => a.lot.q - b.lot.q,
+    )
+    return `in ${blockOf(here[0].lot)}, ${here
+      .map((p) => `${BUILDING[p.kind]} (its ${CORNER[p.lot.q]} lot)`)
+      .join('; ')}`
+  },
+)
+const TOWN = `A town plan of a small Spanish town quarter seen from straight above, as on a map: roofs, streets and treetops seen from directly overhead, with no perspective, no horizon and no sides of buildings showing. The streets form an exact square grid that must be kept precisely: five straight streets run from top to bottom and five from left to right, all of the same width, about one twenty-seventh of the picture's width, with their centre lines at exactly one sixth, two sixths, three sixths, four sixths and five sixths of the way across and down. They cross at twenty-five crossings, each with zebra crossings on its sides; the outermost streets close the grid as a ring, and no street goes beyond them. Inside the ring are sixteen equal square blocks, four by four, each edged with a narrow pale pavement and divided into four equal square corner lots, most of them houses with hipped terracotta tile roofs, now and then a small courtyard with a tree. Outside the ring, filling the outer sixth of the picture on every side, a belt of gardens with rows of round plane trees. Counting blocks from the top left, ${blockOf(SQUARE)} is the town square: open pale paving with a round fountain in the middle and a tree at each corner; and ${blockOf(PARK)} is a small park of lawns with two crossing gravel paths and round trees. Ten buildings stand out from the houses, each filling exactly one corner lot of its block: ${BLOCKS.join('; and ')}. The streets are empty: no cars and no people. Soft morning light with short shadows.`
+PICTURES['taxi/map'] = {
+  shape: 'square',
+  size: '2048x2048',
+  ref: POSTER_REF,
+  prompt: `${TOWN} ${POSTER} Square format, with the grid filling it as described, right to its edges. ${NONE}`,
+}
+
 // Tu museo's pictures, a print for each theme (data/museo-prompts.ts)
 Object.assign(PICTURES, MUSEO_PICTURES)
+// El Rastro's stalls, sellers and wares (data/rastro-prompts.ts): a
+// `cutout` is painted on a transparent background and trimmed, and a sheet
+// with `parts` is cut apart into one picture for each
+Object.assign(PICTURES, RASTRO_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 
@@ -157,6 +212,7 @@ function paint(name) {
         '--shape',
         p.shape,
         ...(p.ref ? ['--ref', p.ref] : []),
+        ...(p.cutout ? ['--transparent'] : []),
         p.prompt,
       ],
       { stdio: ['ignore', 'ignore', 'pipe'] },
@@ -172,27 +228,135 @@ function paint(name) {
   })
 }
 
-// Cut from the middle to the shape it is shown in
+// Cut from the middle to the shape it is shown in; a cut-out trimmed to
+// what it shows and fitted into its size, standing on the bottom edge; a
+// sheet cut apart into its parts first
 function forWeb(name) {
-  const out = `${WEB}/${name}.webp`
-  mkdirSync(dirname(out), { recursive: true })
-  execFileSync('magick', [
-    full(name),
-    '-resize',
-    `${PICTURES[name].size}^`,
-    '-gravity',
-    'center',
-    '-extent',
-    PICTURES[name].size,
-    '-quality',
-    '80',
-    '-strip',
-    out,
-  ])
-  console.log(out)
+  const p = PICTURES[name]
+  const out = (n) => {
+    mkdirSync(dirname(`${WEB}/${n}.webp`), { recursive: true })
+    return `${WEB}/${n}.webp`
+  }
+  const webp = ['-quality', '80', '-strip']
+  // a sheet's parts come already cut to one box, which trimming would undo
+  const fit = (input, n, gravity, trim = true) =>
+    execFileSync('magick', [
+      ...input,
+      ...(trim ? ['-trim', '+repage'] : []),
+      '-resize',
+      p.size,
+      '-background',
+      'none',
+      '-gravity',
+      gravity,
+      '-extent',
+      p.size,
+      ...webp,
+      out(n),
+    ])
+  if (p.parts) {
+    const boxes = figures(full(name), p.parts.length)
+    // the same scale for every part, each standing on the same line
+    const w = Math.max(...boxes.map((b) => b.w))
+    const h = Math.max(...boxes.map((b) => b.h))
+    p.parts.forEach((part, i) => {
+      const b = boxes[i]
+      fit(
+        [
+          full(name),
+          '-crop',
+          `${b.w}x${b.h}+${b.x}+${b.y}`,
+          '+repage',
+          '-background',
+          'none',
+          '-gravity',
+          'south',
+          '-extent',
+          `${w}x${h}`,
+        ],
+        `${name}-${part}`,
+        'south',
+        false,
+      )
+      console.log(out(`${name}-${part}`))
+    })
+    return
+  }
+  if (p.cutout) fit([full(name)], name, 'south')
+  else
+    execFileSync('magick', [
+      full(name),
+      '-resize',
+      `${p.size}^`,
+      '-gravity',
+      'center',
+      '-extent',
+      p.size,
+      ...webp,
+      out(name),
+    ])
+  console.log(out(name))
+}
+
+// The figures on a transparent sheet, left to right: the largest shapes
+// that are not see-through, or the sheet in even columns if they cannot be
+// told apart
+function figures(file, n) {
+  const report = execFileSync(
+    'magick',
+    [
+      file,
+      '-alpha',
+      'extract',
+      '-threshold',
+      '50%',
+      '-define',
+      'connected-components:verbose=true',
+      '-define',
+      'connected-components:area-threshold=2000',
+      '-connected-components',
+      '8',
+      'null:',
+    ],
+    { encoding: 'utf8' },
+  )
+  const found = report
+    .split('\n')
+    .map((l) =>
+      l.match(
+        /^\s*\d+: (\d+)x(\d+)\+(\d+)\+(\d+) \S+ (\d+) (?:gray|srgb)\(255/,
+      ),
+    )
+    .filter(Boolean)
+    .map((m) => ({ w: +m[1], h: +m[2], x: +m[3], y: +m[4], area: +m[5] }))
+    .sort((a, b) => b.area - a.area)
+    .slice(0, n)
+    .sort((a, b) => a.x - b.x)
+  if (found.length === n) return found
+  console.log(`${file}: ${found.length} figures found, not ${n}; cut evenly`)
+  const [W, H] = execFileSync(
+    'magick',
+    ['identify', '-format', '%w %h', file],
+    {
+      encoding: 'utf8',
+    },
+  )
+    .split(' ')
+    .map(Number)
+  return Array.from({ length: n }, (_, i) => ({
+    w: Math.floor(W / n),
+    h: H,
+    x: Math.floor((W / n) * i),
+    y: 0,
+  }))
 }
 
 const painted = () => Object.keys(PICTURES).filter((n) => existsSync(full(n)))
+// The names a page asks for: a sheet's parts in place of the sheet
+const shown = (names) =>
+  names.flatMap((n) =>
+    PICTURES[n].parts ? PICTURES[n].parts.map((part) => `${n}-${part}`) : [n],
+  )
 
 if (process.argv.includes('--list')) {
   for (const n of Object.keys(PICTURES))
@@ -205,11 +369,11 @@ if (process.argv.includes('--list')) {
     `// The pictures painted so far (scripts/pictures.mjs --web writes this
 // file), each in public/ as <name>.webp; a page shows its drawing for one
 // not yet made
-export const PICTURES: ReadonlySet<string> = new Set(${JSON.stringify(made, null, 2)})
+export const PICTURES: ReadonlySet<string> = new Set(${JSON.stringify(shown(made), null, 2)})
 `,
   )
   execFileSync('npx', ['prettier', '--write', LIST], { stdio: 'ignore' })
-  console.log(`${made.length} pictures listed in ${LIST}`)
+  console.log(`${shown(made).length} pictures listed in ${LIST}`)
 } else {
   const asked = process.argv.slice(2)
   const names = Object.keys(PICTURES)

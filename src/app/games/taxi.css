@@ -1,21 +1,22 @@
-/* Taxi: the Gran Vía at dusk, as on a poster of the thirties. Night blue
-   and cream, a gold rule, condensed capitals (Big Shoulders Display) and a
-   geometric sans of the time (Josefin Sans). The town itself is drawn on
-   a canvas (taxiScene.ts); round it, the passenger's word in a cream
-   bubble, the meter, and four big controls. */
+/* Taxi: a small Spanish town seen from above, as a travel poster of the
+   twenties and thirties would draw its plan: terracotta roofs, sand,
+   slate streets, olive trees, on a deep sea green. Condensed capitals for
+   the signs and the buttons (Big Shoulders Display) and a geometric sans of
+   the time (Josefin Sans). Above the map the passenger and what they say,
+   under it four big controls. */
 
 .tx {
-  --tx-night: #10163d;
-  --tx-navy: #1b2350;
-  --tx-blue: #2b3f8f;
-  --tx-cream: #f3ead6;
-  --tx-paper: #fbf3e2;
-  --tx-gold: #e0ac45;
-  --tx-gold-2: #f2cf7e;
-  --tx-red: #c8372d;
-  --tx-ink: #141a3f;
-  --tx-ink-2: #4a4f78;
-  --tx-dusk: #c5657a;
+  --tx-sea: #23434c;
+  --tx-sea-2: #2f5862;
+  --tx-cream: #f3e8cf;
+  --tx-paper: #fbf4e4;
+  --tx-sand: #e8cf9b;
+  --tx-terra: #c9643f;
+  --tx-mustard: #e2ad4c;
+  --tx-red: #b94a32;
+  --tx-ink: #24323f;
+  --tx-ink-2: #56616b;
+  --tx-blue: #2f5f7a;
   --tx-sans: 'Josefin Sans', 'Futura', 'Century Gothic', sans-serif;
   --tx-display: 'Big Shoulders Display', 'Josefin Sans', sans-serif;
   min-height: 100vh;
@@ -24,27 +25,23 @@
   font-family: var(--tx-sans);
   background:
     radial-gradient(
-      120% 60% at 50% 0%,
-      rgba(197, 101, 122, 0.22),
-      rgba(16, 22, 61, 0) 60%
+      120% 50% at 50% 0%,
+      rgba(232, 207, 155, 0.16),
+      rgba(35, 67, 76, 0) 60%
     ),
-    repeating-conic-gradient(
-      from 0deg at 50% -10%,
-      rgba(224, 172, 69, 0.045) 0deg 3deg,
-      rgba(224, 172, 69, 0) 3deg 9deg
-    ),
-    var(--tx-night);
+    var(--tx-sea);
 }
 
 .tx-col {
-  max-width: 1000px;
-  min-height: 100vh;
-  min-height: 100dvh;
+  max-width: 820px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 560px;
   margin: 0 auto;
-  padding: 10px 16px max(20px, env(safe-area-inset-bottom));
+  padding: 10px 16px max(16px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 /* --- The head of the page --- */
@@ -53,9 +50,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(224, 172, 69, 0.55);
-  box-shadow: 0 3px 0 -2px rgba(224, 172, 69, 0.35);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(232, 207, 155, 0.5);
 }
 
 .tx-round {
@@ -87,7 +83,7 @@
   margin: 0;
   font-family: var(--tx-display);
   font-weight: 900;
-  font-size: 36px;
+  font-size: 32px;
   line-height: 0.9;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -103,64 +99,211 @@
   font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: none;
-  color: var(--tx-gold);
-}
-
-.tx-tally {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  color: var(--tx-sand);
 }
 
 .tx-dots {
+  margin-left: auto;
   display: flex;
   gap: 7px;
 }
 
 .tx-dots i {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   transform: rotate(45deg);
-  border: 1.5px solid rgba(243, 234, 214, 0.45);
+  border: 1.5px solid rgba(243, 232, 207, 0.45);
 }
 
 .tx-dots i.now {
   border-color: var(--tx-cream);
-  background: rgba(243, 234, 214, 0.25);
+  background: rgba(243, 232, 207, 0.25);
 }
 
 .tx-dots i.done {
-  border-color: var(--tx-gold);
-  background: var(--tx-gold);
+  border-color: var(--tx-mustard);
+  background: var(--tx-mustard);
 }
 
-.tx-total {
-  font-family: var(--tx-display);
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: 0.04em;
-  color: var(--tx-gold-2);
-  font-variant-numeric: tabular-nums;
+/* --- The passenger and what they say --- */
+
+.tx-bubble {
+  flex: none;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--tx-paper);
+  color: var(--tx-ink);
+  border-radius: 3px;
+  border-top: 4px solid var(--tx-terra);
+  box-shadow: 0 5px 0 -1px rgba(10, 25, 30, 0.45);
+  animation: tx-in 0.3s ease-out;
 }
 
-/* --- The town: as tall as the screen leaves it, with the controls under
-   it in reach of a thumb --- */
+@keyframes tx-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* the passenger, and the stars they would give as it stands */
+.tx-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.tx-face {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  padding: 2px;
+  background: var(--tx-mustard);
+  box-shadow: 0 0 0 1.5px var(--tx-ink);
+}
+
+.tx-face svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.tx-face.talking {
+  animation: tx-talk 0.9s ease-in-out infinite;
+}
+
+@keyframes tx-talk {
+  50% {
+    box-shadow:
+      0 0 0 1.5px var(--tx-ink),
+      0 0 0 5px rgba(226, 173, 76, 0.5);
+  }
+}
+
+.tx-say {
+  min-width: 0;
+}
+
+.tx-say p {
+  margin: 0;
+}
+
+.tx-line,
+.tx-complaint {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.tx-bubble .mx {
+  line-height: 1.95;
+}
+
+.tx-bubble .mx rt {
+  font-family: var(--tx-sans);
+  font-weight: 400;
+  font-size: 0.6em;
+  color: var(--tx-blue);
+}
+
+.tx-complaint,
+.tx-complaint .mx rt {
+  color: var(--tx-red);
+}
+
+.tx-show {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px 7px;
+  border-radius: 999px;
+  border: 1.5px solid var(--tx-blue);
+  color: var(--tx-blue);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.tx-show:hover,
+.tx-show:focus-visible {
+  background: var(--tx-blue);
+  color: var(--tx-paper);
+}
+
+.tx-show svg {
+  width: 17px;
+  height: 17px;
+}
+
+.tx-hear {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tx-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--tx-sea);
+  color: var(--tx-cream);
+  transition: transform 0.12s;
+}
+
+.tx-icon.slow {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  background: transparent;
+  color: var(--tx-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--tx-ink-2);
+}
+
+.tx-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tx-icon.slow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tx-icon.on {
+  background: var(--tx-mustard);
+  color: var(--tx-ink);
+}
+
+.tx-icon:active {
+  transform: scale(0.92);
+}
+
+/* --- The map: as tall as the screen leaves it, turning under the taxi,
+   which stands still in the middle, two thirds down --- */
 
 .tx-stage {
   position: relative;
   flex: 1 1 0;
   width: 100%;
-  min-height: 280px;
-  max-height: 170vw;
+  min-height: 240px;
+  /* (clipped, not hidden: a sign tapped or focused must not scroll the map
+     out from under the taxi) */
   overflow: hidden;
+  overflow: clip;
   border-radius: 3px;
-  background: var(--tx-navy);
+  background: #a9b47a;
   box-shadow:
-    0 0 0 2px var(--tx-gold),
-    0 0 0 6px var(--tx-night),
-    0 0 0 7px rgba(224, 172, 69, 0.5),
-    0 22px 44px -12px rgba(0, 0, 0, 0.6);
+    0 0 0 2px var(--tx-sand),
+    0 0 0 6px var(--tx-sea),
+    0 0 0 7px rgba(232, 207, 155, 0.45);
+  isolation: isolate;
 }
 
 .tx-stage.jolt-a {
@@ -203,248 +346,151 @@
   }
 }
 
-.tx-town {
+.tx-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* the garden belt, going on past the map's edge */
+.tx-world::before {
+  content: '';
+  position: absolute;
+  inset: -120%;
+  background:
+    radial-gradient(circle at 30% 30%, #8c9f5f 0 11px, transparent 12px) 0 0 /
+      90px 78px,
+    radial-gradient(circle at 75% 80%, #95a766 0 8px, transparent 9px) 0 0 /
+      90px 78px,
+    #a9b47a;
+}
+
+.tx-flat {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
-}
-
-.tx-anchor {
-  position: absolute;
   pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* the paper of the print, over all of it */
-.tx-grain {
+/* a place's sign, kept upright as the map turns */
+.tx-sign {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.16;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .46 0 0 0 0 .4 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* --- The passenger and what they say --- */
-
-.tx-bubble {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  max-width: 560px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 8px 8px 8px 8px;
+  padding: 3px 5px 2px;
   background: var(--tx-paper);
   color: var(--tx-ink);
-  border: 1.5px solid var(--tx-ink);
-  border-top: 4px solid var(--tx-gold);
-  box-shadow: 0 6px 0 -1px rgba(10, 12, 30, 0.45);
-  animation: tx-in 0.3s ease-out;
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 1.5px var(--tx-ink),
+    0 2px 0 1.5px rgba(36, 50, 63, 0.35);
+  transform: translate(-50%, -50%) rotate(var(--turn, 0rad));
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@keyframes tx-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
+.tx-sign b {
+  font-family: var(--tx-display);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.tx-sign small {
+  margin-top: 1px;
+  font-size: 10px;
+  font-style: italic;
+  color: var(--tx-ink-2);
+}
+
+/* where the next move is asked for */
+.tx-mark {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--tx-mustard);
+  box-shadow:
+    0 0 0 2px rgba(36, 50, 63, 0.5),
+    inset 0 0 0 2px rgba(36, 50, 63, 0.35);
+  pointer-events: none;
+  animation: tx-ring 1.4s ease-in-out infinite;
+}
+
+@keyframes tx-ring {
+  50% {
+    transform: translate(-50%, -50%) scale(1.12);
+    opacity: 0.7;
   }
 }
 
-/* the passenger, and the stars they would give as it stands */
-.tx-who {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.tx-face {
-  width: 54px;
-  height: 54px;
+/* the passenger, from above: a hat on the pavement */
+.tx-rider {
+  position: absolute;
+  z-index: 3;
+  display: none;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  padding: 2px;
-  background: var(--tx-gold);
-  box-shadow: 0 0 0 1.5px var(--tx-ink);
+  transform: translate(-50%, -50%);
+  background: var(--hat, #3b4a7a);
+  box-shadow:
+    0 0 0 2.5px var(--tx-ink),
+    1px 2px 0 2.5px rgba(36, 50, 63, 0.3);
+  pointer-events: none;
 }
 
-.tx-face svg {
+.tx-car {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  filter: drop-shadow(1px 3px 2px rgba(36, 50, 63, 0.35));
+}
+
+.tx-cab {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  overflow: visible;
 }
 
-.tx-face.talking {
-  animation: tx-talk 0.9s ease-in-out infinite;
+.tx-cab .ind {
+  fill: #e0a43c;
+  opacity: 0.35;
 }
 
-@keyframes tx-talk {
+.tx-cab.blink-left .ind.left,
+.tx-cab.blink-right .ind.right {
+  animation: tx-blink 0.7s steps(1) infinite;
+}
+
+@keyframes tx-blink {
+  0% {
+    opacity: 1;
+    fill: #ffb12e;
+  }
   50% {
-    box-shadow:
-      0 0 0 1.5px var(--tx-ink),
-      0 0 0 5px rgba(224, 172, 69, 0.45);
+    opacity: 0.35;
   }
 }
 
-.tx-say {
-  min-width: 0;
-}
-
-.tx-say p {
-  margin: 0;
-}
-
-.tx-line,
-.tx-complaint {
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.tx-bubble .mx {
-  line-height: 1.95;
-}
-
-.tx-bubble .mx rt {
-  font-family: var(--tx-sans);
-  font-weight: 400;
-  font-size: 0.6em;
-  color: var(--tx-blue);
-}
-
-.tx-complaint {
-  color: var(--tx-red);
-}
-
-.tx-complaint .mx rt {
-  color: var(--tx-red);
-}
-
-.tx-listen {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  font-size: 16px;
-  color: var(--tx-ink-2);
-}
-
-.tx-show {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px 4px;
-  border-radius: 999px;
-  border: 1.5px solid var(--tx-blue);
-  color: var(--tx-blue);
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1;
-}
-
-.tx-show:hover,
-.tx-show:focus-visible {
-  background: var(--tx-blue);
-  color: var(--tx-paper);
-}
-
-.tx-show svg {
-  width: 15px;
-  height: 15px;
-}
-
-.tx-hear {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.tx-icon {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--tx-navy);
-  color: var(--tx-cream);
-  transition: transform 0.12s;
-}
-
-.tx-icon + .tx-icon {
-  width: 30px;
-  height: 30px;
-  margin: 0 auto;
-  background: transparent;
-  color: var(--tx-ink-2);
-  box-shadow: inset 0 0 0 1.5px var(--tx-ink-2);
-}
-
-.tx-icon svg {
-  width: 19px;
-  height: 19px;
-}
-
-.tx-icon + .tx-icon svg {
-  width: 15px;
-  height: 15px;
-}
-
-.tx-icon.on {
-  background: var(--tx-gold);
-  color: var(--tx-ink);
-}
-
-.tx-icon:active {
-  transform: scale(0.92);
-}
-
-/* --- The meter --- */
-
-.tx-meter {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 5px 10px 4px;
-  background: #11132b;
-  border: 1.5px solid var(--tx-gold);
-  box-shadow:
-    inset 0 0 0 2px #11132b,
-    inset 0 0 0 3px rgba(224, 172, 69, 0.45);
-  border-radius: 3px;
-}
-
-.tx-meter small {
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--tx-gold);
-}
-
-.tx-meter span {
-  font-family: var(--tx-display);
-  font-weight: 800;
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  color: #ff8a5c;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 8px rgba(255, 110, 70, 0.5);
-}
-
-/* --- Under the town: the controls, a fare paid, the cards --- */
+/* --- Under the map: the controls, a fare paid, the cards --- */
 
 .tx-dock {
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 122px;
 }
 
 .tx-controls {
@@ -454,22 +500,19 @@
 }
 
 .tx-move {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 4px;
-  min-height: 112px;
-  padding: 16px 4px 10px;
+  min-height: 104px;
+  padding: 12px 4px 10px;
   background: var(--tx-cream);
   color: var(--tx-ink);
-  border-radius: 3px;
+  border-radius: 4px;
   box-shadow:
     inset 0 0 0 1.5px var(--tx-ink),
-    inset 0 0 0 4px var(--tx-cream),
-    inset 0 0 0 5px rgba(20, 26, 63, 0.35),
-    0 5px 0 #070a24;
+    0 5px 0 #11262c;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
@@ -480,14 +523,12 @@
     opacity 0.2s;
 }
 
-.tx-move:active,
+.tx-move:not(:disabled):active,
 .tx-move.pressed {
   transform: translateY(4px);
   box-shadow:
     inset 0 0 0 1.5px var(--tx-ink),
-    inset 0 0 0 4px var(--tx-cream),
-    inset 0 0 0 5px rgba(20, 26, 63, 0.35),
-    0 1px 0 #070a24;
+    0 1px 0 #11262c;
 }
 
 .tx-move.pressed {
@@ -501,41 +542,19 @@
 }
 
 .tx-move:disabled {
-  opacity: 0.55;
+  opacity: 0.35;
+  box-shadow: inset 0 0 0 1.5px var(--tx-ink);
 }
 
 .tx-move .ic {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   stroke-width: 2.4;
 }
 
 .tx-move.stop {
-  background: var(--tx-red);
-  color: var(--tx-cream);
-  box-shadow:
-    inset 0 0 0 1.5px var(--tx-ink),
-    inset 0 0 0 4px var(--tx-red),
-    inset 0 0 0 5px rgba(243, 234, 214, 0.45),
-    0 5px 0 #070a24;
-}
-
-.tx-move.stop:active,
-.tx-move.stop.pressed {
-  box-shadow:
-    inset 0 0 0 1.5px var(--tx-ink),
-    inset 0 0 0 4px var(--tx-red),
-    inset 0 0 0 5px rgba(243, 234, 214, 0.45),
-    0 1px 0 #070a24;
-}
-
-.tx-move kbd {
-  position: absolute;
-  top: 7px;
-  left: 8px;
-  font-family: var(--tx-sans);
-  font-size: 12px;
-  opacity: 0.55;
+  background: var(--tx-terra);
+  color: var(--tx-paper);
 }
 
 .tx-w {
@@ -543,12 +562,13 @@
   flex-direction: column;
   align-items: center;
   line-height: 1.05;
+  text-align: center;
 }
 
 .tx-w b {
   font-family: var(--tx-display);
   font-weight: 800;
-  font-size: 20px;
+  font-size: 19px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -556,50 +576,31 @@
 .tx-w small {
   font-size: 12px;
   font-style: italic;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .tx-w.no {
-  font-size: 16px;
+  font-size: 15px;
   font-style: italic;
-}
-
-.tx-keys {
-  margin: 0;
-  text-align: center;
-  font-size: 13px;
-  color: rgba(243, 234, 214, 0.7);
-}
-
-.tx-keys kbd {
-  display: inline-block;
-  min-width: 1.6em;
-  padding: 1px 5px 0;
-  border: 1px solid rgba(243, 234, 214, 0.5);
-  border-radius: 3px;
-  font-family: var(--tx-sans);
-  font-size: 12px;
-  color: var(--tx-cream);
 }
 
 /* --- Cards: the start, a fare paid, the end of the shift --- */
 
 .tx-card {
   position: relative;
-  padding: 20px 22px;
+  padding: 18px 20px;
   background: var(--tx-paper);
   color: var(--tx-ink);
-  border-top: 4px solid var(--tx-gold);
-  box-shadow:
-    inset 0 0 0 1.5px var(--tx-ink),
-    0 6px 0 #070a24;
+  border-radius: 3px;
+  border-top: 4px solid var(--tx-terra);
+  box-shadow: 0 5px 0 #11262c;
   animation: tx-in 0.3s ease-out;
 }
 
 .tx-card p {
   margin: 0 0 10px;
   font-size: 17px;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .tx-card .soft {
@@ -622,7 +623,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .tx-btn {
@@ -630,17 +631,17 @@
   align-items: center;
   gap: 10px;
   padding: 13px 24px 11px;
-  background: var(--tx-navy);
+  background: var(--tx-sea);
   color: var(--tx-cream);
   font-family: var(--tx-display);
   font-weight: 800;
   font-size: 20px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border-radius: 2px;
+  border-radius: 3px;
   box-shadow:
-    inset 0 0 0 2px var(--tx-navy),
-    inset 0 0 0 3px var(--tx-gold);
+    inset 0 0 0 2px var(--tx-sea),
+    inset 0 0 0 3px var(--tx-mustard);
   transition:
     background 0.15s,
     transform 0.1s;
@@ -648,7 +649,7 @@
 
 .tx-btn:hover,
 .tx-btn:focus-visible {
-  background: var(--tx-blue);
+  background: var(--tx-sea-2);
 }
 
 .tx-btn:active {
@@ -668,11 +669,11 @@
 
 .tx-btn.ghost:hover,
 .tx-btn.ghost:focus-visible {
-  background: rgba(20, 26, 63, 0.08);
+  background: rgba(36, 50, 63, 0.08);
 }
 
 .tx-best {
-  margin: 14px 0 0 !important;
+  margin: 12px 0 0 !important;
   font-size: 14px !important;
   color: var(--tx-ink-2);
 }
@@ -681,7 +682,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 24px;
+  gap: 10px 20px;
+  padding: 12px 16px 14px;
 }
 
 .tx-paid .fare {
@@ -700,13 +702,18 @@
 .tx-paid .fare b {
   font-family: var(--tx-display);
   font-weight: 900;
-  font-size: 40px;
+  font-size: 34px;
   line-height: 1;
   letter-spacing: 0.03em;
 }
 
-.tx-paid .tx-btn {
+.tx-paid .tx-stars {
   margin-left: auto;
+}
+
+.tx-paid .tx-btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .tx-stars {
@@ -717,13 +724,13 @@
 .tx-stars svg {
   width: 26px;
   height: 26px;
-  fill: rgba(20, 26, 63, 0.08);
-  color: rgba(20, 26, 63, 0.3);
+  fill: rgba(36, 50, 63, 0.08);
+  color: rgba(36, 50, 63, 0.3);
 }
 
 .tx-stars svg.on {
-  fill: var(--tx-gold);
-  color: #9c6f1c;
+  fill: var(--tx-mustard);
+  color: #94661c;
 }
 
 .tx-stars.small svg {
@@ -745,19 +752,21 @@
 }
 
 .tx-stars.tiny svg:not(.on) {
-  fill: rgba(20, 26, 63, 0.06);
+  fill: rgba(36, 50, 63, 0.06);
   transform: scale(0.8);
 }
 
 .tx-over {
   text-align: center;
+  max-height: 62vh;
+  overflow: auto;
 }
 
 .tx-over .sum {
   display: block;
   font-family: var(--tx-display);
   font-weight: 900;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 1.05;
   letter-spacing: 0.03em;
 }
@@ -775,7 +784,7 @@
   align-items: center;
   gap: 10px;
   padding: 3px 0;
-  border-bottom: 1px dotted rgba(20, 26, 63, 0.25);
+  border-bottom: 1px dotted rgba(36, 50, 63, 0.25);
   font-size: 16px;
 }
 
@@ -793,82 +802,37 @@
   font-weight: 600;
 }
 
-/* --- Wider screens: the town wide, the keys told --- */
+/* --- Wider screens: the buttons in a row, lower --- */
 
 @media (min-width: 760px) {
   .tx-col {
     padding-top: 14px;
   }
 
-  .tx-stage {
-    min-height: 340px;
-    max-height: min(600px, 62vw);
-  }
-
-  .tx-dock {
-    min-height: 106px;
-  }
-
-  .tx-bubble {
-    top: 14px;
-    left: 14px;
-  }
-
   .tx-move {
     flex-direction: row;
-    justify-content: center;
-    gap: 14px;
+    gap: 12px;
     min-height: 76px;
-  }
-
-  .tx-move kbd {
-    top: 6px;
   }
 
   .tx-w {
     align-items: flex-start;
-  }
-}
-
-@media (max-width: 759px) {
-  .tx-keys {
-    display: none;
+    text-align: left;
   }
 
-  /* a fare paid fits where the controls were, so the town keeps its size */
-  .tx-paid {
-    gap: 8px 12px;
-    padding: 10px 14px 12px;
-  }
-
-  .tx-paid .fare b {
-    font-size: 32px;
-  }
-
-  .tx-paid .tx-stars {
-    margin-left: auto;
-  }
-
-  .tx-paid .tx-btn {
-    width: 100%;
-    margin-left: 0;
-    justify-content: center;
-    padding: 11px 16px 9px;
-  }
-
-  .tx-top h1 {
-    font-size: 30px;
-  }
-
-  .tx-move kbd {
-    display: none;
+  .tx-sign b {
+    font-size: 16px;
   }
 }
 
 @media (max-width: 420px) {
   .tx-col {
     padding: 8px 12px max(12px, env(safe-area-inset-bottom));
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .tx-top h1 {
+    font-size: 28px;
   }
 
   .tx-line,
@@ -890,6 +854,7 @@
   .tx-stage.jolt-a,
   .tx-stage.jolt-b,
   .tx-face.talking,
+  .tx-mark,
   .tx-bubble,
   .tx-card {
     animation: none;

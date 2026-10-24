@@ -19,7 +19,7 @@ export interface Lot {
   q: 0 | 1 | 2 | 3
 }
 
-// What a place looks like (games/taxiScene.ts)
+// What a place looks like on the map (games/taxiMap.tsx)
 export type Kind =
   | 'bank'
   | 'bar'
@@ -90,6 +90,11 @@ export const PLACES: Array<Place> = [
     sign: 'ESTACIÓN',
   },
 ]
+
+// Two blocks with no houses and no place to stop at, for the map's sake:
+// the town square, with its fountain, and a little park
+export const SQUARE = { bx: 2, by: 2 }
+export const PARK = { bx: 3, by: 3 }
 
 // Where the first passenger of a shift gets in: off the train
 export const FIRST_STOP = 'la estación'
