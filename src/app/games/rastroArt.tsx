@@ -1,6 +1,13 @@
+import { PICTURES } from '../data/pictures'
+import { TABLE_AT } from '../data/rastroLayout'
 import type { ReactNode } from 'react'
 
-// El Rastro in hand-coloured woodcut: a black line cut in the block and
+// El Rastro is painted as travel posters (scripts/pictures.mjs, from
+// data/rastro-prompts.ts): a background for each stall, each seller cut out
+// in four faces, and each thing for sale cut out, laid over one another
+// below. Until they are painted, the drawings that follow stand in.
+//
+// The drawings are a hand-coloured woodcut: a black line cut in the block and
 // printed over flat washes laid on by hand, each a little off its line, on
 // warm paper. Hatching for shade, white lines cut out of the black. A
 // street of Madrid on a Sunday morning, a stall under its awning, the
@@ -618,9 +625,10 @@ const WARE_ART: Record<
 // A thing for sale, alone, as the list shows it
 export function WarePic({ id, className }: { id: string; className?: string }) {
   const art = WARE_ART[id]
+  const img = painted(`rastro/ware-${id}`)
   return (
     <svg className={className} viewBox="0 0 100 100" aria-hidden="true">
-      {art?.draw()}
+      {img ? <image href={img} width="100" height="100" /> : art?.draw()}
     </svg>
   )
 }
@@ -1246,6 +1254,12 @@ export function SellerFace({
   talking?: boolean
   className?: string
 }) {
+  if (sellerPainted(who))
+    return (
+      <svg className={className} viewBox="90 20 300 300" aria-hidden="true">
+        <SellerFrames who={who} mood="wait" talking={talking} w={480} />
+      </svg>
+    )
   const look = LOOKS[who]
   return (
     <svg className={className} viewBox="-31 -13 62 66" aria-hidden="true">
@@ -1261,7 +1275,99 @@ export function SellerFace({
   )
 }
 
-// --- The stalls ---
+// --- The paintings ---
+
+// A painting's address, once it is painted
+function painted(name: string) {
+  return PICTURES.has(name) ? `/${name}.webp` : undefined
+}
+
+const sellerPainted = (who: SellerId) =>
+  ['wait', 'talk', 'good', 'cross'].every((f) =>
+    PICTURES.has(`rastro/${who}-${f}`),
+  )
+
+// A seller's cut-out, w wide from (0, 0), in the face of the mood, the
+// mouth moving while they speak: the speaking face shown over the waiting
+// one every other moment, and a bob for the other moods
+function SellerFrames({
+  who,
+  mood,
+  talking,
+  w,
+}: {
+  who: SellerId
+  mood: Mood
+  talking: boolean
+  w: number
+}) {
+  const h = (w * 560) / 480
+  return (
+    <g className={`ra-paint ${mood} ${talking ? 'talking' : ''}`}>
+      <image href={`/rastro/${who}-${mood}.webp`} width={w} height={h} />
+      {talking && mood === 'wait' && (
+        <image
+          className="ra-mo"
+          href={`/rastro/${who}-talk.webp`}
+          width={w}
+          height={h}
+        />
+      )}
+    </g>
+  )
+}
+
+// The painted stall: its background, the seller behind the table and the
+// thing for sale on it
+function PaintedStall({
+  bg,
+  who,
+  ware,
+  mood,
+  talking,
+  className,
+}: {
+  bg: string
+  who: SellerId | null
+  ware: string | null
+  mood: Mood
+  talking: boolean
+  className?: string
+}) {
+  const table = 240 * TABLE_AT
+  const wareImg = ware && painted(`rastro/ware-${ware}`)
+  return (
+    <svg
+      className={`ra-scene ${className ?? ''}`}
+      viewBox="0 0 400 240"
+      role="img"
+      aria-label="En bod på El Rastro en søndagsmorgen"
+    >
+      <image href={bg} width="400" height="240" />
+      {who && (
+        <g key={who} transform={`translate(${130 - 54} ${table + 3 - 126})`}>
+          <g className="ra-who">
+            <SellerFrames who={who} mood={mood} talking={talking} w={108} />
+          </g>
+        </g>
+      )}
+      {ware && wareImg && (
+        <g className="ra-ware">
+          <image
+            key={ware}
+            href={wareImg}
+            x={262 - 38}
+            y={table + 12 - 76}
+            width="76"
+            height="76"
+          />
+        </g>
+      )}
+    </svg>
+  )
+}
+
+// --- The stalls ---// --- The stalls ---
 
 const AWNING: Record<SellerId | 'none', string> = {
   paco: C.slate,
@@ -1606,6 +1712,22 @@ export function StallScene({
   className?: string
 }) {
   const w = who ?? 'none'
+  const bg = painted(who ? `rastro/stall-${who}` : 'rastro/street')
+  if (
+    bg &&
+    (!who || sellerPainted(who)) &&
+    (!ware || painted(`rastro/ware-${ware}`))
+  )
+    return (
+      <PaintedStall
+        bg={bg}
+        who={who}
+        ware={ware}
+        mood={mood}
+        talking={talking}
+        className={className}
+      />
+    )
   return (
     <svg
       className={`ra-scene ${className ?? ''}`}
