@@ -32,6 +32,7 @@ export function Page({
   tools,
   children,
   className = '',
+  style,
 }: {
   // Norwegian, under the Spanish
   title: string
@@ -40,9 +41,10 @@ export function Page({
   tools?: ReactNode
   children: ReactNode
   className?: string
+  style?: CSSProperties
 }) {
   return (
-    <div className={`q-shell ${className}`}>
+    <div className={`q-shell ${className}`} style={style}>
       <header className="q-top">
         <a className="q-round" href={back} aria-label="Tilbake">
           <ArrowLeft />

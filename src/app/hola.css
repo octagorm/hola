@@ -3141,7 +3141,7 @@ img.q-pic {
 }
 
 .bk-text {
-  font-size: var(--bk-size, 26px);
+  font-size: var(--bk-size, 23px);
 }
 
 .bk-text p {
@@ -3196,13 +3196,53 @@ img.q-pic {
   break-inside: avoid;
 }
 
-/* As wide as chosen, whatever the size (the header keeps its own width) */
+/* As wide as chosen, whatever the size, the title over it too: short,
+   kept at the top, and out of the way once reading goes on */
 .bk-page .q-main {
   max-width: none;
 }
 
+.bk-page .q-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  max-width: calc(var(--bk-width, 560px) + 32px);
+  padding: 8px 16px 6px;
+  gap: 12px;
+  background: var(--paper);
+  transition:
+    transform 0.2s,
+    visibility 0.2s;
+}
+
+.bk-page .q-top h1 {
+  min-width: 0;
+  font-size: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bk-page .q-top h1 small {
+  font-size: 15px;
+}
+
+.bk-page .q-top .q-round {
+  width: 38px;
+  height: 38px;
+}
+
+.bk-page.paged .q-top {
+  background: transparent;
+}
+
+.bk-page.bk-hidden .q-top {
+  transform: translateY(-100%);
+  visibility: hidden;
+}
+
 .bk-read {
-  max-width: var(--bk-width, 700px);
+  max-width: var(--bk-width, 560px);
   margin: 0 auto;
 }
 
@@ -3244,6 +3284,11 @@ img.q-pic {
   line-height: 24px;
   color: var(--ink-3);
   pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.bk-page.bk-hidden .bk-pages {
+  opacity: 0;
 }
 
 /* (room in the margins for a tap that turns the page) */
@@ -3257,15 +3302,15 @@ img.q-pic {
 /* «Aa»: the panel of choices for how the text is shown */
 .q-round.bk-panel-open span {
   font-family: var(--display);
-  font-size: 21px;
+  font-size: 19px;
   line-height: 1;
 }
 
 .bk-panel {
   position: fixed;
   z-index: 30;
-  top: 72px;
-  right: max(16px, calc((100vw - 820px) / 2 + 16px));
+  top: 56px;
+  right: max(16px, calc((100vw - var(--bk-width, 560px)) / 2));
   width: min(360px, calc(100vw - 32px));
   display: flex;
   flex-direction: column;

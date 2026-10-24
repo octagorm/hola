@@ -27,7 +27,9 @@ import type { PageProps } from '../registry'
 // and sets the lines close, as in a book, with every word still to tap.
 // The panel behind «Aa» has the text's size, its width, and the choice
 // between scrolling and pages turned sideways, as in Kulturuke's reader:
-// turned by a swipe, the arrow keys or a tap in the margin beside it.
+// turned by a swipe, the arrow keys or a tap in the margin beside it. The
+// title and «Aa» go once reading goes on, and a tap on the page brings them
+// back.
 // Once read to the end, the words met and read without being looked up
 // count as read.
 
@@ -119,6 +121,7 @@ function Reader({ book }: { book: Book }) {
   const tapped = useRef(new Set<string>())
   // The paragraph at the top of the screen, as it is read
   const at = useRef(place?.p ?? 0)
+  const atWord = useRef(place?.w ?? 0)
   // The first word in view, kept while the text reflows, so that a new size
   // or a word made known keeps the page where it is
   const anchor = useRef<Element | null>(null)
@@ -126,9 +129,11 @@ function Reader({ book }: { book: Book }) {
   const pager = useRef({ index: 0, count: 1, stride: 0 })
   const [pages, setPages] = useState({ index: 0, count: 1 })
   const [panel, setPanel] = useState(false)
+  // The title and «Aa» over the text, out of the way once reading goes on
+  const [controls, setControls] = useState(true)
   // Opened where it was left, if that was not the start
   const [resumed, setResumed] = useState(
-    () => !!place && !place.done && place.p > 0,
+    () => !!place && !place.done && (place.p > 0 || !!place.w),
   )
   // Read to the end, with the words counted as read
   const [credited, setCredited] = useState<number | null>(null)
@@ -136,8 +141,8 @@ function Reader({ book }: { book: Book }) {
   const paged = settings.paged
   const gloss = settings.gloss
   const bare = gloss === 'none'
-  const size = TEXT_SIZES[settings.textSize] ?? TEXT_SIZES[2]
-  const width = TEXT_WIDTHS[settings.textWidth] ?? TEXT_WIDTHS[1]
+  const size = TEXT_SIZES[settings.textSize] ?? TEXT_SIZES[1]
+  const width = TEXT_WIDTHS[settings.textWidth] ?? TEXT_WIDTHS[0]
 
   const explain = (t: Token) => ({
     form: book.forms[t.es.toLowerCase()],
@@ -163,19 +168,30 @@ function Reader({ book }: { book: Book }) {
     [paged],
   )
 
-  // The word read to, and its paragraph kept as the place in the text
+  // The word read to kept as the place in the text: its paragraph, and
+  // where in it
   const keep = useCallback(
     (el: Element | null) => {
       if (!el) return
       anchor.current = el
       const p = paras.current.findIndex((x) => x?.contains(el))
-      if (p >= 0 && p !== at.current) {
+      if (p < 0) return
+      const w = Array.from(
+        paras.current[p]!.querySelectorAll('.mx > span'),
+      ).indexOf(el)
+      if (p !== at.current || w !== atWord.current) {
         at.current = p
-        setPlace(book.id, p)
+        atWord.current = Math.max(0, w)
+        setPlace(book.id, p, false, atWord.current)
       }
     },
     [book, setPlace],
   )
+
+  // The word the text was left at, or its paragraph
+  const leftAt = () =>
+    paras.current[at.current]?.querySelectorAll('.mx > span')[atWord.current] ??
+    paras.current[at.current]
 
   const turnTo = useCallback(
     (index: number, remember = true) => {
@@ -215,8 +231,14 @@ function Reader({ book }: { book: Book }) {
           0,
           anchor.current.getBoundingClientRect().top + window.scrollY - 100,
         )
-      else if (!wasPaged.current && resumed)
-        paras.current[at.current]?.scrollIntoView({ block: 'start' })
+      else if (!wasPaged.current && resumed) {
+        const el = leftAt()
+        if (el)
+          window.scrollTo(
+            0,
+            el.getBoundingClientRect().top + window.scrollY - 100,
+          )
+      }
       wasPaged.current = false
       return
     }
@@ -248,8 +270,10 @@ function Reader({ book }: { book: Book }) {
       pager.current = { ...pager.current, count, stride }
       let index = 0
       if (anchor.current?.isConnected) index = pageOf(anchor.current)
-      else if (resumed && paras.current[at.current])
-        index = pageOf(paras.current[at.current]!)
+      else if (resumed) {
+        const el = leftAt()
+        if (el) index = pageOf(el)
+      }
       turnTo(index, false)
       if (!anchor.current?.isConnected)
         anchor.current = firstIn(v.getBoundingClientRect())
@@ -272,16 +296,24 @@ function Reader({ book }: { book: Book }) {
     // (the place to open at is read as it is laid out, not followed)
   }, [paged, size, width.px, gloss, turnTo, firstIn])
 
-  // The word at the top, kept a moment after scrolling stops
+  // The word at the top, kept a moment after scrolling stops; the title
+  // gone while scrolling on, and back on scrolling up
   useEffect(() => {
     if (paged) return
     let timer = 0
+    let last = window.scrollY
+    let way = 0
     const onScroll = () => {
+      const d = window.scrollY - last
+      last = window.scrollY
+      way = Math.sign(d) === Math.sign(way) ? way + d : d
+      if (window.scrollY < 8 || way < -12) setControls(true)
+      else if (way > 12) setControls(false)
       window.clearTimeout(timer)
       timer = window.setTimeout(
         () =>
           keep(
-            firstIn(new DOMRect(0, 90, window.innerWidth, window.innerHeight)),
+            firstIn(new DOMRect(0, 70, window.innerWidth, window.innerHeight)),
           ),
         600,
       )
@@ -296,6 +328,7 @@ function Reader({ book }: { book: Book }) {
   const turn = useCallback(
     (step: number) => {
       turnTo(pager.current.index + step)
+      setControls(false)
       // (a word's card left open would point at the page turned away)
       window.dispatchEvent(new Event('scroll'))
     },
@@ -319,9 +352,9 @@ function Reader({ book }: { book: Book }) {
   }, [paged, turn])
 
   // A tap in the margin beside the page turns it, back on the left and on
-  // on the right (never a tap in the text, where the words are)
+  // on the right; a tap on the page, not on a word, shows the title and
+  // «Aa» or hides them
   useEffect(() => {
-    if (!paged) return
     const onClick = (e: MouseEvent) => {
       const target = e.target as Element | null
       if (
@@ -332,8 +365,10 @@ function Reader({ book }: { book: Book }) {
         return
       const v = view.current?.getBoundingClientRect()
       if (!v || e.clientY < v.top || e.clientY > v.bottom) return
-      if (e.clientX < v.left) turn(-1)
-      else if (e.clientX > v.right) turn(1)
+      if (paged && e.clientX < v.left) turn(-1)
+      else if (paged && e.clientX > v.right) turn(1)
+      else if (e.clientX >= v.left && e.clientX <= v.right)
+        setControls((shown) => !shown)
     }
     window.addEventListener('click', onClick)
     return () => window.removeEventListener('click', onClick)
@@ -398,7 +433,13 @@ function Reader({ book }: { book: Book }) {
       es={book.es}
       title={book.no}
       back="#biblioteca"
-      className={`bk-page${paged ? ' paged' : ''}`}
+      className={`bk-page${paged ? ' paged' : ''}${controls || panel ? '' : ' bk-hidden'}`}
+      style={
+        {
+          '--bk-size': `${size}px`,
+          '--bk-width': `${width.px}px`,
+        } as CSSProperties
+      }
       tools={
         <button
           type="button"
@@ -490,15 +531,7 @@ function Reader({ book }: { book: Book }) {
         </div>
       )}
 
-      <div
-        className="bk-read"
-        style={
-          {
-            '--bk-size': `${size}px`,
-            '--bk-width': `${width.px}px`,
-          } as CSSProperties
-        }
-      >
+      <div className="bk-read">
         <div
           ref={view}
           className="bk-view"

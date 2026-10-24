@@ -70,10 +70,10 @@ export const DEFAULTS: Settings = {
   effects: true,
   music: false,
   perDay: 4,
-  textSize: 2,
+  textSize: 1,
   gloss: 'new',
-  paged: false,
-  textWidth: 1,
+  paged: true,
+  textWidth: 0,
 }
 
 const BANK_KEY = 'hola:bank:v1'
@@ -133,7 +133,7 @@ interface Store {
   setRead: (chapter: string, right: number) => void
   // How far a text in the library is read: up to paragraph `p`, and
   // whether to its end
-  setPlace: (text: string, p: number, done?: boolean) => void
+  setPlace: (text: string, p: number, done?: boolean, w?: number) => void
   // A game or a chapter played to its end: a step of Today's chapter that
   // was waiting for it is done
   played: (id: string) => void
@@ -305,17 +305,23 @@ export function BankProvider({ children }: { children: ReactNode }) {
   )
 
   const setPlace = useCallback(
-    (text: string, p: number, done = false) =>
+    (text: string, p: number, done = false, w = 0) =>
       setBank((b) => {
         const was = b.place[text]
-        if (was && was.p === p && (!done || was.done)) return b
+        if (was && was.p === p && (was.w ?? 0) === w && (!done || was.done))
+          return b
         const now = Date.now()
         const end = was?.done ?? (done ? now : undefined)
         return {
           ...b,
           place: {
             ...b.place,
-            [text]: { p, t: now, ...(end ? { done: end } : {}) },
+            [text]: {
+              p,
+              t: now,
+              ...(w ? { w } : {}),
+              ...(end ? { done: end } : {}),
+            },
           },
         }
       }),

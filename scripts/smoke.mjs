@@ -1529,6 +1529,10 @@ await test(
 
 await test('a text in the library is read, and its place kept', async (page) => {
   await go(page, '#biblioteca/testamento')
+  // (scrolled, rather than a page at a time as it opens)
+  await page.getByRole('button', { name: 'Visning' }).click()
+  await page.getByRole('button', { name: 'Rull' }).click()
+  await page.keyboard.press('Escape')
   // A word not met: its card says what it is, and once known it stands
   // alone, without the Norwegian over it
   const word = page.locator('.bk-text ruby', { hasText: 'lugareño' }).first()
@@ -1577,9 +1581,7 @@ await test('a text in the library is read, and its place kept', async (page) => 
 
 await test('a text in the library is read a page at a time', async (page) => {
   await go(page, '#biblioteca/bolondron')
-  await page.getByRole('button', { name: 'Visning' }).click()
-  await page.getByRole('button', { name: 'Sider' }).click()
-  await page.keyboard.press('Escape')
+  // (a page at a time as it opens)
   const shown = () => page.locator('.bk-pages').textContent()
   await page.locator('.bk-pages', { hasText: /^1 av \d+/ }).waitFor()
   await page.keyboard.press('ArrowRight')

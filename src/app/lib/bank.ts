@@ -82,6 +82,8 @@ export interface Bank {
 export interface Place {
   // The paragraph read up to, from 0
   p: number
+  // The word in it, from 0
+  w?: number
   // When, ms
   t: number
   // Read to the end, ms: once
