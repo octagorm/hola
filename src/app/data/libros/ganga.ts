@@ -10,7 +10,7 @@ export const GANGA: Book = {
   no: 'Et godt kjøp',
   by: 'Fortelling om et lurendreieri',
   about:
-    'En herre setter igjen et maleri hos en bruktbutikk og lover å hente det om kvelden. Så kommer en kunde som vil kjøpe det for mye penger. Det meste er dialog, med pruting og penger: en duro var fem pesetas og en real en kvart peseta, så tjue reales gikk på en duro.',
+    'En herre setter igjen et maleri hos en bruktbutikk og lover å hente det om ettermiddagen. Så kommer en kunde som vil kjøpe det for mye penger. Det meste er dialog, med pruting og penger: en duro var fem pesetas og en real en kvart peseta, så tjue reales gikk på en duro.',
   source: HARRISON,
   text: [
     [
