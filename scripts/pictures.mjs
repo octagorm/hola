@@ -1,8 +1,9 @@
 // Hola's painted pictures: each made with the image tool of the Codex CLI
 // (scripts/image.mjs, on the ChatGPT plan) from a plain description, with
-// the sketch in design/sketches/ that set its look as a reference for the
-// style. The full-size paintings are kept in .cache/pictures/ (megabytes
-// each; delete one there to paint it again), and --web cuts each to the
+// the travel poster in design/sketches/reiseplakat.jpg as a reference for
+// the style (El Ictíneo's plates keep the game's engraving). The full-size
+// paintings are kept in .cache/pictures/ (megabytes each; delete one there
+// to paint it again), and --web cuts each to the
 // shape it is shown in, saves it as public/<name>.webp and lists the names
 // made in src/app/data/pictures.ts, so the page shows a picture only once
 // it is there, and its drawing until then.
@@ -19,7 +20,11 @@
 import { spawn, execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
-import { MUSEO_PICTURES } from '../src/app/data/museo-prompts.ts'
+import {
+  MUSEO_PICTURES,
+  POSTER,
+  POSTER_REF,
+} from '../src/app/data/museo-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -34,22 +39,20 @@ const WIDE =
 const NONE =
   'No lettering, signs, logos or text anywhere in the picture, no frame and no border.'
 
-// The look of each story, after its sketch
+// The look of each story: every painting is a travel poster (POSTER, after
+// design/sketches/reiseplakat.jpg), with a few words of its own for each
 const LOOK = {
   viaje: {
-    ref: 'design/sketches/viaje.jpg',
-    style:
-      'A Spanish travel poster of the 1930s, in the style of the reference image, for its style only and not its subject: flat areas of gouache colour, simplified bold shapes, warm sunlight and long shadows, a limited palette of ochre, terracotta, olive, deep Mediterranean blue and cream, and a fine grain like an old lithograph. Not photographic, not 3D, never glossy. No crowds: at most two or three small figures.',
+    ref: POSTER_REF,
+    style: POSTER,
   },
   leyendas: {
-    ref: 'design/sketches/leyendas.jpg',
-    style:
-      'A hand-coloured woodcut, in the style of the reference image, for its style only and not its subject: carved black lines and fine hatching, flat colour in night blue, ochre and grey-white with touches of candle gold, the grain of ink on old paper. Romantic and eerie, never gory: no blood and no wounds shown. Not photographic, not 3D. No crowds.',
+    ref: POSTER_REF,
+    style: `${POSTER} These are romantic, eerie legends, mostly at dusk or by moonlight: deep slate blue, dusky violet and sand, with one warm light where there is one. Never gory: no blood and no wounds shown.`,
   },
   caso: {
-    ref: 'design/sketches/reloj-perdido.jpg',
-    style:
-      'A ligne claire illustration, in the style of the reference image, for its style only and not its subject: clean, even black outlines and flat bright colours without gradients, like a European comic album of the 1950s, friendly and calm. Cadaqués in Catalonia: white houses with blue doors, terracotta roofs, pink bougainvillea and a deep blue sea. Not photographic, not 3D. No speech balloons and no crowds.',
+    ref: POSTER_REF,
+    style: `${POSTER} Cadaqués in Catalonia: white houses with blue doors, terracotta roofs, pink bougainvillea and a deep blue sea. Friendly and calm. No speech balloons.`,
   },
 }
 

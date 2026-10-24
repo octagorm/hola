@@ -7,13 +7,9 @@ import { PICTURES as PAINTED } from './pictures.ts'
 // scripts/pictures.mjs as museo/<lesson>, from the prompts in
 // data/museo-prompts.ts (kept apart, so that the page does not carry them).
 //
-// The media follow Gorm's taste in prints and posters, and differ from
-// room to room: ligne claire and 1930s posters for everyday life, linocut
-// and woodcut still lifes at the table, travel posters and an azulejo
-// panel through Spain, woodcuts for history, paper-cut and printmaking for
-// the Americas, posters and tiles for the fiestas, night woodblocks for the
-// legends, and aleluyas for the language. Nothing copies or redoes another
-// artist's picture; buildings are drawn anew.
+// Every picture is a travel poster, the style Gorm chose for all of Hola's
+// paintings. Nothing copies or redoes another artist's picture; buildings
+// are drawn anew.
 //
 // Until a picture is painted, its frame shows a stand-in drawn in SVG from
 // `motif` and `colors` (games/museoArt.tsx).
@@ -58,7 +54,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Bardisken',
     shows:
       'En spansk bardisk en sen ettermiddag, med to cañas, oliven og servietter på gulvet.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'l',
     motif: 'still',
@@ -70,7 +66,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Fruktboden',
     shows:
       'En fruktbod på markedet: kasser med appelsiner og tomater, en hengende vekt og en stripet markise.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'still',
@@ -82,7 +78,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Stasjonen',
     shows:
       'En liten landsbystasjon der et rødt og kremhvitt tog kommer inn, med fjell i bakgrunnen.',
-    medium: 'Reiseplakat fra 1930-tallet',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'sun',
@@ -94,7 +90,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Etter maten',
     shows:
       'Et langbord under vinranker etter et familiemåltid: tomme stoler, kaffekopper og en kake med lys.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'still',
@@ -106,7 +102,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sommertorden',
     shows:
       'En hvit landsby på en ås der tordenværet driver forbi, med lyn på den ene siden og regnbue på den andre.',
-    medium: 'Tresnitt i to farger',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sun',
@@ -118,7 +114,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Siestatid',
     shows:
       'En stille gate klokka tre om ettermiddagen: lukkede skodder, lange skygger og en katt som sover på en trapp.',
-    medium: 'Silketrykk',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'tower',
@@ -130,7 +126,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Luken',
     shows:
       'En luke på et offentlig kontor, med stempel, skjemaer, en kølapp og en klokke på veggen.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'grid',
@@ -142,7 +138,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Krysset',
     shows:
       'Et gatekryss sett ovenfra: fotgjengerfelt, trafikklys, et apotekskilt med grønt kors og en taxi.',
-    medium: 'Silketrykk',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'grid',
@@ -156,7 +152,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Stilleben med tapas',
     shows:
       'En leirgryte med hvitløksreker, pimientos de Padrón, tannpirkere og brød.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'l',
     motif: 'still',
@@ -168,7 +164,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Paellapannen',
     shows:
       'En paella med skalldyr sett ovenfra: reker, blåskjell, muslinger og sitronbåter, med safran og rosmarin ved siden av.',
-    medium: 'Håndkolorert tresnitt',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'l',
     motif: 'still',
@@ -180,7 +176,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Tortillaen',
     shows:
       'En tortilla på et fat, med poteter, løk, egg og en flaske olivenolje rundt.',
-    medium: 'Linosnitt i to farger',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'still',
@@ -192,7 +188,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sjokolade og churros',
     shows:
       'Et marmorbord på en kafé tidlig om morgenen, med en kopp tykk sjokolade og churros i en papirkremmerhus.',
-    medium: 'Papirklipp i lag',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'still',
@@ -204,7 +200,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Spiskammeret',
     shows:
       'En spekeskinke i skinkestativ, pølser som henger, en manchegoost og eikenøtter på en grein.',
-    medium: 'Håndkolorert tresnitt',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'still',
@@ -216,7 +212,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Vinkjelleren',
     shows:
       'Tønner under en hvelvet kjeller, en vinkrukke, druer og en lysstripe fra en høy glugge.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'arch',
@@ -228,7 +224,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Fargene på markedet',
     shows:
       'Mais, avokado, lime, chili og kakaofrukter på et vevd teppe, med en leirkrukke.',
-    medium: 'Linosnitt i mange farger',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'flower',
@@ -242,7 +238,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sant Jordi',
     shows:
       'En balkong i Barcelona med en rød rose og en bok, og havnen og Montjuïc under.',
-    medium: 'Reiseplakat fra 1930-tallet',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'flower',
@@ -254,7 +250,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Gården',
     shows:
       'En gård i Córdoba i mai, med geranier i blå potter på de hvite murene, en fontene, azulejos og en vifte og en gitar i skyggen.',
-    medium: 'Linosnitt i tre farger',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'flower',
@@ -266,7 +262,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Stabburet',
     shows:
       'Et granittstabbur ved havet i Galicia, med et fyrtårn, et kamskjell på en stein og yr.',
-    medium: 'Tresnitt',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sea',
@@ -278,7 +274,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Bukta',
     shows:
       'Bukta La Concha i San Sebastián med øya i munningen, fiskebåter og grønne åser.',
-    medium: 'Reiseplakat fra 1930-tallet',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sea',
@@ -290,7 +286,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Kjøkkenhagen',
     shows:
       'Appelsintrær, en hvit barraca med bratt stråtak, en vanningskanal og rismarker.',
-    medium: 'Papirklipp i lag',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sun',
@@ -300,9 +296,8 @@ export const MUSEO: Array<Picture> = [
     lesson: 'murcia',
     es: 'Limoneros',
     no: 'Sitrontrærne',
-    shows:
-      'Et flisepanel med sitrontrær og et gammelt vannhjul, en noria, i blått og gult.',
-    medium: 'Azulejopanel',
+    shows: 'Sitrontrær og et gammelt vannhjul, en noria, i huertaen i Murcia.',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'tile',
@@ -314,7 +309,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Mandeltrærne',
     shows:
       'Mandeltrær i blomst på terrassene i fjellene bak Alicante i februar, med havet langt der nede.',
-    medium: 'Fargetresnitt, som ukiyo-e',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'flower',
@@ -326,7 +321,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Toget',
     shows:
       'En kupé i et gammelt tog langs Middelhavet, med vinduet nede, en koffert i hyllen og appelsiner på bordet.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sea',
@@ -338,7 +333,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Søndag på El Rastro',
     shows:
       'En bratt gate med boder på tepper: messinglamper, en spilledåse og gamle bøker i morgensol.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'still',
@@ -352,7 +347,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Vindmøllene',
     shows:
       'Vindmøller på en ås i La Mancha, og langt borte en mager ridder til hest og en væpner på et esel.',
-    medium: 'Håndkolorert tresnitt',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'l',
     motif: 'windmill',
@@ -364,7 +359,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Drømmen',
     shows:
       'En ørken i skumringen med en stige opp til skyene, sommerfugler og en stein som svever.',
-    medium: 'Papirklipp i lag',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'moon',
@@ -375,7 +370,7 @@ export const MUSEO: Array<Picture> = [
     es: 'El acueducto',
     no: 'Akvedukten',
     shows: 'Akvedukten i Segovia med de doble buene sine over hustakene.',
-    medium: 'Tresnitt',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'arch',
@@ -387,7 +382,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Badet',
     shows:
       'Et arabisk badehus med stjerneformede lysåpninger i hvelvet, lysstråler gjennom dampen og hesteskobuer rundt et basseng.',
-    medium: 'Tresnitt i blått og oker',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'l',
     motif: 'arch',
@@ -398,7 +393,7 @@ export const MUSEO: Array<Picture> = [
     es: 'La sala',
     no: 'Salen',
     shows: 'En stille museumssal med en benk, tomme rammer og et takvindu.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'grid',
@@ -409,7 +404,7 @@ export const MUSEO: Array<Picture> = [
     es: 'Las torres',
     no: 'Tårnene',
     shows: 'Tårnene på Sagrada Familia med byggekraner og fargerike tinder.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'tower',
@@ -421,7 +416,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sommerkino',
     shows:
       'En utekino en sommernatt: klappstoler, et hvitt lerret som lyser og lyskjeglen fra projektoren.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'moon',
@@ -433,7 +428,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Dykket',
     shows:
       'Ubåten av tre, formet som en fisk, halvveis under vann i Barcelonas havn, med kaien og seilskuter bak.',
-    medium: 'Tresnitt i grønt og svart',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sea',
@@ -447,7 +442,7 @@ export const MUSEO: Array<Picture> = [
     no: 'De dødes dag',
     shows:
       'Et alter til De dødes dag med fløyelsblomster, lys, sukkerhodeskaller og papirpynt.',
-    medium: 'Papirklipp',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'lantern',
@@ -459,7 +454,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Strandpromenaden',
     shows:
       'Bølger som slår over muren på Malecón i Havanna, pastellfasader og en gammel bil i solnedgang.',
-    medium: 'Plakat i silketrykk',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sea',
@@ -471,7 +466,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Pampasen',
     shows:
       'En gaucho til hest under en enorm himmel over pampasen, med et ensomt ombútre.',
-    medium: 'Fargetresnitt, som ukiyo-e',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sun',
@@ -483,7 +478,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Gule sommerfugler',
     shows:
       'En landsbygate ved Karibia der gule sommerfugler flyr rundt et mandeltre og en elv med glatte steiner.',
-    medium: 'Papirklipp i lag',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'flower',
@@ -497,7 +492,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Scenen',
     shows:
       'En tom flamencoscene med en stol, en gitar, et sjal med frynser og kastanjetter i ett lys.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'still',
@@ -509,7 +504,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Dansegulvet',
     shows:
       'Maracas, en conga og en trompet på en stol ved et dansegulv med palmer.',
-    medium: 'Silketrykk',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'lantern',
@@ -520,8 +515,8 @@ export const MUSEO: Array<Picture> = [
     es: 'La feria',
     no: 'Feriaen',
     shows:
-      'Papirlykter over stripete festtelt, en hestevogn og Giralda i det fjerne, malt på fliser.',
-    medium: 'Azulejopanel',
+      'Papirlykter over stripete festtelt, en hestevogn og Giralda i det fjerne.',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'tile',
@@ -533,7 +528,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sjette juli',
     shows:
       'Et rødt halstørkle på en jernbalkong over en tom gate i Pamplona, og røyken fra rakettskuddet.',
-    medium: 'Reiseplakat fra 1930-tallet',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'tower',
@@ -547,7 +542,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Gravkapellet',
     shows:
       'En kirkegård i måneskinn med en steinstatue av en ridder, en sypress og et lys som brenner.',
-    medium: 'Tresnitt',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'moon',
@@ -559,7 +554,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sjelenes fjell',
     shows:
       'Et fjell over Soria om natten, nakne trær, et klokketårn og elva Duero under månen.',
-    medium: 'Fargetresnitt, som ukiyo-e',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'moon',
@@ -571,7 +566,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Elvebredden',
     shows:
       'En elv om natten under månen, med siv og langt borte en skikkelse i hvitt slør på bredden.',
-    medium: 'Tresnitt i blått',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'moon',
@@ -583,7 +578,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Innsjøen',
     shows:
       'Den runde innsjøen Guatavita mellom grønne fjell, med en gyllen flåte på det mørke vannet.',
-    medium: 'Papirklipp med gull',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'l',
     motif: 'sun',
@@ -595,7 +590,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Sporene',
     shows:
       'Inspektørens ting på et kafébord ved havnen i Cadaqués: hatten, lupen, notatboka og en urkjede uten ur.',
-    medium: 'Ligne claire',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'm',
     motif: 'still',
@@ -605,11 +600,11 @@ export const MUSEO: Array<Picture> = [
   // --- Sala VIII: El idioma ---
   {
     lesson: 'refranes',
-    es: 'Aleluya de refranes',
-    no: 'Ordtak i bilder',
+    es: 'Pájaro en mano',
+    no: 'Fuglen i hånden',
     shows:
-      'Seks små bilder av spanske ordtak: en fugl i hånden, en reke som sover, en som står opp tidlig, en smie med kniv av tre og mer.',
-    medium: 'Aleluya, håndkolorert tresnitt',
+      'En bonde holder én fugl i hånden mens en hel flokk flyr av sted: más vale pájaro en mano que ciento volando.',
+    medium: 'Reiseplakat',
     shape: 'portrait',
     size: 'l',
     motif: 'grid',
@@ -621,7 +616,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Falske venner',
     shows:
       'To nesten like masker side om side, en mappe på et mønstret teppe og et glass ved en vase.',
-    medium: 'Linosnitt',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'still',
@@ -633,7 +628,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Tre triste tigre',
     shows:
       'Tre triste tigre som eter hvete i en hveteåker, med vinden i aksene.',
-    medium: 'Fargetresnitt, som ukiyo-e',
+    medium: 'Reiseplakat',
     shape: 'landscape',
     size: 'm',
     motif: 'sun',
@@ -645,7 +640,7 @@ export const MUSEO: Array<Picture> = [
     no: 'Bølgen og kjelen',
     shows:
       'Et kjøkkenvindu mot havet: en kjele som damper på komfyren og en bølge som ruller utenfor.',
-    medium: 'Papirklipp i lag',
+    medium: 'Reiseplakat',
     shape: 'square',
     size: 'm',
     motif: 'sea',

@@ -84,7 +84,7 @@ uv run scripts/audio.py .cache/speech.json --job             # make it
 
 ## The pictures
 
-Painted pictures are made on the user's Mac too, with the image tool of the Codex CLI on the user's ChatGPT plan (signed in with `codex login`) and ImageMagick. `scripts/pictures.mjs` holds each picture's description, painted with the sketch in `design/sketches/` that set its look as a reference for the style:
+Painted pictures are made on the user's Mac too, with the image tool of the Codex CLI on the user's ChatGPT plan (signed in with `codex login`) and ImageMagick. `scripts/pictures.mjs` holds each picture's description. Every painting is a travel poster of the 1920s–30s (`POSTER` in `data/museo-prompts.ts`, with `design/sketches/reiseplakat.jpg` as the reference for the style), the style the user chose for Hola throughout from the round Hola-stiler in moodboard; only El Ictíneo's plates keep the game's wood engraving:
 
 ```bash
 node scripts/pictures.mjs --list          # what is painted, and what is not
