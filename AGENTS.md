@@ -80,6 +80,17 @@ uv run scripts/audio.py .cache/speech.json --job             # make it
 
 `scripts/audio.py` asks for each item on its own. With `--job` it uses Gemini's batch mode, at half the price, answered within a day and often within minutes; the jobs are noted in `.cache/jobs.json`, so a run cut short picks them up again. Without it, up to `--max` (10) are asked for directly, or those named with `--only "text"`, to try a voice; `--voice` keeps to one voice's items. Each answer is trimmed of its silence (the quiet edges, such as a final s, are kept) and becomes `public/audio/<id>.mp3`, named by a hash of the file itself, and `data/audio.json` maps `voice|text` to it; files no longer used are removed. `public/_headers` lets browsers keep `/audio/*` for a year as immutable, which is safe because a recording made again gets a new name. The designed voices' ids are kept in `scripts/voices.json`: delete one to design that voice again, then `--remake <name>` (or `--remake words`, `lines`) to read its items again. At the end it names the recordings far from the length of their text, and words said with a pause inside them (la ... dama), to listen to or make again. Commit `public/audio/`, `data/audio.json` and `scripts/voices.json`. Once `audio.json` has entries, `tests/speech.test.ts` fails while anything listed has no recording, or a file is left over or not named by its hash.
 
+## The audiobooks
+
+`data/lydbok.ts` holds audiobooks of fifteen to twenty minutes, each written for one reader's words: a story in Spain's Spanish, in the stories' markup, read slowly by the narrator and the cast, each chapter opened by Guía, a designed Norwegian voice, saying plainly what happens and which new words come. `games/lydbok.tsx` plays it as one file with the text in mixed text, the line heard marked, and offers it for download to hear on a walk; `/#lydbok` lists them and the home page's Les shows them. `tests/lydbok.test.ts` checks the words, the length and, for a book written from the starting bank, at most eight new words a chapter. A book is written from a reader's bank: with the reader's wish, `npx convex run --prod bank:forEmail '{"email": "…"}' > .cache/bank.json` on the Mac (an internal query) and `node scripts/lydbok-ord.ts .cache/bank.json` list the words known and practised, the weakest first, to write from. Once its lines are recorded (The recordings, above), it is put together on the Mac:
+
+```bash
+mkdir -p .cache && node scripts/lydbok.ts > .cache/lydbok.json
+uv run scripts/lydbok.py .cache/lydbok.json
+```
+
+which writes `public/lydbok/<id>-<hash>.mp3` and `data/lydbok-times.json` (when each line begins). Commit both.
+
 ## The pictures
 
 Painted pictures are made on the user's Mac too, with the image tool of the Codex CLI on the user's ChatGPT plan (signed in with `codex login`) and ImageMagick. `scripts/pictures.mjs` holds each picture's description. Every painting is a travel poster of the 1920s–30s (`POSTER` in `data/museo-prompts.ts`, with `design/sketches/reiseplakat.jpg` as the reference for the style), the style the user chose for Hola throughout from the round Hola-stiler in moodboard; only El Ictíneo's plates keep the game's wood engraving:

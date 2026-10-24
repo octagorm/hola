@@ -97,4 +97,15 @@ describe('access', () => {
     expect(await admin.query(api.bank.bank, {})).toEqual(progress.data)
     expect(await ola.query(api.bank.bank, {})).toBeNull()
   })
+
+  test('a bank is found by its address for an audiobook, internally only', async () => {
+    const { t, ola } = await setup()
+    await ola.mutation(api.bank.save, progress)
+    expect(
+      await t.query(internal.bank.forEmail, { email: ' Ola@Example.com ' }),
+    ).toEqual(progress.data)
+    expect(
+      await t.query(internal.bank.forEmail, { email: 'nobody@example.com' }),
+    ).toBeNull()
+  })
 })
