@@ -1216,7 +1216,7 @@
 
   .ra-ready > .ra-frame {
     width: min(100% - 10px, (100dvh - 600px) * 5 / 3);
-    min-width: min(100% - 10px, 210px);
+    min-width: min(100% - 10px, 180px);
   }
 
   .ra-ready .ra-card {

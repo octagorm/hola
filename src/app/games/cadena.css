@@ -1004,7 +1004,7 @@ button.en-flag {
   }
 
   .en-scene {
-    zoom: 0.75;
+    zoom: 0.72;
   }
 
   .en-col {
@@ -1032,8 +1032,8 @@ button.en-flag {
   }
 
   .en-opts button {
-    min-height: 54px;
-    padding: 6px 6px 14px;
+    min-height: 50px;
+    padding: 6px 6px 13px;
   }
 
   .en-answer {
