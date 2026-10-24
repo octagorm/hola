@@ -85,7 +85,11 @@ export default function Hoy() {
   const chapterNo = walked + (bank.daily[day] ? 0 : 1)
 
   return (
-    <Page es={`Día ${chapterNo}`} title="Dagens økt">
+    <Page
+      es={`Día ${chapterNo}`}
+      title="Dagens økt"
+      className={`q-hoy ${done ? '' : 'busy'}`}
+    >
       <section className="q-hoy-head">
         <Ring
           shares={p.steps.map(share)}

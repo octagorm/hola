@@ -560,7 +560,7 @@ export const percent = (share: number | null) =>
 
 // --- The ring of today's chapter ---
 
-const WEDGE = ['#c2402c', '#d29a2e', '#4f7fa8']
+const WEDGE = ['var(--red)', 'var(--ochre)', 'var(--blue)']
 
 // One wedge for each part of the day, filled as far as the part has got,
 // with the chapter's number in the middle
@@ -598,8 +598,8 @@ export function Ring({
           <path
             key={i}
             d={`M${point(a0, 68)}A68 68 0 ${large} 1 ${point(a1, 68)}L90 90Z`}
-            fill={WEDGE[i % WEDGE.length]}
-            opacity=".55"
+            style={{ fill: WEDGE[i % WEDGE.length] }}
+            opacity=".7"
             filter="url(#q-w2)"
           />
         )
@@ -607,7 +607,7 @@ export function Ring({
       <g
         filter="url(#q-ring)"
         fill="none"
-        stroke="#1b1611"
+        stroke="currentColor"
         strokeLinecap="round"
       >
         <circle cx="90" cy="90" r="68" strokeWidth="4" />
@@ -626,9 +626,9 @@ export function Ring({
         x="90"
         y="104"
         textAnchor="middle"
-        fontFamily="IM Fell English, serif"
-        fontSize={numeral.length > 4 ? 30 : 42}
-        fill="#1b1611"
+        style={{ fontFamily: 'var(--display)' }}
+        fontSize={numeral.length > 4 ? 30 : 46}
+        fill="currentColor"
       >
         {numeral}
       </text>

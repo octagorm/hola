@@ -2,11 +2,13 @@ import { useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
+  ChevronRight,
   Headphones,
   Library,
   Music,
   Puzzle,
   Settings2,
+  Shapes,
   Sun,
 } from 'lucide-react'
 import { EPIGRAPH } from './data/quijote'
@@ -14,9 +16,9 @@ import { STORY } from './data/stories'
 import { stageOf } from './data/camino'
 import { GAME_INFO } from './data/games'
 import { AUDIOBOOKS } from './data/lydbok'
-import { BOOKS } from './data/biblioteca'
+import { BOOKS, SHELVES } from './data/biblioteca'
 import { MADE, minutes } from './lib/lydbok'
-import { THEME, THEME_GROUPS } from './data/themes'
+import { THEME_GROUPS } from './data/themes'
 import { LESSON, WORDS } from './data/words'
 import { LINKS, counts, dayKey, linkShares } from './lib/bank'
 import { canHear, useVoices } from './lib/speech'
@@ -49,26 +51,28 @@ import {
   percent,
   useMedia,
 } from './ui'
+import type { ReactNode } from 'react'
 import type { GameIconId, TocId } from './art'
 
-// The home page, a page of an old book: La Mancha at the top, in ink or,
-// once painted, as a travel poster that follows the time of day
-// (sky.tsx), and under it four parts, one at a time, picked from a bar at
-// the foot of a phone's screen or under the picture on a larger one:
-// today (today's chapter, the story to go on with, the credential), the
-// stories, the games in three groups, and the words (the count, the
-// themes and the collections).
+// The home page: La Mancha at the top, in ink or, once painted, as a
+// travel poster that follows the time of day (sky.tsx), and under it five
+// parts, one at a time, picked from a bar at the foot of a phone's screen
+// or under the picture on a larger one: today (today's chapter, the story
+// to go on with, the credential, all on one phone screen), what there is
+// to read and hear, the games in three groups, the themes in one list,
+// and the words (the count and the collections).
 
 // What lies over the painted scene on a larger screen, for its moon and
 // clouds to keep clear of
 const AVOID = '.head h1, .head .motto, .head .tools'
 
-type Tab = 'hoy' | 'leer' | 'jugar' | 'palabras'
+type Tab = 'hoy' | 'leer' | 'jugar' | 'temas' | 'palabras'
 
 const TABS: Array<{ id: Tab; no: string; Icon: typeof Sun }> = [
   { id: 'hoy', no: 'I dag', Icon: Sun },
   { id: 'leer', no: 'Les', Icon: BookOpen },
   { id: 'jugar', no: 'Spill', Icon: Puzzle },
+  { id: 'temas', no: 'Emner', Icon: Shapes },
   { id: 'palabras', no: 'Ordene', Icon: Library },
 ]
 
@@ -214,6 +218,20 @@ export default function Home() {
     }
   })
 
+  // The library's shelves: how far each is read, and what comes next
+  const shelves = SHELVES.map((shelf) => {
+    const books = BOOKS.filter((b) => b.shelf === shelf.id)
+    const read = books.filter((b) => bank.place[b.id]?.done).length
+    const next = books.find((b) => !bank.place[b.id]?.done)
+    return {
+      shelf,
+      lead: [next ? next.no : 'Alt er lest', `${read} / ${books.length}`] as [
+        string,
+        string,
+      ],
+    }
+  })
+
   // The story to go on with: the first with a chapter not read
   const reading = INDEX.flatMap((t) => {
     const story = STORY[t.id]
@@ -327,7 +345,7 @@ export default function Home() {
       <main className="q-home-main">
         {tab === 'hoy' && (
           <>
-            <section className="q-frame q-today">
+            <section className="q-today">
               <a
                 href="#hoy"
                 className="q-ring-link"
@@ -344,7 +362,7 @@ export default function Home() {
                   La clase de hoy <span>· Dagens økt</span>
                 </div>
                 <h2>{done ? 'Ferdig for i dag' : chapterTitle(p)}</h2>
-                <p className="drop">
+                <p>
                   {done
                     ? `Du har fått stempelet fra ${stageOf(chapterNo).town}. Ny økt i morgen.`
                     : chapterLine(p)}
@@ -359,32 +377,33 @@ export default function Home() {
             <div className="q-row2">
               {reading && (
                 <a
-                  className="q-frame q-box q-coll q-reading"
+                  className="q-frame q-box q-reading"
                   href={`#${reading.story.id}/${reading.next.id}`}
                 >
                   <TocArt id={reading.t.id} className="art" />
                   <span>
-                    <h3>
-                      Sigue leyendo<span>les videre</span>
-                    </h3>
-                    <p>
-                      <b>{reading.t.es}</b>: {reading.next.title}
-                      <br />
-                      <em>{reading.next.no}</em>
-                    </p>
+                    <span className="q-label">
+                      Sigue leyendo <span>· Les videre</span>
+                    </span>
+                    <b>
+                      {reading.t.es}: {reading.next.title}
+                    </b>
+                    <em>{reading.next.no}</em>
                   </span>
+                  <ChevronRight className="chev" aria-hidden="true" />
                 </a>
               )}
               <a className="q-frame q-box q-cred" href="#credencial">
-                <h3>
-                  La credencial<span>pilegrimspasset</span>
-                </h3>
+                <span className="q-label">
+                  La credencial <span>· Pilegrimspasset</span>
+                </span>
                 <p>
-                  Hver dag du fullfører dagens økt, går du en etappe av Caminoen
-                  til Santiago og får et stempel.{' '}
                   {walked
-                    ? `Dag ${walked}: ${stageOf(walked).town}.`
-                    : `Første etappe: over Pyreneene til ${stageOf(1).town}.`}
+                    ? `Dag ${walked} på Caminoen: ${stageOf(walked).town}.`
+                    : `Første etappe: over Pyreneene til ${stageOf(1).town}.`}{' '}
+                  <span className="more">
+                    Et stempel for hver dag du fullfører økten.
+                  </span>
                 </p>
                 <div className="stamps">
                   {shown.map((n) => (
@@ -401,77 +420,85 @@ export default function Home() {
 
         {tab === 'leer' && (
           <>
-            {AUDIOBOOKS.map((b) => (
-              <a
-                key={b.id}
-                className="q-frame q-box q-audiobook"
-                href={`#lydbok/${b.id}`}
-              >
-                <Headphones aria-hidden="true" />
-                <span>
-                  <h3>
-                    {b.es}
-                    <span>lydbok</span>
-                  </h3>
-                  <p>
-                    {b.no}
-                    {MADE[b.id]
-                      ? ` · ${minutes(MADE[b.id]?.seconds ?? 0)}`
-                      : ''}
-                  </p>
-                </span>
-              </a>
-            ))}
-
-            <a className="q-frame q-box q-audiobook" href="#biblioteca">
-              <Library aria-hidden="true" />
-              <span>
-                <h3>
-                  Biblioteca<span>biblioteket</span>
-                </h3>
-                <p>
-                  Folkefortellinger og en krim ·{' '}
-                  {BOOKS.filter((b) => bank.place[b.id]?.done).length} av{' '}
-                  {BOOKS.length} lest
-                </p>
-              </span>
-            </a>
-
-            <section className="q-toc">
+            <section className="q-shelf">
               <h4>
-                Índice<small>Fortellingene</small>
+                Historias<small>Fortellinger, fortalt enkelt</small>
               </h4>
+              <p className="intro">
+                Dagens økt tar neste kapittel herfra, ett om gangen.
+              </p>
               <ol>
-                {toc.map((t) => {
-                  const body = (
-                    <>
-                      <TocArt id={t.id} />
-                      <span>
-                        <span className="nm">
-                          <i>{t.n}</i>
-                          {t.es}
-                        </span>
-                        <span className="en">{t.no}</span>
-                        <p>{t.blurb}</p>
-                        <span className="lead">
-                          {t.lead ? t.lead[0] : 'Kommer'}
-                          <span />
-                          {t.lead ? t.lead[1] : ''}
-                        </span>
-                      </span>
-                    </>
-                  )
-                  return (
-                    <li key={t.id} className={t.href ? '' : 'soon'}>
-                      {t.href ? <a href={t.href}>{body}</a> : <div>{body}</div>}
-                    </li>
-                  )
-                })}
+                {toc.map((t) => (
+                  <ReadRow
+                    key={t.id}
+                    href={t.href}
+                    art={<TocArt id={t.id} />}
+                    n={t.n}
+                    es={t.es}
+                    no={t.no}
+                    blurb={t.blurb}
+                    lead={t.lead}
+                  />
+                ))}
               </ol>
             </section>
 
+            <section className="q-shelf">
+              <h4>
+                Biblioteca<small>Biblioteket, å lese i eget tempo</small>
+              </h4>
+              <ol>
+                {shelves.map(({ shelf, lead }) => (
+                  <ReadRow
+                    key={shelf.id}
+                    href="#biblioteca"
+                    art={
+                      <span className={`tile ${shelf.id}`}>
+                        <Library />
+                      </span>
+                    }
+                    es={shelf.es}
+                    no={shelf.no}
+                    blurb={shelf.about}
+                    lead={lead}
+                  />
+                ))}
+              </ol>
+            </section>
+
+            {AUDIOBOOKS.length > 0 && (
+              <section className="q-shelf">
+                <h4>
+                  Para escuchar<small>Å lytte til</small>
+                </h4>
+                <ol>
+                  {AUDIOBOOKS.map((b) => {
+                    const made = MADE[b.id]
+                    return (
+                      <ReadRow
+                        key={b.id}
+                        href={`#lydbok/${b.id}`}
+                        art={
+                          <span className="tile listen">
+                            <Headphones />
+                          </span>
+                        }
+                        es={b.es}
+                        no={b.no}
+                        blurb={`En lydbok i ${b.chapters.length} kapitler, som en podkast: Marta og Ingrid forklarer, og historien leses på spansk.`}
+                        lead={[
+                          'Følg den i podkastappen',
+                          made ? minutes(made.seconds) : '',
+                        ]}
+                      />
+                    )
+                  })}
+                </ol>
+              </section>
+            )}
+
             <section className="q-epi">
-              <div className="orig">«{EPIGRAPH.es}»</div>
+              <h4>Así se lee · Slik leses teksten</h4>
               <div className="mix">
                 <Mixed line={EPIGRAPH.line} />
               </div>
@@ -482,13 +509,11 @@ export default function Home() {
 
         {tab === 'jugar' &&
           GAME_GROUPS.map((group) => (
-            <section key={group.no}>
-              <div className="q-toc">
-                <h4>
-                  {group.es}
-                  <small>{group.no}</small>
-                </h4>
-              </div>
+            <section key={group.no} className="q-shelf">
+              <h4>
+                {group.es}
+                <small>{group.no}</small>
+              </h4>
               <div className="q-games">
                 {group.ids.flatMap((id) => {
                   const g = GAME_INFO.find((x) => x.id === id)
@@ -497,6 +522,8 @@ export default function Home() {
               </div>
             </section>
           ))}
+
+        {tab === 'temas' && <Themes />}
 
         {tab === 'palabras' && (
           <>
@@ -534,8 +561,6 @@ export default function Home() {
               </span>
             </a>
 
-            <Themes />
-
             <Colecciones />
           </>
         )}
@@ -563,84 +588,112 @@ export default function Home() {
   )
 }
 
-// The themes, a group at a time: the group of the theme chosen first, and
-// a mark on each group with a theme chosen
+// A line on the reading part: a picture, the name in Spanish and in
+// Norwegian, a few words on it, and how far it is read; faded when it is
+// not written yet
+function ReadRow({
+  href,
+  art,
+  n,
+  es,
+  no,
+  blurb,
+  lead,
+}: {
+  href: string | undefined
+  art: ReactNode
+  n?: string
+  es: string
+  no: string
+  blurb: string
+  lead: [string, string] | undefined
+}) {
+  const body = (
+    <>
+      <span className="art">{art}</span>
+      <span>
+        <span className="nm">
+          {n && <i>{n}</i>}
+          {es}
+        </span>
+        <span className="en">{no}</span>
+        <p>{blurb}</p>
+        <span className="lead">
+          {lead ? lead[0] : 'Kommer'}
+          <span />
+          {lead ? lead[1] : ''}
+        </span>
+      </span>
+    </>
+  )
+  return (
+    <li className={href ? '' : 'soon'}>
+      {href ? <a href={href}>{body}</a> : <div>{body}</div>}
+    </li>
+  )
+}
+
+// The themes, every group in one list: the group's name, and under it its
+// themes, each with how far its words are met and its priority, chosen
+// right there
 function Themes() {
   const { bank, chooseTheme } = useStore()
   const groups = THEME_GROUPS.filter((g) => g.themes.length)
-  const chosenGroups = new Set(bank.theme.on.map((x) => THEME[x.id]?.group.id))
-  const [open, setOpen] = useState(
-    THEME[bank.theme.on[0]?.id ?? '']?.group.id ?? groups[0].id,
-  )
-  const group = groups.find((g) => g.id === open) ?? groups[0]
+  const chosen = bank.theme.on.filter((x) => x.p > 0).length
   return (
     <section className="q-themes">
-      <div className="q-toc">
+      <div className="q-shelf">
         <h4>
           Temas<small>Emner</small>
         </h4>
       </div>
       <p className="intro">
-        Velg ett eller flere emner, så kommer de nye ordene i dagens økt derfra:
-        tre ord fra et emne på 3 for hvert ord fra et på 1.
+        Velg ett eller flere emner, så kommer de nye ordene i dagens økt derfra.
+        Et emne på 3 får tre ord for hvert ord fra et på 1.{' '}
+        {chosen
+          ? `Du har valgt ${chosen === 1 ? 'ett emne' : `${chosen} emner`}.`
+          : 'Ingen er valgt ennå.'}
       </p>
-      <div className="tabs" role="tablist" aria-label="Emner">
-        {groups.map((g) => (
-          <button
-            key={g.id}
-            type="button"
-            role="tab"
-            id={`q-tab-${g.id}`}
-            aria-selected={g.id === group.id}
-            aria-controls="q-themes-panel"
-            className={g.id === group.id ? 'on' : ''}
-            onClick={() => setOpen(g.id)}
-          >
-            {g.es}
-            <span>{g.no}</span>
-            {chosenGroups.has(g.id) && <i title="Et valgt emne er her" />}
-          </button>
-        ))}
-      </div>
-      <ul
-        role="tabpanel"
-        id="q-themes-panel"
-        aria-labelledby={`q-tab-${group.id}`}
-      >
-        {group.themes.map((t) => {
-          const lesson = LESSON[t.lesson]
-          if (!lesson) return null
-          const all = WORDS.filter((w) => w.lesson === t.lesson)
-          const met = all.filter((w) => bank.cards[w.id]).length
-          const p = bank.theme.on.find((x) => x.id === t.lesson)?.p ?? 0
-          const chosen = p > 0
-          return (
-            <li key={t.lesson}>
-              <a href={`#tema/${t.lesson}`} className={chosen ? 'chosen' : ''}>
-                <b>{lesson.es}</b>
-                <small>{lesson.no}</small>
-                <InkBar
-                  share={all.length ? met / all.length : 0}
-                  className="bar"
-                />
-                <em>
-                  {met === all.length
-                    ? 'Alle møtt'
-                    : chosen
-                      ? `Valgt · ${met} av ${all.length}`
-                      : `${met} av ${all.length} ord`}
-                </em>
-              </a>
-              {/* Chosen or not, right here: as many as wanted */}
-              <Priority
-                p={p}
-                name={lesson.es}
-                onSet={(to) => chooseTheme(t.lesson, to)}
-              />
-            </li>
-          )
-        })}
-      </ul>
+      {groups.map((group) => (
+        <section key={group.id} className="group">
+          <h5>
+            {group.es}
+            <span>{group.no}</span>
+          </h5>
+          <ul>
+            {group.themes.map((t) => {
+              const lesson = LESSON[t.lesson]
+              if (!lesson) return null
+              const all = WORDS.filter((w) => w.lesson === t.lesson)
+              const met = all.filter((w) => bank.cards[w.id]).length
+              const p = bank.theme.on.find((x) => x.id === t.lesson)?.p ?? 0
+              return (
+                <li key={t.lesson} className={p > 0 ? 'chosen' : ''}>
+                  <a href={`#tema/${t.lesson}`}>
+                    <b>{lesson.es}</b>
+                    <small>
+                      {lesson.no} ·{' '}
+                      {met === all.length
+                        ? 'alle ord møtt'
+                        : `${met} av ${all.length} ord`}
+                    </small>
+                    <InkBar
+                      share={all.length ? met / all.length : 0}
+                      className="bar"
+                    />
+                  </a>
+                  {/* Chosen or not, right here: as many as wanted */}
+                  <Priority
+                    p={p}
+                    name={lesson.es}
+                    onSet={(to) => chooseTheme(t.lesson, to)}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))}
     </section>
   )
 }

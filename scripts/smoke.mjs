@@ -233,8 +233,7 @@ await test('signing in with Google is offered', async (page) => {
 
 await test('themes chosen give today’s chapter their new words', async (page) => {
   await go(page, '')
-  await page.getByRole('button', { name: 'Ordene', exact: true }).click()
-  await page.getByRole('tab', { name: /Historia/ }).click()
+  await page.getByRole('button', { name: 'Emner', exact: true }).click()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
   const prio = (name) =>
     page.getByRole('radiogroup', { name: `Hvor mye ${name}` })
@@ -245,7 +244,7 @@ await test('themes chosen give today’s chapter their new words', async (page) 
   await page.getByRole('button', { name: 'I dag', exact: true }).click()
   await page.getByText('fra «Don Quijotes ord»').waitFor()
   // A second, at 3, chosen on the home page itself
-  await page.getByRole('button', { name: 'Ordene', exact: true }).click()
+  await page.getByRole('button', { name: 'Emner', exact: true }).click()
   const on = page.locator('.q-themes .q-prio button.on')
   expect((await on.count()) === 1, 'the theme chosen shows on the home page')
   await page
@@ -253,8 +252,11 @@ await test('themes chosen give today’s chapter their new words', async (page) 
     .first()
     .getByRole('radio', { name: '3' })
     .click()
-  await page.locator('.q-themes a.chosen').nth(1).waitFor()
-  expect((await page.locator('.q-themes a.chosen').count()) === 2, 'two chosen')
+  await page.locator('.q-themes li.chosen').nth(1).waitFor()
+  expect(
+    (await page.locator('.q-themes li.chosen').count()) === 2,
+    'two chosen',
+  )
   expect(
     (await page
       .locator('.q-themes .q-prio button.on', { hasText: '3' })
@@ -1628,24 +1630,14 @@ await test('a text in the library is read a page at a time', async (page) => {
   )
 })
 
-await test('the audiobook is read along on asking, and followed in an app', async (page) => {
+await test('the audiobook is followed in an app, or heard here', async (page) => {
   await go(page, '#lydbok/altea')
-  // The text only when asked for, and kept so
-  expect((await page.locator('.q-book-text').count()) === 0, 'no text at first')
-  await page.getByRole('button', { name: 'Les med' }).click()
-  const line = page.locator('.q-book-text p.jump').nth(6)
-  await line.waitFor()
-  // A line tapped is heard from where it begins
+  // No reading along: the app first, the browser's own player after
+  expect((await page.locator('.q-book-text').count()) === 0, 'no text')
   await page.waitForFunction(
-    () => document.querySelector('audio')?.duration > 0,
+    () => document.querySelector('.q-here audio')?.duration > 0,
   )
-  await line.click()
-  await page.waitForFunction(
-    () => document.querySelector('audio')?.currentTime > 5,
-  )
-  await page.locator('.q-book-text p.now').waitFor()
-  await page.reload()
-  await page.locator('.q-book-text').waitFor()
+  await page.locator('.q-book-chapters li').nth(7).waitFor()
   // The podcast's feed names the book, its file and its chapters
   await page.locator('.q-follow a', { hasText: 'Pocket Casts' }).waitFor()
   const feed = await page.evaluate(() =>
