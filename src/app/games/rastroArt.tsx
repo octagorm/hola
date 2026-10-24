@@ -1367,7 +1367,7 @@ function PaintedStall({
   )
 }
 
-// --- The stalls ---// --- The stalls ---
+// --- The stalls ---
 
 const AWNING: Record<SellerId | 'none', string> = {
   paco: C.slate,
