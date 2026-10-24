@@ -1,5 +1,8 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { CHAPTERS } from '../src/app/data/caso'
+import { CASO_PICTURES, CAST } from '../src/app/data/caso-prompts'
+import { FACES, castPicture } from '../src/app/data/casoLayout'
 import { STORIES, STORY } from '../src/app/data/stories'
 import { LINE_VOICE, VOICES } from '../src/app/data/voices'
 import { WORD, WORDS } from '../src/app/data/words'
@@ -168,5 +171,42 @@ describe('the inspector’s notebook', () => {
     })
     expect(pages[1].clue).toBeUndefined()
     expect(pages[2].clue).toBe(CHAPTERS[2].clue)
+  })
+})
+
+describe('the painted cast', () => {
+  const speakers = new Set(
+    CHAPTERS.flatMap((c) => c.who!.filter((w) => w !== undefined)),
+  )
+
+  it('has a sheet of four faces for everyone who speaks', () => {
+    expect(Object.keys(CAST).sort()).toEqual([...speakers].sort())
+    for (const who of speakers) {
+      const name = castPicture(who)
+      expect(name, who).toMatch(/^caso\/[a-z]+$/)
+      expect(Object.keys(CASO_PICTURES), who).toContain(name)
+      expect(CASO_PICTURES[name].parts, who).toEqual(FACES)
+      expect(CASO_PICTURES[name].cutout, who).toBe(true)
+    }
+    expect(castPicture('Narcís')).toBe('caso/narcis')
+  })
+
+  it('is each the person the chapters’ paintings show', () => {
+    const chapters = readFileSync('scripts/pictures.mjs', 'utf8')
+    for (const [who, c] of Object.entries(CAST))
+      expect(chapters.includes(c.is), who).toBe(true)
+  })
+
+  it('makes a face only on a line said, and one of the four', () => {
+    for (const c of CHAPTERS) {
+      expect(c.face, c.id).toHaveLength(c.lines.length)
+      c.face!.forEach((f, i) => {
+        if (f === undefined) return
+        expect(c.who![i], `${c.id} ${i + 1}`).toBeTruthy()
+        expect(FACES, `${c.id} ${i + 1}`).toContain(f)
+      })
+    }
+    expect(CHAPTERS[0].face![3]).toBe('worried')
+    expect(CHAPTERS[0].lines[3].startsWith('— ¡ Inspector')).toBe(true)
   })
 })

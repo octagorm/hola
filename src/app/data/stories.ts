@@ -2,6 +2,7 @@ import { CHAPTERS as QUIJOTE } from './quijote.ts'
 import { CHAPTERS as LEYENDAS } from './leyendas.ts'
 import { CHAPTERS as VIAJE } from './viaje.ts'
 import { CHAPTERS as CASO } from './caso.ts'
+import type { Face } from './casoLayout.ts'
 
 // The stories, each read a chapter at a time in mixed text
 // (games/story.tsx), with three questions after each chapter. Their lines
@@ -28,6 +29,9 @@ export interface Chapter {
   // Who says each line, by their voice in data/voices.ts; a line with
   // none is the narrator's
   who?: Array<string | undefined>
+  // The face the speaker makes once a line is said, where it calls for
+  // one: a mystery's painted cast (data/caso.ts, games/caso.tsx)
+  face?: Array<Face | undefined>
   questions: Array<Question>
   // What the chapter gives away, for the inspector's notebook on the
   // story's page once it is read (a mystery: data/caso.ts)

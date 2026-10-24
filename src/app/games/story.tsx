@@ -23,7 +23,17 @@ import { shuffle } from '../lib/choices'
 import { TodayNext, useBack } from '../daily'
 import { Mixed, MixedKey, Page, roman } from '../ui'
 import { Scene, TocArt, hasView, isTocId } from '../art'
-import { Accuse, Again, Heard, HeardKey, Libreta, NewClue, Who } from './caso'
+import {
+  Accuse,
+  Again,
+  Heard,
+  HeardKey,
+  Libreta,
+  NewClue,
+  Speaker,
+  Who,
+  painted as castPainted,
+} from './caso'
 import type { Chapter, Story } from '../data/stories'
 import type { PageProps } from '../registry'
 
@@ -44,7 +54,8 @@ import type { PageProps } from '../registry'
 // for, or the questions are answered. The words of a line only heard
 // count as heard, when the answers show it was understood (lib/caso.ts).
 // Its chapters add to the inspector's notebook on the story's page, and
-// one may stop to ask who did it.
+// one may stop to ask who did it. Once its cast is painted, who says a
+// line is beside it, their mouth moving while it is said.
 
 export default function StoryPage({ id, arg }: PageProps) {
   const story = STORY[id]
@@ -362,19 +373,11 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                 }}
               />
             )
-            return (
-              <p
-                key={i}
-                ref={phase === 'read' && i === shown - 1 ? nowLine : undefined}
-                className={
-                  phase !== 'read' || i !== shown - 1
-                    ? ''
-                    : aloud === 'on'
-                      ? 'now aloud'
-                      : 'now'
-                }
-              >
-                <Who name={c.who?.[i]} />
+            const who = c.who?.[i]
+            const now = phase === 'read' && i === shown - 1
+            const body = (
+              <>
+                <Who name={who} />
                 {!ear ? (
                   mixed
                 ) : text ? (
@@ -395,6 +398,27 @@ function Reader({ story, c }: { story: Story; c: Chapter }) {
                     onSay={(slow) => void sayLine(i, slow)}
                     onOpen={() => toggle(i)}
                   />
+                )}
+              </>
+            )
+            const faced = castPainted(who)
+            return (
+              <p
+                key={i}
+                ref={now ? nowLine : undefined}
+                className={`${!now ? '' : aloud === 'on' ? 'now aloud' : 'now'}${faced ? ' cs-faced' : ''}`}
+              >
+                {faced ? (
+                  <Speaker
+                    who={who}
+                    face={c.face?.[i]}
+                    talking={talking === i}
+                    live={now}
+                  >
+                    {body}
+                  </Speaker>
+                ) : (
+                  body
                 )}
               </p>
             )

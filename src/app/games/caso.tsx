@@ -3,13 +3,18 @@ import { ArrowRight, Eye, EyeOff, Snail, Volume2 } from 'lucide-react'
 import { notes, wave } from '../lib/caso'
 import { blip } from '../lib/sound'
 import { roman, useFont } from '../ui'
+import { PICTURES } from '../data/pictures'
+import { FACES, castPicture } from '../data/casoLayout'
+import type { ReactNode } from 'react'
+import type { Face } from '../data/casoLayout'
 import type { Accusation, Story } from '../data/stories'
 import './caso.css'
 
 // The parts of the reader (games/story.tsx) for a story told by ear, El
-// caso del reloj perdido: a line heard and not yet read, drawn as its
-// sound wave on a ruled line; the inspector's notebook, with a clue for
-// each chapter read; and the question of who did it.
+// caso del reloj perdido: who says a line, painted beside it; a line heard
+// and not yet read, drawn as its sound wave on a ruled line; the
+// inspector's notebook, with a clue for each chapter read; and the question
+// of who did it.
 
 // The inspector's hand
 const FONTS =
@@ -18,6 +23,53 @@ const FONTS =
 // Who says a line, over it
 export function Who({ name }: { name?: string }) {
   return name ? <span className="cs-who">{name}</span> : null
+}
+
+// Whether a speaker is painted (scripts/pictures.mjs, from
+// data/caso-prompts.ts): all four faces of their sheet. Until they are,
+// their lines look as they always have.
+export const painted = (who?: string): who is string =>
+  !!who && FACES.every((f) => PICTURES.has(`${castPicture(who)}-${f}`))
+
+// A line with its speaker's bust beside it, in an arched window: their
+// face once the line is said, the mouth moving while it is said (the
+// speaking face over the waiting one every other moment), and breathing
+// while it is the line at hand. Every face is there from the start, so
+// that none waits to load when it is wanted.
+export function Speaker({
+  who,
+  face = 'wait',
+  talking,
+  live,
+  children,
+}: {
+  who: string
+  face?: Face
+  talking: boolean
+  live: boolean
+  children: ReactNode
+}) {
+  const shown = talking ? 'wait' : face
+  return (
+    <>
+      <span className="cs-window" aria-hidden="true">
+        <span
+          className={`cs-bust ${shown} ${talking ? 'talking' : ''} ${live ? 'live' : ''}`}
+        >
+          {FACES.map((f) => (
+            <img
+              key={f}
+              className={f}
+              src={`/${castPicture(who)}-${f}.webp`}
+              alt=""
+              decoding="async"
+            />
+          ))}
+        </span>
+      </span>
+      <span className="cs-line">{children}</span>
+    </>
+  )
 }
 
 // A line as heard, its text not shown: its wave, which says it again

@@ -1,8 +1,141 @@
 /* El caso del reloj perdido, a story heard before it is read
-   (games/caso.tsx, in the reader of games/story.tsx): a line heard drawn
-   as its sound wave on a ruled line, the inspector's notebook in his own
-   hand, and the question of who did it. The page around them is the
-   house's ink on paper (hola.css). */
+   (games/caso.tsx, in the reader of games/story.tsx): who says a line,
+   painted beside it, a line heard drawn as its sound wave on a ruled line,
+   the inspector's notebook in his own hand, and the question of who did
+   it. The page around them is the house's ink on paper (hola.css). */
+
+/* --- Who says it, painted --- */
+
+/* A line with its speaker's bust in an arched window to the left of it,
+   once their faces are painted */
+.q-text p.cs-faced {
+  --cs-bust: 72px;
+  display: grid;
+  grid-template-columns: var(--cs-bust) minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: start;
+}
+
+.cs-window {
+  position: relative;
+  width: var(--cs-bust);
+  aspect-ratio: 360 / 420;
+  margin-top: 4px;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px 999px 4px 4px;
+  /* the sky over the bay, down to the sand */
+  background: linear-gradient(
+    to bottom,
+    rgba(79, 127, 168, 0.28),
+    rgba(210, 154, 46, 0.2)
+  );
+}
+
+.cs-line {
+  display: block;
+  min-width: 0;
+}
+
+.cs-bust {
+  position: absolute;
+  inset: 10% 3% 0;
+  transform-origin: 50% 100%;
+}
+
+.cs-bust img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  opacity: 0;
+}
+
+.cs-bust.wait img.wait,
+.cs-bust.glad img.glad,
+.cs-bust.worried img.worried {
+  opacity: 1;
+}
+
+/* The line at hand: breathing, with a nod for a glad face and a sway of
+   the head for a worried one */
+.cs-bust.live {
+  animation: cs-breathe 3.2s ease-in-out infinite;
+}
+
+.cs-bust.live.glad {
+  animation:
+    cs-nod 0.6s ease-in-out,
+    cs-breathe 3.2s ease-in-out 0.6s infinite;
+}
+
+.cs-bust.live.worried {
+  animation:
+    cs-sway 0.8s ease-in-out,
+    cs-breathe 3.2s ease-in-out 0.8s infinite;
+}
+
+/* While the line is said: the mouth moving, and a little bob */
+.cs-bust.talking {
+  animation: cs-bob 0.5s ease-in-out infinite;
+}
+
+.cs-bust.talking img.talk {
+  animation: cs-yap 0.3s steps(1, end) infinite;
+}
+
+@keyframes cs-breathe {
+  50% {
+    transform: scale(1.008, 1.018);
+  }
+}
+
+@keyframes cs-bob {
+  50% {
+    transform: translateY(-1.5%) rotate(-0.8deg);
+  }
+}
+
+@keyframes cs-yap {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes cs-nod {
+  30% {
+    transform: rotate(-4deg) translateY(1px);
+  }
+  65% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes cs-sway {
+  25% {
+    transform: rotate(-3deg);
+  }
+  60% {
+    transform: rotate(2.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-bust.live,
+  .cs-bust.talking {
+    animation: none;
+  }
+
+  .cs-bust.talking img.talk {
+    animation: none;
+    opacity: 1;
+  }
+}
 
 /* --- A line heard --- */
 
@@ -321,9 +454,15 @@
   margin: 0 0 12px;
 }
 
-/* --- On a phone: the suspects two by two, the notebook's margin narrower --- */
+/* --- On a phone: the busts smaller, the suspects two by two, the
+   notebook's margin narrower --- */
 
 @media (max-width: 560px) {
+  .q-text p.cs-faced {
+    --cs-bust: 54px;
+    column-gap: 10px;
+  }
+
   .cs-libreta {
     --cs-margin: 42px;
   }
