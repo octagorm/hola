@@ -77,9 +77,11 @@ function painted(story: Story, c?: Chapter) {
   return c.img ?? (PICTURES.has(name) ? `/${name}.webp` : undefined)
 }
 
-// Quijote's in ink (art.tsx), the others' painted, and until they are, the
-// story's drawing from the index as a vignette
+// The chapter's painting, and until it is painted, Quijote's ink drawing
+// (art.tsx) or the story's drawing from the index as a vignette
 function Picture({ story, c }: { story: Story; c?: Chapter }) {
+  const img = painted(story, c ?? story.chapters[0])
+  if (img) return <img className="q-strip q-pic" src={img} alt="" />
   if (story.id === 'quijote')
     return (
       <Scene
@@ -88,8 +90,6 @@ function Picture({ story, c }: { story: Story; c?: Chapter }) {
         whole
       />
     )
-  const img = painted(story, c ?? story.chapters[0])
-  if (img) return <img className="q-strip q-pic" src={img} alt="" />
   return isTocId(story.id) ? (
     <TocArt id={story.id} className="q-vignette" />
   ) : null

@@ -47,6 +47,10 @@ const NONE =
 // The look of each story: every painting is a travel poster (POSTER, after
 // design/sketches/reiseplakat.jpg), with a few words of its own for each
 const LOOK = {
+  quijote: {
+    ref: POSTER_REF,
+    style: `${POSTER} La Mancha around 1600: a wide dry plain of ochre and sand under a big sky, white windmills, a few holm oaks. Gentle and a little comic, never grand: an old book's story told on a poster.`,
+  },
   viaje: {
     ref: POSTER_REF,
     style: POSTER,
@@ -71,7 +75,20 @@ const LAIA =
 const CAT = 'a fat ginger-and-white cat with long white whiskers'
 
 // What each chapter's picture shows
+const QUIJOTE =
+  'Don Quijote, a tall, very thin old gentleman with a long grey moustache and pointed beard, in old, ill-fitting armour and an old helmet with a visor patched with pasteboard'
+const ROCINANTE = 'Rocinante, his bony old white-grey horse'
+const SANCHO =
+  'Sancho Panza, a short, round, cheerful peasant in a brown smock and a straw hat, on a small grey donkey'
 const CHAPTERS = {
+  quijote: {
+    hidalgo:
+      'A plain whitewashed room in a village house in La Mancha, at night by a single oil lamp: a tall, very thin old gentleman with a long grey moustache in a worn dressing gown, sitting in a high chair, utterly lost in a big old book of knights, with tall piles of such books all around him and on the floor, and an old lance and a rusty shield hanging on the wall.',
+    dulcinea: `A sunny dirt road out of a white village in La Mancha in the morning: ${QUIJOTE}, proudly riding out on ${ROCINANTE}, and in a field beside the road a sturdy young peasant woman with a basket, who does not notice him at all.`,
+    venta: `A poor roadside inn of La Mancha at sunset, a low white house with a well and a trough in the yard: ${QUIJOTE} on ${ROCINANTE} at the gate, looking at it as if it were a castle, and a fat innkeeper in an apron at the door, trying not to laugh.`,
+    sancho: `A village street of La Mancha at dawn: ${QUIJOTE} on ${ROCINANTE} and beside him ${SANCHO}, with a bag and a wineskin, the two setting off together down the road out of the village.`,
+    molinos: `The plain of Campo de Criptana on a windy day: a row of tall white windmills with dark conical roofs and great turning sails on a ridge, ${QUIJOTE} on ${ROCINANTE} charging at them with his lance lowered, and ${SANCHO} far behind, his arms raised in alarm.`,
+  },
   viaje: {
     'viaje-madrid':
       'The Puerta del Sol in Madrid on a sunny morning: the old Casa de Correos with its clock tower, the Kilómetro Cero plaque set in the paving stones, a tall grey-haired Norwegian woman in her sixties pulling a big suitcase and holding a long closed black umbrella, plainly seen, in her other hand, greeting a small dark-haired Spanish woman of the same age, and at the edge a café table with a cup of thick hot chocolate and churros.',
