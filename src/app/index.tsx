@@ -83,7 +83,11 @@ function Router() {
 }
 
 // The music, if it was left on, starts again at the first touch, since a
-// browser lets a page play nothing before that
+// browser lets a page play nothing before that. It is quiet while a text
+// is open in the library's reader, which is for reading (the user's
+// choice), and comes back on leaving it.
+const quiet = () => window.location.hash.startsWith('#biblioteca/')
+
 function MusicKeeper() {
   const { settings } = useStore()
   useEffect(() => {
@@ -91,12 +95,18 @@ function MusicKeeper() {
       stopMusic()
       return
     }
-    const start = () => startMusic()
+    const follow = () => (quiet() ? stopMusic() : startMusic())
+    const start = () => {
+      if (!quiet()) startMusic()
+    }
+    if (quiet()) stopMusic()
     window.addEventListener('pointerdown', start, { once: true })
     window.addEventListener('keydown', start, { once: true })
+    window.addEventListener('hashchange', follow)
     return () => {
       window.removeEventListener('pointerdown', start)
       window.removeEventListener('keydown', start)
+      window.removeEventListener('hashchange', follow)
     }
   }, [settings.music])
   return null
