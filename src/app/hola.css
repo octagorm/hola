@@ -3101,6 +3101,22 @@ img.q-pic {
   font-size: max(13px, 0.56em);
 }
 
+/* Spanish alone, as in a book */
+.bk-text.plain .mx {
+  line-height: 1.6;
+}
+
+.bk-plain {
+  margin: 14px 0 6px;
+}
+
+.bk-hint {
+  margin: 0;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
 .bk-resumed {
   display: block;
   margin: 0 0 2px;

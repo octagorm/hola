@@ -16,7 +16,10 @@ import type { PageProps } from '../registry'
 // known yet. A tapped word's card says what its form is and, where the text
 // has one, a note on it, and can be told the word is known (the Norwegian
 // over it goes) or to be practised. The place read to is kept in the bank,
-// and the page opens there again. Once read to the end, the words met and read without being looked up count as read.
+// and the page opens there again. «Bare spansk» leaves the Norwegian out
+// and sets the lines close, as in a book, with every word still to tap.
+// Once read to the end, the words met and read without being looked up
+// count as read.
 
 export default function BibliotecaPage({ arg }: PageProps) {
   const book = arg ? BOOK[arg] : undefined
@@ -151,6 +154,7 @@ function Reader({ book }: { book: Book }) {
 
   const next = BOOKS.at(BOOKS.indexOf(book) + 1)
   const size = TEXT_SIZES[settings.textSize] ?? TEXT_SIZES[2]
+  const bare = settings.plainText
   const sizeBy = (d: number) =>
     setSettings({
       textSize: Math.max(
@@ -191,11 +195,24 @@ function Reader({ book }: { book: Book }) {
         <header className="bk-head">
           <p className="bk-by">{book.by}</p>
           <p className="q-intro">{book.about}</p>
-          <MixedKey />
+          <label className="q-toggle bk-plain">
+            <input
+              type="checkbox"
+              checked={bare}
+              onChange={(e) => setSettings({ plainText: e.target.checked })}
+            />
+            <i aria-hidden="true" />
+            <span>Bare spansk, uten norsk over ordene</span>
+          </label>
+          {bare ? (
+            <p className="bk-hint">Trykk på et ord for å se hva det betyr.</p>
+          ) : (
+            <MixedKey />
+          )}
         </header>
 
         <div
-          className="bk-text"
+          className={`bk-text${bare ? ' plain' : ''}`}
           style={{ '--bk-size': `${size}px` } as CSSProperties}
         >
           {book.text.map((para, i) => (
@@ -225,6 +242,7 @@ function Reader({ book }: { book: Book }) {
                   {j > 0 && ' '}
                   <Mixed
                     line={s}
+                    all={bare ? 2 : undefined}
                     explain={explain}
                     onPeek={(id) => tapped.current.add(id)}
                   />

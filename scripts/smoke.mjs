@@ -1540,6 +1540,14 @@ await test('a text in the library is read, and its place kept', async (page) => 
   await page.locator('.bk-text ruby', { hasText: 'continuó' }).first().click()
   await page.locator('.q-peek', { hasText: 'continuar i fortid' }).waitFor()
   await page.keyboard.press('Escape')
+  // Spanish alone: no Norwegian over the words, which still open their card
+  await page.getByText('Bare spansk').click()
+  expect((await page.locator('.bk-text ruby').count()) === 0, 'no Norwegian')
+  await page.locator('.bk-text .kw', { hasText: 'testamento' }).first().click()
+  await page.locator('.q-peek', { hasText: 'testamente' }).waitFor()
+  await page.keyboard.press('Escape')
+  await page.getByText('Bare spansk').click()
+  await page.locator('.bk-text ruby').first().waitFor()
   // Scrolled on, and opened again where it was left
   await page.locator('.bk-text p').nth(7).scrollIntoViewIfNeeded()
   await page.evaluate(() => window.scrollBy(0, 300))

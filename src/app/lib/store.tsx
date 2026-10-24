@@ -42,6 +42,9 @@ export interface Settings {
   perDay: number
   // The size of the text in the library's reader, a step of TEXT_SIZES
   textSize: number
+  // The library's texts in Spanish alone, without the Norwegian over the
+  // words, the lines as close as in a book
+  plainText: boolean
 }
 
 // The library's text sizes, in pixels
@@ -56,6 +59,7 @@ export const DEFAULTS: Settings = {
   music: false,
   perDay: 4,
   textSize: 2,
+  plainText: false,
 }
 
 const BANK_KEY = 'hola:bank:v1'
