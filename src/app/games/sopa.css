@@ -732,6 +732,155 @@
   }
 }
 
+/* --- A phone: the panel and the list on one screen --- */
+
+@media (max-width: 600px) {
+  .sl-col {
+    padding: 12px 12px 12px;
+  }
+
+  .sl-play {
+    margin-top: 12px;
+    gap: 12px;
+  }
+
+  .sl-board {
+    width: min(100%, 100dvh - 400px);
+    min-width: min(100%, 260px);
+    margin: 0 auto;
+  }
+
+  .sl-list,
+  .sl-card {
+    padding: 12px 12px 10px;
+  }
+
+  .sl-list h2 {
+    margin-bottom: 4px;
+  }
+
+  .sl-list ul {
+    gap: 0 8px;
+  }
+
+  .sl-list button {
+    min-height: 42px;
+    padding: 4px;
+  }
+
+  .sl-help {
+    margin-top: 6px;
+    padding-top: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .sl-help p {
+    margin-bottom: 4px;
+  }
+
+  .sl-help p:last-of-type {
+    display: inline;
+  }
+
+  .sl-help .sl-link {
+    margin-left: 0.35em;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) and (max-height: 780px) {
+  .sl-col {
+    padding: 8px 10px;
+  }
+
+  .sl-top h1 {
+    font-size: 26px;
+  }
+
+  .sl-top h1 small {
+    margin-top: 3px;
+    font-size: 10px;
+  }
+
+  .sl-round {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sl-count {
+    padding: 4px 12px;
+  }
+
+  .sl-play {
+    margin-top: 8px;
+    gap: 8px;
+  }
+
+  .sl-board {
+    width: min(100%, 100dvh - 375px);
+  }
+
+  .sl-list,
+  .sl-card {
+    padding: 8px 10px;
+  }
+
+  .sl-list h2 {
+    margin-top: 0;
+    font-size: 11px;
+  }
+
+  .sl-list button {
+    min-height: 36px;
+    gap: 8px;
+    padding: 2px 4px;
+  }
+
+  .sl-list .sw {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .sl-list .txt {
+    font-size: 14px;
+  }
+
+  .sl-list .txt b {
+    font-size: 16px;
+  }
+
+  .sl-list .txt small {
+    font-size: 12px;
+    line-height: 1.15;
+  }
+
+  .sl-list .len {
+    margin-top: 3px;
+  }
+
+  .sl-list .len i {
+    width: 6px;
+    height: 6px;
+  }
+
+  .sl-help {
+    margin-top: 4px;
+    padding-top: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .sl-help p {
+    margin-bottom: 3px;
+  }
+
+  .sl-help .sl-link {
+    font-size: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sl-tile,
   .sl-tile .l,
