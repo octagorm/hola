@@ -6,6 +6,7 @@ import type { Book } from '../biblioteca.ts'
 
 export const INSACIABLE: Book = {
   id: 'insaciable',
+  shelf: 'cuentos',
   es: 'Un hombre insaciable',
   no: 'En mann som aldri fikk nok',
   by: 'Folkeeventyr',

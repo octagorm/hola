@@ -6,6 +6,7 @@ import type { Book } from '../biblioteca.ts'
 
 export const BOLONDRON: Book = {
   id: 'bolondron',
+  shelf: 'cuentos',
   es: 'Don Juan Bolondrón',
   no: 'Don Juan Bolondrón',
   by: 'Spansk folkeeventyr',

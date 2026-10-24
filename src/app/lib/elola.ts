@@ -92,6 +92,10 @@ const EXCEPTIONS: Record<string, string> = {
     '*El arte* er hankjønn i entall, men ofte hunkjønn i flertall: *las bellas artes*.',
   'el avión':
     'Ord på *-ión* er som regel hunkjønn, men *avión* er et unntak: *el avión*.',
+  'el policía':
+    '*El policía* er en politimann, og får *el*. *La policía* er politiet, eller en politikvinne.',
+  'el coleccionista':
+    'Ord på *-ista* om en person får *el* for en mann og *la* for en kvinne: *el coleccionista*, *la coleccionista*.',
   'la flor':
     'Ord på *-or* er som regel hankjønn, men *flor* er et unntak: *la flor*.',
 }

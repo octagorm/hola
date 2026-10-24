@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react'
 import { BookOpen, Check, ScrollText } from 'lucide-react'
-import { BOOK, BOOKS, sentencesOf } from '../data/biblioteca'
+import { BOOK, BOOKS, SHELVES, sentencesOf } from '../data/biblioteca'
 import { plain, wordIds } from '../lib/text'
 import { TEXT_SIZES, TEXT_WIDTHS, useStore } from '../lib/store'
 import { blip } from '../lib/sound'
@@ -61,38 +61,47 @@ function Shelf() {
     <Page es="Biblioteca" title="Biblioteket">
       <div className="q-read">
         <p className="q-intro">
-          Korte tekster slik de ble skrevet, ikke gjenfortalt. Ordene du ikke
-          kan ennå, har norsk over seg. Trykk på et ord for å se hva det er, og
-          si fra om du kan det, så forsvinner norsken, eller om du vil øve på
-          det. Stedet du kom til, blir husket.
+          Tekster å lese, hylle for hylle. Ordene du ikke kan ennå, har norsk
+          over seg. Trykk på et ord for å se hva det er, og si fra om du kan
+          det, så forsvinner norsken, eller om du vil øve på det. Stedet du kom
+          til, blir husket.
         </p>
-        <ol className="q-chapters">
-          {BOOKS.map((b) => {
-            const place = bank.place[b.id]
-            const ids = new Set(sentencesOf(b).flatMap(wordIds))
-            const unknown = [...ids].filter((id) => levelOf(id) < 2).length
-            return (
-              <li key={b.id} className={place && !place.done ? 'next' : ''}>
-                <a href={`#biblioteca/${b.id}`}>
-                  <i>
-                    <BookOpen aria-hidden="true" />
-                  </i>
-                  <span>
-                    <b>{b.es}</b>
-                    <small>
-                      {b.no} · {b.by} · {wordCount(b)} ord, {unknown} du ikke
-                      kan ennå
-                    </small>
-                  </span>
-                  <em>
-                    {place?.done && <Check aria-hidden="true" />}{' '}
-                    {progress(b, place?.p, place?.done)}
-                  </em>
-                </a>
-              </li>
-            )
-          })}
-        </ol>
+        {SHELVES.map((shelf) => (
+          <section key={shelf.id} className="bk-shelf">
+            <h2>
+              {shelf.es}
+              <small>{shelf.no}</small>
+            </h2>
+            <p>{shelf.about}</p>
+            <ol className="q-chapters">
+              {BOOKS.filter((b) => b.shelf === shelf.id).map((b) => {
+                const place = bank.place[b.id]
+                const ids = new Set(sentencesOf(b).flatMap(wordIds))
+                const unknown = [...ids].filter((id) => levelOf(id) < 2).length
+                return (
+                  <li key={b.id} className={place && !place.done ? 'next' : ''}>
+                    <a href={`#biblioteca/${b.id}`}>
+                      <i>
+                        <BookOpen aria-hidden="true" />
+                      </i>
+                      <span>
+                        <b>{b.es}</b>
+                        <small>
+                          {b.no} · {b.by} · {wordCount(b)} ord, {unknown} du
+                          ikke kan ennå
+                        </small>
+                      </span>
+                      <em>
+                        {place?.done && <Check aria-hidden="true" />}{' '}
+                        {progress(b, place?.p, place?.done)}
+                      </em>
+                    </a>
+                  </li>
+                )
+              })}
+            </ol>
+          </section>
+        ))}
       </div>
     </Page>
   )
@@ -656,14 +665,18 @@ function Reader({ book }: { book: Book }) {
                   </div>
                 </>
               )}
-              <p className="bk-source">
-                Kilde:{' '}
-                <a href={book.source.url} target="_blank" rel="noreferrer">
-                  {book.source.label}
-                </a>
-                . Teksten er fri for opphavsrett; bare stavemåten er gjort
-                moderne.
-              </p>
+              {book.source.url ? (
+                <p className="bk-source">
+                  Kilde:{' '}
+                  <a href={book.source.url} target="_blank" rel="noreferrer">
+                    {book.source.label}
+                  </a>
+                  . Teksten er fri for opphavsrett; bare stavemåten er gjort
+                  moderne.
+                </p>
+              ) : (
+                <p className="bk-source">{book.source.label}.</p>
+              )}
             </section>
             <span ref={end} className="bk-flow-end" aria-hidden="true" />
           </div>

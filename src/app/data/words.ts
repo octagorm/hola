@@ -2345,6 +2345,173 @@ const LIST: Array<Lesson & { words: string }> = [
       el esposo | ektemann
     `,
   },
+  {
+    id: 'dama1',
+    es: 'Una mujer en Toledo',
+    no: 'En kvinne i Toledo',
+    book: true,
+    words: `
+      sesenta y uno | sekstien | num
+      durante | i, under | prep
+      la policía | politi
+      jubilado | pensjonist, pensjonert | adj
+      decidir | bestemme | v
+      estrecho | smal, trang | adj
+      bienvenido | velkommen | adj
+      todo el mundo | alle | expr
+      lo mismo | det samme | expr
+      la escuela | skole
+      pasear | spasere | v
+      el cuaderno | skissebok, notatbok
+      enseñar | lære (bort), vise | v
+      precioso | nydelig, vakker | adj
+      dentro | inne | adv
+      la chica | jente
+      sentarse | sette seg | v
+      junto a | ved, inntil | expr
+      levantar | løfte | v
+      izquierdo | venstre | adj
+      el anillo | ring
+      sonreír | smile | v
+      el cartel | skilt, plakat
+      anónimo | ukjent, anonym | adj
+      unos | noen, rundt | det
+      la chaqueta | jakke
+      la mancha | flekk
+      ponerse | stille seg, ta på seg | v
+      de espaldas | med ryggen til | expr
+      el restaurador | konservator, restaurator
+      casi | nesten | adv
+      las gafas | briller
+      acercarse | komme nærmere | v
+      nuestro | vår | pron
+      importante | viktig | adj
+      la afición | hobby, interesse
+      el caballete | staffeli
+      la copia | kopi
+      igual | lik | adj
+      original | original | adj
+      alguien | noen | pron
+    `,
+  },
+  {
+    id: 'dama2',
+    es: 'Muerte en el museo',
+    no: 'Død på museet',
+    book: true,
+    words: `
+      el policía | politimann, politi
+      la mujer de la limpieza | vaskehjelp
+      al pie de | ved foten av, nederst i | expr
+      el sótano | kjeller
+      caerse | falle | v
+      el accidente | ulykke
+      al fondo de | innerst i, bakerst i | expr
+      el escalón | trappetrinn
+      tranquilo | rolig | adj
+      el visitante | besøkende
+      diferente | annerledes, forskjellig | adj
+    `,
+  },
+  {
+    id: 'dama3',
+    es: 'La sobrina',
+    no: 'Niesen',
+    book: true,
+    words: `
+      veintidós | tjueto | num
+      estudiar | studere | v
+      la historia del arte | kunsthistorie
+      la universidad | universitet
+      quedarse | bli (værende) | v
+      la cosa | ting, sak
+      el taller | verksted
+      limpiar | rense, vaske | v
+      colgar | henge (opp) | v
+      la comisaría | politistasjon
+      la prueba | bevis, prøve
+      serio | seriøs, alvorlig | adj
+      contar | fortelle, telle | v
+      por fin | til slutt, endelig | expr
+      desde hace | i (om tid som har gått) | expr
+    `,
+  },
+  {
+    id: 'dama4',
+    es: 'El pintor de la plaza',
+    no: 'Maleren på plassen',
+    book: true,
+    words: `
+      el chico | gutt
+      la pregunta | spørsmål
+      ti | deg (etter preposisjon) | pron
+      el tamaño | størrelse
+      hace | for … siden (foran en tid) | expr
+      en efectivo | kontant | expr
+      tener prisa | ha det travelt | expr
+      las gafas de sol | solbriller
+      les | dem, til dem | pron
+      el borde | kant
+      la manga | erme
+    `,
+  },
+  {
+    id: 'dama5',
+    es: 'La chaqueta roja',
+    no: 'Den røde jakka',
+    book: true,
+    words: `
+      el mensaje | beskjed, melding
+      el hostal | hostal, lite gjestehus
+      ellas | de, dem (hunkjønn) | pron
+      plano | flat | adj
+      irse | gå sin vei, reise | v
+      el despacho | kontor
+      al revés | omvendt, motsatt | expr
+      la reunión | møte
+    `,
+  },
+  {
+    id: 'dama6',
+    es: 'El tren de las seis',
+    no: 'Toget klokka seks',
+    book: true,
+    words: `
+      el carrito de la compra | handlevogn, handletralle
+      el paquete | pakke
+      sino | men (etter nei, ikke) | conj
+      el abrigo | kåpe, frakk
+      mí | meg (etter preposisjon) | pron
+      quitarse | ta av seg | v
+      el trabajo | arbeid, jobb
+      la lágrima | tåre
+      fuerte | sterk | adj
+      el segundo | sekund
+      de lo que | enn (foran et verb) | expr
+      arrodillarse | gå ned på kne | v
+      en punto | presis (om klokka) | expr
+    `,
+  },
+  {
+    id: 'dama7',
+    es: 'La verdadera dama',
+    no: 'Den ekte damen',
+    book: true,
+    words: `
+      el ramo de flores | blomsterbukett
+      la disculpa | unnskyldning
+      tener razón | ha rett | expr
+      la deuda | gjeld
+      el coleccionista | samler
+      por eso | derfor | expr
+      debajo de | under | prep
+      la tela | stoff, klede, lerret
+      empujar | dytte | v
+      quizás | kanskje | adv
+      volverse | snu seg | v
+      el lado | side
+    `,
+  },
 ]
 
 const ARTICLE: Record<string, { g: 'm' | 'f'; pl: boolean }> = {
