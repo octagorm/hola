@@ -1,5 +1,5 @@
 import { PICTURES } from '../data/pictures'
-import { TABLE_AT } from '../data/rastroLayout'
+import { TABLE } from '../data/rastroLayout'
 import type { ReactNode } from 'react'
 
 // El Rastro is painted as travel posters (scripts/pictures.mjs, from
@@ -1334,7 +1334,7 @@ function PaintedStall({
   talking: boolean
   className?: string
 }) {
-  const table = 240 * TABLE_AT
+  const table = 240 * TABLE[who ?? 'street']
   const wareImg = ware && painted(`rastro/ware-${ware}`)
   return (
     <svg
