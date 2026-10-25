@@ -4,7 +4,7 @@ import { FOREIGN, stressIndex, syllables } from './spanish.ts'
 import type { Word } from '../data/words.ts'
 import type { Bank } from './bank.ts'
 
-// Acento: where the stress falls in a word heard, and whether it is
+// Acento: where the stress falls in a word read, and whether it is
 // written with an accent mark (tilde). The rules come one at a time, each
 // once a round of the last has gone well:
 //   1  a word ending in a vowel, n or s is stressed on the next to last
@@ -203,7 +203,7 @@ export const TWINS: Array<Twin> = [
   },
 ]
 
-// A question in a round: a word whose stress is heard and whose tilde is
+// A question in a round: a word whose stress is found and whose tilde is
 // placed, or a twin told apart by its tilde alone
 export type Item =
   | {

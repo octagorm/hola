@@ -1965,10 +1965,10 @@ const HIS: ReadonlySet<string> = new Set(LINES_SAID)
 
 // His bust before his workshop, in the face of the mood: breathing, a nod
 // when glad, a shake of the head when he cannot play, pondering while he
-// thinks, and while he speaks a bob, with the speaking face over the calm
-// one every other moment, his mood's face coming back once it is said. The
-// nod and the shake are the outer box's, so that his speaking does not
-// start them again. Every face is there from the start, so that none waits
+// thinks, and while he speaks the speaking face (the calm one with the
+// mouth open, scripts/mouths.py) over the calm one every other moment, his
+// mood's face coming back once it is said. The nod and the shake are the
+// outer box's, so that his speaking does not start them again. Every face is there from the start, so that none waits
 // to load when it is wanted.
 function PaintedRelojero({
   mood,

@@ -34,12 +34,6 @@ export const GAME_INFO: Array<GameInfo> = [
     blurb: 'En ring av bokstaver, ett hint for hver',
   },
   {
-    id: 'cadaver',
-    es: 'Cadáver exquisito',
-    no: 'Setningsleken',
-    blurb: 'Absurde setninger som må stemme',
-  },
-  {
     id: 'sopa',
     es: 'Sopa de letras',
     no: 'Ordleting',

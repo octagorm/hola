@@ -89,12 +89,6 @@ export const PAGES = [
     Page: page(() => import('./games/rosco')),
   },
   {
-    id: 'cadaver',
-    es: 'Cadáver exquisito',
-    no: 'Setningsleken',
-    Page: page(() => import('./games/cadaver')),
-  },
-  {
     id: 'sopa',
     es: 'Sopa de letras',
     no: 'Ordleting',

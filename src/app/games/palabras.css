@@ -456,10 +456,6 @@
   animation: pz-ponder 3s ease-in-out infinite;
 }
 
-.pz-face.talking {
-  animation: pz-bob 0.5s ease-in-out infinite;
-}
-
 .pz-face img {
   position: absolute;
   inset: 0;
@@ -484,12 +480,6 @@
 @keyframes pz-breathe {
   50% {
     transform: scale(1.006, 1.014);
-  }
-}
-
-@keyframes pz-bob {
-  50% {
-    transform: translateY(-1.2%) rotate(-0.6deg);
   }
 }
 

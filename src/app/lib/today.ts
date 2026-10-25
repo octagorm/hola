@@ -42,7 +42,6 @@ export const STEP: Record<
 // new player has 288 from the start).
 export const DAILY_GAMES = [
   'palabra',
-  'cadaver',
   'crucigrama',
   'rosco',
   'sopa',
@@ -61,7 +60,6 @@ export const DAILY_GAMES = [
 ]
 export const NEEDS: Record<string, number> = {
   palabra: 0,
-  cadaver: 0,
   crucigrama: 12,
   rosco: 16,
   sopa: 12,
@@ -194,9 +192,22 @@ export function lessonOf(ids: Array<string>): string | undefined {
   return lessons.size === 1 ? only : undefined
 }
 
-// The day's plan if one has been made today
-export const todays = (bank: Bank, now: number): Path | null =>
-  bank.path && bank.path.d === dayKey(now) ? bank.path : null
+// The day's plan if one has been made today, a game since taken away
+// (Cadáver exquisito) given as La palabra
+export function todays(bank: Bank, now: number): Path | null {
+  const p = bank.path
+  if (!p || p.d !== dayKey(now)) return null
+  const gone = (s: PathStep) =>
+    s.k === 'game' && !DAILY_GAMES.includes(s.arg ?? '')
+  return p.steps.some(gone)
+    ? {
+        ...p,
+        steps: p.steps.map((s) =>
+          gone(s) ? { ...s, arg: DAILY_GAMES[0] } : s,
+        ),
+      }
+    : p
+}
 
 // The step to do next, or -1 when all are done
 export const current = (p: Path) => p.steps.findIndex((s) => !s.done)

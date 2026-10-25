@@ -46,8 +46,6 @@ export const GAME_SUBJECTS: Record<GameIconId, string> = {
     'A little crossword: a square grid of five by five cream squares with four solid ink-blue squares placed in a pattern, the grid slightly tilted. Ground: a dusky violet-rose evening colour.',
   rosco:
     'A ring of letters as a game: twelve round blank discs set evenly in a big circle, most of them cream, one terracotta and one sea green, the middle of the ring empty. Ground: mustard.',
-  cadaver:
-    'An exquisite corpse, the folding-paper game: a playful figure in three stacked bands of paper that do not quite line up, a plain round head with no face under a little hat at the top, a striped body in the middle and two legs in boots at the bottom, each band in a different colour, in a cheerful late-1960s pop spirit. Ground: cream.',
   sopa: 'A word search on tiles: a square of four by four blue-and-white azulejo tiles, plain blue patterns and no letters, with one bright mustard band running diagonally across them, and one lemon with a green leaf on a corner. Ground: terracotta.',
   reloj:
     'A soft watch: one round cream pocket watch, its face plain with only two hands and no numerals, drooping soft and melting over the edge of a plain sand-coloured block in an empty desert, a long shadow beside it. Ground: a pale sea-green sky over flat sand. Drawn anew, not after any painting.',

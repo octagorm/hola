@@ -399,6 +399,11 @@
   gap: 12px;
 }
 
+/* until the stress is answered, since hearing the word gives it away */
+.ac-hear.quiet {
+  visibility: hidden;
+}
+
 .ac-ask {
   min-height: 1.3em;
   margin: 14px 0 6px;

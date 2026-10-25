@@ -123,7 +123,7 @@ const GAME_GROUPS: Array<{ es: string; no: string; ids: Array<string> }> = [
   {
     es: 'Gramática',
     no: 'Grammatikk',
-    ids: ['elola', 'porpara', 'tiempos', 'orden', 'cadaver', 'acento'],
+    ids: ['elola', 'porpara', 'tiempos', 'orden', 'acento'],
   },
   {
     es: 'De oído',

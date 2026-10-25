@@ -11,6 +11,8 @@
 //                                                    (without any, all)
 //   node scripts/pictures.mjs --list                 what is painted, and not
 //   node scripts/pictures.mjs --web                  make the .webp files
+//   node scripts/pictures.mjs --mouths [prefixes…]   paint the speakers'
+//                                                    open mouths (then --web)
 //
 // A name is the picture's path under public/ without its ending:
 // stories/viaje/viaje-madrid is the first chapter of El viaje. Each painting
@@ -391,6 +393,92 @@ function figures(file, n) {
   }))
 }
 
+// The talking faces. A sheet's talking bust is never quite its waiting
+// one (the head turned a little, set higher or lower), so shown in turn
+// the whole head jumped. So the waiting face is painted again as an edit
+// with the mouth open, and only the mouth is taken from that (as Puppet
+// Theater does): --mouths paints the edits, from the waiting faces in
+// public/, and --web makes each talking face the edit's mouth alone, clear
+// around it, to show over the waiting face (scripts/mouths.py). Delete an
+// edit to paint it again.
+const MOUTH =
+  'Keep everything in this image exactly the same: the same person, pose, position and size on the canvas, colours, lighting, flat poster style, paper grain and transparent background. ' +
+  'Change only the mouth: open it as if in the middle of saying a word, showing a dark mouth opening. Nothing else may move or change.'
+const speakers = () =>
+  Object.keys(PICTURES).filter((n) => PICTURES[n].parts?.includes('talk'))
+// the face the talking one is made from: the first on the sheet
+const waiting = (n) => `${WEB}/${n}-${PICTURES[n].parts[0]}.webp`
+const mouthEdit = (n) => `${FULL}/${n}-mouth.png`
+
+function paintMouth(n) {
+  // the waiting face in the middle of a square canvas, as the edit's ground
+  const ground = `.cache/mouths/${n}.png`
+  mkdirSync(dirname(ground), { recursive: true })
+  const [w, h] = execFileSync(
+    'magick',
+    ['identify', '-format', '%w %h', waiting(n)],
+    { encoding: 'utf8' },
+  )
+    .split(' ')
+    .map(Number)
+  const side = Math.max(w, h)
+  execFileSync('magick', [
+    waiting(n),
+    '-background',
+    'none',
+    '-gravity',
+    'center',
+    '-extent',
+    `${side}x${side}`,
+    '-resize',
+    '1024x1024',
+    ground,
+  ])
+  return new Promise((resolve) => {
+    const child = spawn(
+      'node',
+      [
+        'scripts/image.mjs',
+        '--out',
+        mouthEdit(n),
+        '--shape',
+        'square',
+        '--transparent',
+        '--edit',
+        ground,
+        MOUTH,
+      ],
+      { stdio: ['ignore', 'ignore', 'pipe'] },
+    )
+    let err = ''
+    child.stderr.on('data', (d) => (err += d))
+    child.on('close', (code) => {
+      console.log(
+        code === 0 ? `painted ${n}-mouth` : `failed ${n}-mouth: ${err.trim()}`,
+      )
+      resolve()
+    })
+  })
+}
+
+function talking(n) {
+  try {
+    execFileSync(
+      'uv',
+      [
+        'run',
+        'scripts/mouths.py',
+        waiting(n),
+        mouthEdit(n),
+        `${WEB}/${n}-talk.webp`,
+      ],
+      { stdio: 'inherit' },
+    )
+  } catch {
+    console.log(`${n}: the sheet's own talking face kept`)
+  }
+}
+
 const painted = () => Object.keys(PICTURES).filter((n) => existsSync(full(n)))
 // The names a page asks for: a sheet's parts in place of the sheet
 const shown = (names) =>
@@ -401,9 +489,28 @@ const shown = (names) =>
 if (process.argv.includes('--list')) {
   for (const n of Object.keys(PICTURES))
     console.log(`${existsSync(full(n)) ? 'painted' : 'missing'}  ${n}`)
+  for (const n of speakers())
+    console.log(
+      `${existsSync(mouthEdit(n)) ? 'painted' : 'missing'}  ${n}-mouth`,
+    )
+} else if (process.argv.includes('--mouths')) {
+  const asked = process.argv.slice(2).filter((a) => !a.startsWith('--'))
+  const queue = speakers().filter(
+    (n) =>
+      (!asked.length || asked.some((a) => n.startsWith(a))) &&
+      existsSync(waiting(n)) &&
+      !existsSync(mouthEdit(n)),
+  )
+  console.log(`${queue.length} mouths to paint`)
+  await Promise.all(
+    Array.from({ length: 3 }, async () => {
+      while (queue.length) await paintMouth(queue.shift())
+    }),
+  )
 } else if (process.argv.includes('--web')) {
   const made = painted()
   for (const n of made) forWeb(n)
+  for (const n of speakers().filter((n) => existsSync(mouthEdit(n)))) talking(n)
   writeFileSync(
     LIST,
     `// The pictures painted so far (scripts/pictures.mjs --web writes this

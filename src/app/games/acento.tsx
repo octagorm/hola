@@ -27,10 +27,12 @@ import './acento.css'
 // Acento: where the stress falls in a word heard, and whether it takes an
 // accent mark, one rule at a time. A feria poster of the twenties: the
 // syllables are paper lanterns on a wire over the fairground at night,
-// and the stressed one lights up red. Each word is heard and its stressed
-// lantern tapped; from the second rule on, the word is then shown without
-// accents and the mark set where it goes, or left off. A round of ten
-// with eight right opens the next rule.
+// and the stressed one lights up red. Each word is read, without its
+// accent marks, and its stressed lantern tapped; only then is it heard,
+// since hearing it would give the stress away. From the second rule on,
+// the word is then shown without accents and the mark set where it goes,
+// or left off. A pair told apart by a tilde, which sound alike, is heard
+// at once. A round of ten with eight right opens the next rule.
 //
 // Nothing is recorded in the bank: stress and accents are rules of the
 // written language, practised on words already met, and say nothing of
@@ -187,10 +189,10 @@ function Intro({
       </ul>
       <p className="how">
         {rule === 1
-          ? 'Hør ordet, og trykk på lykten der trykket ligger.'
+          ? 'Les ordet, og trykk på lykten der trykket ligger. Du hører det når du har svart.'
           : rule === LAST_RULE
-            ? 'Hør ordet og finn trykket. Ordene med samme lyd får du se med betydningen, og velger om de får aksent.'
-            : 'Hør ordet og trykk på lykten der trykket ligger. Så får du se ordet uten aksent, og setter aksenten der den skal være, eller ingen.'}
+            ? 'Les ordet og finn trykket; du hører det når du har svart. Ordene med samme lyd får du høre og se med betydningen, og velger om de får aksent.'
+            : 'Les ordet, skrevet uten aksent, og trykk på lykten der trykket ligger. Da hører du det, og setter aksenten der den skal være, eller ingen.'}
       </p>
       {allMastered(bank) && (
         <p className="all" lang="es">
@@ -255,13 +257,14 @@ function Round({
     return () => watch.disconnect()
   }, [item])
 
-  // Each word said as it comes, and its first question
+  // Each word's first question; a word is heard once its stress is
+  // answered, a pair that sounds alike at once
   useEffect(() => {
     if (!item) return
     setStep(asksStress(item) ? 'stress' : 'tilde')
     setStress(null)
     setMark(undefined)
-    void say(item.w.es)
+    if (!asksStress(item)) void say(item.w.es)
   }, [item])
 
   // The round's end, once
@@ -288,7 +291,8 @@ function Round({
     setStress(i)
     const ok = i === item.stress
     blip(ok ? 'right' : 'wrong')
-    if (!ok) void say(item.w.es, true)
+    // heard now, slowly if the stress was missed
+    void say(item.w.es, !ok)
     if (asksTilde(item, rule)) setStep('tilde')
     else finish(ok)
   }
@@ -328,7 +332,7 @@ function Round({
       } else if (e.key === 'Enter' && step === 'shown' && !onButton) {
         e.preventDefault()
         next()
-      } else if (e.key === ' ' && !onButton) {
+      } else if (e.key === ' ' && !onButton && step !== 'stress') {
         e.preventDefault()
         void say(item.w.es)
       }
@@ -376,7 +380,7 @@ function Round({
         ))}
       </ol>
 
-      <div className="ac-hear">
+      <div className={`ac-hear ${step === 'stress' ? 'quiet' : ''}`}>
         <button
           type="button"
           className="ac-round light"

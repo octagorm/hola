@@ -352,8 +352,7 @@ export const PRIZES: Array<Prize & { n: number }> = [
 
 // --- The deck ---
 
-// The same numbers every time (Park and Miller's generator, as in
-// lib/cadaver.ts)
+// The same numbers every time (Park and Miller's generator)
 function seeded(seed: number): () => number {
   let s = seed
   return () => {

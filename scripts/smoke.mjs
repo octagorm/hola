@@ -163,7 +163,6 @@ const PAGES = [
   ['#palabra', 'La palabra'],
   ['#crucigrama', 'Crucigrama'],
   ['#rosco', 'El rosco'],
-  ['#cadaver', 'Cadáver exquisito'],
   ['#sopa', 'Sopa de letras'],
   ['#reloj', 'El reloj blando'],
   ['#porpara', 'Por o para'],
@@ -470,21 +469,6 @@ await test(
     )
     await page.getByRole('button', { name: 'Stopp her' }).click()
     await page.getByText('Ordene du ikke fikk').waitFor()
-  },
-  { learner: true },
-)
-
-await test(
-  'Cadáver exquisito makes six sentences',
-  async (page) => {
-    await go(page, '#cadaver')
-    for (let i = 0; i < 80 && !(await visible(page, '.c6-card')); i++) {
-      const next = page.locator('.c6-next button')
-      if (await next.count()) await next.click()
-      else await page.locator('.c6-opts button:not([disabled])').first().click()
-      await page.waitForTimeout(60)
-    }
-    await page.getByText(/av 6 uten feil/).waitFor()
   },
   { learner: true },
 )

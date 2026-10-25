@@ -1268,8 +1268,8 @@
 
 /* --- The seller, alive --- */
 
-/* The painted seller breathes, nods when pleased, shakes their head when
-   cross, and bobs a little while speaking */
+/* The painted seller breathes, nods when pleased and shakes their head
+   when cross; while speaking only the mouth moves */
 .ra-paint {
   transform-box: fill-box;
   transform-origin: 50% 100%;
@@ -1288,23 +1288,17 @@
     ra-breathe 3.2s ease-in-out 0.45s infinite;
 }
 
-.ra-paint.talking:not(.wait) {
-  animation: ra-bob 0.5s ease-in-out infinite;
-}
-
 @keyframes ra-breathe {
   50% {
     transform: scale(1.006, 1.014);
   }
 }
 
-@keyframes ra-bob {
-  50% {
-    transform: translateY(-1.2%) rotate(-0.6deg);
-  }
+.ra-mo {
+  opacity: 0;
 }
 
-.ra-mo {
+.ra-paint.wait.talking .ra-mo {
   animation: ra-yap 0.3s steps(1, end) infinite;
 }
 

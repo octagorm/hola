@@ -549,14 +549,6 @@ export function GameIcon({
           <circle cx="11" cy="10" r="3.5" fill="#4f7fa8" fillOpacity=".6" />
         </g>
       )}
-      {id === 'cadaver' && (
-        <g fill="none" stroke={INK} strokeWidth="1.6" strokeLinecap="round">
-          <path d="M22 4C28 4 30 10 28 14 26 18 18 18 16 14 14 10 16 4 22 4Z" />
-          <path d="M14 18H30L34 28H10Z" fill="#c2402c" fillOpacity=".45" />
-          <path d="M12 30H32L28 40H16Z" fill="#4f7fa8" fillOpacity=".45" />
-          <path d="M6 16H38M6 29H38" strokeDasharray="2 3" />
-        </g>
-      )}
       {id === 'sopa' && (
         <>
           <path
