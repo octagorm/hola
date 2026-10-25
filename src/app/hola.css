@@ -1208,7 +1208,7 @@ a.q-box:hover {
 
 .q-box .links li {
   display: grid;
-  grid-template-columns: 34px 90px minmax(0, 1fr) 42px;
+  grid-template-columns: 34px 112px minmax(0, 1fr) 42px;
   gap: 10px;
   align-items: center;
   font-size: 15px;
@@ -1224,6 +1224,15 @@ a.q-box:hover {
   text-transform: none;
   font-weight: 400;
   font-size: 22px;
+  line-height: 1.05;
+}
+
+.q-box .links b small {
+  display: block;
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-2);
 }
 
 .q-box .links svg.bar {
@@ -1925,7 +1934,7 @@ a.q-box:hover {
   }
 
   .q-box .links li {
-    grid-template-columns: 30px 64px minmax(0, 1fr) 40px;
+    grid-template-columns: 30px 100px minmax(0, 1fr) 40px;
   }
 
   .q-box .counts {

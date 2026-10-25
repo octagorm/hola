@@ -116,7 +116,7 @@ describe('Sopa de letras', () => {
     ].map((id) => WORD[id]!)
     for (const w of faded) {
       const c = newCard(now - 30 * DAY)
-      b.cards[w.id] = { ...c, leer: { s: 20, t: now }, oir: { s: 20, t: now } }
+      b.cards[w.id] = { ...c, leer: { s: 20, t: now } }
     }
     const first = candidates(b, now, seeded()).slice(0, 10)
     expect(new Set(first)).toEqual(new Set(faded))

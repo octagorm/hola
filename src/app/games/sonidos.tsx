@@ -38,7 +38,7 @@ import './sonidos.css'
 // pick it from) and the dictation (a word said, and written down). The
 // dial shows the sound chosen, or how far a round has come.
 //
-// The ear records each answer as hearing (oír) of a word met, and keeps
+// The ear records each answer as understanding (leer) a word met, and keeps
 // its best round of ten. The dictation records nothing: a word heard can
 // be written down without knowing what it means, Spanish being written
 // much as it is said, and each link of the bank goes to or from a word's
@@ -410,7 +410,7 @@ function Ear({
     setMarks((m) => [...m, ok])
     if (!ok) setMissed((m) => [...m, item])
     if (bank.cards[item.w.id])
-      record(item.w.id, ok, ok ? HEARD : MISHEARD, 'oir')
+      record(item.w.id, ok, ok ? HEARD : MISHEARD, 'leer')
     blip(ok ? 'right' : 'wrong')
   }
   const next = () => {

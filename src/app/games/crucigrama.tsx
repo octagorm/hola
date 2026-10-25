@@ -524,7 +524,8 @@ function Clue({
           )}
         </span>
         <i>
-          <LinkIcon link="decir" color="var(--plum)" />å skrive ordet øver decir
+          <LinkIcon link="decir" color="var(--plum)" />å skrive ordet øver
+          recordar
         </i>
       </div>
       <button type="button" onClick={onNext} aria-label="Neste ledetråd">

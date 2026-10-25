@@ -16,7 +16,7 @@ export const EAR_ROUND = 10
 // A round on the sounds of one place in the chart
 export const FOCUS_ROUND = 6
 
-// Picking the word heard among look-alikes is hearing it (oír), as a
+// Picking the word heard among look-alikes is understanding it (leer), as a
 // choice among few: right says something (0.6); wrong says a little (0.3),
 // as a slip between two sounds says more about the ear than about the word
 export const HEARD = 0.6
@@ -50,7 +50,7 @@ export interface EarItem {
 // word not met in between
 function need(bank: Bank, w: Word, now: number): number {
   const card = bank.cards[w.id]
-  return card ? 1 - recall(card.oir, now) : 0.35
+  return card ? 1 - recall(card.leer, now) : 0.35
 }
 
 // A round for the ear: of the sets of look-alikes, those whose words'
@@ -130,7 +130,7 @@ export function dictation(
   random: () => number = Math.random,
 ): Array<Word> {
   const fit = (w: Word) => dictable(w) && trapsOf(w).length > 0
-  const pool = pick(bank, 6 * DICTATION, now, { fit, link: 'oir', random })
+  const pool = pick(bank, 6 * DICTATION, now, { fit, link: 'leer', random })
   if (pool.length < DICTATION)
     pool.push(
       ...WORDS.filter((w) => fit(w) && !pool.includes(w)).slice(

@@ -6,7 +6,7 @@ import { VERDICT, judge } from './lib/spanish'
 import { canHear, say, useVoices } from './lib/speech'
 import { blip } from './lib/sound'
 import { useStore } from './lib/store'
-import { LINKS, weakest } from './lib/bank'
+import { weakest } from './lib/bank'
 import { partKey } from './lib/today'
 import { Es, Speak } from './ui'
 import type { Word } from './data/words'
@@ -14,34 +14,37 @@ import type { Card, Link } from './lib/bank'
 import type { Verdict } from './lib/spanish'
 
 // The questions every practice is made of, one link of a word each:
-//   leer      the Spanish written: pick its meaning
-//   oir       the Spanish said: pick its meaning
-//   elegir    the meaning: pick the Spanish, the article with it
-//   escribir  the meaning: type the Spanish
+//   leer      the Spanish written: pick its meaning (understanding it)
+//   oir       the Spanish said: pick its meaning (understanding it)
+//   elegir    the meaning: pick the Spanish, the article with it (coming
+//             up with it)
+//   escribir  the meaning: type the Spanish (coming up with it)
 // Each answer goes to the bank, weighed by how much it says (lib/bank.ts).
 
 export type Kind = 'leer' | 'oir' | 'elegir' | 'escribir'
 
 export const LINK_OF: Record<Kind, Link> = {
   leer: 'leer',
-  oir: 'oir',
+  oir: 'leer',
   elegir: 'decir',
   escribir: 'decir',
 }
 
-// The question for a link of a word: saying it is picked from four until
-// it has held a while, then typed; hearing, where there is no Spanish
-// voice, becomes reading
+// The question for a link of a word: understanding it is the word read,
+// or heard when asked `byEar`; coming up with it is picked from four until
+// it has held a while, then typed
 export function kindFor(
   link: Link,
   card: Card | undefined,
-  hear: boolean,
+  byEar = false,
 ): Kind {
-  if (link === 'oir') return hear ? 'oir' : 'leer'
   if (link === 'decir')
     return card && card.decir.s >= 0.5 ? 'escribir' : 'elegir'
-  return 'leer'
+  return byEar ? 'oir' : 'leer'
 }
+
+// How often a word to understand is asked by ear, where there is a voice
+const BY_EAR = 0.4
 
 // What a pick from four says, against a word typed; and a word typed with
 // letters given away
@@ -51,10 +54,10 @@ const HINTED = 0.25
 const PRAISE = ['¡Bien!', '¡Eso es!', '¡Muy bien!', '¡Perfecto!', '¡Exacto!']
 
 const LABEL: Record<Kind, [string, string]> = {
-  leer: ['Leer', 'hva betyr det?'],
-  oir: ['Oír', 'hva betyr det du hører?'],
-  elegir: ['Decir', 'hva heter det på spansk?'],
-  escribir: ['Decir', 'skriv det på spansk'],
+  leer: ['Entender', 'hva betyr det?'],
+  oir: ['Entender', 'hva betyr det du hører?'],
+  elegir: ['Recordar', 'hva heter det på spansk?'],
+  escribir: ['Recordar', 'skriv det på spansk'],
 }
 
 const ACCENTS = ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', '¿', '¡']
@@ -515,13 +518,13 @@ export function Drill({
   ids,
   got,
   onItem,
-  links,
+  ear = false,
 }: {
   ids: Array<string>
   got: Set<string>
   onItem: (id: string, right: boolean) => void
-  // The links to practise; all, or hearing only
-  links?: Array<Link>
+  // Every word by ear, as the day's listening
+  ear?: boolean
 }) {
   const left = ids.filter((id) => WORD[id] && !got.has(id))
   const at = left.at(0)
@@ -529,18 +532,18 @@ export function Drill({
   return (
     <div>
       <Dots n={ids.length} done={ids.length - left.length} />
-      <DrillItem key={at} id={at} links={links} onDone={(r) => onItem(at, r)} />
+      <DrillItem key={at} id={at} ear={ear} onDone={(r) => onItem(at, r)} />
     </div>
   )
 }
 
 function DrillItem({
   id,
-  links,
+  ear,
   onDone,
 }: {
   id: string
-  links?: Array<Link>
+  ear: boolean
   onDone: (right: boolean) => void
 }) {
   const { bank } = useStore()
@@ -550,13 +553,9 @@ function DrillItem({
   const [kind] = useState<Kind>(() => {
     const card = bank.cards[id]
     const hear = canHear() !== false
-    const can = (links ?? LINKS).filter((l) => hear || l !== 'oir')
-    // (only hearing asked for, and no voice to hear by: reading instead)
-    const link =
-      card && can.length
-        ? weakest(card, Date.now(), Math.random, can)
-        : (can.at(0) ?? 'leer')
-    return kindFor(link, card, hear)
+    // (by ear, and no voice to hear by: read instead)
+    const link = ear ? 'leer' : card ? weakest(card, Date.now()) : 'leer'
+    return kindFor(link, card, hear && (ear || Math.random() < BY_EAR))
   })
   return (
     <Question

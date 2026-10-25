@@ -546,7 +546,10 @@ export default function Home() {
                 {LINKS.map((l) => (
                   <li key={l}>
                     <LinkIcon link={l} className="i" />
-                    <b>{LINK_NAME[l].es}</b>
+                    <b>
+                      {LINK_NAME[l].es}
+                      <small>{LINK_NAME[l].no}</small>
+                    </b>
                     <InkBar
                       share={shares[l]}
                       color={l === 'decir' ? 'var(--red)' : 'var(--blue)'}

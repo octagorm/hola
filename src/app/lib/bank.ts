@@ -3,13 +3,16 @@ import { KNOWN_AT_START, PRACTISED_AT_START, START } from '../data/start.ts'
 import type { Word } from '../data/words.ts'
 
 // The word bank: what the player knows, shared by every game. A word is
-// three things to remember, learnt apart:
-//   leer   reading it: the written word brings back its meaning
-//   oír    hearing it: the word said brings back its meaning
-//   decir  saying it: the meaning brings back the Spanish, with its article
-// Spanish is written as it sounds, so the link between the written word and
-// its sound is rules, practised by ear and by reading, not a link of its
-// own.
+// two things to remember, learnt apart, input and output:
+//   leer   understanding it (Entender): the word, read or heard, brings
+//          back its meaning
+//   decir  coming up with it (Recordar): the meaning brings back the
+//          Spanish, with its article
+// Spanish is written as it sounds, so a word read and a word heard are one
+// thing to remember: the ear games and the reading both practise `leer`.
+// (Hearing was once a link of its own, `oir`; a card saved with it is read
+// with the better of the two as `leer`, in merge.) The names are the
+// links' first ones, kept so that every bank saved still reads.
 //
 // Each link of a word met has a memory, in the manner of FSRS: the
 // stability `s` is how many days until the chance of remembering it falls
@@ -23,9 +26,9 @@ import type { Word } from '../data/words.ts'
 // with ease for a day and a half or more, and not faded much), in Spanish
 // alone.
 
-export type Link = 'leer' | 'oir' | 'decir'
+export type Link = 'leer' | 'decir'
 
-export const LINKS: Array<Link> = ['leer', 'oir', 'decir']
+export const LINKS: Array<Link> = ['leer', 'decir']
 
 export interface Memory {
   // Stability, in days
@@ -36,7 +39,6 @@ export interface Memory {
 
 export interface Card {
   leer: Memory
-  oir: Memory
   decir: Memory
   // Last seen, ms
   t: number
@@ -187,7 +189,6 @@ export function answer(
 
 export const newCard = (now: number, s = FIRST): Card => ({
   leer: { s, t: now },
-  oir: { s, t: now },
   decir: { s, t: now },
   t: now,
   n: 0,
@@ -224,7 +225,6 @@ function spread(id: string): number {
 // from `t`
 const seeded = (t: number, s: Record<Link, number>): Card => ({
   leer: { s: s.leer, t },
-  oir: { s: s.oir, t },
   decir: { s: s.decir, t },
   t: 0,
   n: 0,
@@ -237,18 +237,17 @@ const seeded = (t: number, s: Record<Link, number>): Card => ({
 // version of it: cards for its words where the bank has none, so nothing
 // learnt is touched. The known words last for weeks; those being practised
 // a day or so, spread so that they do not all fade on the same day, with
-// hearing and saying weaker than reading, and as if last practised half a
+// coming up with them weaker than understanding, and as if last practised half a
 // day ago, so that they come before the known ones from the first day.
 export function withStart(bank: Bank, now: number): Bank {
   if (bank.start >= START) return bank
   const cards = { ...bank.cards }
   for (const id of KNOWN_AT_START)
-    cards[id] ??= seeded(now, { leer: 20, oir: 14, decir: 8 })
+    cards[id] ??= seeded(now, { leer: 20, decir: 8 })
   for (const id of PRACTISED_AT_START) {
     const s = 0.5 + 0.9 * spread(id)
     cards[id] ??= seeded(now - DAY / 2, {
       leer: s,
-      oir: s * 0.8,
       decir: s * 0.5,
     })
   }
@@ -260,8 +259,7 @@ export const recallOf = (card: Card, now: number) =>
   Math.min(...LINKS.map((l) => recall(card[l], now)))
 
 // The link of a word that most needs practice: the most faded, or of
-// links about as faded, any of them. `links` leaves some out, as hearing
-// where the browser has no Spanish voice.
+// links about as faded, any of them. `links` leaves some out.
 export function weakest(
   card: Card,
   now: number,
@@ -401,7 +399,11 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   for (const id of keysOf(a.cards, b.cards)) {
     const x = a.cards?.[id]
     const y = b.cards?.[id]
-    out.cards[id] = !x ? y : !y ? x : both(x, y)
+    out.cards[id] = !x
+      ? y && heard(y)
+      : !y
+        ? heard(x)
+        : both(heard(x), heard(y))
   }
   for (const k of [
     'days',
@@ -431,6 +433,16 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
 
 const later = (a: Memory, b: Memory) => (a.t >= b.t ? a : b)
 
+// A card saved when hearing was a link of its own: understanding is the
+// better of reading and hearing, the one that would hold better a week
+// after the later of them was answered
+function heard(card: Card & { oir?: Memory }): Card {
+  const { oir, ...c } = card
+  if (!oir) return card
+  const t = Math.max(oir.t, c.leer.t) + 7 * DAY
+  return recall(oir, t) > recall(c.leer, t) ? { ...c, leer: oir } : c
+}
+
 function both(x: Card, y: Card): Card {
   if (x.z && !y.z) return y
   if (y.z && !x.z) return x
@@ -438,7 +450,6 @@ function both(x: Card, y: Card): Card {
   return {
     ...last,
     leer: later(x.leer, y.leer),
-    oir: later(x.oir, y.oir),
     decir: later(x.decir, y.decir),
     i: Math.min(x.i, y.i),
   }
@@ -480,5 +491,5 @@ export function linkShares(
     cards.length
       ? cards.reduce((sum, c) => sum + recall(c[l], now), 0) / cards.length
       : null
-  return { leer: mean('leer'), oir: mean('oir'), decir: mean('decir') }
+  return { leer: mean('leer'), decir: mean('decir') }
 }

@@ -345,7 +345,7 @@ export function makeDay(
   const card = (id: string) => bank.cards[id]
   const faded = (id: string) => {
     const c = card(id)
-    return c ? 1 - recall(c.oir, now) : 0
+    return c ? 1 - recall(c.leer, now) : 0
   }
   const open = DECK.filter((o) => things(o).every((id) => card(id)))
   const ranked = open

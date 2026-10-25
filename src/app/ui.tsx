@@ -434,15 +434,14 @@ function PeekCard({ t, el, more, onClose }: Peeked & { onClose: () => void }) {
   )
 }
 
-// --- The three links of a word ---
+// --- The two links of a word: input and output ---
 
 export const LINK_NAME: Record<Link, { es: string; no: string }> = {
-  leer: { es: 'Leer', no: 'lese' },
-  oir: { es: 'Oír', no: 'høre' },
-  decir: { es: 'Decir', no: 'si' },
+  leer: { es: 'Entender', no: 'forstå' },
+  decir: { es: 'Recordar', no: 'komme på selv' },
 }
 
-// An eye for reading, an ear for hearing, lips for saying
+// An eye for understanding, a light bulb for coming up with it
 export function LinkIcon({
   link,
   className = '',
@@ -468,19 +467,15 @@ export function LinkIcon({
           <circle cx="15" cy="15" r="4.5" fill={color} />
           <path d="M6 9 4 6M15 6V3M24 9 26 6" strokeWidth="1.4" />
         </>
-      ) : link === 'oir' ? (
-        <>
-          <path d="M8 11C8 6 11 3 16 3 21 3 24 7 24 11 24 18 16 18 16 24 16 27 14 28 12 28 10 28 8 26 8 24" />
-          <path d="M13 11C13 9 14 8 16 8 18 8 19 9 19 11 19 13 16 14 16 16" />
-        </>
       ) : (
         <>
           <path
-            d="M3 15C7 10 11 9 14 11 15 11.6 16 11.6 17 11 20 9 24 10 27 15 24 20 20 22 15 22S6 20 3 15Z"
-            fill="#c2402c"
+            d="M11 20C11 17 7.5 15.5 7.5 11 7.5 6.8 10.8 3.5 15 3.5S22.5 6.8 22.5 11C22.5 15.5 19 17 19 20Z"
+            fill="#d6982f"
             fillOpacity=".55"
           />
-          <path d="M3 15C8 16.4 11 16.8 15 16.8S22 16.4 27 15" />
+          <path d="M11.5 23.5H18.5M12.5 27H17.5" />
+          <path d="M13 20 13.5 13.5 15 15 16.5 13.5 17 20" strokeWidth="1.4" />
         </>
       )}
     </svg>

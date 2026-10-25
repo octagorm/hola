@@ -288,7 +288,7 @@ function Bar({
       if (!WORD[id]) return
       const lv = levelOf(id)
       if (lv === 0) return
-      if (byEar) record(id, ok, 0.6, 'oir')
+      if (byEar) record(id, ok, 0.6, 'leer')
       else if (lv === 2) record(id, ok, 0.3, 'leer')
     }
     for (const l of s.lines) {

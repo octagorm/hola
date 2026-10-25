@@ -11,9 +11,9 @@ import type { Link } from './bank.ts'
 export const UNDERSTOOD = 2
 
 // What the words of a chapter count for, once its questions are answered:
-// those in a line whose text was seen, read; those in a line only heard,
-// heard, when the answers show it was understood. A word looked up, or not
-// met yet, counts for neither. `seen` is the lines whose text was shown,
+// understanding each word in a line whose text was seen, and each in a
+// line only heard when the answers show it was understood. A word looked
+// up, or not met yet, counts for nothing. `seen` is the lines whose text was shown,
 // counted from 0, or null where every line was, as in a story read.
 export function credit(
   lines: ReadonlyArray<string>,
@@ -29,12 +29,10 @@ export function credit(
     for (const id of wordIds(line)) into.add(id)
   })
   const counts = (id: string) => !looked.has(id) && met(id)
-  return [
-    ...[...read].filter(counts).map((id) => ({ id, link: 'leer' as const })),
-    ...(score >= UNDERSTOOD ? [...heard] : [])
-      .filter(counts)
-      .map((id) => ({ id, link: 'oir' as const })),
-  ]
+  const understood = score >= UNDERSTOOD ? [...heard] : []
+  return [...read, ...understood.filter((id) => !read.has(id))]
+    .filter(counts)
+    .map((id) => ({ id, link: 'leer' as const }))
 }
 
 // A line's sound wave as drawn while its text is hidden: a bar for every

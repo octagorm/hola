@@ -73,7 +73,7 @@ describe('El reloj blando: the words', () => {
     ].map((id) => WORD[id]!)
     for (const w of faded) {
       const c = newCard(now - 30 * DAY)
-      b.cards[w.id] = { ...c, leer: { s: 20, t: now }, oir: { s: 20, t: now } }
+      b.cards[w.id] = { ...c, leer: { s: 20, t: now } }
     }
     for (let seed = 1; seed <= 10; seed++) {
       const ws = round(b, now, seeded(seed))

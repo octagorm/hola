@@ -58,7 +58,7 @@ const FONTS =
   'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap'
 
 // What a right answer says about the bank's number words in it: each was
-// heard (oír) and understood, from a sentence where the digits typed show
+// heard and understood (leer), from a sentence where the digits typed show
 // which word was missed, if one was. No choices are offered, but the
 // sentence around a number helps (prices end in round cents, a shop opens
 // in the morning), so each counts as a word picked from a few, not typed.
@@ -211,7 +211,7 @@ export default function Numeros() {
     if (!item || done || worth(typed, item.kind) === null) return
     const right = isRight(typed, item)
     for (const w of heard(item, typed))
-      if (levelOf(w.id) > 0) record(w.id, w.right, HEARD, 'oir')
+      if (levelOf(w.id) > 0) record(w.id, w.right, HEARD, 'leer')
     setResults((rs) => [...rs, { item, typed, right }])
     blip(right ? 'right' : 'wrong')
     // The sentence again, now that it is shown

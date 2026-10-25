@@ -61,7 +61,10 @@ export default function Ordbank() {
           {LINKS.map((l) => (
             <li key={l}>
               <LinkIcon link={l} className="i" />
-              <b>{LINK_NAME[l].es}</b>
+              <b>
+                {LINK_NAME[l].es}
+                <small>{LINK_NAME[l].no}</small>
+              </b>
               <InkBar
                 share={shares[l]}
                 color={l === 'decir' ? 'var(--red)' : 'var(--blue)'}
@@ -72,9 +75,10 @@ export default function Ordbank() {
           ))}
         </ul>
         <p className="q-muted mt-3 text-[16px] leading-snug">
-          Hvert ord er tre ting å huske: å forstå det skrevet (<i>leer</i>), å
-          forstå det sagt (<i>oír</i>) og å si det selv (<i>decir</i>). Strekene
-          viser hvor godt de sitter nå, i snitt for ordene du har møtt.
+          Hvert ord er to ting å huske: å forstå det, skrevet eller sagt (
+          <i>entender</i>), og å komme på det selv når du vet hva det betyr (
+          <i>recordar</i>). Strekene viser hvor godt de sitter nå, i snitt for
+          ordene du har møtt.
         </p>
       </section>
 
