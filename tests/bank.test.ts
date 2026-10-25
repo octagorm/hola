@@ -459,7 +459,7 @@ describe('how the words stand', () => {
   it('counts the starting point by how it is read, and none of it fading', () => {
     const b = withStart(emptyBank(), now)
     const m = memory(b, now + 3 * DAY)
-    expect(m.fading).toBe(0)
+    expect(m.due).toBe(0)
     expect(m.known + m.learning).toBe(WORDS.filter((w) => b.cards[w.id]).length)
     expect(m.waiting).toBe(TAUGHT.filter((w) => !b.cards[w.id]).length)
     expect(fadingWords(b, now + 3 * DAY)).toEqual([])
@@ -472,8 +472,12 @@ describe('how the words stand', () => {
     // recall reaches FADING after 9s(1/FADING − 1) days
     const falls = 9 * gato.decir.s * (1 / FADING - 1) * DAY
     expect(memory(b, now + falls - DAY / 2).tomorrow).toBe(1)
-    expect(memory(b, now + falls - DAY / 2).fading).toBe(0)
-    expect(memory(b, now + falls + 1000).fading).toBe(1)
+    expect(memory(b, now + falls - DAY / 2).due).toBe(0)
+    const m = memory(b, now + falls + 1000)
+    expect(m.due).toBe(1)
+    // still counted among the known or the learnt, as one of them to practise
+    expect(m.knownDue + m.learningDue).toBe(1)
+    expect(m.known + m.learning).toBe(WORDS.filter((w) => b.cards[w.id]).length)
     expect(fadingWords(b, now + falls + 1000).map((w) => w.id)).toEqual([
       'el gato',
     ])

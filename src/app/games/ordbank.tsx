@@ -91,7 +91,7 @@ export default function Ordbank() {
             <b>{c.met - c.known}</b>lærer
           </div>
           <div>
-            <b>{c.all - c.met}</b>venter
+            <b>{c.all - c.met}</b>ikke møtt
           </div>
         </div>
         <ul className="links">

@@ -1128,7 +1128,7 @@ a.q-box:hover {
 .q-memory .bar {
   display: flex;
   gap: 2px;
-  height: 18px;
+  height: 22px;
   margin: 16px 0 10px;
   padding: 2px;
   border: 2px solid var(--ink);
@@ -1149,10 +1149,6 @@ a.q-box:hover {
   --c: var(--blue);
 }
 
-.q-memory .fading {
-  --c: var(--red);
-}
-
 .q-memory .waiting {
   --c: var(--line);
 }
@@ -1160,6 +1156,15 @@ a.q-box:hover {
 .q-memory .bar span,
 .q-memory .legend i {
   background: var(--c);
+}
+
+/* those due to practise now: their part's colour with its top half lit */
+.q-memory .bar .due,
+.q-memory .legend .due i {
+  background: linear-gradient(
+    color-mix(in srgb, var(--c) 40%, #fff8e8) 0 50%,
+    var(--c) 50%
+  );
 }
 
 /* the words still to meet, hatched, as the road ahead */
@@ -1183,13 +1188,10 @@ a.q-box:hover {
   color: var(--ink-2);
 }
 
-.q-memory .legend li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .q-memory .legend i {
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -1px;
   width: 12px;
   height: 12px;
   border: 1.5px solid var(--ink);

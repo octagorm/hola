@@ -414,15 +414,17 @@ export function chapterLine(p: Path): string {
 const fadingAt = (c: Card | undefined, t: number) =>
   !!c && !c.z && recallOf(c, t) < FADING
 
-// The words by how they stand: fading now, known (read without the
-// Norwegian), being learnt, and still to meet in today's chapters; and of
-// those not fading, how many will be by this time tomorrow and within a
-// week
+// The words by how they stand: known (read without the Norwegian), being
+// learnt, and still to meet in today's chapters; of the known and the
+// learnt, how many are due to practise now; and of those not due, how many
+// will be by this time tomorrow and within a week
 export function memory(bank: Bank, now: number) {
   const m = {
-    fading: 0,
     known: 0,
+    knownDue: 0,
     learning: 0,
+    learningDue: 0,
+    due: 0,
     waiting: 0,
     tomorrow: 0,
     week: 0,
@@ -430,12 +432,15 @@ export function memory(bank: Bank, now: number) {
   for (const w of WORDS) {
     const c = bank.cards[w.id]
     if (!c) continue
+    const known = level(c, now) === 2
+    if (known) m.known++
+    else m.learning++
     if (fadingAt(c, now)) {
-      m.fading++
+      m.due++
+      if (known) m.knownDue++
+      else m.learningDue++
       continue
     }
-    if (level(c, now) === 2) m.known++
-    else m.learning++
     if (fadingAt(c, now + DAY)) m.tomorrow++
     if (fadingAt(c, now + 7 * DAY)) m.week++
   }
