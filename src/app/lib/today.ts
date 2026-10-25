@@ -24,10 +24,11 @@ import type { Bank, Link, Path, PathStep, StepKind } from './bank.ts'
 
 export const STEP: Record<
   StepKind,
-  { es: string; no: string; minutes: number }
+  // (short: what fits in a part's box on a phone)
+  { es: string; short?: string; no: string; minutes: number }
 > = {
   review: { es: 'Repaso', no: 'Repetisjon', minutes: 3 },
-  new: { es: 'Palabras nuevas', no: 'Nye ord', minutes: 3 },
+  new: { es: 'Palabras nuevas', short: 'Nuevas', no: 'Nye ord', minutes: 3 },
   game: { es: 'Juego', no: 'Ordspill', minutes: 3 },
   story: { es: 'Lectura', no: 'Lesning', minutes: 3 },
   listen: { es: 'Al oído', no: 'Lytting', minutes: 1 },
@@ -287,9 +288,10 @@ export function summary(p: Path, bank: Bank, now: number): Summary {
   const words = ids.flatMap((id) => {
     const c = bank.cards[id]
     if (!c) return []
+    // (the links answered today, not one left as it was)
     const each = LINKS.flatMap((link) => {
       const before = p.s0[partKey(id, link)]
-      return before === undefined
+      return before === undefined || c[link].t < p.t
         ? []
         : [{ id, link, before, after: c[link].s }]
     })
