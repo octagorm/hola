@@ -26,8 +26,9 @@ import type { Period, Rect } from './lib/sky'
 // it, in the poster's own flat colours and with no outlines: the moon in
 // its real phase, travelling along the band of open sky the paintings
 // leave for it, a few stars twinkling at night, clouds drifting slowly
-// and now and then a pair of birds. The motion is CSS animation, still
-// with reduced motion and paused out of view. ?time=21:30 (or
+// and now and then a pair of birds, beating their wings and gliding. The
+// motion is CSS animation and the birds' wings SMIL, still with reduced
+// motion and paused out of view. ?time=21:30 (or
 // ?date=2027-02-06&time=20:00) shows another hour.
 //
 // Until all four paintings are made the home page keeps its ink drawing.
@@ -144,9 +145,59 @@ const CLOUDS: Array<{
   },
 ]
 
-// A bird in flight, its wings as one flat shape, for a span of 2 × 7
-const BIRD_PATH =
-  'M-7 0.6C-5.2-2.6-2.4-3-0.2 0C2.2-3 5-2.6 7 0.6C4.6-1 2.4-0.6 0 1.8C-2.4-0.6-4.6-1-7 0.6Z'
+// A bird in flight, for a span of 2 × 7, its wings as one flat shape
+// from a tip on the left over the back to the tip on the right and back
+// under: the right wing's near and far control points and its tip, the
+// left wing the mirror, the underside the top thickened
+const f2 = (n: number) => +n.toFixed(2)
+const pt = (x: number, y: number) => `${f2(x)} ${f2(y)}`
+const wing = (
+  [nx, ny]: [number, number],
+  [fx, fy]: [number, number],
+  [tx, ty]: [number, number],
+) =>
+  `M${pt(-tx, ty)}C${pt(-fx, fy)} ${pt(-nx, ny)} ${pt(-0.2, 0)}` +
+  `C${pt(nx, ny)} ${pt(fx, fy)} ${pt(tx, ty)}` +
+  `C${pt(fx - 0.4, fy + 1.6)} ${pt(nx + 0.2, ny + 2.4)} ${pt(0, 1.8)}` +
+  `C${pt(-nx - 0.2, ny + 2.4)} ${pt(-fx + 0.4, fy + 1.6)} ${pt(-tx, ty)}Z`
+const UP = wing([2, -1.6], [3.8, -4.4], [6, -4.6])
+const GLIDE = wing([2.2, -3], [5, -2.6], [7, 0.6])
+const DOWN = wing([2.4, -1.4], [4.8, -0.4], [6, 3.4])
+// A beat of the wings: a few strokes, each down stroke lifting the bird a
+// little, then a glide that lets it sink back. The shape is morphed with
+// SMIL, which every browser plays, where CSS can only squash it
+const FLIGHT = [
+  [GLIDE, 0],
+  [UP, 0.2],
+  [DOWN, -0.9],
+  [UP, -0.7],
+  [DOWN, -1.8],
+  [UP, -1.6],
+  [DOWN, -2.6],
+  [GLIDE, -2.4],
+  [GLIDE, -1.2],
+  [GLIDE, 0],
+] as const
+const FLIGHT_TIMES = '0;0.07;0.17;0.27;0.37;0.47;0.57;0.66;0.83;1'
+const FLIGHT_EASE = Array(FLIGHT.length - 1)
+  .fill('0.45 0 0.55 1')
+  .join(';')
+const FLIGHT_SHAPES = FLIGHT.map(([d]) => d).join(';')
+const FLIGHT_LIFT = FLIGHT.map(([, y]) => `0 ${y}`).join(';')
+
+// The two birds: where each flies, its size, the length of one beat of
+// its wings, and how it strays from its place beside the other
+const BIRDS = [
+  { dx: 0, dy: 0, k: 1, beat: 2.9, stray: '0 0;2 -1.5;0.5 1;0 0', strays: 11 },
+  {
+    dx: -30,
+    dy: 12,
+    k: 0.8,
+    beat: 2.5,
+    stray: '0 0;-3 1;2 2.5;0 0',
+    strays: 8,
+  },
+]
 
 // The height the birds cross at, low over the plain, under the title
 const BIRDS_Y = 0.49 * H
@@ -170,6 +221,7 @@ export function PaintedScene({
 }) {
   const box = useRef<HTMLDivElement>(null)
   const measure = useRef<() => void>(null)
+  const svg = useRef<SVGSVGElement>(null)
   const clock = useMemo(() => clockFrom(window.location.search), [])
   const [now, setNow] = useState(clock)
   const [size, setSize] = useState<[number, number] | null>(null)
@@ -189,6 +241,13 @@ export function PaintedScene({
       document.removeEventListener('visibilitychange', onShow)
     }
   }, [clock])
+
+  // The birds' wings are SMIL, which the CSS that pauses the rest leaves
+  // alone
+  useEffect(() => {
+    if (seen) svg.current?.unpauseAnimations()
+    else svg.current?.pauseAnimations()
+  }, [seen])
 
   // The box's size, and where the page's own things lie over it
   useEffect(() => {
@@ -298,7 +357,7 @@ export function PaintedScene({
               style={{ opacity: loaded.has(p) ? (i === 0 ? 1 : w) : 0 }}
             />
           ))}
-          <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+          <svg ref={svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
             {starAlpha > 0.03 && (
               <g fill="#fbf3dc" opacity={starAlpha}>
                 {STAR_LIST.filter(
@@ -393,21 +452,50 @@ export function PaintedScene({
                   } as CSSProperties
                 }
               >
-                {[
-                  [0, 0, 1],
-                  [-30, 12, 0.8],
-                ].map(([dx, dy, k], i) => (
-                  <g
-                    key={i}
-                    transform={`translate(${dx * unit} ${BIRDS_Y + dy * unit}) scale(${unit * k * 1.5})`}
-                  >
-                    <path
-                      className="wing"
-                      d={BIRD_PATH}
-                      style={{ animationDelay: `${-i * 0.3}s` }}
-                    />
-                  </g>
-                ))}
+                <g className="rise">
+                  {BIRDS.map(({ dx, dy, k, beat, stray, strays }, i) => (
+                    <g
+                      key={i}
+                      transform={`translate(${dx * unit} ${BIRDS_Y + dy * unit}) scale(${unit * k * 1.5})`}
+                    >
+                      <g>
+                        <animateTransform
+                          attributeName="transform"
+                          type="translate"
+                          values={stray}
+                          dur={`${strays}s`}
+                          calcMode="spline"
+                          keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"
+                          repeatCount="indefinite"
+                        />
+                        <animateTransform
+                          attributeName="transform"
+                          type="translate"
+                          additive="sum"
+                          values={FLIGHT_LIFT}
+                          keyTimes={FLIGHT_TIMES}
+                          calcMode="spline"
+                          keySplines={FLIGHT_EASE}
+                          dur={`${beat}s`}
+                          begin={`${-i * 1.1}s`}
+                          repeatCount="indefinite"
+                        />
+                        <path d={GLIDE}>
+                          <animate
+                            attributeName="d"
+                            values={FLIGHT_SHAPES}
+                            keyTimes={FLIGHT_TIMES}
+                            calcMode="spline"
+                            keySplines={FLIGHT_EASE}
+                            dur={`${beat}s`}
+                            begin={`${-i * 1.1}s`}
+                            repeatCount="indefinite"
+                          />
+                        </path>
+                      </g>
+                    </g>
+                  ))}
+                </g>
               </g>
             )}
           </svg>

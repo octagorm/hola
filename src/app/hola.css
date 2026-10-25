@@ -832,10 +832,8 @@ body.q-body {
   animation: q-sky-fly 80s linear infinite;
 }
 
-.q-sky .wing {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: q-sky-flap 0.7s ease-in-out infinite alternate;
+.q-sky .rise {
+  animation: q-sky-rise 80s ease-in-out infinite;
 }
 
 .q-sky.paused * {
@@ -867,22 +865,31 @@ body.q-body {
 /* across in the first third of the time, then a long while of empty sky */
 @keyframes q-sky-fly {
   0% {
-    transform: translate(var(--a), 0);
+    transform: translateX(var(--a));
   }
-  32% {
-    transform: translate(var(--b), -30px);
-  }
+  32%,
   100% {
-    transform: translate(var(--b), -30px);
+    transform: translateX(var(--b));
   }
 }
 
-@keyframes q-sky-flap {
-  from {
-    transform: scaleY(1);
+/* and on the way, rising and falling in long, unhurried swells */
+@keyframes q-sky-rise {
+  0% {
+    transform: translateY(0);
   }
-  to {
-    transform: scaleY(0.35);
+  9% {
+    transform: translateY(-22px);
+  }
+  17% {
+    transform: translateY(-10px);
+  }
+  25% {
+    transform: translateY(-34px);
+  }
+  32%,
+  100% {
+    transform: translateY(-26px);
   }
 }
 
