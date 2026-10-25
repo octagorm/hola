@@ -227,6 +227,18 @@ await test('signing in with Google is offered', async (page) => {
 await test('themes chosen give today’s chapter their new words', async (page) => {
   await go(page, '')
   await page.getByRole('button', { name: 'Emner', exact: true }).click()
+  // A new player starts with the everyday themes
+  const chosen = page.locator('.q-themes li.chosen')
+  await chosen.first().waitFor()
+  expect(
+    (await chosen.count()) === 6 &&
+      (await page.locator('.q-themes li.chosen a[href="#tema/tapeo"]').count()),
+    'the everyday themes chosen at the start',
+  )
+  // which can be taken away, all of them
+  while (await chosen.count())
+    await chosen.first().getByRole('radio', { name: 'Av' }).click()
+  await page.getByText('Ingen er valgt ennå.').waitFor()
   await page.locator('.q-themes a[href="#tema/mancha"]').click()
   const prio = (name) =>
     page.getByRole('radiogroup', { name: `Hvor mye ${name}` })

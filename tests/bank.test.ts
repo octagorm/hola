@@ -30,7 +30,9 @@ import {
   KNOWN_AT_START,
   PRACTISED_AT_START,
   START,
+  THEMES_AT_START,
 } from '../src/app/data/start'
+import { THEME } from '../src/app/data/themes'
 import type { Bank } from '../src/app/lib/bank'
 
 const now = Date.UTC(2026, 9, 22, 12)
@@ -203,6 +205,28 @@ describe('the starting point', () => {
     expect(s.cards.adiós?.z).toBe(1)
     delete s.cards.adiós
     expect(withStart(s, now + 2 * DAY).cards.adiós).toBeUndefined()
+  })
+
+  it('starts with the everyday themes, unless themes have been chosen', () => {
+    for (const x of THEMES_AT_START) expect(THEME[x.id], x.id).toBeDefined()
+    const b = withStart(emptyBank(), now)
+    expect(b.theme).toEqual({ on: THEMES_AT_START, t: 0 })
+    expect(toMeet(b)[0].lesson).toBe(THEMES_AT_START[0].id)
+    // a bank given an earlier starting point gets them too
+    const before = { ...emptyBank(), start: START - 1 }
+    expect(withStart(before, now).theme.on).toEqual(THEMES_AT_START)
+    // but a choice made, even of none, is kept
+    const none = { ...emptyBank(), theme: { on: [], t: now } }
+    expect(withStart(none, now).theme).toEqual(none.theme)
+    const one = {
+      ...emptyBank(),
+      theme: { on: [{ id: 'cuba', p: 3 as const }], t: now },
+    }
+    expect(withStart(one, now).theme).toEqual(one.theme)
+    // and wins in a merge, while a bank that never chose takes them
+    expect(merge(b, none).theme).toEqual(none.theme)
+    expect(merge(emptyBank(), b).theme.on).toEqual(THEMES_AT_START)
+    expect(merge(b, emptyBank()).theme.on).toEqual(THEMES_AT_START)
   })
 
   it('gives way in a merge to a card with answers, however old', () => {
