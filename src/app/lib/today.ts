@@ -124,18 +124,15 @@ export function plan(
 ): Path {
   const list = due(bank, now)
   const fading = list.filter((d) => d.r < FADING)
+  // Fewer new words when many the player has answered are fading; the
+  // starting point's words, never answered, hold none back
+  const behind = fading.filter((d) => !d.c.z).length
   // At least a few words to warm up with, even when none are fading
   const review = (fading.length >= 4 ? fading : list.slice(0, 4))
     .slice(0, REVIEW)
     .map((d) => d.w)
   const newCount =
-    list.length === 0
-      ? 5
-      : fading.length >= 20
-        ? 2
-        : fading.length >= 10
-          ? 3
-          : perDay
+    list.length === 0 ? 5 : behind >= 20 ? 2 : behind >= 10 ? 3 : perDay
   const fresh = unmet(bank, toMeet(bank)).slice(0, newCount)
   const met = list.length + fresh.length
   const n = dayNumber(now)
@@ -281,7 +278,7 @@ export interface Summary {
   knownGain: number
   streak: number
   points: number
-  // Words that will be fading by this time tomorrow
+  // Words answered that will be fading by this time tomorrow
   tomorrow: number
 }
 
@@ -302,9 +299,11 @@ export function summary(p: Path, bank: Bank, now: number): Summary {
     ]
   })
   const { met, known } = counts(bank, now)
+  // (of the words answered: the starting point's, never answered, come
+  // back in turn without being counted)
   const tomorrow = WORDS.filter((w) => {
     const c = bank.cards[w.id]
-    return c && recallOf(c, now + DAY) < FADING
+    return c && !c.z && recallOf(c, now + DAY) < FADING
   }).length
   return {
     words,

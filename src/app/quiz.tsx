@@ -118,7 +118,9 @@ export function Question({
     record(w.id, a.right, weight, LINK_OF[kind])
     blip(a.right ? 'right' : 'wrong')
     setAnswered(a)
-    if (settings.autoplay || kind === 'oir') void say(w.es)
+    // (a word heard was said as the question opened, and is said again
+    // only when asked for)
+    if (settings.autoplay && kind !== 'oir') void say(w.es)
   }
 
   const pick = (i: number) => {

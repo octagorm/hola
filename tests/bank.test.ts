@@ -24,6 +24,7 @@ import {
   plan,
   ready,
   retheme,
+  summary,
 } from '../src/app/lib/today'
 import { WORD, WORDS } from '../src/app/data/words'
 import {
@@ -197,6 +198,13 @@ describe('the starting point', () => {
     const warm = plan(b, now).steps[0]
     expect(warm.k).toBe('review')
     for (const id of warm.ids ?? []) expect(PRACTISED_AT_START).toContain(id)
+    // and the starting point's words, fading but never answered, hold no
+    // new words back, on the first day or later
+    for (const t of [now, now + 3 * DAY]) {
+      const fresh = plan(b, t).steps.find((x) => x.k === 'new')
+      expect(fresh?.ids).toHaveLength(4)
+      expect(summary(plan(b, t), b, t).tomorrow).toBe(0)
+    }
   })
 
   it('touches nothing learnt, and is given once', () => {
