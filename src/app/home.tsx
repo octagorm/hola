@@ -5,7 +5,6 @@ import {
   ChevronRight,
   Headphones,
   Library,
-  Music,
   Puzzle,
   Settings2,
   Shapes,
@@ -23,7 +22,6 @@ import { LESSON, WORDS } from './data/words'
 import { LINKS, counts, dayKey, linkShares } from './lib/bank'
 import { canHear, useVoices } from './lib/speech'
 import { useStore } from './lib/store'
-import { startMusic, stopMusic, useMusic } from './lib/music'
 import {
   chapterLine,
   chapterTitle,
@@ -174,11 +172,10 @@ const INDEX: Array<{
 ]
 
 export default function Home() {
-  const { bank, settings, setSettings } = useStore()
+  const { bank, settings } = useStore()
   const [tab, choose] = useTab()
   const { hear, recorded } = useVoices()
   const narrow = useMedia('(max-width: 860px)')
-  const playing = useMusic()
   const account = useAccount()
   const now = Date.now()
 
@@ -195,16 +192,6 @@ export default function Home() {
   const clues = clueCount(bank)
   const shares = linkShares(bank, now)
   const palabra = bank.palabra[dayKey(now)]
-
-  const toggleMusic = () => {
-    if (settings.music) {
-      setSettings({ music: false })
-      stopMusic()
-    } else {
-      setSettings({ music: true })
-      startMusic()
-    }
-  }
 
   // The stories, those not written yet faded: how far each is read
   const toc = INDEX.map((t, i) => {
@@ -300,16 +287,6 @@ export default function Home() {
             </p>
           </div>
           <div className="tools">
-            <button
-              type="button"
-              className={`q-round ${playing ? 'dark' : ''}`}
-              aria-label="Musikk"
-              title="Musikk"
-              aria-pressed={playing}
-              onClick={toggleMusic}
-            >
-              <Music />
-            </button>
             <a
               className="q-round"
               href="#ajustes"

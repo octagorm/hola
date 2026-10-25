@@ -37,8 +37,6 @@ export interface Settings {
   // Count a typed answer as right without its accents
   lenient: boolean
   effects: boolean
-  // The guitar in the background
-  music: boolean
   // New words a day, when not many are fading
   perDay: number
   // The size of the text in the library's reader, a step of TEXT_SIZES
@@ -69,7 +67,6 @@ export const DEFAULTS: Settings = {
   autoplay: true,
   lenient: true,
   effects: true,
-  music: false,
   perDay: 4,
   textSize: 1,
   gloss: 'new',

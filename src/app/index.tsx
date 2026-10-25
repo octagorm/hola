@@ -1,8 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
-import { BankProvider, useStore } from './lib/store'
+import { BankProvider } from './lib/store'
 import { AccountProvider } from './lib/account'
 import { WithAccounts } from './lib/cloud'
-import { startMusic, stopMusic } from './lib/music'
 import { InkDefs, PeekProvider } from './ui'
 import { Mend } from './mend'
 import Home from './home'
@@ -37,7 +36,6 @@ export default function Hola() {
             <PeekProvider>
               <InkDefs />
               <Router />
-              <MusicKeeper />
             </PeekProvider>
           </AccountProvider>
         </BankProvider>
@@ -80,34 +78,4 @@ function Router() {
       )}
     </div>
   )
-}
-
-// The music, if it was left on, starts again at the first touch, since a
-// browser lets a page play nothing before that. It is quiet while a text
-// is open in the library's reader, which is for reading (the user's
-// choice), and comes back on leaving it.
-const quiet = () => window.location.hash.startsWith('#biblioteca/')
-
-function MusicKeeper() {
-  const { settings } = useStore()
-  useEffect(() => {
-    if (!settings.music) {
-      stopMusic()
-      return
-    }
-    const follow = () => (quiet() ? stopMusic() : startMusic())
-    const start = () => {
-      if (!quiet()) startMusic()
-    }
-    if (quiet()) stopMusic()
-    window.addEventListener('pointerdown', start, { once: true })
-    window.addEventListener('keydown', start, { once: true })
-    window.addEventListener('hashchange', follow)
-    return () => {
-      window.removeEventListener('pointerdown', start)
-      window.removeEventListener('keydown', start)
-      window.removeEventListener('hashchange', follow)
-    }
-  }, [settings.music])
-  return null
 }
