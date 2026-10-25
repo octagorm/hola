@@ -6,7 +6,7 @@
 //   node scripts/taxi-layout.mjs   # writes design/sketches/taxi-layout.png
 import { mkdirSync } from 'node:fs'
 import { build } from 'esbuild'
-import { chromium } from 'playwright'
+import { launch } from './browser.mjs'
 
 const SIZE = 1024
 const OUT = 'design/sketches/taxi-layout.png'
@@ -33,7 +33,7 @@ await build({
 })
 const { svg } = await import(`../${TMP}`)
 
-const browser = await chromium.launch()
+const browser = await launch()
 const page = await browser.newPage({
   viewport: { width: SIZE, height: SIZE },
 })

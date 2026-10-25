@@ -7,7 +7,7 @@
 // them); the windmill already sits inside the safe circle of a maskable
 // icon.
 import { readFile } from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { launch } from './browser.mjs'
 
 const DIR = new URL('../public/app/', import.meta.url).pathname
 const svg = await readFile(`${DIR}icon.svg`, 'utf8')
@@ -22,7 +22,7 @@ const ICONS = [
   { file: '../podcast/cover.jpg', size: 1400, svg: square },
 ]
 
-const browser = await chromium.launch()
+const browser = await launch()
 for (const icon of ICONS) {
   const page = await browser.newPage({
     viewport: { width: icon.size, height: icon.size },

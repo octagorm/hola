@@ -17,7 +17,7 @@ Commands:
 - `npm run build` – type check and build to `dist/`
 - `npm run preview` – build and serve `dist/` with Wrangler, as Cloudflare will
 - `npm test` – Vitest: the bank and today's chapter, the data, the games' rules, the Convex functions (with `convex-test`) and the Worker
-- `npm run test:e2e` – the built site in Chromium (`scripts/smoke.mjs`): a new player's first day, every page on a desktop and a phone, signing in offered, and each game played through. Build first. On a new machine, `npx playwright install chromium` once
+- `npm run test:e2e` – the built site in Chromium (`scripts/smoke.mjs`): a new player's first day, every page on a desktop and a phone, signing in offered, and each game played through. Build first. On a new machine, `npx playwright install chromium` once; in Claude's cloud sandbox the scripts use its Chromium instead (`scripts/browser.mjs`)
 - `npm run lint`, `npm run format`, `npm run format:check`
 
 Before committing, run `npm run lint && npm test && npm run format:check && npm run build && npm run test:e2e`. Commit as you go. Once a change is tested and the user has approved it, push it to `main` without being asked; the site is live a minute or two later. Ask first only when unsure: something half done, or a choice the user has not made.
