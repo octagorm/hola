@@ -1,28 +1,27 @@
-/* Sonidos: a radio set of the fifties in a Spanish living room, drawn in
-   ligne claire: even dark outlines, flat colours, no shading. A walnut
-   cabinet with an amber dial and ivory push keys, against a cream wall
-   with a small print; the words come on ivory cards and the dictation on
-   squared school paper. */
+/* Sonidos: a radio set of the fifties, like its tile, drawn in ligne
+   claire: even dark outlines, flat colours, no shading. A terracotta
+   cabinet with a mustard dial and cream push keys and a cream speaker
+   cloth in bands, against a sea-green wall with a small print; the words
+   come on cream cards and the dictation on squared school paper. */
 
 .so {
-  --ink: #2a1b12;
-  --ink-2: #6b5240;
-  --wall: #ecdcb4;
-  --wall-dot: #dfc994;
-  --wood: #7d4524;
-  --wood-dark: #5a2e16;
-  --wood-light: #95582f;
-  --amber: #f3c35a;
-  --amber-light: #fde4a2;
-  --brass: #c9993d;
-  --ivory: #f8f0dd;
-  --ivory-dark: #e3d2ae;
-  --paper: #fbf6ea;
-  --red: #c33b2b;
-  --green: #4f7a3c;
-  --blue: #2c5797;
-  --cloth: #d4ab6b;
-  --cloth-dark: #94643a;
+  --ink: #26292a;
+  --ink-2: #5f5548;
+  --wall: #6f9e89;
+  --wall-dot: #65947f;
+  --wood: #c0603d;
+  --wood-dark: #8f4128;
+  --amber: #f3d798;
+  --amber-light: #faeac4;
+  --brass: #e3ac49;
+  --ivory: #f8e9cb;
+  --ivory-dark: #e3cc9f;
+  --paper: #fcf5e6;
+  --red: #c04d2c;
+  --green: #4d7d68;
+  --blue: #3b6a91;
+  --cloth: #f3dfb6;
+  --cloth-dark: #c0603d;
   --line: 2.5px;
   min-height: 100vh;
   min-height: 100dvh;
@@ -68,13 +67,6 @@
   border: var(--line) solid var(--ink);
   border-radius: 26px 26px 16px 16px;
   background-color: var(--wood);
-  background-image: repeating-linear-gradient(
-    96deg,
-    transparent 0 34px,
-    var(--wood-dark) 34px 35.5px,
-    transparent 35.5px 61px,
-    var(--wood-light) 61px 62.5px
-  );
   box-shadow: 0 5px 0 var(--ink);
 }
 
@@ -650,9 +642,9 @@
   border-radius: 50%;
   background-color: var(--cloth);
   background-image: repeating-linear-gradient(
-    90deg,
+    0deg,
     var(--cloth) 0 9px,
-    var(--cloth-dark) 9px 12px
+    var(--cloth-dark) 9px 13px
   );
   box-shadow:
     0 0 0 9px var(--wood),
@@ -1114,9 +1106,9 @@
     border-radius: 10px;
     background-color: var(--cloth);
     background-image: repeating-linear-gradient(
-      90deg,
-      var(--cloth) 0 17px,
-      var(--cloth-dark) 17px 21px
+      0deg,
+      var(--cloth) 0 14px,
+      var(--cloth-dark) 14px 20px
     );
     box-shadow: inset 0 0 0 8px var(--cloth);
   }
