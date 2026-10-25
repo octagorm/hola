@@ -1,5 +1,6 @@
 import { PICTURES } from './data/pictures'
 import { TOC_IDS, gameIconPicture, tocPicture } from './data/icons'
+import { stageOf, stampPicture } from './data/camino'
 import type { ReactNode } from 'react'
 import type { Motif } from './data/camino'
 import type { GameIconId, TocId } from './data/icons'
@@ -1014,8 +1015,9 @@ const STAMP_COLOR = ['#c2402c', '#4f7fa8', INK, '#d29a2e']
 type Frame = 'circle' | 'rect' | 'diamond' | 'oval'
 const FRAMES: Array<Frame> = ['circle', 'rect', 'circle', 'diamond', 'oval']
 
-// The stamp of a stage: the town's motif in a frame, each stage in its own
-// colour and frame, as the towns' stamps differ
+// The stamp of a stage: its painting once made (data/camino-prompts.ts),
+// else the town's motif in ink in a frame, each stage in its own colour
+// and frame, as the towns' stamps differ
 export function Stamp({
   motif,
   n,
@@ -1026,6 +1028,13 @@ export function Stamp({
   n: number
   className?: string
 }) {
+  const painted = stampPicture(stageOf(n))
+  if (PICTURES.has(painted))
+    return (
+      <svg className={className} viewBox="0 0 60 56" aria-hidden="true">
+        <image href={`/${painted}.webp`} x="2" width="56" height="56" />
+      </svg>
+    )
   const c = STAMP_COLOR[(n - 1) % STAMP_COLOR.length]
   const frame = FRAMES[(n - 1) % FRAMES.length]
   return (

@@ -34,6 +34,7 @@ import { PALABRAS_PICTURES } from '../src/app/data/palabras-prompts.ts'
 import { NUMEROS_PICTURES } from '../src/app/data/numeros-prompts.ts'
 import { HOME_PICTURES } from '../src/app/data/home-prompts.ts'
 import { ICON_PICTURES } from '../src/app/data/icon-prompts.ts'
+import { CAMINO_PICTURES } from '../src/app/data/camino-prompts.ts'
 
 const FULL = '.cache/pictures'
 const WEB = 'public'
@@ -235,6 +236,9 @@ Object.assign(PICTURES, NUMEROS_PICTURES)
 Object.assign(PICTURES, HOME_PICTURES)
 // The home page's small squares, a story's and a game's (data/icon-prompts.ts)
 Object.assign(PICTURES, ICON_PICTURES)
+// The credential's stamps, a cut-out for each town (data/camino-prompts.ts),
+// set in the middle of their square rather than standing on its foot
+Object.assign(PICTURES, CAMINO_PICTURES)
 
 const full = (name) => `${FULL}/${name}.png`
 // A picture may take more than one reference, such as another painting
@@ -324,7 +328,7 @@ function forWeb(name) {
     })
     return
   }
-  if (p.cutout) fit([full(name)], name, 'south')
+  if (p.cutout) fit([full(name)], name, p.gravity ?? 'south')
   else
     execFileSync('magick', [
       full(name),

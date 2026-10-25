@@ -69,6 +69,15 @@ export const STAGES: Array<Stage> = [
 export const stageOf = (n: number): Stage =>
   STAGES[(Math.max(1, n) - 1) % STAGES.length]
 
+// The painting of a town's stamp (data/camino-prompts.ts), its path under
+// public/ without .webp: camino/santo-domingo-de-la-calzada
+export const stampPicture = (s: Stage) =>
+  `camino/${s.town
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z]+/g, '-')}`
+
 // Where a stage starts
 export const fromOf = (n: number): string =>
   (n - 1) % STAGES.length === 0 ? START : stageOf(n - 1).town
