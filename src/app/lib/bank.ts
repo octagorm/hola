@@ -1,5 +1,10 @@
 import { TAUGHT, WORDS } from '../data/words.ts'
-import { KNOWN_AT_START, PRACTISED_AT_START, START } from '../data/start.ts'
+import {
+  KNOWN_AT_START,
+  PRACTISED_AT_START,
+  START,
+  THEMES_AT_START,
+} from '../data/start.ts'
 import type { Word } from '../data/words.ts'
 
 // The word bank: what the player knows, shared by every game. A word is
@@ -251,7 +256,13 @@ export function withStart(bank: Bank, now: number): Bank {
       decir: s * 0.5,
     })
   }
-  return { ...bank, cards, start: START }
+  // Themes never chosen (t is 0) are the starting ones, still at 0, so
+  // that any choice made since wins in a merge
+  const theme =
+    bank.theme.t || bank.theme.on.length
+      ? bank.theme
+      : { on: THEMES_AT_START.map((x) => ({ ...x })), t: 0 }
+  return { ...bank, cards, theme, start: START }
 }
 
 // The chance of remembering a word's weakest link, now
