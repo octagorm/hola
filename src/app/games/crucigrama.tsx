@@ -20,10 +20,11 @@ import './crucigrama.css'
 
 // Mini crucigrama: a small crossword of the words met, those whose saying
 // has faded most. The clues are their meanings in Norwegian, so filling it
-// in is saying the Spanish (decir). In the dusk of Dalí's Destino.
+// in is saying the Spanish (decir). A cream grid on a dusky rose evening,
+// as a travel poster, like its tile.
 
 const FONTS =
-  'https://fonts.googleapis.com/css2?family=Italiana&family=Nunito:wght@400;600;700;800&display=swap'
+  'https://fonts.googleapis.com/css2?family=Federo&family=Jost:wght@400;500;600&display=swap'
 
 const make = (bank: Bank): Puzzle | null => {
   const words = due(bank, Date.now(), WORDS, 'decir')
