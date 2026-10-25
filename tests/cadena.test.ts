@@ -230,7 +230,7 @@ describe('Palabras encadenadas', () => {
     expect(fitting([WORD['la casa']!, WORD['la sal']!], 'SAL')).toEqual([])
   })
 
-  it('offers four to pick from, only one of them beginning right', () => {
+  it('offers four to pick from, all beginning right, so that the meaning picks it', () => {
     const b = withStart(emptyBank(), now)
     const pool = WORDS.filter((w) => b.cards[w.id])
     const chain = [WORD['la mesa']!]
@@ -238,9 +238,8 @@ describe('Palabras encadenadas', () => {
       const opts = choices(WORD['el sábado']!, chain, pool, seeded(seed))
       expect(opts).toHaveLength(4)
       expect(opts).toContain(WORD['el sábado'])
-      expect(
-        opts.filter((w) => follows(chain[0].bare, w.bare)).map((w) => w.id),
-      ).toEqual(['el sábado'])
+      for (const w of opts)
+        expect(follows(chain[0].bare, w.bare), w.id).toBe(true)
       expect(new Set(opts.map((w) => plainWord(w.bare))).size).toBe(4)
     }
   })

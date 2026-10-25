@@ -154,8 +154,9 @@ export function fitting(chain: Array<Word>, typed: string): Array<Word> {
 }
 
 // The four to pick from, for a word not yet held well enough to type: the
-// word, and three that do not begin with the syllable, one or two of them
-// beginning with its first letter
+// word, and three others beginning with the syllable where there are any,
+// the player's words first, so that it is picked by its meaning and not by
+// how it begins; else one or two beginning with its first letter
 export function choices(
   right: Word,
   chain: Array<Word>,
@@ -164,10 +165,13 @@ export function choices(
 ): Array<Word> {
   const l = link(chain[chain.length - 1].bare)
   const used = new Set([...chain, right].map(spelling))
-  const fit = (x: Word) =>
-    canChain(x) && !spelling(x).startsWith(l) && !used.has(spelling(x))
+  const free = (x: Word) => canChain(x) && !used.has(spelling(x))
+  const on = (x: Word) => free(x) && spelling(x).startsWith(l)
+  const fit = (x: Word) => free(x) && !spelling(x).startsWith(l)
   const near = (x: Word) => spelling(x).startsWith(l.charAt(0))
   const tiers = [
+    pool.filter(on),
+    CHAIN.filter(on),
     shuffle(
       pool.filter((x) => fit(x) && near(x)),
       random,

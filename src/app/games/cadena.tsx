@@ -6,6 +6,7 @@ import {
   choices,
   extend,
   fitting,
+  follows,
   link,
   nextOf,
   plan,
@@ -222,8 +223,7 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
   const pick = (o: Word) => {
     if (!want || end || shown || wrong.includes(o.id)) return
     if (o.id === want.id) {
-      // Picked from four, only one of them beginning right: less than
-      // typing it
+      // Picked from four: less than typing it
       if (!bank.cards[want.id]) meet([want.id])
       else if (!wrong.length) record(want.id, true, 0.6, 'decir')
       setNote({ text: `${want.bare} · ${meaning(want)}`, ok: true })
@@ -234,7 +234,11 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
     if (!wrong.length && bank.cards[want.id])
       record(want.id, false, 0.6, 'decir')
     setWrong([...wrong, o.id])
-    setNote({ text: `${o.bare} begynner ikke på ${syl}-.` })
+    setNote({
+      text: follows(last.bare, o.bare)
+        ? `${o.bare} betyr «${meaning(o)}».`
+        : `${o.bare} begynner ikke på ${syl}-.`,
+    })
     blip('wrong')
   }
 

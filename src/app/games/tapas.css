@@ -539,13 +539,6 @@
   line-height: 1.15;
 }
 
-.tp-carta .nm small {
-  font-weight: 600;
-  font-style: italic;
-  font-size: 13px;
-  color: var(--ink-2);
-}
-
 .tp-carta kbd {
   position: absolute;
   top: 4px;

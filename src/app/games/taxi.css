@@ -405,13 +405,6 @@
   letter-spacing: 0.04em;
 }
 
-.tx-sign small {
-  margin-top: 1px;
-  font-size: 10px;
-  font-style: italic;
-  color: var(--tx-ink-2);
-}
-
 /* where the next move is asked for */
 .tx-mark {
   position: absolute;
@@ -571,17 +564,6 @@
   font-size: 19px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-.tx-w small {
-  font-size: 12px;
-  font-style: italic;
-  opacity: 0.85;
-}
-
-.tx-w.no {
-  font-size: 15px;
-  font-style: italic;
 }
 
 /* --- Cards: the start, a fare paid, the end of the shift --- */

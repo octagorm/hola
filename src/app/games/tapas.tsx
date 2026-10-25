@@ -9,7 +9,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react'
-import { WORD, gloss } from '../data/words'
+import { WORD } from '../data/words'
 import {
   BEST_DAY,
   GUESTS_A_DAY,
@@ -453,7 +453,6 @@ function Bar({
                   <span lang="es">
                     <Es w={w} />
                   </span>
-                  {levelOf(it.id) < 2 && <small>{gloss(w)}</small>}
                 </span>
                 <kbd aria-hidden="true">{(k + 1) % 10}</kbd>
                 {n > 0 && <span className="n">{n}</span>}

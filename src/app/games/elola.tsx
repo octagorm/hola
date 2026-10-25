@@ -358,7 +358,7 @@ function Run({
                 >
                   <div className="eo-flip">
                     <Front w={w} />
-                    <Back w={w} />
+                    <Back w={w} hidden={!turned} />
                   </div>
                 </div>
               </>
@@ -446,11 +446,13 @@ function Front({ w }: { w: Word }) {
   )
 }
 
-function Back({ w }: { w: Word }) {
+// (`hidden` until turned: the back is there all along for the flip, and a
+// screen reader would otherwise read the answer out first)
+function Back({ w, hidden }: { w: Word; hidden: boolean }) {
   const a = articleOf(w)
   const rule = ruleOf(w)
   return (
-    <div className={`eo-face back ${a}`}>
+    <div className={`eo-face back ${a}`} aria-hidden={hidden || undefined}>
       {a === 'el' ? <Basto className="pip" /> : <Copa className="pip" />}
       <p className="word" lang="es" style={{ ['--n' as string]: fit(w) + 3 }}>
         <Es w={w} />

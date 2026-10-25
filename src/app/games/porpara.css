@@ -214,6 +214,18 @@
   font-style: normal;
 }
 
+.pp-meant {
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  color: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
 @keyframes pp-breathe {
   50% {
     background: rgba(192, 100, 60, 0.2);

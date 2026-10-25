@@ -727,13 +727,6 @@
   font-weight: 700;
 }
 
-.ra-move .no {
-  margin-top: 2px;
-  font-size: 14px;
-  font-style: italic;
-  color: var(--ink-2);
-}
-
 .ra-move.buy {
   background: var(--olive-l);
 }
@@ -756,10 +749,6 @@
 
 .ra-move.ask .es {
   font-size: 24px;
-}
-
-.ra-move.ask .no {
-  font-size: 15px;
 }
 
 .ra-offer {
@@ -1020,9 +1009,6 @@
   .ra-move .es {
     font-size: 19px;
   }
-  .ra-move .no {
-    font-size: 15px;
-  }
   .ra-offer .chips {
     grid-template-columns: repeat(5, 1fr);
   }
@@ -1094,11 +1080,6 @@
 
   .ra-move .es {
     font-size: 16px;
-  }
-
-  .ra-move .no {
-    margin-top: 1px;
-    font-size: 13px;
   }
 
   .ra-move.leave {

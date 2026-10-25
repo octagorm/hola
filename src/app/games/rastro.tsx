@@ -12,11 +12,9 @@ import { WORD, gloss } from '../data/words'
 import {
   ASK,
   MOVE,
-  MOVE_NO,
   OFFER,
   STALLS_A_DAY,
   makeDay,
-  num,
   numberWords,
   purseFor,
   respond,
@@ -554,7 +552,6 @@ function Stall({
             <span className="es" lang="es">
               {plain(ASK)}
             </span>
-            <span className="no">Hva koster den?</span>
           </button>
         )}
         {step === 'haggle' && !offering && (
@@ -571,7 +568,6 @@ function Stall({
                 <span className="es" lang="es">
                   {k === 'offer' ? `¿${me} deja en …?` : plain(MOVE[k](ware.g))}
                 </span>
-                <span className="no">{MOVE_NO[k]}</span>
               </button>
             ))}
           </div>
@@ -602,8 +598,9 @@ function Stall({
                   aria-label={`${n} euro`}
                 >
                   <kbd aria-hidden="true">{i + 1}</kbd>
+                  {/* (in digits only: the Spanish beside them would
+                  translate a price heard and not yet read) */}
                   <b>{n}&nbsp;€</b>
-                  <span lang="es">{num(n)}</span>
                 </button>
               ))}
             </div>

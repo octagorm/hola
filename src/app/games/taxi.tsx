@@ -36,7 +36,6 @@ import { TodayNext, useBack } from '../daily'
 import { Mixed, useFont, usePeek } from '../ui'
 import { Cab, FlatMap, Roads, lotMiddle } from './taxiMap'
 import type { Move, Path, Point, Ride, Spot } from '../lib/taxi'
-import type { Level } from '../lib/bank'
 import './taxi.css'
 
 // Taxi: a passenger gets in and says where to, then how to get there, one
@@ -215,14 +214,12 @@ const toward = (from: number, to: number) => {
   return d
 }
 
-// A word on a button as the player knows it: in Norwegian until met, in
-// Spanish with the Norwegian under it while learnt, then Spanish
-function Word({ id, es, level }: { id: string; es: string; level: Level }) {
-  if (level === 0) return <span className="tx-w no">{glossOf(id)}</span>
+// A word on a button, in Spanish only: the Norwegian would say what is
+// heard, and the arrow says where the button goes
+function Word({ es }: { es: string }) {
   return (
     <span className="tx-w">
       <b lang="es">{es}</b>
-      {level === 1 && <small>{glossOf(id)}</small>}
     </span>
   )
 }
@@ -232,7 +229,7 @@ const HATS = ['#3b4a7a', '#8a4e36', '#4d6a52', '#6a4a72', '#6e6252']
 export default function Taxi() {
   useFont(FONTS)
   const store = useStore()
-  const { bank, levelOf } = store
+  const { bank } = store
   const { hear } = useVoices()
   const back = useBack('taxi')
   const peek = usePeek()
@@ -826,7 +823,6 @@ export default function Taxi() {
                   onClick={(e) => peek(tokenOf(p.id), e.currentTarget)}
                 >
                   <b lang="es">{p.sign}</b>
-                  {levelOf(p.id) < 2 && <small>{glossOf(p.id)}</small>}
                 </button>
               )
             })}
@@ -898,7 +894,7 @@ export default function Taxi() {
                   }}
                 >
                   <c.Icon className="ic" />
-                  <Word id={c.id} es={c.es} level={levelOf(c.id)} />
+                  <Word es={c.es} />
                 </button>
               ))}
             </div>

@@ -404,15 +404,6 @@ export const MOVE: Record<Exclude<MoveKind, 'offer'>, (g: Gender) => string> = {
 export const OFFER = (n: number, g: Gender) =>
   `¿ ${lo(g, true)}_deja>dejar=lar_De_meg_få_den en=for ${num(n)} ${EUROS} ?`
 
-// What each move means, for the button under the Spanish
-export const MOVE_NO: Record<MoveKind, string> = {
-  dear: 'For dyrt',
-  cheaper: 'Litt billigere?',
-  offer: 'Gi et bud',
-  buy: 'Jeg tar den',
-  leave: 'Gå videre',
-}
-
 // --- Haggling ---
 
 export interface HaggleState {

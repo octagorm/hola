@@ -13,7 +13,9 @@ import './porpara.css'
 // Por o para: a sentence in the frieze over two doors of the Alhambra, por
 // on the left and para on the right. The right one opens on the garden
 // behind it, the sentence is said whole, and a line says why. Ten
-// sentences a round, in layered paper-cut.
+// sentences a round, in layered paper-cut. The Norwegian of the sentence
+// comes after the answer, or before it only when asked for, since its
+// «til» or «på grunn av» would choose the door.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&family=Alegreya+SC:wght@500;700;800&display=swap'
@@ -33,6 +35,8 @@ export default function PorPara() {
   const [i, setI] = useState(0)
   const [picked, setPicked] = useState<Answer | null>(null)
   const [open, setOpen] = useState(false)
+  // The Norwegian asked for before answering
+  const [meant, setMeant] = useState(false)
   const [results, setResults] = useState<Array<boolean>>([])
   const [over, setOver] = useState(false)
   const [before, setBefore] = useState(0)
@@ -54,8 +58,9 @@ export default function PorPara() {
     const right = a === g.a
     // Two doors are a choice of two: a guess is right half the time, so an
     // answer says little (0.3). It asks for the word the sentence needs
-    // from what it means, so it is that word's saying that is weighed.
-    record(g.a, right, 0.3, 'decir')
+    // from what it means, so it is that word's saying that is weighed;
+    // less with the Norwegian read first.
+    record(g.a, right, meant ? 0.15 : 0.3, 'decir')
     setPicked(a)
     setResults([...results, right])
     blip(right ? 'right' : 'wrong')
@@ -81,6 +86,7 @@ export default function PorPara() {
     setI(i + 1)
     setPicked(null)
     setOpen(false)
+    setMeant(false)
   }
 
   const again = () => {
@@ -89,6 +95,7 @@ export default function PorPara() {
     setI(0)
     setPicked(null)
     setOpen(false)
+    setMeant(false)
     setResults([])
     setOver(false)
   }
@@ -149,7 +156,17 @@ export default function PorPara() {
                 {tail}
               </p>
               <p className="pp-no">
-                {g.no}
+                {picked || meant ? (
+                  g.no
+                ) : (
+                  <button
+                    type="button"
+                    className="pp-meant"
+                    onClick={() => setMeant(true)}
+                  >
+                    Hva betyr det?
+                  </button>
+                )}
                 {picked && hear !== false && (
                   <button
                     type="button"
