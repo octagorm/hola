@@ -5,7 +5,19 @@
 // Raise START when a list grows, so that banks given the starting point
 // before get the words added too.
 
-export const START = 2
+export const START = 3
+
+// The themes a bank starts with (data/themes.ts), the everyday ones, with
+// the bar and the shop first. They are given only to a bank whose themes
+// have never been chosen, so a choice made, even of none, is kept.
+export const THEMES_AT_START: Array<{ id: string; p: 1 | 2 | 3 }> = [
+  { id: 'tapeo', p: 2 },
+  { id: 'compras', p: 2 },
+  { id: 'transporte', p: 1 },
+  { id: 'clima', p: 1 },
+  { id: 'horarios', p: 1 },
+  { id: 'indicaciones', p: 1 },
+]
 
 // The simplest words, known from the start
 export const KNOWN_AT_START: Array<string> = [

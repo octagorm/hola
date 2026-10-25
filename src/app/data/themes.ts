@@ -1,6 +1,7 @@
 // The themes on the home page: lessons of words (data/words.ts) beyond the
-// first ones, in groups, each with a few lines on what it is about. One can
-// be chosen (bank.theme, games/tema.tsx), and today's chapter then meets its
+// first ones, in groups, each with a few lines on what it is about. Any
+// number can be chosen (bank.theme, games/tema.tsx), a bank starting with
+// the everyday ones (data/start.ts), and today's chapter then meets their
 // words before the rest. A group with no themes yet is not shown.
 
 export interface Theme {
