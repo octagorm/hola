@@ -1511,7 +1511,6 @@ await test(
         for (const id of ids)
           bank.cards[id] = {
             leer: { s: 6, t },
-            oir: { s: 4, t },
             decir: { s: 3, t },
             t,
             n: 3,

@@ -13,7 +13,6 @@ export async function learnerBank(now) {
     const t = now - (i % 5) * DAY * 0.4 - 3_600_000
     bank.cards[w.id] = {
       leer: { s, t },
-      oir: { s: s * 0.7, t },
       decir: { s: s * 0.45, t },
       t,
       n: 4,

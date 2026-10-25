@@ -46,7 +46,7 @@ const CLEAN: Array<How> = ['typed', 'picked']
 // Typed, or picked from four: a word whose saying has held a while is
 // typed, as in the other practice; a weaker one, or one not met, picked
 const typedFor = (bank: Bank, w: Word) =>
-  !!bank.cards[w.id] && kindFor('decir', bank.cards[w.id], true) === 'escribir'
+  !!bank.cards[w.id] && kindFor('decir', bank.cards[w.id]) === 'escribir'
 
 export default function Cadena() {
   useFont(FONTS)

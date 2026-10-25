@@ -119,14 +119,14 @@ describe('a round for the ear', () => {
     }
   })
 
-  it('favours the sets whose words’ hearing has faded', () => {
+  it('favours the sets whose words have faded', () => {
     const b = withStart(emptyBank(), now)
-    // The hearing of el perro long faded, and of the rest just practised
+    // El perro long faded, and the rest just practised
     for (const [id, card] of Object.entries(b.cards))
-      if (card) b.cards[id] = { ...card, oir: { s: 30, t: now } }
+      if (card) b.cards[id] = { ...card, leer: { s: 30, t: now } }
     b.cards['el perro'] = {
       ...newCard(now),
-      oir: { s: 0.1, t: now - 30 * 86_400_000 },
+      leer: { s: 0.1, t: now - 30 * 86_400_000 },
     }
     for (let seed = 1; seed < 10; seed++) {
       const items = earRound(b, now, seeded(seed))

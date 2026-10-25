@@ -123,12 +123,12 @@ describe('what a chapter heard counts for', () => {
     ])
   })
 
-  it('counts a line only heard as heard, once it was understood', () => {
+  it('counts a line only heard, once it was understood', () => {
     const seen = new Set([0])
     expect(credit(lines, seen, none, UNDERSTOOD, met)).toEqual([
       { id: 'el inspector', link: 'leer' },
       { id: 'mirar', link: 'leer' },
-      { id: 'el gato', link: 'oir' },
+      { id: 'el gato', link: 'leer' },
     ])
     expect(credit(lines, seen, none, UNDERSTOOD - 1, met)).toEqual([
       { id: 'el inspector', link: 'leer' },
@@ -139,8 +139,8 @@ describe('what a chapter heard counts for', () => {
   it('counts nothing for a word looked up, or not met', () => {
     const looked = new Set(['el inspector'])
     expect(credit(lines, new Set(), looked, 3, met)).toEqual([
-      { id: 'mirar', link: 'oir' },
-      { id: 'el gato', link: 'oir' },
+      { id: 'mirar', link: 'leer' },
+      { id: 'el gato', link: 'leer' },
     ])
   })
 })

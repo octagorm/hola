@@ -60,13 +60,31 @@ describe('a card', () => {
   it('learns only the links asked about', () => {
     const c = answerCard(newCard(now), ['decir'], true, now + DAY)
     expect(c.decir.s).toBeGreaterThan(c.leer.s)
-    expect(c.oir.s).toBe(c.leer.s)
   })
 
   it('has its most faded link practised', () => {
-    const c = { ...known(now), oir: { s: 0.05, t: now } }
-    expect(weakest(c, now + DAY, () => 0)).toBe('oir')
-    expect(weakest(c, now + DAY, () => 0, ['leer', 'decir'])).not.toBe('oir')
+    const c = { ...known(now), decir: { s: 0.05, t: now } }
+    expect(weakest(c, now + DAY, () => 0)).toBe('decir')
+    expect(weakest(c, now + DAY, () => 0, ['leer'])).toBe('leer')
+  })
+
+  it('reads a card saved with hearing apart as the better of the two', () => {
+    const t = now - 10 * DAY
+    const old = (leer: number, oir: number) => ({
+      cards: {
+        hola: {
+          ...newCard(t),
+          leer: { s: leer, t },
+          oir: { s: oir, t: t + DAY },
+        },
+      },
+    })
+    const heard = merge(old(0.5, 6), emptyBank()).cards.hola
+    expect(heard?.leer).toEqual({ s: 6, t: t + DAY })
+    expect(heard).not.toHaveProperty('oir')
+    const read = merge(old(9, 0.2), emptyBank()).cards.hola
+    expect(read?.leer).toEqual({ s: 9, t })
+    expect(read).not.toHaveProperty('oir')
   })
 })
 
@@ -138,7 +156,7 @@ describe('the starting point', () => {
 
   it('is no longer a seed once answered', () => {
     const b = withStart(emptyBank(), now)
-    const c = answerCard(b.cards.hola, ['oir'], true, now + DAY)
+    const c = answerCard(b.cards.hola, ['decir'], true, now + DAY)
     expect(c.z).toBeUndefined()
     expect(c.leer).toEqual(b.cards.hola?.leer)
   })

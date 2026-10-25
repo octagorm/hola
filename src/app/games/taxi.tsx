@@ -78,9 +78,9 @@ const CAR_Y = 0.68
 // What a move says about the words of the instruction it follows. There
 // are four moves to choose from (left, straight on, right, stop), so a move
 // made right on an instruction heard says what a word picked from a few
-// says: heard and understood (oír, 0.6). With the words shown, it says
-// what reading them does, and a choice among four read is no more than a
-// hint's worth (leer, 0.3).
+// says: understood (leer, 0.6). With the words shown, it says what
+// reading them does, and a choice among four read is no more than a
+// hint's worth (0.3).
 const HEARD = 0.6
 const READ = 0.3
 
@@ -466,7 +466,6 @@ export default function Taxi() {
     const ins = s.ride.instructions[s.at]
     const verdict = judge(ins, p.pi, m)
     const { record, levelOf: lv } = latest.current.store
-    const link = s.shown ? 'leer' : 'oir'
     if (verdict.ok) {
       s.cleared++
       setComplaint(null)
@@ -477,7 +476,7 @@ export default function Taxi() {
       if (p.pi === ins.points.length - 1)
         for (const id of ins.words)
           if (!s.missed.has(id) && lv(id) > 0)
-            record(id, true, s.shown ? READ : HEARD, link)
+            record(id, true, s.shown ? READ : HEARD, 'leer')
       return
     }
     s.mistakes++
@@ -488,7 +487,7 @@ export default function Taxi() {
     for (const id of verdict.missed)
       if (!s.missed.has(id)) {
         s.missed.add(id)
-        if (lv(id) > 0) record(id, false, s.shown ? READ : HEARD, link)
+        if (lv(id) > 0) record(id, false, s.shown ? READ : HEARD, 'leer')
       }
     const line =
       verdict.complaint === 'early'

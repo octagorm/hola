@@ -410,7 +410,7 @@ function Stall({
     const ok = understood(ware, heard.price, m)
     if (ok === null) return
     for (const id of numberWords(heard.price))
-      if (levelOf(id) > 0) record(id, ok, 0.3, 'oir')
+      if (levelOf(id) > 0) record(id, ok, 0.3, 'leer')
   }
 
   const ask = () => {

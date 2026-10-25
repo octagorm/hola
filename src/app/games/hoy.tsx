@@ -153,10 +153,10 @@ function Part({ p, i }: { p: Path; i: number }) {
   const skip = () =>
     setPath((q) => (q && q.d === p.d ? markDone(q, i, Date.now(), true) : q))
 
-  // The words to hear, picked once: those whose sound has faded most
+  // The words to hear, picked once: those whose meaning has faded most
   const [heard] = useState(() => {
     if (s.k !== 'listen') return []
-    const fresh = pick(bank, LISTEN + 4, Date.now(), { link: 'oir' })
+    const fresh = pick(bank, LISTEN + 4, Date.now(), { link: 'leer' })
       .map((w) => w.id)
       .filter((id) => !got.has(id))
     return [...got, ...fresh].slice(0, LISTEN)
@@ -196,12 +196,7 @@ function Part({ p, i }: { p: Path; i: number }) {
         <p className="q-part-intro">
           Til slutt med øret: hør ordet, og velg hva det betyr.
         </p>
-        <Drill
-          ids={heard}
-          got={got}
-          links={['oir']}
-          onItem={(id) => add([id])}
-        />
+        <Drill ids={heard} got={got} ear onItem={(id) => add([id])} />
         <div className="mt-4">
           <button type="button" className="q-link" onClick={skip}>
             Hopp over lyttingen
