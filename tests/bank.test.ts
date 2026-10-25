@@ -10,6 +10,8 @@ import {
   merge,
   newCard,
   recall,
+  same,
+  stable,
   toMeet,
   weakest,
   withStart,
@@ -105,6 +107,66 @@ describe('two banks merged', () => {
   it('read a bank saved before a field existed', () => {
     const m = merge({ cards: {} }, emptyBank())
     expect(m.palabra).toEqual({})
+  })
+
+  // Two copies as late as each other: each device must keep the same one,
+  // or they save their own over the other's for ever
+  const path = (arg: string): Bank['path'] => ({
+    d: '2026-10-25',
+    t: now,
+    steps: [{ k: 'game', arg }],
+    met: 0,
+    known: 0,
+    s0: {},
+  })
+  const ties = (): Array<[Bank, Bank]> => {
+    const a = emptyBank()
+    const b = emptyBank()
+    a.cards['el gato'] = { ...newCard(now), n: 2, leer: { s: 3, t: now } }
+    b.cards['el gato'] = { ...newCard(now), n: 1, leer: { s: 5, t: now } }
+    a.path = path('palabra')
+    b.path = path('rosco')
+    a.place.cuento = { p: 3, t: now }
+    b.place.cuento = { p: 7, w: 2, t: now }
+    a.theme = { on: [{ id: 'mancha', p: 1 }], t: now }
+    b.theme = { on: [{ id: 'mancha', p: 2 }], t: now }
+    const c = emptyBank()
+    c.cards['el gato'] = newCard(now)
+    // The same bank, with its keys in another order, as localStorage keeps it
+    const sorted = JSON.parse(stable(c)) as Bank
+    return [
+      [a, b],
+      [c, sorted],
+    ]
+  }
+
+  it('keep the same of two as late, whichever is merged into which', () => {
+    for (const [a, b] of ties())
+      expect(same(merge(a, b), merge(b, a))).toBe(true)
+  })
+
+  it('settle when two devices sync through the account', () => {
+    // As Synced does (lib/account.tsx): each copy from the account is
+    // merged in, and saved back if the account's differs; every save comes
+    // back to both devices
+    for (const [a, b] of ties()) {
+      const devices = [a, b]
+      let saved: string | null = null
+      let saves = 0
+      const queue = [0, 1]
+      while (queue.length && saves < 50) {
+        const i = queue.shift() ?? 0
+        const remote = saved === null ? null : (JSON.parse(saved) as Bank)
+        devices[i] = merge(devices[i], remote ?? emptyBank())
+        if (!remote || !same(devices[i], remote)) {
+          saved = JSON.stringify(devices[i])
+          saves++
+          queue.push(0, 1)
+        }
+      }
+      expect(saves).toBeLessThanOrEqual(2)
+      expect(same(devices[0], devices[1])).toBe(true)
+    }
   })
 })
 

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import { useConvexAuth, useMutation, useQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
-import { emptyBank, merge } from './bank'
+import { emptyBank, merge, same } from './bank'
 import { CLOUD } from './cloud'
 import { useStore } from './store'
 import type { ReactNode } from 'react'
@@ -37,10 +37,6 @@ export const useAccount = () => useContext(Ctx)
 export function AccountProvider({ children }: { children: ReactNode }) {
   return CLOUD ? <Synced>{children}</Synced> : children
 }
-
-const same = (a: Bank, b: Bank) =>
-  JSON.stringify(merge(a, emptyBank())) ===
-  JSON.stringify(merge(b, emptyBank()))
 
 function Synced({ children }: { children: ReactNode }) {
   const { bank, absorb } = useStore()
