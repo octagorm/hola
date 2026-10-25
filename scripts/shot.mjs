@@ -11,7 +11,7 @@
 // that text before the shot (repeatable, in order), --wait <ms> after load
 // (default 1200), --out <dir> (default shots/).
 import { mkdirSync } from 'node:fs'
-import { chromium } from 'playwright'
+import { launch } from './browser.mjs'
 import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 
@@ -35,7 +35,7 @@ const targets = args.filter(
 
 mkdirSync(out, { recursive: true })
 const proxy = process.env.HTTPS_PROXY
-const browser = await chromium.launch(
+const browser = await launch(
   proxy ? { proxy: { server: proxy, bypass: 'localhost,127.0.0.1' } } : {},
 )
 const context = await browser.newContext(

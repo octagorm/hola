@@ -4,7 +4,7 @@
 // Any error a page throws fails the test.
 //
 //   node scripts/smoke.mjs [part of a test's name, to run only those]
-import { chromium } from 'playwright'
+import { launch } from './browser.mjs'
 import { ORIGIN, quietConvex, routeDist } from './serve.mjs'
 import { learnerBank } from './learner.mjs'
 import { WORDS, meaning } from '../src/app/data/words.ts'
@@ -18,7 +18,7 @@ import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
 
 const proxy = process.env.HTTPS_PROXY
-const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
+const browser = await launch(proxy ? { proxy: { server: proxy } } : {})
 let failed = 0
 
 const PHONE = {
