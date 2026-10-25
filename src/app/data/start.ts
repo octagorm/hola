@@ -1,10 +1,11 @@
 // Where a player starts: Hola is made for someone who already knows
 // elementary Spanish, so a new bank begins with the simplest words known
-// and many easy ones being practised (lib/bank.ts, withStart). Each list
-// holds ids from data/words.ts. Raise START when a list grows, so that
-// banks given the starting point before get the words added too.
+// and many easy ones understood but still practised, for coming up with
+// them (lib/bank.ts, withStart). Each list holds ids from data/words.ts.
+// Raise START when a list grows, so that banks given the starting point
+// before get the words added too.
 
-export const START = 1
+export const START = 2
 
 // The simplest words, known from the start
 export const KNOWN_AT_START: Array<string> = [
@@ -129,7 +130,8 @@ export const KNOWN_AT_START: Array<string> = [
   'el mar',
 ]
 
-// Easy words, met and being practised from the start
+// Easy words, met from the start: understood, so read without the
+// Norwegian, but still practised
 export const PRACTISED_AT_START: Array<string> = [
   'hasta mañana',
   'mal',

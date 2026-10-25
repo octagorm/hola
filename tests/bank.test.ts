@@ -182,8 +182,12 @@ describe('the starting point', () => {
     expect(b.start).toBe(START)
     for (const id of KNOWN_AT_START)
       expect(level(b.cards[id], now + 14 * DAY), id).toBe(2)
-    for (const id of PRACTISED_AT_START)
-      expect(level(b.cards[id], now), id).toBe(1)
+    // understood, so read without the Norwegian, but weak to come up with
+    for (const id of PRACTISED_AT_START) {
+      const c = b.cards[id]
+      expect(level(c, now + 5 * DAY), id).toBe(2)
+      if (c) expect(recall(c.decir, now), id).toBeLessThan(recall(c.leer, now))
+    }
     // spread, so that they do not all fade on the same day
     const s = new Set(PRACTISED_AT_START.map((id) => b.cards[id]?.leer.s))
     expect(s.size).toBeGreaterThan(PRACTISED_AT_START.length / 2)
@@ -203,6 +207,24 @@ describe('the starting point', () => {
     expect(s.cards.adiós?.z).toBe(1)
     delete s.cards.adiós
     expect(withStart(s, now + 2 * DAY).cards.adiós).toBeUndefined()
+  })
+
+  it('has the easy words understood in a bank given them before', () => {
+    const first = withStart(emptyBank(), now)
+    const b: Bank = { ...first, start: 1 }
+    const [easy, answered] = PRACTISED_AT_START
+    for (const id of [easy, answered]) {
+      const c = b.cards[id]
+      if (c) b.cards[id] = { ...c, leer: { s: 0.5, t: now - DAY / 2 } }
+    }
+    b.cards[answered] = answerCard(b.cards[answered], ['decir'], true, now)
+    const s = withStart(b, now + DAY)
+    expect(s.start).toBe(START)
+    expect(level(s.cards[easy], now + DAY), easy).toBe(2)
+    expect(s.cards[easy]?.decir).toEqual(b.cards[easy]?.decir)
+    expect(s.cards[answered]).toBe(b.cards[answered])
+    // and a device still with the old seed takes the new one in a merge
+    expect(level(merge(b, s).cards[easy], now + DAY)).toBe(2)
   })
 
   it('gives way in a merge to a card with answers, however old', () => {

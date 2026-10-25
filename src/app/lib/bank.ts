@@ -235,21 +235,28 @@ const seeded = (t: number, s: Record<Link, number>): Card => ({
 
 // The starting point (data/start.ts), for a bank that has not had this
 // version of it: cards for its words where the bank has none, so nothing
-// learnt is touched. The known words last for weeks; those being practised
-// a day or so, spread so that they do not all fade on the same day, with
-// coming up with them weaker than understanding, and as if last practised half a
-// day ago, so that they come before the known ones from the first day.
+// learnt is touched. The known words last for weeks. Those being practised
+// are understood for a week or so, so read without the Norwegian, but
+// coming up with them lasts only half a day or so, spread so that they do
+// not all fade on the same day, and as if last practised half a day ago,
+// so that they come before the known ones from the first day. A bank given
+// the first starting point, when they were not yet understood, has those
+// never answered since understood from now.
 export function withStart(bank: Bank, now: number): Bank {
   if (bank.start >= START) return bank
   const cards = { ...bank.cards }
   for (const id of KNOWN_AT_START)
     cards[id] ??= seeded(now, { leer: 20, decir: 8 })
   for (const id of PRACTISED_AT_START) {
-    const s = 0.5 + 0.9 * spread(id)
-    cards[id] ??= seeded(now - DAY / 2, {
-      leer: s,
-      decir: s * 0.5,
-    })
+    const leer = 3 + 3 * spread(id)
+    const c = cards[id]
+    if (!c)
+      cards[id] = seeded(now - DAY / 2, {
+        leer,
+        decir: 0.25 + 0.45 * spread(id),
+      })
+    else if (c.z && c.leer.s < KNOWN)
+      cards[id] = { ...c, leer: { s: leer, t: now } }
   }
   return { ...bank, cards, start: START }
 }
