@@ -398,8 +398,9 @@ function figures(file, n) {
 // the whole head jumped. So the waiting face is painted again as an edit
 // with the mouth open, and only the mouth is taken from that (as Puppet
 // Theater does): --mouths paints the edits, from the waiting faces in
-// public/, and --web makes each talking face the waiting one with the
-// edit's mouth (scripts/mouths.py). Delete an edit to paint it again.
+// public/, and --web makes each talking face the edit's mouth alone, clear
+// around it, to show over the waiting face (scripts/mouths.py). Delete an
+// edit to paint it again.
 const MOUTH =
   'Keep everything in this image exactly the same: the same person, pose, position and size on the canvas, colours, lighting, flat poster style, paper grain and transparent background. ' +
   'Change only the mouth: open it as if in the middle of saying a word, showing a dark mouth opening. Nothing else may move or change.'

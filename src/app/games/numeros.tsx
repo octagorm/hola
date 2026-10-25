@@ -911,7 +911,9 @@ function Portrait({
         className={`nu-react ${face}`}
         style={{ top: `${BUST_TOP * 100}%` }}
       >
-        <span className={`nu-bust f-${face} ${talking ? 'talking' : ''}`}>
+        <span
+          className={`nu-bust f-${talking ? 'wait' : face} ${talking ? 'talking' : ''}`}
+        >
           {FACES.map((f) => (
             <img
               key={f}

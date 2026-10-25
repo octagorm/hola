@@ -12,9 +12,10 @@ painted again with the mouth open (scripts/pictures.mjs --mouths). It is
 brought back to the waiting face's size and laid on it (a generator
 nudges, turns or scales the figure a little), the two are compared, and
 the one area that clearly changed, the mouth, is cut from the edit with a
-soft edge and laid over the waiting face. Everything else stays exactly
-the waiting face, so when the two are shown in turn only the mouth moves:
-the way Puppet Theater makes its puppets' mouths (src/imaging/mouth.ts).
+soft edge. The talking face is that mouth alone, clear everywhere else,
+since the games always show it over the waiting face: so when it comes
+and goes, only the mouth moves, the way Puppet Theater makes its
+puppets' mouths (src/imaging/mouth.ts).
 """
 
 import sys
@@ -134,10 +135,13 @@ def main() -> None:
     fade = max(2, min(bw, bh) * 0.28)
     yy, xx = np.mgrid[0:bh, 0:bw].astype(np.float32) + 0.5
     t = np.clip(np.minimum.reduce([xx, bw - xx, yy, bh - yy]) / fade, 0, 1)
-    m = (t * t * (3 - 2 * t))[..., None]
-    out = closed.copy()
-    part = out[y : y + bh, x : x + bw]
-    part[..., :3] = part[..., :3] * (1 - m) + opened[y : y + bh, x : x + bw, :3] * m
+    m = t * t * (3 - 2 * t)
+    # only the mouth, clear around it: the talking face is always shown
+    # over the waiting one, which then shows through unchanged, so that
+    # not even the grain of compressing it again flickers
+    out = np.zeros_like(closed)
+    out[y : y + bh, x : x + bw, :3] = opened[y : y + bh, x : x + bw, :3]
+    out[y : y + bh, x : x + bw, 3] = closed[y : y + bh, x : x + bw, 3] * m
     Image.fromarray(out.round().clip(0, 255).astype(np.uint8)).save(
         out_path, quality=80, method=6
     )
