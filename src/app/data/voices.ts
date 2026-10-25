@@ -1,7 +1,7 @@
 // Who reads Hola's Spanish aloud, and how: voices designed from a
 // description, the teacher and the narrator from Madrid. The teacher says
 // each word on its own, and the sample in Settings; the narrator says whole
-// sentences, the story's and Cadáver exquisito's. The cast of the games and
+// sentences, the stories' and the games'. The cast of the games and
 // of El caso del reloj perdido speak in voices of their own. The page uses
 // only the names, as keys to the recordings; scripts/audio.py reads the
 // rest through scripts/speech.ts.

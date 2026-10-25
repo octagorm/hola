@@ -13,7 +13,6 @@ export const GAME_ICON_IDS = [
   'palabras',
   'crucigrama',
   'rosco',
-  'cadaver',
   'sopa',
   'reloj',
   'letras',

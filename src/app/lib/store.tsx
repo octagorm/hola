@@ -16,7 +16,7 @@ import {
   newCard,
   withStart,
 } from './bank'
-import { retheme } from './today'
+import { retheme, todays } from './today'
 import { keep } from './colecciones'
 import { setVoice } from './speech'
 import { setEffects } from './sound'
@@ -332,8 +332,9 @@ export function BankProvider({ children }: { children: ReactNode }) {
   const played = useCallback(
     (id: string) =>
       setBank((b) => {
-        const p = b.path
-        if (!p || p.d !== today()) return b
+        // (as todays gives it, a game since taken away put right)
+        const p = todays(b, Date.now())
+        if (!p) return b
         const i = p.steps.findIndex(
           (s) => (s.k === 'game' || s.k === 'story') && s.arg === id && !s.done,
         )

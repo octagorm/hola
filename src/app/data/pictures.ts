@@ -222,7 +222,6 @@ export const PICTURES: ReadonlySet<string> = new Set([
   'games/palabras',
   'games/crucigrama',
   'games/rosco',
-  'games/cadaver',
   'games/sopa',
   'games/reloj',
   'games/letras',

@@ -5,7 +5,6 @@ import { WORDS } from '../src/app/data/words'
 import { EPIGRAPH } from '../src/app/data/quijote'
 import { ALL_CHAPTERS } from '../src/app/data/stories'
 import { DESIGNED, SAMPLE, VOICES } from '../src/app/data/voices'
-import { DECK, spanish } from '../src/app/lib/cadaver'
 import { SAID } from '../src/app/lib/letras'
 import { SENTENCES } from '../src/app/data/orden'
 import { linesOf } from '../src/app/lib/orden'
@@ -36,7 +35,6 @@ describe('what is said aloud', () => {
         tokens(l).flatMap((t) => (t.id ? [t.es] : [])),
       ),
       ...lines.map(plain),
-      ...DECK.map(spanish),
       ...SAID,
       ...SENTENCES.flatMap((s) => linesOf(s).map(plain)),
       ...SONIDOS,
