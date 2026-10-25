@@ -14,6 +14,7 @@ import {
   level,
   merge,
   newCard,
+  stable,
   withStart,
 } from './bank'
 import { retheme } from './today'
@@ -87,17 +88,6 @@ function load<T>(key: string, fallback: T): T {
     return fallback
   }
 }
-
-// JSON with each object's keys in order, so that two tabs holding the same
-// bank write the same text
-export const stable = (value: unknown): string =>
-  JSON.stringify(value, (_, v: unknown) =>
-    v && typeof v === 'object' && !Array.isArray(v)
-      ? Object.fromEntries(
-          Object.entries(v).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
-        )
-      : v,
-  )
 
 // (only when it changes: each write tells the other tabs, and they answer)
 function save(key: string, value: unknown) {

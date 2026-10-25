@@ -382,6 +382,21 @@ export function pick(
     .map((s) => s.w)
 }
 
+// JSON with each object's keys in order, so that two tabs or devices
+// holding the same bank write the same text
+export const stable = (value: unknown): string =>
+  JSON.stringify(value, (_, v: unknown) =>
+    v && typeof v === 'object' && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.entries(v).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+        )
+      : v,
+  )
+
+// Whether two banks hold the same, whatever the order of their keys
+export const same = (a: Partial<Bank>, b: Partial<Bank>) =>
+  stable(merge(a, emptyBank())) === stable(merge(b, emptyBank()))
+
 // The keys of records that may be missing, as in a bank saved before
 // they were added
 const keysOf = (...rs: Array<object | undefined>) =>
@@ -393,7 +408,10 @@ const keysOf = (...rs: Array<object | undefined>) =>
 // of two days' sessions the later day's, or of the same day's the one
 // further on, and of two choices of themes the one made last. A bank saved before a
 // field existed is read as having it empty. Of two places in a text, the
-// later is kept, and a text once read to the end stays so.
+// later is kept, and a text once read to the end stays so. Of two as late
+// as each other, the same one is kept whichever bank is merged into which,
+// so that two devices merging each other's copy agree, and do not save
+// their own over the other's for ever.
 export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const out = emptyBank()
   for (const id of keysOf(a.cards, b.cards)) {
@@ -421,17 +439,26 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   for (const id of keysOf(a.place, b.place)) {
     const x = a.place?.[id]
     const y = b.place?.[id]
-    const last = !x ? y : !y ? x : y.t > x.t ? y : x
+    const last = !x ? y : !y ? x : later(x, y, (l) => [l.p, l.w ?? -1])
     const done = Math.max(x?.done ?? 0, y?.done ?? 0)
     if (last) out.place[id] = done ? { ...last, done } : last
   }
   const ta = themesOf(a.theme) ?? out.theme
   const tb = themesOf(b.theme) ?? out.theme
-  out.theme = tb.t > ta.t ? tb : ta
+  out.theme = later(ta, tb)
   return out
 }
 
-const later = (a: Memory, b: Memory) => (a.t >= b.t ? a : b)
+// Of two things, the one answered or changed later, and of two as late,
+// the one whose text (of what `by` takes from it) sorts last
+function later<T extends { t: number }>(
+  x: T,
+  y: T,
+  by: (v: T) => unknown = (v) => v,
+): T {
+  if (x.t !== y.t) return x.t > y.t ? x : y
+  return stable(by(x)) >= stable(by(y)) ? x : y
+}
 
 // A card saved when hearing was a link of its own: understanding is the
 // better of reading and hearing, the one that would hold better a week
@@ -446,7 +473,7 @@ function heard(card: Card & { oir?: Memory }): Card {
 function both(x: Card, y: Card): Card {
   if (x.z && !y.z) return y
   if (y.z && !x.z) return x
-  const last = x.t >= y.t ? x : y
+  const last = later(x, y, (c) => [c.n, c.x])
   return {
     ...last,
     leer: later(x.leer, y.leer),
@@ -462,7 +489,8 @@ const progress = (p: Path) =>
 function laterPath(a: Path | null, b: Path | null): Path | null {
   if (!a || !b) return a ?? b
   if (a.d !== b.d) return a.d > b.d ? a : b
-  return progress(b) > progress(a) ? b : a
+  if (progress(a) !== progress(b)) return progress(a) > progress(b) ? a : b
+  return stable(a) >= stable(b) ? a : b
 }
 
 // Words met and known, of all
