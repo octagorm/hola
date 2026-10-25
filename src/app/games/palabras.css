@@ -1,4 +1,4 @@
-/* Palabras: a well-loved wooden Scrabble set on a walnut table. The tiles
+/* Palabras: a well-loved wooden Scrabble set on a sea-green ground. The tiles
    are cut like wood type, maple with the grain on end; the premium squares
    are in the faded colours of an old Spanish board, and El relojero is
    drawn in clean line, ligne claire, with a wall clock behind him gone a
@@ -25,16 +25,10 @@
   overflow-x: hidden;
   font-family: 'Libre Franklin', system-ui, sans-serif;
   color: var(--ink);
-  /* A walnut table: the grain drawn once, stretched along the boards, and
-     the light falling on the middle of it */
-  background:
-    radial-gradient(
-      ellipse 80% 70% at 50% 38%,
-      rgba(255, 220, 170, 0.14),
-      transparent 70%
-    ),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='340'%3E%3Cfilter id='w' x='0' y='0' width='700' height='340' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.003 .075' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .07 0 0 0 0 .03 0 0 0 .62 -.12'/%3E%3C/filter%3E%3Crect width='700' height='340' filter='url(%23w)'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, #7b5232, #6b4529 55%, #5d3b22);
+  /* A sea-green ground, like its tile, with the grain of the paper it is
+     printed on */
+  background-color: #6f9e89;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05  0 0 0 0 .15  0 0 0 0 .1  0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 .pz :where(button) {
@@ -107,8 +101,7 @@
   font-size: 34px;
   line-height: 0.95;
   letter-spacing: 0.01em;
-  color: var(--paper);
-  text-shadow: 0 2px 0 rgba(30, 14, 4, 0.55);
+  color: var(--ink);
 }
 
 .pz-top h1 small {
@@ -117,8 +110,7 @@
   font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.02em;
-  color: rgba(246, 238, 219, 0.78);
-  text-shadow: none;
+  color: #1f3a30;
   margin-top: 3px;
 }
 
@@ -187,7 +179,7 @@
 }
 
 .pz-link {
-  color: var(--paper);
+  color: var(--ink);
   font-weight: 600;
   font-size: 15px;
   text-underline-offset: 3px;
@@ -666,8 +658,8 @@
   min-width: 112px;
   padding: 3px 9px 3px 10px;
   border-radius: 9px;
-  background: rgba(246, 238, 219, 0.14);
-  color: var(--paper);
+  background: rgba(246, 238, 219, 0.45);
+  color: var(--ink);
   border: 1.5px solid transparent;
 }
 
@@ -1160,7 +1152,7 @@
   width: 100%;
   margin: 0;
   text-align: center;
-  color: var(--paper);
+  color: var(--ink);
   font-weight: 600;
   font-size: 15px;
 }
@@ -1199,7 +1191,7 @@
   text-align: center;
   font-size: 12.5px;
   line-height: 1.45;
-  color: rgba(246, 238, 219, 0.78);
+  color: #1f3a30;
 }
 /* (no keyboard to speak of on a touch screen) */
 @media (hover: none) {

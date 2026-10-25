@@ -1,27 +1,28 @@
-/* La palabra: pearls and atoms in the night blue of Dalí's Galatea */
+/* La palabra: a word in six guesses as a travel poster of a night by the
+   sea, in flat colour on a grained deep blue, like its tile: sea green is
+   a letter in its place, mustard a letter in the word elsewhere, slate a
+   letter not in it, cream a letter being typed. */
 
 .g5 {
-  --txt: #eef0fb;
-  --txt2: #a9b0d6;
-  --line: rgba(220, 228, 255, 0.14);
-  --gold: #e8b44f;
-  --coral: #ef7a5c;
-  --cyan: #7fd6e8;
+  --txt: #f4e6c8;
+  --txt2: #a9b7c2;
+  --line: rgba(244, 230, 200, 0.18);
+  --night: #142d47;
+  --night-2: #1d3a58;
+  --green: #6f9e89;
+  --gold: #e3ac49;
+  --slate: #2c4660;
+  --cream: #ead5ad;
+  --coral: #cd6c47;
+  --cyan: var(--gold);
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
-  font-family: 'Manrope', system-ui, sans-serif;
+  font-family: 'Josefin Sans', 'Futura', system-ui, sans-serif;
   color: var(--txt);
-  background:
-    radial-gradient(1.4px 1.4px at 12% 8%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 22% 30%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(1.6px 1.6px at 78% 12%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 88% 34%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(1.2px 1.2px at 6% 52%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 94% 60%, #dfe6ff 50%, transparent 51%),
-    radial-gradient(620px 420px at 50% 0, #22307a 0, transparent 75%),
-    linear-gradient(180deg, #0e1640, #0a0f28);
+  background-color: var(--night);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .95  0 0 0 0 .85  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 .g5 button {
@@ -31,25 +32,26 @@
 }
 
 .g5 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 
 .g5 .g-m {
-  color: var(--cyan);
+  color: #9cc3d6;
 }
 
 .g5 .g-f {
-  color: var(--coral);
+  color: #e8906c;
 }
 
 .g5 .q-round {
-  background: rgba(238, 240, 251, 0.08);
-  border: 1px solid var(--line);
+  background: transparent;
+  border: 1.5px solid var(--line);
   color: var(--txt);
 }
 
-/* Pearls floating in the sky, on a wide screen */
+/* The night over the sea: a crescent moon, a few stars, and the dark
+   headlands at the foot, all flat */
 .g5-sky {
   position: absolute;
   inset: 0;
@@ -58,83 +60,88 @@
 
 .g5-sky i {
   position: absolute;
-  border-radius: 50%;
-  animation: g5-bob 7s ease-in-out infinite;
+  display: block;
 }
 
-.g5-sky .gold {
-  left: 9%;
-  top: 22%;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(
-    circle at 34% 30%,
-    #fff3cf 0,
-    #e8b44f 40%,
-    #7a5714 100%
-  );
-}
-
-.g5-sky .coral {
-  right: 10%;
-  top: 46%;
-  width: 84px;
-  height: 84px;
-  background: radial-gradient(
-    circle at 34% 30%,
-    #ffd9cc 0,
-    #ef7a5c 45%,
-    #7a2d1d 100%
-  );
-  animation-duration: 9s;
-}
-
-.g5-sky .cyan {
-  right: 18%;
+.g5-sky .moon {
+  left: 10%;
   top: 14%;
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(
-    circle at 34% 30%,
-    #e9fbff 0,
-    #7fd6e8 45%,
-    #1d5a74 100%
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  box-shadow: 26px 14px 0 0 var(--cream);
+  transform: rotate(-18deg);
+}
+
+.g5-sky .star {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cream);
+}
+
+.g5-sky .s1 {
+  left: 24%;
+  top: 9%;
+}
+
+.g5-sky .s2 {
+  right: 14%;
+  top: 18%;
+  width: 10px;
+  height: 10px;
+}
+
+.g5-sky .s3 {
+  right: 22%;
+  top: 34%;
+  width: 5px;
+  height: 5px;
+}
+
+.g5-sky .s4 {
+  left: 18%;
+  top: 44%;
+  width: 5px;
+  height: 5px;
+}
+
+.g5-sky .s5 {
+  right: 9%;
+  top: 52%;
+}
+
+/* The headlands and the sea, two flat shapes at the foot */
+.g5-sky .land {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26vh;
+  background: var(--night-2);
+  clip-path: polygon(
+    0 38%,
+    9% 22%,
+    17% 30%,
+    27% 12%,
+    34% 26%,
+    40% 100%,
+    60% 100%,
+    66% 34%,
+    74% 18%,
+    83% 30%,
+    91% 8%,
+    100% 24%,
+    100% 100%,
+    0 100%
   );
-  animation-delay: -3s;
 }
 
-.g5-sky .pearl {
-  left: 16%;
-  top: 64%;
-  width: 46px;
-  height: 58px;
-  background: radial-gradient(
-    circle at 34% 30%,
-    #ffffff 0,
-    #f3efe6 35%,
-    #a7a9c6 80%,
-    #5d6390 100%
-  );
-  animation-delay: -5s;
-}
-
-.g5-sky .pearl.small {
-  left: auto;
-  right: 7%;
-  top: 76%;
-  width: 26px;
-  height: 26px;
-  animation-delay: -1s;
-}
-
-@keyframes g5-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
+.g5-sky .sea {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9vh;
+  background: #10243a;
 }
 
 @media (max-width: 899px) {
@@ -166,7 +173,7 @@
   height: 44px;
   flex: none;
   border-radius: 50%;
-  background: rgba(238, 240, 251, 0.08);
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--txt);
   display: inline-flex;
@@ -181,21 +188,23 @@
 
 .g5-top h1 {
   margin: 0;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 28px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
   line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .g5-top h1 small {
   display: block;
   margin-top: 4px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--gold);
 }
 
 .g5-top .g5-round:last-child {
@@ -219,64 +228,43 @@
 .g5-row b {
   width: 54px;
   height: 54px;
-  border-radius: 50%;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 22px;
+  padding-top: 0.12em;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
 }
 
 .g5-row b.g {
-  background: radial-gradient(
-    circle at 34% 30%,
-    #fff3cf 0,
-    #e8b44f 40%,
-    #7a5714 100%
-  );
-  color: #2a1d02;
+  background: var(--green);
+  color: #10243a;
 }
 
 .g5-row b.c {
-  background: radial-gradient(
-    circle at 34% 30%,
-    #ffd9cc 0,
-    #ef7a5c 45%,
-    #7a2d1d 100%
-  );
-  color: #2b0c05;
+  background: var(--gold);
+  color: #2a1d02;
 }
 
 .g5-row b.x {
-  background: radial-gradient(
-    circle at 34% 30%,
-    #4a5596 0,
-    #27306a 55%,
-    #151b45 100%
-  );
-  color: #7d86bd;
+  background: var(--slate);
+  color: #8ea2b6;
 }
 
 .g5-row b.p {
-  background: radial-gradient(
-    circle at 34% 30%,
-    #ffffff 0,
-    #f3efe6 35%,
-    #a7a9c6 80%,
-    #5d6390 100%
-  );
-  color: #0b1230;
+  background: var(--cream);
+  color: var(--night);
   animation: g5-pop 0.14s ease-out;
 }
 
 .g5-row b.e {
-  border: 1.5px dashed rgba(220, 228, 255, 0.22);
+  border: 2px solid rgba(244, 230, 200, 0.16);
 }
 
 .g5-row b.cur {
-  border: 2px solid var(--cyan);
-  box-shadow: 0 0 18px rgba(127, 214, 232, 0.45);
+  border: 2px solid var(--gold);
 }
 
 .g5-row.reveal b {
@@ -322,8 +310,8 @@
   width: 12px;
   height: 12px;
   margin-right: 6px;
-  border-radius: 50%;
-  vertical-align: -1px;
+  border-radius: 3px;
+  vertical-align: 0;
 }
 
 .g5-seen {
@@ -340,12 +328,12 @@
   color: var(--txt2);
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(238, 240, 251, 0.05);
+  background: transparent;
 }
 
 .g5-seen b {
   margin-right: 6px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   color: var(--txt);
 }
 
@@ -357,9 +345,9 @@
   transform: translateX(-50%);
   padding: 10px 16px;
   border-radius: 999px;
-  background: var(--txt);
-  color: #0b1230;
-  font-weight: 800;
+  background: var(--cream);
+  color: var(--night);
+  font-weight: 700;
   font-size: 14px;
 }
 
@@ -367,14 +355,9 @@
   margin: 18px 8px 0;
   padding: 18px 20px;
   text-align: center;
-  border-radius: 22px;
-  background: linear-gradient(
-    180deg,
-    rgba(28, 38, 94, 0.92),
-    rgba(18, 26, 68, 0.92)
-  );
-  border: 1px solid var(--line);
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  background: var(--night-2);
+  border: 1.5px solid var(--line);
   animation: q-rise 0.4s ease-out both;
 }
 
@@ -384,7 +367,7 @@
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--gold);
 }
 
 .g5-result .word {
@@ -396,8 +379,8 @@
 }
 
 .g5-result .word b {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 700;
   font-size: 40px;
   line-height: 1.1;
 }
@@ -431,10 +414,10 @@
   border-radius: 999px;
   background: var(--gold);
   color: #1a1405 !important;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 15px;
+  letter-spacing: 0.04em;
   text-decoration: none;
-  box-shadow: 0 0 0 5px rgba(232, 180, 79, 0.16);
 }
 
 .g5-btn svg {
@@ -474,31 +457,32 @@
   min-width: 0;
   height: 50px;
   border: 0;
-  border-radius: 10px;
-  background: #2b3576;
+  border-radius: 7px;
+  background: #3a5876;
   color: var(--txt);
-  font-weight: 800;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: 17px;
+  padding-top: 0.15em;
 }
 
 .g5-keys button:active {
   transform: translateY(1px);
-  filter: brightness(1.2);
+  filter: brightness(1.15);
 }
 
 .g5-keys button.g {
+  background: var(--green);
+  color: #10243a;
+}
+
+.g5-keys button.c {
   background: var(--gold);
   color: #2a1d02;
 }
 
-.g5-keys button.c {
-  background: var(--coral);
-  color: #2b0c05;
-}
-
 .g5-keys button.x {
-  background: #151b45;
-  color: #5c648f;
+  background: #1b3149;
+  color: #5d7690;
 }
 
 .g5-keys button.wide {
@@ -518,13 +502,9 @@
 .g5-stats {
   margin: 22px 8px 0;
   padding: 20px 22px;
-  border-radius: 22px;
-  background: linear-gradient(
-    180deg,
-    rgba(28, 38, 94, 0.92),
-    rgba(18, 26, 68, 0.92)
-  );
-  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--night-2);
+  border: 1.5px solid var(--line);
 }
 
 .g5-stats .nums {
@@ -536,7 +516,7 @@
 
 .g5-stats .nums b {
   display: block;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 34px;
   line-height: 1.1;
   color: var(--txt);
@@ -544,12 +524,12 @@
 
 .g5-stats h2 {
   margin: 20px 0 10px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--gold);
 }
 
 .g5-stats ol {
@@ -576,8 +556,9 @@
   display: block;
   min-width: 30px;
   padding: 2px 10px;
-  border-radius: 999px;
-  background: #2b3576;
+  border-radius: 3px;
+  background: var(--green);
+  color: #10243a;
   text-align: right;
   font-style: normal;
   font-weight: 800;
@@ -597,7 +578,7 @@
   .g5-row b {
     width: 62px;
     height: 62px;
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .g5-keys button {
@@ -645,7 +626,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .g5-sky i,
   .g5-row.reveal b,
   .g5-row b.p,
   .g5-result {

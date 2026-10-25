@@ -18,6 +18,7 @@ import { say, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
 import { TodayNext, useBack } from '../daily'
 import { useFont } from '../ui'
+import type { ReactNode } from 'react'
 import type { Sentence } from '../lib/cadaver'
 import './cadaver.css'
 
@@ -25,7 +26,10 @@ import './cadaver.css'
 // each part added without seeing the rest. The parts are drawn at random
 // (from a deck of sentences made so, lib/cadaver.ts), and the player makes
 // them agree: the verb with whoever does it, the adjective with the thing.
-// Six sentences a round, in the colours of a 1969 poster.
+// Six sentences a round. Its picture is the game drawn as a figure: a
+// head, a body and legs on three strips of paper that do not quite line
+// up, like its tile, the body and the legs unfolded as the verb and the
+// adjective are got right.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Shrikhand&family=Rubik:wght@400;500;700;800&display=swap'
@@ -56,36 +60,19 @@ const turn = (had: Array<Sentence> = []): Turn => {
   }
 }
 
-// The colours of the picture, a different set each sentence
-const PALETTES = [
-  {
-    bg: '#ff4f8b',
-    dots: '#ff86ae',
-    table: '#2b59ff',
-    line: '#5f82ff',
-    sun: '#ffd23f',
-  },
-  {
-    bg: '#2b59ff',
-    dots: '#5f82ff',
-    table: '#ff4f8b',
-    line: '#ff86ae',
-    sun: '#ffd23f',
-  },
-  {
-    bg: '#19a974',
-    dots: '#4cc79a',
-    table: '#ffd23f',
-    line: '#ffe27a',
-    sun: '#ff4f8b',
-  },
-  {
-    bg: '#ffd23f',
-    dots: '#ffe27a',
-    table: '#19a974',
-    line: '#4cc79a',
-    sun: '#ff4f8b',
-  },
+// The colours of the picture's three strips, a different set each
+// sentence, and those of the figure on them
+const INK = '#1f3d5a'
+const CREAM = '#f8e9cb'
+const TERRA = '#cd6c47'
+const MUSTARD = '#e3ac49'
+const SAGE = '#6f9e89'
+const SLATE = '#3b6a91'
+const STRIPS = [
+  [MUSTARD, TERRA, SAGE],
+  [SAGE, MUSTARD, SLATE],
+  [TERRA, SLATE, MUSTARD],
+  [SLATE, SAGE, TERRA],
 ]
 
 export default function Cadaver() {
@@ -207,7 +194,12 @@ export default function Cadaver() {
         ) : (
           <div className="c6-play">
             <div className="c6-left">
-              <Picture n={done.length} />
+              <Picture
+                n={done.length}
+                seed={t.s.subject.es + thingPhrase(t.s)}
+                body={t.got.includes('verb')}
+                legs={t.got.includes('adj')}
+              />
               <p className="c6-count">
                 Setning {n} av {ROUND}
               </p>
@@ -370,7 +362,7 @@ function Ok() {
 function Flower() {
   return (
     <svg viewBox="-60 -60 120 120" aria-hidden="true">
-      <g fill="#fff" stroke="#1a1a1a" strokeWidth="7">
+      <g fill={CREAM} stroke={INK} strokeWidth="7">
         {[0, 72, 144, 216, 288].map((r) => (
           <ellipse
             key={r}
@@ -381,7 +373,7 @@ function Flower() {
           />
         ))}
       </g>
-      <circle r="17" fill="#ff8a1f" stroke="#1a1a1a" strokeWidth="7" />
+      <circle r="17" fill={TERRA} stroke={INK} strokeWidth="7" />
     </svg>
   )
 }
@@ -389,163 +381,227 @@ function Flower() {
 function Bang() {
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true">
-      <circle
-        cx="20"
-        cy="20"
-        r="17"
-        fill="#ffd23f"
-        stroke="#1a1a1a"
-        strokeWidth="3"
-      />
-      <path
-        d="M20 11v11"
-        stroke="#1a1a1a"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <circle cx="20" cy="29" r="2.6" fill="#1a1a1a" />
+      <circle cx="20" cy="20" r="17" fill={MUSTARD} />
+      <path d="M20 11v11" stroke={INK} strokeWidth="4" strokeLinecap="round" />
+      <circle cx="20" cy="29" r="2.6" fill={INK} />
     </svg>
   )
 }
 
-// Ants marching along a table and up a soft watch dripping over its edge,
-// drawn as a pop poster
-function Picture({ n }: { n: number }) {
-  const c = PALETTES[n % PALETTES.length]
+// The figure of the exquisite corpse, on three strips of paper laid one
+// under the other and a little askew: a head (with a hat, a beret, or the
+// moon for one), a body and legs (in boots, a skirt, or a fish's tail),
+// each drawn from the sentence, so that each has a figure of its own. A
+// strip not unfolded yet shows the back of the paper.
+function Picture({
+  n,
+  seed,
+  body,
+  legs,
+}: {
+  n: number
+  seed: string
+  body: boolean
+  legs: boolean
+}) {
+  const h = [...seed].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7)
+  const [g1, g2, g3] = STRIPS[n % STRIPS.length]
+  // A colour for the figure that stands out from its strip
+  const other = (ground: string) =>
+    [TERRA, MUSTARD, SAGE].find((c) => c !== ground) ?? TERRA
+  const W = 196
   return (
-    <div className="c6-pic" style={{ background: c.bg }}>
+    <div className="c6-pic">
       <svg
-        viewBox="0 0 352 244"
-        preserveAspectRatio="xMidYMid slice"
+        viewBox="50 0 252 244"
+        preserveAspectRatio="xMidYMid meet"
         aria-hidden="true"
       >
-        <defs>
-          <pattern
-            id="c6-dots"
-            width="12"
-            height="12"
-            patternUnits="userSpaceOnUse"
-          >
-            <circle cx="6" cy="6" r="2.6" fill={c.dots} />
-          </pattern>
-          <g id="c6-ant" fill="#1a1a1a">
-            <ellipse cx="-9" cy="0" rx="7" ry="5" />
-            <ellipse cx="0" cy="0" rx="4.5" ry="3.2" />
-            <circle cx="7" cy="-1.5" r="3.6" />
-            <g
-              stroke="#1a1a1a"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              fill="none"
-            >
-              <path d="M-2 2-7 8M0 2.5 0 9M2 2 7 8M9-4Q12-10 16-9M8-4Q9-11 12-12" />
-            </g>
-          </g>
-        </defs>
-        <rect width="352" height="244" fill={c.bg} />
-        <rect width="352" height="244" fill="url(#c6-dots)" />
-        <circle
-          cx="292"
-          cy="58"
-          r="38"
-          fill={c.sun}
-          stroke="#1a1a1a"
-          strokeWidth="3"
-        />
-        <g transform="translate(46 46) scale(.32)">
-          <g fill="#fff" stroke="#1a1a1a" strokeWidth="9">
-            {[0, 60, 120, 180, 240, 300].map((r) => (
-              <ellipse
-                key={r}
-                cy="-46"
-                rx="20"
-                ry="38"
-                transform={`rotate(${r})`}
-              />
-            ))}
-          </g>
-          <circle r="26" fill="#ff8a1f" stroke="#1a1a1a" strokeWidth="9" />
-        </g>
-        <rect
-          x="-6"
-          y="158"
-          width="244"
-          height="94"
-          fill={c.table}
-          stroke="#1a1a1a"
-          strokeWidth="3"
-        />
-        <path d="M-6 172H238" stroke={c.line} strokeWidth="4" />
-        <circle
-          cx="190"
-          cy="108"
-          r="6"
-          fill="none"
-          stroke="#1a1a1a"
-          strokeWidth="3"
-        />
-        <path
-          d="M186 112h8v5h-8z"
-          fill="#ffd23f"
-          stroke="#1a1a1a"
-          strokeWidth="2.4"
-        />
-        <path
-          d="M120 154C118 130 160 116 196 116 228 116 252 124 260 142 268 160 270 186 266 206 264 220 258 228 250 228 240 228 238 214 240 200 242 184 240 170 230 164 206 160 160 162 134 160 126 160 120 158 120 154Z"
-          fill="#fff"
-          stroke="#1a1a1a"
-          strokeWidth="3"
-        />
-        <path
-          d="M132 152C132 136 162 125 194 125 222 125 242 131 248 144"
-          fill="none"
-          stroke="#1a1a1a"
-          strokeWidth="1.6"
-          opacity=".5"
-        />
-        <g stroke="#1a1a1a" strokeWidth="2.6" strokeLinecap="round">
-          <path d="M190 129V134" />
-          <path d="M240 143 244 145" />
-          <path d="M138 148H142" />
-          <path d="M262 188 258 188" />
-        </g>
-        <path
-          d="M190 141 170 133M190 141 218 137"
-          stroke="#1a1a1a"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          className="c6-hands"
-        />
-        <circle
-          cx="190"
-          cy="141"
-          r="3.6"
-          fill={c.table}
-          stroke="#1a1a1a"
-          strokeWidth="1.4"
-        />
-        <g className="c6-ants">
-          <use href="#c6-ant" transform="translate(24 146) scale(1.3)" />
-          <use href="#c6-ant" transform="translate(72 147) scale(1.3)" />
-          <use
-            href="#c6-ant"
-            transform="translate(118 144) scale(1.3) rotate(-14)"
-          />
-          <use
-            href="#c6-ant"
-            transform="translate(160 146) scale(1.3) rotate(-4)"
-          />
-        </g>
-        <use
-          href="#c6-ant"
-          transform="translate(253 200) scale(1.2) rotate(86)"
-        />
-        <g fill="#1a1a1a">
-          <circle cx="120" cy="40" r="4" />
-          <circle cx="218" cy="92" r="3" />
-          <circle cx="330" cy="140" r="4" />
-        </g>
+        <Strip x={70} y={0} h={76} ground={g1} open>
+          <Head kind={h % 3} ground={g1} acc={other(g1)} w={W} />
+        </Strip>
+        <Strip x={86} y={76} h={84} ground={g2} open={body}>
+          <Body kind={(h >> 3) % 3} ground={g2} acc={other(g2)} />
+        </Strip>
+        <Strip x={77} y={160} h={84} ground={g3} open={legs}>
+          <Legs kind={(h >> 6) % 3} acc={other(g3)} />
+        </Strip>
       </svg>
     </div>
+  )
+}
+
+function Strip({
+  x,
+  y,
+  h,
+  ground,
+  open,
+  children,
+}: {
+  x: number
+  y: number
+  h: number
+  ground: string
+  open: boolean
+  children: ReactNode
+}) {
+  const W = 196
+  const id = `c6-strip-${y}`
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <clipPath id={id}>
+        <rect width={W} height={h} />
+      </clipPath>
+      {open ? (
+        <g clipPath={`url(#${id})`} className="c6-strip">
+          <rect width={W} height={h} fill={ground} />
+          <g transform={`translate(${W / 2 - 98} 0)`}>{children}</g>
+        </g>
+      ) : (
+        <g className="c6-back">
+          <rect width={W} height={h} fill="#ead7b2" />
+          <path d={`M${W - 34} 0H${W}V34Z`} fill="#d9c196" />
+          <path
+            d={`M14 ${h / 2}H${W - 14}`}
+            stroke="#c9ad7d"
+            strokeWidth="2"
+            strokeDasharray="7 6"
+          />
+        </g>
+      )}
+    </g>
+  )
+}
+
+// A head with no face: in a Cordoban hat, in a beret, or a crescent moon
+function Head({
+  kind,
+  ground,
+  acc,
+  w,
+}: {
+  kind: number
+  ground: string
+  acc: string
+  w: number
+}) {
+  const neck = <rect x="90" y="66" width="16" height="12" fill={CREAM} />
+  if (kind === 2)
+    return (
+      <>
+        {neck}
+        <circle cx="98" cy="46" r="28" fill={CREAM} />
+        <circle cx="112" cy="38" r="24" fill={ground} />
+        <circle cx={w - 40} cy="18" r="4" fill={CREAM} />
+        <circle cx="34" cy="30" r="3" fill={CREAM} />
+      </>
+    )
+  return (
+    <>
+      {neck}
+      <circle cx="98" cy="52" r="22" fill={CREAM} />
+      {kind === 0 ? (
+        <>
+          <rect x="74" y="8" width="48" height="26" rx="3" fill={INK} />
+          <rect x="74" y="24" width="48" height="6" fill={acc} />
+          <rect x="54" y="30" width="88" height="7" rx="3.5" fill={INK} />
+        </>
+      ) : (
+        <>
+          <ellipse cx="92" cy="34" rx="34" ry="11" fill={acc} />
+          <rect x="94" y="18" width="5" height="9" rx="2" fill={acc} />
+        </>
+      )}
+    </>
+  )
+}
+
+// A body with its arms: in a striped shirt, a spotted dress, or a jacket
+function Body({
+  kind,
+  ground,
+  acc,
+}: {
+  kind: number
+  ground: string
+  acc: string
+}) {
+  const coat = kind === 2 ? INK : kind === 1 ? acc : 'url(#c6-stripes)'
+  const shape = 'M60 30Q60 0 88 0H108Q136 0 136 30V84H60Z'
+  return (
+    <>
+      <pattern
+        id="c6-stripes"
+        width="18"
+        height="18"
+        patternUnits="userSpaceOnUse"
+        y="4"
+      >
+        <rect width="18" height="18" fill={CREAM} />
+        <rect width="18" height="9" fill={INK} />
+      </pattern>
+      <circle cx="46" cy="70" r="9" fill={CREAM} />
+      <circle cx="150" cy="70" r="9" fill={CREAM} />
+      <rect x="36" y="8" width="20" height="58" rx="10" fill={coat} />
+      <rect x="140" y="8" width="20" height="58" rx="10" fill={coat} />
+      <path d={shape} fill={coat} />
+      {kind === 1 && (
+        <g fill={ground === CREAM ? INK : CREAM}>
+          {[
+            [76, 22],
+            [110, 16],
+            [94, 42],
+            [72, 62],
+            [118, 56],
+            [46, 30],
+            [150, 40],
+          ].map(([x, y]) => (
+            <circle key={`${x} ${y}`} cx={x} cy={y} r="5" />
+          ))}
+        </g>
+      )}
+      {kind === 2 && (
+        <>
+          <path d="M88 0 98 26 108 0Z" fill={CREAM} />
+          <g fill={MUSTARD}>
+            <circle cx="98" cy="40" r="4" />
+            <circle cx="98" cy="56" r="4" />
+          </g>
+          <rect x="60" y="68" width="76" height="9" fill={acc} />
+        </>
+      )}
+    </>
+  )
+}
+
+// Legs: in trousers and boots, a skirt and shoes, or a fish's tail
+function Legs({ kind, acc }: { kind: number; acc: string }) {
+  if (kind === 2)
+    return (
+      <path
+        d="M64 0H132Q130 38 106 56L134 82H62L90 56Q66 38 64 0Z"
+        fill={SLATE === acc ? INK : SLATE}
+      />
+    )
+  if (kind === 1)
+    return (
+      <>
+        <rect x="80" y="36" width="10" height="34" fill={CREAM} />
+        <rect x="106" y="36" width="10" height="34" fill={CREAM} />
+        <path d="M66 0H130L148 44H48Z" fill={acc} />
+        <rect x="56" y="30" width="84" height="6" fill={CREAM} opacity=".7" />
+        <ellipse cx="80" cy="72" rx="12" ry="6" fill={INK} />
+        <ellipse cx="116" cy="72" rx="12" ry="6" fill={INK} />
+      </>
+    )
+  return (
+    <>
+      <rect x="66" y="0" width="64" height="16" fill={INK} />
+      <rect x="66" y="0" width="28" height="64" fill={INK} />
+      <rect x="102" y="0" width="28" height="64" fill={INK} />
+      <path d="M94 58V78H56Q56 64 70 58Z" fill={acc} />
+      <path d="M102 58V78H140Q140 64 126 58Z" fill={acc} />
+    </>
   )
 }

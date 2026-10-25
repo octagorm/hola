@@ -1,36 +1,26 @@
-/* Sopa de letras: a panel of azulejos set in a whitewashed wall, cobalt
-   on white glaze, lemons in the border and a star at each corner */
+/* Sopa de letras: a panel of azulejos set in a terracotta wall, like its
+   tile: slate blue on a cream glaze, lemons in the border and a star at
+   each corner, all in flat poster colour */
 
 .sl {
-  --cobalt: #1f3e9c;
-  --cobalt-2: #2d55bd;
-  --navy: #142a66;
-  --glaze: #fbf8f0;
-  --lemon: #f2c230;
-  --leaf: #4b8a43;
-  --terra: #c25a33;
-  --ink: #1c2442;
-  --ink-2: #4f5878;
-  --dot: rgba(31, 62, 156, 0.85);
+  --cobalt: #264a70;
+  --cobalt-2: #3b6a91;
+  --navy: #1b3452;
+  --glaze: #f8eed8;
+  --lemon: #e9b83a;
+  --leaf: #5d8a5a;
+  --terra: #c4603b;
+  --ink: #1f2a3a;
+  --ink-2: #545a68;
+  --dot: rgba(38, 74, 112, 0.85);
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
   font-family: 'Figtree', system-ui, sans-serif;
   color: var(--ink);
-  background-color: #f1ece2;
-  background-image:
-    radial-gradient(
-      1100px 620px at 8% -8%,
-      rgba(255, 253, 247, 0.9),
-      transparent 70%
-    ),
-    radial-gradient(
-      900px 700px at 100% 110%,
-      rgba(214, 202, 182, 0.45),
-      transparent 70%
-    ),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42  0 0 0 0 .39  0 0 0 0 .33  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E");
+  background-color: #cd6c47;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3  0 0 0 0 .12  0 0 0 0 .05  0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E");
 }
 
 .sl button {
@@ -113,7 +103,7 @@
   font-weight: 700;
   font-size: 32px;
   line-height: 1;
-  color: var(--navy);
+  color: var(--glaze);
 }
 
 .sl-top h1 small {
@@ -124,7 +114,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--terra);
+  color: #f6d79a;
 }
 
 .sl-count {
@@ -133,7 +123,6 @@
   border-radius: 10px;
   background: var(--glaze);
   border: 2px solid var(--cobalt);
-  box-shadow: 0 6px 14px -8px rgba(20, 42, 102, 0.5);
   font-family: 'Fraunces', serif;
   font-size: 16px;
   color: var(--ink-2);
@@ -160,10 +149,7 @@
   width: 100%;
   aspect-ratio: 1;
   border-radius: 6px;
-  box-shadow:
-    0 2px 0 rgba(255, 255, 255, 0.8),
-    0 26px 40px -24px rgba(60, 48, 30, 0.55),
-    0 4px 10px -4px rgba(60, 48, 30, 0.3);
+  box-shadow: 0 6px 0 rgba(90, 36, 18, 0.35);
 }
 
 .sl-frame {
@@ -207,10 +193,7 @@
     radial-gradient(circle at 100% 0, var(--dot) 0 7%, transparent 7.5%),
     radial-gradient(circle at 0 100%, var(--dot) 0 7%, transparent 7.5%),
     radial-gradient(circle at 100% 100%, var(--dot) 0 7%, transparent 7.5%),
-    linear-gradient(160deg, #ffffff 0, #f8f4ea 50%, #efe8d8 100%);
-  box-shadow:
-    inset 0 -0.3cqi 0 rgba(120, 100, 70, 0.14),
-    inset 0 0.25cqi 0 rgba(255, 255, 255, 0.95);
+    var(--glaze);
   color: var(--cobalt);
   font-family: 'Fraunces', Georgia, serif;
   font-size: 5.7cqi;
@@ -228,25 +211,13 @@
 
 /* A word found, glazed in its own colour; two crossing share the tile */
 .sl-tile.f {
-  background:
-    radial-gradient(
-      130% 100% at 28% 18%,
-      rgba(255, 255, 255, 0.35) 0,
-      transparent 60%
-    ),
-    var(--c1);
+  background: var(--c1);
   color: var(--i1);
   animation: sl-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }
 
 .sl-tile.f.two {
-  background:
-    radial-gradient(
-      130% 100% at 28% 18%,
-      rgba(255, 255, 255, 0.3) 0,
-      transparent 60%
-    ),
-    linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
+  background: linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
   color: #fff;
   text-shadow: 0 0.3cqi 0 rgba(20, 20, 40, 0.45);
 }
@@ -261,12 +232,7 @@
 /* A word's first letter, lit by a hint */
 .sl-tile.hint {
   z-index: 1;
-  background: radial-gradient(
-    130% 100% at 28% 18%,
-    #fffbe6 0,
-    #ffeaa0 60%,
-    #f6d36a 100%
-  );
+  background: #f3d58a;
   animation: sl-glow 1.4s ease-in-out infinite;
 }
 
@@ -274,12 +240,7 @@
    tapped */
 .sl-tile.sel,
 .sl-tile.anchor {
-  background: radial-gradient(
-    130% 100% at 28% 18%,
-    #4569cf 0,
-    var(--cobalt) 60%,
-    #172f78 100%
-  );
+  background: var(--cobalt);
   color: #fff;
   transform: scale(1.05);
   z-index: 2;
@@ -303,7 +264,7 @@
   inset: 0;
   border-radius: inherit;
   opacity: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23fbf8f0'/%3E%3Cg fill='none' stroke='%231f3e9c' stroke-width='6'%3E%3Ccircle r='31'/%3E%3Ccircle cx='100' r='31'/%3E%3Ccircle cy='100' r='31'/%3E%3Ccircle cx='100' cy='100' r='31'/%3E%3C/g%3E%3Cg fill='%231f3e9c'%3E%3Ccircle r='14'/%3E%3Ccircle cx='100' r='14'/%3E%3Ccircle cy='100' r='14'/%3E%3Ccircle cx='100' cy='100' r='14'/%3E%3Cpath d='M50 20C55 38 62 45 80 50 62 55 55 62 50 80 45 62 38 55 20 50 38 45 45 38 50 20Z'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='7' fill='%23f2c230'/%3E%3C/svg%3E")
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f8eed8'/%3E%3Cg fill='none' stroke='%23264a70' stroke-width='6'%3E%3Ccircle r='31'/%3E%3Ccircle cx='100' r='31'/%3E%3Ccircle cy='100' r='31'/%3E%3Ccircle cx='100' cy='100' r='31'/%3E%3C/g%3E%3Cg fill='%23264a70'%3E%3Ccircle r='14'/%3E%3Ccircle cx='100' r='14'/%3E%3Ccircle cy='100' r='14'/%3E%3Ccircle cx='100' cy='100' r='14'/%3E%3Cpath d='M50 20C55 38 62 45 80 50 62 55 55 62 50 80 45 62 38 55 20 50 38 45 45 38 50 20Z'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='7' fill='%23e9b83a'/%3E%3C/svg%3E")
     center / 100% 100%;
 }
 
@@ -372,21 +333,17 @@
     box-shadow: 0 0 0 0.7cqi var(--lemon);
   }
   50% {
-    box-shadow: 0 0 0 1.1cqi rgba(242, 194, 48, 0.6);
+    box-shadow: 0 0 0 1.1cqi rgba(233, 184, 58, 0.6);
   }
 }
 
 @keyframes sl-glow {
   0%,
   100% {
-    box-shadow:
-      0 0 0 0.6cqi var(--lemon),
-      0 0 2.4cqi rgba(242, 194, 48, 0.85);
+    box-shadow: 0 0 0 0.6cqi var(--lemon);
   }
   50% {
-    box-shadow:
-      0 0 0 0.9cqi var(--lemon),
-      0 0 4cqi rgba(242, 194, 48, 1);
+    box-shadow: 0 0 0 1cqi var(--lemon);
   }
 }
 
@@ -434,13 +391,12 @@
 .sl-card {
   padding: 16px 16px 14px;
   border-radius: 8px;
-  background:
-    radial-gradient(120% 80% at 20% 0, #ffffff 0, transparent 60%), var(--glaze);
+  background: var(--glaze);
   border: 2px solid var(--cobalt);
   box-shadow:
     inset 0 0 0 4px var(--glaze),
     inset 0 0 0 5.5px var(--lemon),
-    0 18px 30px -22px rgba(60, 48, 30, 0.6);
+    0 6px 0 rgba(90, 36, 18, 0.35);
 }
 
 .sl-list h2 {
@@ -475,7 +431,7 @@
 }
 
 .sl-list button:hover {
-  background: rgba(31, 62, 156, 0.06);
+  background: rgba(38, 74, 112, 0.07);
 }
 
 .sl-list .sw {
@@ -491,10 +447,8 @@
     radial-gradient(circle at 100% 0, var(--dot) 0 8%, transparent 9%),
     radial-gradient(circle at 0 100%, var(--dot) 0 8%, transparent 9%),
     radial-gradient(circle at 100% 100%, var(--dot) 0 8%, transparent 9%),
-    linear-gradient(160deg, #ffffff 0, #f3eddf 100%);
-  box-shadow:
-    0 0 0 1px rgba(31, 62, 156, 0.35),
-    inset 0 -2px 0 rgba(120, 100, 70, 0.14);
+    var(--glaze);
+  box-shadow: 0 0 0 1px rgba(38, 74, 112, 0.35);
   font-family: 'Fraunces', serif;
   font-style: normal;
   font-weight: 700;
@@ -503,13 +457,13 @@
 }
 
 .sl-list .hinted .sw {
-  background: linear-gradient(160deg, #fffbe6 0, #f6d36a 100%);
+  background: #f3d58a;
   box-shadow: 0 0 0 2px var(--lemon);
 }
 
 .sl-list .got .sw {
   background: var(--c1);
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 .sl-list .missed .sw {
@@ -560,7 +514,7 @@
   height: 7px;
   border-radius: 1.5px;
   background: #d5dcf0;
-  box-shadow: inset 0 0 0 1px rgba(31, 62, 156, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(38, 74, 112, 0.45);
 }
 
 .sl-list .say {
@@ -574,7 +528,7 @@
 .sl-help {
   margin: 10px 4px 0;
   padding-top: 10px;
-  border-top: 1px dashed rgba(31, 62, 156, 0.3);
+  border-top: 1px dashed rgba(38, 74, 112, 0.3);
   font-size: 14px;
   line-height: 1.45;
   color: var(--ink-2);

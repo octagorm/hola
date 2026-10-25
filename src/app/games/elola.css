@@ -1,10 +1,9 @@
-/* ¿El o la?: the Spanish deck as hand-coloured woodcut, on a green card
-   table. Cream cards drawn in ink, coloured in vermilion, slate blue and
-   ochre; a candle in a brass stick for the clock. */
+/* ¿El o la?: the Spanish deck as hand-coloured woodcut, on a mustard
+   ground like its tile. Cream cards drawn in ink, coloured in vermilion,
+   slate blue and ochre; a candle in a brass stick for the clock. */
 
 .eo {
-  --felt: #2f4b3c;
-  --felt-2: #22392d;
+  --felt: #e3ac49;
   --paper: #f4ead2;
   --paper-2: #e8dab9;
   --ink: #1d1813;
@@ -16,16 +15,9 @@
   min-height: 100vh;
   min-height: 100dvh;
   font-family: 'Alegreya', Georgia, serif;
-  color: var(--paper);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(
-      ellipse 90% 70% at 50% 38%,
-      #3a5c49 0%,
-      var(--felt) 55%,
-      var(--felt-2) 100%
-    );
-  background-attachment: fixed;
+  color: var(--ink);
+  background-color: var(--felt);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .22  0 0 0 0 .05  0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 .eo :where(button) {
@@ -35,7 +27,7 @@
 }
 
 .eo :focus-visible {
-  outline: 2px solid var(--ochre);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -62,7 +54,8 @@
   height: 44px;
   flex: none;
   border-radius: 50%;
-  border: 2px solid var(--paper);
+  border: 0;
+  background: var(--ink);
   color: var(--paper);
   display: inline-flex;
   align-items: center;
@@ -80,7 +73,7 @@
   font-weight: 400;
   font-size: 30px;
   line-height: 1;
-  color: var(--paper);
+  color: var(--ink);
   letter-spacing: 0.01em;
 }
 
@@ -91,7 +84,7 @@
   font-style: italic;
   font-size: 15px;
   letter-spacing: 0;
-  color: color-mix(in srgb, var(--paper) 72%, transparent);
+  color: var(--ink-2);
 }
 
 .eo-score {
@@ -101,7 +94,7 @@
   gap: 7px;
   padding: 4px 14px 4px 4px;
   border-radius: 999px;
-  background: rgb(0 0 0 / 0.2);
+  background: var(--paper);
 }
 
 .eo-score .coin {
@@ -181,17 +174,9 @@
   -webkit-backface-visibility: hidden;
   border: 2px solid var(--ink);
   border-radius: 14px;
-  background:
-    radial-gradient(
-      ellipse at 30% 20%,
-      rgb(255 255 255 / 0.35),
-      transparent 60%
-    ),
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
-  box-shadow:
-    0 2px 0 var(--paper-2),
-    0 14px 24px -10px rgb(0 0 0 / 0.55);
+  box-shadow: 0 6px 0 rgb(110 70 10 / 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -465,12 +450,7 @@
   height: 150px;
   transform: translate(-50%, 50%);
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgb(255 214 120 / 0.26),
-    rgb(255 214 120 / 0.08) 45%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgb(255 236 180 / 0.45), transparent 60%);
   pointer-events: none;
 }
 
@@ -563,7 +543,7 @@
   border: 2px solid var(--ink);
   border-radius: 12px;
   background: var(--paper);
-  box-shadow: 0 10px 18px -10px rgb(0 0 0 / 0.6);
+  box-shadow: 0 5px 0 rgb(110 70 10 / 0.3);
 }
 
 /* The frame line, broken as the suit's cards have it: once for copas,
@@ -681,7 +661,7 @@
 .eo-pile.near .face {
   box-shadow:
     0 0 0 4px var(--ochre),
-    0 10px 18px -10px rgb(0 0 0 / 0.6);
+    0 5px 0 rgb(110 70 10 / 0.3);
 }
 
 .eo-pile:not(:disabled):active {
@@ -726,7 +706,7 @@
   text-align: center;
   font-style: italic;
   font-size: 16px;
-  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: #5a3f14;
 }
 
 /* --- Buttons --- */
@@ -740,8 +720,8 @@
   padding: 0 26px;
   border: 2px solid var(--ink);
   border-radius: 999px;
-  background: var(--ochre);
-  color: var(--ink);
+  background: var(--red);
+  color: var(--paper);
   font-family: 'Alegreya', serif;
   font-weight: 700;
   font-size: 19px;
@@ -779,7 +759,7 @@
   border-radius: 16px;
   background: var(--paper);
   color: var(--ink);
-  box-shadow: 0 16px 30px -14px rgb(0 0 0 / 0.6);
+  box-shadow: 0 6px 0 rgb(110 70 10 / 0.3);
 }
 
 .eo-panel::before {

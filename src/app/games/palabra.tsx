@@ -21,14 +21,14 @@ import type { Word } from '../data/words'
 import type { Mark } from '../lib/wordle'
 import './palabra.css'
 
-// La palabra: the day's word in six guesses, pearls in a night sky (after
-// Dalí's Galatea of the Spheres). Gold is a letter in its place, coral a
-// letter in the word elsewhere, dark a letter not in it. The day's word is
+// La palabra: the day's word in six guesses, as a travel poster of a night
+// by the sea, like its tile. Green is a letter in its place, mustard a
+// letter in the word elsewhere, slate a letter not in it. The day's word is
 // one of the words met, once there are enough of them; after it, more
 // words can be played for practice.
 
 const FONTS =
-  'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap'
+  'https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap'
 
 // The day's word and the guesses so far, kept so a reload goes on where it
 // was: the word is fixed for the day once it is first shown
@@ -82,11 +82,14 @@ export default function Palabra() {
   return (
     <div className="g5">
       <div className="g5-sky" aria-hidden="true">
-        <i className="gold" />
-        <i className="coral" />
-        <i className="cyan" />
-        <i className="pearl" />
-        <i className="pearl small" />
+        <i className="moon" />
+        <i className="star s1" />
+        <i className="star s2" />
+        <i className="star s3" />
+        <i className="star s4" />
+        <i className="star s5" />
+        <i className="land" />
+        <i className="sea" />
       </div>
       <div className="g5-col">
         <header className="g5-top">
@@ -310,14 +313,14 @@ function Board({
         <>
           <div className="g5-legend">
             <span>
-              <i style={{ background: '#e8b44f' }} />
+              <i style={{ background: 'var(--green)' }} />
               riktig plass
             </span>
             <span>
-              <i style={{ background: '#ef7a5c' }} />i ordet
+              <i style={{ background: 'var(--gold)' }} />i ordet
             </span>
             <span>
-              <i style={{ background: '#27306a' }} />
+              <i style={{ background: 'var(--slate)' }} />
               ikke med
             </span>
           </div>
