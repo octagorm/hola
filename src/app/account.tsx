@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuthActions } from '@convex-dev/auth/react'
-import { Cloud, LogIn, LogOut, Users } from 'lucide-react'
+import { Cloud, LogIn, LogOut } from 'lucide-react'
 import { useAccount } from './lib/account'
 import type { Me } from './lib/account'
 
@@ -160,11 +160,6 @@ function AccountBody() {
         >
           <LogOut /> Logg ut
         </button>
-        {me.admin && (
-          <a className="q-link" href="/admin">
-            <Users aria-hidden="true" /> Brukere
-          </a>
-        )}
       </div>
     </>
   )
