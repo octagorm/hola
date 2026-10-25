@@ -3,7 +3,6 @@ import { Download, Upload, Volume2 } from 'lucide-react'
 import { dayKey, merge } from '../lib/bank'
 import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
-import { startMusic, stopMusic } from '../lib/music'
 import { useStore } from '../lib/store'
 import { useAccount } from '../lib/account'
 import { AccountSettings } from '../account'
@@ -153,15 +152,6 @@ export default function Ajustes() {
             on={settings.effects}
             set={(effects) => setSettings({ effects })}
             label="Lyder når du svarer"
-          />
-          <Toggle
-            on={settings.music}
-            set={(music) => {
-              setSettings({ music })
-              if (music) startMusic()
-              else stopMusic()
-            }}
-            label="Gitar i bakgrunnen"
           />
         </Group>
 
