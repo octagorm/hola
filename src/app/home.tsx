@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
@@ -38,7 +38,6 @@ import {
 import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
 import { AccountButton } from './account'
 import { PaintedScene, SCENE_PAINTED } from './sky'
-import { Colecciones } from './colecciones'
 import { useAccount } from './lib/account'
 import {
   InkBar,
@@ -60,7 +59,10 @@ import type { GameIconId, TocId } from './art'
 // or under the picture on a larger one: today (today's chapter, the story
 // to go on with, the credential, all on one phone screen), what there is
 // to read and hear, the games in three groups, the themes in one list,
-// and the words (the count and the collections).
+// and the words (the count and Tu museo).
+
+// Tu museo, loaded only when Ordene is shown
+const Museo = lazy(() => import('./games/museo'))
 
 // What lies over the painted scene on a larger screen, for its moon and
 // clouds to keep clear of
@@ -564,7 +566,9 @@ export default function Home() {
               </span>
             </a>
 
-            <Colecciones />
+            <Suspense fallback={null}>
+              <Museo />
+            </Suspense>
           </>
         )}
 

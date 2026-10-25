@@ -76,7 +76,7 @@ export interface Bank {
   // chapter meets before the rest, and when the choice was last changed
   theme: { on: Array<ThemeChoice>; t: number }
   // Lessons finished (lib/colecciones.ts), by id → when first finished: a
-  // keepsake unwrapped and a picture hung stay so, whatever comes after
+  // picture hung stays so, whatever comes after
   kept: Record<string, number | undefined>
   // How far each text in the library (data/biblioteca.ts) is read, by id
   place: Record<string, Place | undefined>

@@ -41,7 +41,7 @@ export interface Lesson {
   es: string
   no: string
   // The words of a text in the library (data/biblioteca.ts), met only
-  // there: not among today's new words, nor in Los cajones
+  // there: not among today's new words
   book?: boolean
 }
 

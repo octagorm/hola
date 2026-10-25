@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  X,
-} from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { PICTURE, isPainted, paintedSrc } from '../data/museo'
 import { THEME } from '../data/themes'
 import { LESSON } from '../data/words'
@@ -17,7 +11,8 @@ import { PrintDefs, StandIn } from './museoArt'
 import type { Picture } from '../data/museo'
 import './museo.css'
 
-// Tu museo: a museum of your own, a room for each group of themes, in flat
+// Tu museo, on the home page's Ordene under Tus palabras: a museum of your
+// own, a room for each group of themes, in flat
 // graphic style: coloured walls under a skylight, a bench, a doorway on to
 // the next room. Each theme has a frame on the wall; its picture (a print
 // or a poster, data/museo.ts) is hung once the theme is finished
@@ -61,6 +56,7 @@ export default function Museo() {
   })
   const [open, setOpen] = useState<string | null>(null)
   const frames = useRef(new Map<string, HTMLButtonElement>())
+  const top = useRef<HTMLElement>(null)
   const ri = Math.max(
     0,
     all.findIndex((r) => r.id === room),
@@ -86,19 +82,18 @@ export default function Museo() {
   const hung = tally(bank, hereLessons).done
 
   return (
-    <div
+    <section
+      ref={top}
       className="mu"
+      aria-label="Tu museo"
       style={{ '--wall': wallOf(here.id) } as React.CSSProperties}
     >
       <PrintDefs />
       <header className="mu-top">
-        <a className="mu-round" href="#" aria-label="Tilbake">
-          <ArrowLeft />
-        </a>
-        <h1>
+        <h2>
           Tu museo
           <small>Museet ditt</small>
-        </h1>
+        </h2>
         <span className="mu-count" aria-label="Bilder hengt opp">
           <b>{total.done}</b> / {total.all}
         </span>
@@ -217,7 +212,10 @@ export default function Museo() {
                 style={{ '--next': wallOf(next.id) } as React.CSSProperties}
                 onClick={() => {
                   enter(next.id)
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  top.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                  })
                 }}
               >
                 <span className="arch" aria-hidden="true">
@@ -251,7 +249,7 @@ export default function Museo() {
           }}
         />
       )}
-    </div>
+    </section>
   )
 }
 

@@ -2663,20 +2663,39 @@ img.q-pic {
   color: var(--ink);
 }
 
-.q-lesson {
+.q-lgroup {
+  margin-top: 30px;
+}
+.q-lgroup > h3 {
+  margin: 0 0 4px;
+  font-family: var(--sc);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.q-lgroup > h3 small {
+  margin-left: 10px;
+  font-family: var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--ink-3);
+}
+.q-lgroup .q-lesson {
+  border-bottom: 1px solid var(--line);
+}
+.q-theme-words {
   margin-top: 28px;
 }
-
-.q-lesson header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 16px;
+.q-theme-words header {
   padding-bottom: 6px;
   border-bottom: 2px solid var(--ink);
 }
-
-.q-lesson h2 {
+.q-theme-words h2 {
   margin: 0;
   font-family: var(--display);
   text-transform: none;
@@ -2684,26 +2703,99 @@ img.q-pic {
   font-size: 30px;
   line-height: 1.1;
 }
-
-.q-lesson h2 span {
+.q-theme-words h2 span {
   margin-left: 10px;
   font-family: var(--body);
-  text-transform: none;
   font-style: italic;
   font-size: 17px;
   color: var(--ink-2);
 }
-
-.q-lesson header em {
+.q-lgroup > h3 + .q-lesson {
+  border-top: 2px solid var(--ink);
+}
+.q-lesson.shown {
+  margin-bottom: 18px;
+}
+.q-lesson header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+}
+.q-lesson.shown header {
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+}
+.q-lesson .toc {
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 2px 10px;
+  align-items: baseline;
+  padding: 10px 2px 9px;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.q-lesson .toc .chev {
+  width: 18px;
+  height: 18px;
+  align-self: center;
+  color: var(--ink-3);
+  transition: transform 0.15s;
+}
+.q-lesson.shown .toc .chev {
+  transform: rotate(90deg);
+}
+.q-lesson .name {
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1.1;
+}
+.q-lesson .name span {
+  margin-left: 10px;
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+.q-lesson .toc em {
   font-family: var(--sc);
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.08em;
   font-style: normal;
   font-size: 11px;
+  white-space: nowrap;
   color: var(--ink-3);
 }
-
+.q-lesson .fill {
+  grid-column: 2 / -1;
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.q-lesson .fill i {
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+.q-lesson .fill .lv1 {
+  background: var(--ochre);
+}
+.q-lesson .fill .lv2 {
+  background: var(--blue);
+}
+@media (max-width: 560px) {
+  .q-lesson .name span {
+    display: block;
+    margin-left: 0;
+  }
+}
 .q-lesson .acts {
   margin-left: auto;
   display: flex;
@@ -3340,43 +3432,6 @@ img.q-pic {
 
 .q-about p + p {
   margin-top: 10px;
-}
-
-/* --- The collections' boxes on the home page (colecciones.tsx) --- */
-
-.q-coll {
-  display: grid;
-  grid-template-columns: 110px minmax(0, 1fr);
-  gap: 18px;
-  align-items: center;
-}
-
-.q-coll .art {
-  width: 110px;
-  height: 74px;
-}
-
-.q-coll h3 {
-  font-size: 28px;
-}
-
-.q-coll p {
-  margin: 6px 0 0;
-  font-size: 16px;
-  line-height: 1.45;
-  color: var(--ink-2);
-}
-
-@media (max-width: 560px) {
-  .q-coll {
-    grid-template-columns: 80px minmax(0, 1fr);
-    gap: 12px;
-  }
-
-  .q-coll .art {
-    width: 80px;
-    height: 54px;
-  }
 }
 
 /* --- Audiobooks --- */
