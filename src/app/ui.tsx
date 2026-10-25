@@ -555,7 +555,9 @@ export const percent = (share: number | null) =>
 
 // --- The ring of today's chapter ---
 
-const WEDGE = ['var(--red)', 'var(--ochre)', 'var(--blue)']
+// The seasons in turn round the ring, spring to winter (the user's wish):
+// nothing but a pretty way of showing how far the day has come
+const WEDGE = ['var(--spring)', 'var(--ochre)', 'var(--red)', 'var(--blue)']
 
 // One wedge for each part of the day, filled as far as the part has got,
 // with the chapter's number in the middle
