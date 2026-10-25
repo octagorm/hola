@@ -1,17 +1,21 @@
-/* Cadáver exquisito: a pop poster of 1969, in ink and four bright colours */
+/* Cadáver exquisito: strips of coloured paper on cream, like its tile, in
+   the poster colours (mustard, terracotta, sea green, slate) with a
+   cheerful late-sixties letter */
 
 .c6 {
-  --k: #1a1a1a;
-  --pink: #ff4f8b;
-  --sun: #ffd23f;
-  --blue: #2b59ff;
-  --green: #19a974;
-  --cream: #fff8ec;
+  --k: #1f3d5a;
+  --pink: #c4603b;
+  --sun: #e3ac49;
+  --blue: #3b6a91;
+  --green: #6f9e89;
+  --cream: #f8e9cb;
+  --card: #fcf5e6;
   min-height: 100vh;
   min-height: 100dvh;
   font-family: 'Rubik', system-ui, sans-serif;
   color: var(--k);
-  background: var(--cream);
+  background-color: var(--cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .27  0 0 0 0 .16  0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 .c6 button {
@@ -47,10 +51,9 @@
   height: 44px;
   flex: none;
   border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--k);
-  box-shadow: 3px 3px 0 var(--k);
-  color: var(--k) !important;
+  background: var(--k);
+  border: 0;
+  color: var(--cream) !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +69,7 @@
   width: 36px;
   height: 36px;
   background: var(--sun);
-  box-shadow: 2px 2px 0 var(--k);
+  color: var(--k) !important;
 }
 
 .c6-round.small svg {
@@ -75,8 +78,7 @@
 }
 
 .c6-round:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--k);
+  transform: translateY(1px);
 }
 
 .c6-top h1 {
@@ -95,7 +97,7 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--pink);
 }
 
 .c6-streak {
@@ -104,10 +106,8 @@
   align-items: center;
   gap: 4px;
   padding: 4px 12px 4px 6px;
-  border: 3px solid var(--k);
   border-radius: 999px;
   background: var(--sun);
-  box-shadow: 3px 3px 0 var(--k);
   font-family: 'Shrikhand', serif;
   font-size: 20px;
   line-height: 1.1;
@@ -127,13 +127,9 @@
 
 .c6-pic {
   margin-top: 16px;
-  aspect-ratio: 352 / 244;
+  aspect-ratio: 252 / 244;
   max-height: 250px;
-  border: 3px solid var(--k);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 5px 5px 0 var(--k);
-  transition: background 0.3s;
+  margin-inline: auto;
 }
 
 .c6-pic svg {
@@ -142,16 +138,17 @@
   height: 100%;
 }
 
-.c6-ants {
-  animation: c6-march 5s ease-in-out infinite alternate;
+/* A strip unfolding */
+.c6-strip {
+  animation: c6-unfold 0.45s ease-out;
+  transform-box: fill-box;
+  transform-origin: top;
 }
 
-@keyframes c6-march {
+@keyframes c6-unfold {
   from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(10px);
+    transform: scaleY(0.2);
+    opacity: 0.4;
   }
 }
 
@@ -162,7 +159,7 @@
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #666;
+  color: #7a6a55;
 }
 
 /* --- The folds of the sentence --- */
@@ -181,9 +178,8 @@
   gap: 10px;
   min-height: 48px;
   padding: 0 12px 0 0;
-  border: 3px solid var(--k);
-  border-radius: 12px;
-  box-shadow: 4px 4px 0 var(--k);
+  border: 2px solid transparent;
+  border-radius: 3px;
   overflow: hidden;
   animation: c6-in 0.25s ease-out;
 }
@@ -195,8 +191,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 3px solid var(--k);
-  background: rgba(255, 255, 255, 0.55);
+  border-right: 2px dashed rgba(31, 61, 90, 0.35);
+  background: rgba(255, 250, 238, 0.35);
   font-style: normal;
   font-weight: 800;
   font-size: 10px;
@@ -219,12 +215,11 @@
   height: 26px;
   flex: none;
   border-radius: 50%;
-  background: var(--green);
-  border: 2px solid var(--k);
+  background: var(--k);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--cream);
   animation: c6-pop 0.3s ease-out;
 }
 
@@ -235,31 +230,31 @@
 }
 
 .c6-fold.f1 {
-  background: #ffa3c4;
+  background: var(--sun);
   transform: rotate(-1.2deg);
 }
 
 .c6-fold.f2 {
-  background: #9fd3ff;
-  transform: rotate(0.8deg);
+  background: #e08a63;
+  transform: rotate(0.8deg) translateX(6px);
 }
 
 .c6-fold.f3 {
-  background: var(--sun);
-  transform: rotate(-0.6deg);
+  background: #93b8a5;
+  transform: rotate(-0.6deg) translateX(-4px);
 }
 
 .c6-fold.f4 {
-  background: #b8f0c6;
-  transform: rotate(0.9deg);
+  background: #a3bcd0;
+  transform: rotate(0.9deg) translateX(3px);
 }
 
 /* Not filled in yet: a fold still folded under */
 .c6-fold.open,
 .c6-fold.now {
-  background: #fff;
+  background: var(--card);
+  border-color: #c9ad7d;
   border-style: dashed;
-  box-shadow: none;
   animation: none;
 }
 
@@ -270,7 +265,7 @@
 }
 
 .c6-fold.open b {
-  color: #b5ad9f;
+  color: #c9b48f;
 }
 
 .c6-fold.now {
@@ -325,7 +320,7 @@
 }
 
 .c6-gloss em {
-  color: #3a3a3a;
+  color: #3e4a54;
 }
 
 .c6-hint {
@@ -334,15 +329,14 @@
   gap: 10px;
   align-items: center;
   padding: 9px 12px;
-  border: 3px solid var(--k);
-  border-radius: 16px;
-  background: #fff;
+  border-radius: 6px;
+  background: var(--card);
   font-size: 14px;
   line-height: 1.35;
 }
 
 .c6-hint.no {
-  background: #ffe6ef;
+  background: #f3d3c2;
 }
 
 .c6-hint svg {
@@ -362,27 +356,23 @@
   position: relative;
   height: 56px;
   padding: 0 8px;
-  border: 3px solid var(--k);
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 4px 4px 0 var(--k);
+  border: 2px solid var(--k);
+  border-radius: 6px;
+  background: var(--card);
   font-family: 'Shrikhand', serif;
   font-weight: 400;
   font-size: 22px;
   line-height: 1;
   color: var(--k) !important;
-  transition:
-    transform 0.1s,
-    box-shadow 0.1s;
+  transition: transform 0.1s;
 }
 
 .c6-opts button:hover:not(:disabled) {
-  background: #fffbe6;
+  background: #f6e2b6;
 }
 
 .c6-opts button:active:not(:disabled) {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 var(--k);
+  transform: translateY(2px);
 }
 
 .c6-opts button kbd {
@@ -397,10 +387,9 @@
 }
 
 .c6-opts button.no {
-  background: #ece6da;
-  color: #9a9284 !important;
-  border-color: #9a9284;
-  box-shadow: none;
+  background: transparent;
+  color: #a8957a !important;
+  border-color: #c9ad7d;
   text-decoration: line-through;
   text-decoration-thickness: 3px;
   cursor: default;
@@ -416,11 +405,10 @@
   align-items: center;
   gap: 8px;
   padding: 12px 22px;
-  border: 3px solid var(--k);
-  border-radius: 16px;
+  border: 2px solid var(--pink);
+  border-radius: 6px;
   background: var(--pink);
-  box-shadow: 4px 4px 0 var(--k);
-  color: #fff !important;
+  color: var(--card) !important;
   font-family: 'Shrikhand', serif;
   font-size: 20px;
   line-height: 1.1;
@@ -434,12 +422,12 @@
 }
 
 .c6-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 var(--k);
+  transform: translateY(2px);
 }
 
 .c6-btn.ghost {
-  background: #fff;
+  background: transparent;
+  border-color: var(--k);
   color: var(--k) !important;
 }
 
@@ -457,10 +445,8 @@
 .c6-card {
   margin-top: 18px;
   padding: 20px 22px;
-  border: 3px solid var(--k);
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 6px 6px 0 var(--k);
+  border-radius: 8px;
+  background: var(--card);
   animation: q-rise 0.4s ease-out both;
 }
 
@@ -484,7 +470,7 @@
 .c6-card .sub {
   margin: 0;
   font-size: 15px;
-  color: #555;
+  color: #5a5048;
 }
 
 .c6-card ol {
@@ -499,7 +485,7 @@
   gap: 12px;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 2px dashed #e5dccb;
+  border-bottom: 2px dashed #e6d3ae;
 }
 
 .c6-card li b {
@@ -513,7 +499,7 @@
   display: block;
   margin-top: 2px;
   font-size: 14px;
-  color: #555;
+  color: #5a5048;
 }
 
 .c6-card li.miss b {
@@ -549,7 +535,7 @@
   }
 
   .c6-pic {
-    max-height: none;
+    max-height: 420px;
   }
 
   .c6-folds {
@@ -641,7 +627,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .c6-ants,
+  .c6-strip,
   .c6-fold,
   .c6-fold .ok,
   .c6-fold.now b,
