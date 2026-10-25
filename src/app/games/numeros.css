@@ -1310,43 +1310,15 @@
   opacity: 1;
 }
 
-/* Speaking: the speaking face over the other every other moment, and a
-   little bob; Ildefonso holds his note, swaying */
-.nu-bust.talking {
-  animation: nu-bob 0.5s ease-in-out infinite;
-}
-
+/* Speaking: the speaking face (the waiting one with its mouth open) over
+   the other every other moment, the head still */
 .nu-bust.talking img.talk {
   animation: nu-yap 0.3s steps(1, end) infinite;
-}
-
-.nu-bust.talking.sings {
-  animation: nu-sway 1.6s ease-in-out infinite;
-}
-
-.nu-bust.talking.sings img.talk {
-  animation: none;
-  opacity: 1;
 }
 
 @keyframes nu-breathe {
   50% {
     transform: scale(1.008, 1.018);
-  }
-}
-
-@keyframes nu-bob {
-  50% {
-    transform: translateY(-1.5%) rotate(-0.8deg);
-  }
-}
-
-@keyframes nu-sway {
-  25% {
-    transform: rotate(-1.5deg);
-  }
-  75% {
-    transform: rotate(1.5deg);
   }
 }
 
@@ -1416,9 +1388,7 @@
 @media (prefers-reduced-motion: reduce) {
   .nu-react.glad,
   .nu-react.kind,
-  .nu-bust,
-  .nu-bust.talking,
-  .nu-bust.talking.sings {
+  .nu-bust {
     animation: none;
   }
 

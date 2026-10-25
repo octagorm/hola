@@ -1289,8 +1289,9 @@ const sellerPainted = (who: SellerId) =>
   )
 
 // A seller's cut-out, w wide from (0, 0), in the face of the mood, the
-// mouth moving while they speak: the speaking face shown over the waiting
-// one every other moment, and a bob for the other moods
+// mouth moving while they speak: the speaking face (the waiting one with
+// its mouth open, scripts/mouths.py) shown over the waiting one every
+// other moment
 function SellerFrames({
   who,
   mood,
@@ -1306,14 +1307,13 @@ function SellerFrames({
   return (
     <g className={`ra-paint ${mood} ${talking ? 'talking' : ''}`}>
       <image href={`/rastro/${who}-${mood}.webp`} width={w} height={h} />
-      {talking && mood === 'wait' && (
-        <image
-          className="ra-mo"
-          href={`/rastro/${who}-talk.webp`}
-          width={w}
-          height={h}
-        />
-      )}
+      {/* always there, so that it is loaded before it is wanted */}
+      <image
+        className="ra-mo"
+        href={`/rastro/${who}-talk.webp`}
+        width={w}
+        height={h}
+      />
     </g>
   )
 }

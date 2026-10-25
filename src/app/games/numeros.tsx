@@ -904,7 +904,6 @@ function Portrait({
   talking?: boolean
   big?: boolean
 }) {
-  const sings = who === LOTTERY_VOICE
   return (
     <span className={`nu-portrait ${big ? 'big' : ''}`} aria-hidden="true">
       <img className="place" src={`/${placeOf(who)}.webp`} alt="" />
@@ -912,9 +911,7 @@ function Portrait({
         className={`nu-react ${face}`}
         style={{ top: `${BUST_TOP * 100}%` }}
       >
-        <span
-          className={`nu-bust f-${face} ${talking ? 'talking' : ''} ${sings ? 'sings' : ''}`}
-        >
+        <span className={`nu-bust f-${face} ${talking ? 'talking' : ''}`}>
           {FACES.map((f) => (
             <img
               key={f}

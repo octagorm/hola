@@ -15,6 +15,8 @@
 //   --shape <s>         landscape (default), portrait or square
 //   --transparent       ask for a transparent background (for cutouts)
 //   --ref <file>        a reference image (repeatable), e.g. for a shared style
+//   --edit <file>       edit this image as the prompt says, instead of
+//                       making a new one (as Puppet Theater's bridge does)
 //   --pixel <WxH>       make pixel art at this size: <out> is the pixel art.
 //                       The picture is scaled to cover the size, keeping its
 //                       proportions, and cropped from the centre: landscape
@@ -57,6 +59,7 @@ if (!out || !prompt) {
 const shape = opt('--shape') ?? 'landscape'
 const transparent = args.includes('--transparent')
 const refs = all('--ref')
+const edit = opt('--edit')
 const pixel = opt('--pixel')
 const colors = opt('--colors') ?? '48'
 const dither = args.includes('--dither')
@@ -67,14 +70,19 @@ const TIMEOUT_MS = 6 * 60 * 1000
 
 function instruction() {
   const bg = transparent ? ', with a transparent background' : ''
-  const lines = [
-    `Use your image generation tool to generate exactly one image, on a ${shape} canvas${bg}.`,
-    'Pass the description below to the tool as faithfully as you can.',
-    ...(refs.length
-      ? ['Give the attached images to the tool as reference images.']
-      : []),
-    'Do not run shell commands or write files. When the image is made, reply with only the word done.',
-  ]
+  const lines = edit
+    ? [
+        `Use your image generation tool to edit the attached image exactly once${bg}, as described below.`,
+        'Do not run shell commands or write files. When the image is made, reply with only the word done.',
+      ]
+    : [
+        `Use your image generation tool to generate exactly one image, on a ${shape} canvas${bg}.`,
+        'Pass the description below to the tool as faithfully as you can.',
+        ...(refs.length
+          ? ['Give the attached images to the tool as reference images.']
+          : []),
+        'Do not run shell commands or write files. When the image is made, reply with only the word done.',
+      ]
   return `${lines.join(' ')}\n\nDESCRIPTION\n\n${prompt}`
 }
 
@@ -151,7 +159,7 @@ try {
     '--cd',
     work,
     instruction(),
-    ...refs.flatMap((r) => ['--image', r]),
+    ...(edit ? [edit] : refs).flatMap((r) => ['--image', r]),
   ])
   const dir = join(CODEX_HOME, 'generated_images', threadId)
   let files = []

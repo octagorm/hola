@@ -912,8 +912,9 @@ const GUESTS_PAINTED = GUEST_NAMES.every((who) =>
 const BAR_PAINTED = PICTURES.has(BAR) && GUESTS_PAINTED && ITEMS_PAINTED
 
 // A guest's cut-out, GUEST_W wide from (0, 0), in the face of the mood,
-// breathing; while ordering the speaking face is shown over the waiting
-// one every other moment, and while they speak with another face they bob
+// breathing; while ordering the speaking face (the waiting one with its
+// mouth open, scripts/mouths.py) is shown over the waiting one every other
+// moment, so that only the mouth moves
 function GuestFrames({
   who,
   mood,
@@ -931,14 +932,13 @@ function GuestFrames({
         width={GUEST_W}
         height={h}
       />
-      {mood === 'talk' && (
-        <image
-          className="tp-mo"
-          href={painted(guestFace(who, 'talk'))}
-          width={GUEST_W}
-          height={h}
-        />
-      )}
+      {/* always there, so that it is loaded before it is wanted */}
+      <image
+        className="tp-mo"
+        href={painted(guestFace(who, 'talk'))}
+        width={GUEST_W}
+        height={h}
+      />
     </g>
   )
 }
