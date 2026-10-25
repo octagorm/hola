@@ -15,13 +15,13 @@ export const FIRST_STAMP = '.cache/pictures/camino/roncesvalles.png'
 
 // What every stamp is
 const STAMP =
-  'A pilgrim’s passport stamp (a sello of the Camino de Santiago), as a travel poster of the 1920s–30s made into a stamp: a bold border of the shape given, in one ink colour, and inside it a small flat poster vignette of the subject, in three or four flat colours from the posters’ palette (sea green, sand, terracotta, slate blue, cream, mustard, with deep ink blue for the darkest parts). It looks pressed onto paper with a rubber stamp: the ink a little uneven, faintly mottled and slightly lighter in places, the border with a few tiny gaps, the edges crisp but not perfect. Seen flat from the front, not tilted, not in perspective.'
+  'A pilgrim’s passport stamp (a sello of the Camino de Santiago), as a travel poster of the 1920s–30s made into a stamp: a bold border of the shape given, in one ink colour, and inside it a small flat poster vignette of the subject, in a handful of flat colours from the posters’ palette (sea green, sand, terracotta, slate blue, cream, mustard, with deep ink blue for the darkest parts), mostly in large unbroken areas. The vignette is printed too, so its colours share the ink’s uneven, faintly mottled look. It looks pressed onto paper with a rubber stamp: the ink a little uneven, faintly mottled and slightly lighter in places, the border with a few tiny gaps, the edges crisp but not perfect. Seen flat from the front, not tilted, not in perspective.'
 
 const RULES =
   'No lettering of any kind: no letters, words, numbers, dates or town names, not even around the border, which stays plain. No people and no faces. An original picture, not a copy of any artist’s work. On a fully transparent background: no paper, no ground and no shadow behind the stamp. Square format, the stamp centred and filling most of the square.'
 
 const SHOWN =
-  'It will be shown small, about 60 to 140 pixels across, so keep the subject simple: a few large shapes with a strong silhouette, no fine detail and no thin lines.'
+  'It will be shown small, about 50 to 140 pixels across, so the subject is large and clear in the middle, with a strong silhouette that still reads at 50 pixels, and around it whatever setting suits the place (sky, hills, a river, fields, a few roofs), drawn in a few broad shapes. No fine detail, no thin lines and no masses of tiny repeated shapes (single leaves in a forest, long rows of small windows, roof tiles).'
 
 // The border of each stage in turn, and its ink, so that neighbours differ
 const BORDERS = [
@@ -43,7 +43,7 @@ const INKS = [
 // What each town's stamp shows, from the Pyrenees to the sea
 export const STAMP_SUBJECTS: Record<string, string> = {
   Roncesvalles:
-    'the Gothic collegiate church of Roncesvalles with its steep grey roof, among the dark beech woods of the Pyrenees under a mountain ridge',
+    'the Gothic collegiate church of Roncesvalles with its steep grey roof and square bell tower, before one dark ridge of the Pyrenees',
   Zubiri:
     'the medieval stone bridge of Zubiri, two round arches reflected in the river Arga, a few trees on the banks',
   Pamplona:
