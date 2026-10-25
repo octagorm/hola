@@ -1142,11 +1142,11 @@ a.q-box:hover {
 }
 
 .q-memory .known {
-  --c: var(--green);
+  --c: var(--blue);
 }
 
 .q-memory .learning {
-  --c: var(--blue);
+  --c: var(--red);
 }
 
 .q-memory .waiting {
