@@ -612,11 +612,13 @@ function Memory() {
     { k: 'fading', n: m.fading, no: 'glemmes nå' },
     { k: 'waiting', n: m.waiting, no: 'venter' },
   ]
-  const soon = m.week
-    ? m.tomorrow
-      ? `I morgen er det ${n(m.tomorrow)} til, og ${n(m.week)} i løpet av en uke.`
-      : `I morgen ingen flere, men ${n(m.week)} i løpet av en uke.`
-    : 'Ingen flere den neste uka.'
+  // (m.week counts tomorrow's too: the rest of the week is what is left)
+  const later = m.week - m.tomorrow
+  const soon = m.tomorrow
+    ? `I morgen begynner ${n(m.tomorrow)} ord til å glemmes, ${later ? `og ${n(later)} til i løpet av uka.` : 'og så ingen flere denne uka.'}`
+    : later
+      ? `I morgen ingen flere, men ${n(later)} ord begynner å glemmes i løpet av uka.`
+      : 'Ingen flere ord begynner å glemmes den neste uka.'
   return (
     <section className="q-frame q-box q-memory">
       <div className="top">
