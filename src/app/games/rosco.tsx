@@ -14,8 +14,8 @@ import './rosco.css'
 
 // El rosco, after the ring of letters in the TV quiz Pasapalabra: a word
 // for each letter from its meaning in Norwegian, said in Spanish (decir).
-// «Pasapalabra» leaves a letter for the next time round. On the red walls
-// of Dalí's Teatro-Museo in Figueres, with its loaves and eggs.
+// «Pasapalabra» leaves a letter for the next time round. A ring of cream
+// discs on a mustard poster, like its tile.
 
 const FONTS =
   'https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,500;1,6..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap'

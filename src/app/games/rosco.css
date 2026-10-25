@@ -1,25 +1,26 @@
-/* El rosco: the red walls of Dalí's Teatro-Museo, with its loaves, its
-   eggs and the gold, and a ring of eggs for the letters */
+/* El rosco: a ring of cream discs on a mustard poster, like its tile,
+   in flat colour on grained paper: terracotta is the letter now, sea
+   green a word found, ink a word missed, and a deep blue disc in the
+   middle holds the clue */
 
 .r6 {
-  --red: #b3352a;
-  --red2: #8c2219;
-  --egg: #fbf5ea;
-  --egg2: #efe4d0;
-  --gold: #d4a12f;
-  --gold2: #a77a14;
-  --gold3: #f3cf6a;
-  --ink: #1c1414;
-  --ink2: #5a4a44;
+  --red: #c4603b;
+  --red2: #9a4426;
+  --egg: #f8e9cb;
+  --egg2: #ead5ad;
+  --gold: #e3ac49;
+  --gold2: #b98422;
+  --gold3: #f0c66a;
+  --green: #6f9e89;
+  --blue: #1f3d5a;
+  --ink: #1f2a33;
+  --ink2: #5a4a3c;
   min-height: 100vh;
   min-height: 100dvh;
   font-family: 'DM Sans', system-ui, sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(circle, #c4482f 0 4px, transparent 5px) 0 0 / 34px 30px,
-    radial-gradient(circle, #c4482f 0 4px, transparent 5px) 17px 15px / 34px
-      30px,
-    var(--red);
+  background-color: var(--gold);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .22  0 0 0 0 .05  0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
 .r6 button {
@@ -29,14 +30,14 @@
 }
 
 .r6 :focus-visible {
-  outline: 2px solid var(--gold3);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 
 .r6 .q-round {
-  background: var(--ink);
-  color: var(--gold3);
-  border: 2px solid var(--gold);
+  background: var(--blue);
+  color: var(--egg);
+  border: 0;
 }
 
 .r6-col {
@@ -60,9 +61,9 @@
   height: 44px;
   flex: none;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--gold3);
-  border: 2px solid var(--gold);
+  background: var(--blue);
+  color: var(--egg);
+  border: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -80,7 +81,7 @@
   font-weight: 700;
   font-size: 34px;
   line-height: 1;
-  color: var(--egg);
+  color: var(--blue);
 }
 
 .r6-top h1 small {
@@ -92,7 +93,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold3);
+  color: var(--red2);
 }
 
 .r6-score {
@@ -103,7 +104,6 @@
   padding: 7px 14px;
   border-radius: 999px;
   background: var(--egg);
-  box-shadow: 0 0 0 2px var(--gold);
   font-size: 12px;
   color: var(--ink2);
   white-space: nowrap;
@@ -122,7 +122,7 @@
   margin: 0 3px;
   align-self: center;
   border-radius: 50%;
-  background: var(--gold2);
+  background: var(--red);
 }
 
 /* --- The ring --- */
@@ -149,25 +149,22 @@
   left: 50%;
   top: 50%;
   width: var(--d);
-  height: calc(var(--d) * 1.16);
+  height: var(--d);
   margin-left: calc(var(--d) / -2);
-  margin-top: calc(var(--d) * -0.58);
-  border-radius: 50% 50% 50% 50% / 60% 60% 42% 42%;
+  margin-top: calc(var(--d) / -2);
+  border-radius: 50%;
   transform: rotate(var(--a)) translateY(calc(var(--R) * -1))
     rotate(calc(var(--a) * -1));
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: calc(var(--d) * 0.1);
-  background: linear-gradient(160deg, #fffdf7, #efe2c8);
-  box-shadow:
-    inset 0 -3px 0 #cdb894,
-    0 4px 8px -4px rgba(0, 0, 0, 0.55);
+  padding-top: calc(var(--d) * 0.04);
+  background: var(--egg);
   font-family: 'Bodoni Moda', serif;
   font-weight: 700;
-  font-size: calc(var(--d) * 0.5);
+  font-size: calc(var(--d) * 0.52);
   line-height: 1;
-  color: var(--ink);
+  color: var(--blue);
   transition:
     transform 0.25s,
     background 0.25s;
@@ -175,53 +172,40 @@
 
 .r6-egg.at {
   transform: rotate(var(--a)) translateY(calc(var(--R) * -1))
-    rotate(calc(var(--a) * -1)) scale(1.16);
-  box-shadow:
-    inset 0 -3px 0 #cdb894,
-    0 0 0 3px var(--gold3),
-    0 0 18px rgba(255, 214, 110, 0.95);
+    rotate(calc(var(--a) * -1)) scale(1.18);
+  background: var(--red);
+  color: var(--egg);
   z-index: 1;
 }
 
 .r6-egg.right {
-  background: linear-gradient(160deg, #fff6d8, #f3cf6a);
-  box-shadow:
-    inset 0 -3px 0 #b88a1e,
-    0 4px 8px -4px rgba(0, 0, 0, 0.55);
+  background: var(--green);
+  color: var(--egg);
 }
 
 .r6-egg.wrong {
-  background: var(--ink);
-  color: #f08a7a;
-  box-shadow:
-    inset 0 -3px 0 #000,
-    0 4px 8px -4px rgba(0, 0, 0, 0.55);
+  background: var(--blue);
+  color: #e8906c;
 }
 
 .r6-egg.pass {
-  background: var(--egg2);
-  box-shadow: inset 0 0 0 2px var(--gold);
-  color: var(--ink2);
+  background: transparent;
+  box-shadow: inset 0 0 0 calc(var(--d) * 0.07) var(--egg);
+  color: var(--blue);
 }
 
 .r6-egg.pass.at {
-  box-shadow:
-    inset 0 0 0 2px var(--gold),
-    0 0 0 3px var(--gold3),
-    0 0 18px rgba(255, 214, 110, 0.95);
+  background: var(--red);
+  box-shadow: none;
+  color: var(--egg);
 }
 
-/* The dome in the middle, lit like a marquee */
+/* The disc in the middle, deep blue with a cream ring */
 .r6-dome {
   position: absolute;
   inset: calc(var(--d) * 1.16 + 4.5cqi);
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 30%, #2b1f1e, var(--ink) 70%);
-  box-shadow:
-    0 0 0 4px var(--gold),
-    0 0 0 8px var(--ink),
-    0 0 0 10px var(--gold2),
-    0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  background: var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -234,20 +218,8 @@
   position: absolute;
   inset: 2.4cqi;
   border-radius: 50%;
-  border: 4px dotted #ffe08a;
-  filter: drop-shadow(0 0 4px rgba(255, 214, 110, 0.9));
-  animation: r6-glow 1.6s steps(2) infinite;
+  border: 2px solid rgba(248, 233, 203, 0.55);
   pointer-events: none;
-}
-
-@keyframes r6-glow {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
 }
 
 .r6-dome .clue {
@@ -284,7 +256,7 @@
   font-size: 2.7cqi;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #d8c9b0;
+  color: #b9c3c9;
 }
 
 .r6-dome .mean {
@@ -300,7 +272,7 @@
 
 .r6-dome .mean em {
   font-style: normal;
-  color: #d8c9b0;
+  color: #b9c3c9;
 }
 
 .r6-dome .g-m {
@@ -316,7 +288,7 @@
   min-width: 30cqi;
   max-width: 100%;
   padding-bottom: 1cqi;
-  border-bottom: 2px dashed var(--gold2);
+  border-bottom: 2px dashed rgba(240, 198, 106, 0.6);
   font-family: 'Bodoni Moda', serif;
   font-weight: 700;
   font-size: 7cqi;
@@ -353,13 +325,13 @@
   text-align: center;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--egg);
+  color: var(--ink);
 }
 
 .r6-note b {
   font-family: 'Bodoni Moda', serif;
   font-size: 17px;
-  color: var(--gold3);
+  color: var(--blue);
 }
 
 .r6-acts {
@@ -377,9 +349,9 @@
   height: 48px;
   padding: 0 22px;
   border-radius: 999px;
-  border: 2px solid var(--gold);
-  background: var(--ink);
-  color: var(--gold3) !important;
+  border: 0;
+  background: var(--blue);
+  color: var(--egg) !important;
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;
@@ -391,9 +363,8 @@
 }
 
 .r6-btn.gold {
-  background: var(--gold);
-  color: var(--ink) !important;
-  border-color: #f6d77a;
+  background: var(--red);
+  color: var(--egg) !important;
 }
 
 .r6-btn:disabled {
@@ -401,13 +372,12 @@
   cursor: default;
 }
 
-/* The keyboard on a wooden rack, as tiles */
+/* The keyboard: cream keys on a deep blue band */
 .r6-keys {
   margin: 14px 0 0;
   padding: 8px 6px;
   border-radius: 10px;
-  background: #6b3a12;
-  box-shadow: inset 0 -6px 0 #4a2708;
+  background: var(--blue);
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -426,8 +396,7 @@
   padding: 0;
   border: 0;
   border-radius: 5px;
-  background: linear-gradient(160deg, #fffdf7, #efe2c8);
-  box-shadow: inset 0 -3px 0 #cdb894;
+  background: var(--egg);
   font-family: 'Bodoni Moda', serif;
   font-weight: 700;
   font-size: 18px;
@@ -461,7 +430,7 @@
   background: none;
   font-weight: 700;
   font-size: 14px;
-  color: var(--egg) !important;
+  color: var(--blue) !important;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -473,9 +442,6 @@
   padding: 20px 22px;
   border-radius: 14px;
   background: var(--egg);
-  box-shadow:
-    0 0 0 3px var(--gold),
-    0 22px 40px -18px rgba(40, 5, 0, 0.65);
   animation: q-rise 0.4s ease-out both;
 }
 
@@ -672,7 +638,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .r6-dome .bulbs,
   .r6-card {
     animation: none;
   }
