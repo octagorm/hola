@@ -178,8 +178,8 @@ function Part({ p, i }: { p: Path; i: number }) {
           {stagesWalked(bank) === 0
             ? 'Først noen ord du sikkert kan fra før. Se om de sitter:'
             : s.arg === 'warm'
-              ? 'Ingen ord har bleknet ennå. Disse er de svakeste du har:'
-              : 'Disse ordene holder du på å glemme. Repeter dem:'}
+              ? 'Ingen ord skal repeteres ennå. Her er de svakeste du har:'
+              : 'Disse ordene skal repeteres nå:'}
         </p>
         <Drill ids={s.ids ?? []} got={got} onItem={(id) => add([id])} />
       </section>
@@ -351,8 +351,8 @@ function Summary({ p }: { p: Path }) {
       </div>
       <p className="q-muted">
         {sum.tomorrow
-          ? `I morgen har ${sum.tomorrow} ord begynt å blekne, og de kommer tilbake i morgendagens økt.`
-          : 'Ingen ord blekner før i morgen.'}
+          ? `I morgen skal ${sum.tomorrow} ord repeteres, og de kommer i morgendagens økt.`
+          : 'I morgen er det ingen ord å repetere.'}
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <a className="q-btn" href="#credencial">

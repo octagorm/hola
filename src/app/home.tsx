@@ -609,16 +609,15 @@ function Memory() {
   const parts = [
     { k: 'known', n: m.known, no: 'kjente' },
     { k: 'learning', n: m.learning, no: 'øver på' },
-    { k: 'fading', n: m.fading, no: 'glemmes nå' },
+    { k: 'fading', n: m.fading, no: 'til repetisjon' },
     { k: 'waiting', n: m.waiting, no: 'venter' },
   ]
   // (m.week counts tomorrow's too: the rest of the week is what is left)
   const later = m.week - m.tomorrow
-  const soon = m.tomorrow
-    ? `I morgen begynner ${n(m.tomorrow)} ord til å glemmes, ${later ? `og ${n(later)} til i løpet av uka.` : 'og så ingen flere denne uka.'}`
-    : later
-      ? `I morgen ingen flere, men ${n(later)} ord begynner å glemmes i løpet av uka.`
-      : 'Ingen flere ord begynner å glemmes den neste uka.'
+  const soon =
+    m.tomorrow || later
+      ? `Neste repetisjoner: ${m.tomorrow ? `${n(m.tomorrow)} ord i morgen` : 'ingen i morgen'}, ${later ? `${n(later)} ${m.tomorrow ? '' : 'ord '}senere i uka` : 'ingen flere i uka'}.`
+      : 'Ingen nye repetisjoner den neste uka.'
   return (
     <section className="q-frame q-box q-memory">
       <div className="top">
@@ -653,8 +652,8 @@ function Memory() {
       <p>
         <span className="why">
           {m.fading
-            ? `${n(m.fading)} ord du har øvd på, holder på å glemmes. Repeter dem nå, så sitter de lenger. `
-            : 'Ingen ord holder på å glemmes nå. '}
+            ? `${n(m.fading)} ord bør repeteres nå. Repeterer du dem i tide, sitter de lenger hver gang. `
+            : 'Ingen ord skal repeteres nå. '}
         </span>
         <span className="soon">{soon}</span>
       </p>
