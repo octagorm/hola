@@ -33,14 +33,14 @@ const GIVEN = 0.3
 
 // The glaze each word takes when found, and its letters' colour
 const GLAZE: Array<[string, string]> = [
-  ['#f1c232', '#1c2f73'],
-  ['#4e8a45', '#fffaf0'],
-  ['#d0643a', '#fffaf0'],
-  ['#28909d', '#fffaf0'],
-  ['#87569a', '#fffaf0'],
-  ['#e39a2d', '#1c2f73'],
-  ['#c5486a', '#fffaf0'],
-  ['#5f86cf', '#fffaf0'],
+  ['#e3ac49', '#1b3452'],
+  ['#5f8f79', '#fffaf0'],
+  ['#c4603b', '#fffaf0'],
+  ['#3b6a91', '#fffaf0'],
+  ['#ab5e67', '#fffaf0'],
+  ['#d99a3f', '#1b3452'],
+  ['#8f4a3a', '#fffaf0'],
+  ['#7fa6c0', '#1b3452'],
 ]
 
 const glaze = (i: number) => GLAZE[i % GLAZE.length]
@@ -535,10 +535,10 @@ function Result({
 
 // --- The tiles around the letters ---
 
-const COBALT = '#1f3e9c'
-const WHITE = '#fbf8f0'
-const LEMON = '#f2c230'
-const LEAF = '#4b8a43'
+const COBALT = '#264a70'
+const WHITE = '#f8eed8'
+const LEMON = '#e9b83a'
+const LEAF = '#5d8a5a'
 
 // A border tile with a lemon on its leaf, its inner edge at the bottom
 function LemonTile() {
