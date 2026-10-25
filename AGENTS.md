@@ -45,29 +45,29 @@ Before committing, run `npm run lint && npm test && npm run format:check && npm 
 
 The games:
 
-| Game                 | File                   | What it is, and its look                                                                  |
-| -------------------- | ---------------------- | ----------------------------------------------------------------------------------------- |
-| La palabra           | `games/palabra.tsx`    | The day's word in six guesses, as in Wordle; pearls in a night sky after Galatea          |
-| Mini crucigrama      | `games/crucigrama.tsx` | A small crossword of the words whose saying has faded most; the dusk of Destino           |
-| El rosco             | `games/rosco.tsx`      | A ring of letters, a word for each from its meaning, as in Pasapalabra; the Teatro-Museo  |
-| Cadáver exquisito    | `games/cadaver.tsx`    | Absurd sentences from random parts, where the verb and the adjective must agree; 1969 pop |
-| Sopa de letras       | `games/sopa.tsx`       | A word search of words met, found from their meanings; azulejos with lemons               |
-| El reloj blando      | `games/reloj.tsx`      | Hangman where each wrong letter melts the watch; a desert poster of the 1930s             |
-| Por o para           | `games/porpara.tsx`    | Two doors, por and para, for the gap in a sentence; Alhambra arches in paper-cut          |
-| Ayer, hoy, mañana    | `games/tiempos.tsx`    | A sentence moved between yesterday, today and tomorrow; a triptych of 1930s posters       |
-| Letras               | `games/letras.tsx`     | The longest word of hers in nine letters, asked for one by one; a letterpress print shop  |
-| Palabras encadenadas | `games/cadena.tsx`     | Eight words, each begun by the last syllable of the one before; paper flags at a verbena  |
-| ¿El o la?            | `games/elola.tsx`      | El or la for each noun met before the candle burns down; the Spanish deck as woodcut      |
-| Orden                | `games/orden.tsx`      | Norwegian sentences set in Spanish order, eight to a sheet; an aleluya of the 1860s       |
-| Tapas                | `games/tapas.tsx`      | One guest at a time orders aloud, the tray filled from pictures; a bar in ligne claire    |
-| El Rastro            | `games/rastro.tsx`     | Four stalls of Madrid's flea market, a price haggled down by ear; hand-coloured woodcut   |
-| Palabras             | `games/palabras.tsx`   | Scrabble with Ñ, CH, LL and RR against El relojero, a watchmaker; a well-loved wooden set |
-| Sonidos              | `games/sonidos.tsx`    | Spain's sounds, an ear for words alike, and a dictation; a fifties radio, ligne claire    |
-| Acento               | `games/acento.tsx`     | Where the stress falls, and when it takes a tilde, rule by rule; a 1920s feria poster     |
-| Números              | `games/numeros.tsx`    | Prices, times and years by ear, typed in digits, and the lottery sung; an engraved ticket |
-| Taxi                 | `games/taxi.tsx`       | A passenger's way told turn by turn, steered by ear; a town from above as a travel poster |
-| Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                           |
-| Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                |
+| Game                 | File                   | What it is, and its look                                                                                  |
+| -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| La palabra           | `games/palabra.tsx`    | The day's word in six guesses, as in Wordle; a night by the sea as a flat poster                          |
+| Mini crucigrama      | `games/crucigrama.tsx` | A small crossword of the words whose saying has faded most; a dusky rose evening                          |
+| El rosco             | `games/rosco.tsx`      | A ring of letters, a word for each from its meaning, as in Pasapalabra; discs on mustard                  |
+| Cadáver exquisito    | `games/cadaver.tsx`    | Absurd sentences from random parts, where the verb and the adjective must agree; a figure on paper strips |
+| Sopa de letras       | `games/sopa.tsx`       | A word search of words met, found from their meanings; azulejos with lemons                               |
+| El reloj blando      | `games/reloj.tsx`      | Hangman where each wrong letter melts the watch; a desert poster of the 1930s                             |
+| Por o para           | `games/porpara.tsx`    | Two doors, por and para, for the gap in a sentence; Alhambra arches in paper-cut                          |
+| Ayer, hoy, mañana    | `games/tiempos.tsx`    | A sentence moved between yesterday, today and tomorrow; a triptych of 1930s posters                       |
+| Letras               | `games/letras.tsx`     | The longest word of hers in nine letters, asked for one by one; a letterpress print shop                  |
+| Palabras encadenadas | `games/cadena.tsx`     | Eight words, each begun by the last syllable of the one before; paper flags at a verbena                  |
+| ¿El o la?            | `games/elola.tsx`      | El or la for each noun met before the candle burns down; the Spanish deck as woodcut                      |
+| Orden                | `games/orden.tsx`      | Norwegian sentences set in Spanish order, eight to a sheet; an aleluya of the 1860s                       |
+| Tapas                | `games/tapas.tsx`      | One guest at a time orders aloud, the tray filled from pictures; a bar in ligne claire                    |
+| El Rastro            | `games/rastro.tsx`     | Four stalls of Madrid's flea market, a price haggled down by ear; hand-coloured woodcut                   |
+| Palabras             | `games/palabras.tsx`   | Scrabble with Ñ, CH, LL and RR against El relojero, a watchmaker; a well-loved wooden set                 |
+| Sonidos              | `games/sonidos.tsx`    | Spain's sounds, an ear for words alike, and a dictation; a fifties radio, ligne claire                    |
+| Acento               | `games/acento.tsx`     | Where the stress falls, and when it takes a tilde, rule by rule; a 1920s feria poster                     |
+| Números              | `games/numeros.tsx`    | Prices, times and years by ear, typed in digits, and the lottery sung; an engraved ticket                 |
+| Taxi                 | `games/taxi.tsx`       | A passenger's way told turn by turn, steered by ear; a town from above as a travel poster                 |
+| Repaso, Nuevas       | `games/repaso.tsx` …   | Ten faded words; five new ones. The questions are in `quiz.tsx`                                           |
+| Tus palabras         | `games/ordbank.tsx`    | Every word, lesson by lesson, and how well each link holds                                                |
 
 `data/games.ts` names the games for the home page and today's chapter; a game marked `soon` there is shown faded until it is made.
 
@@ -108,7 +108,7 @@ Each takes a minute or two and counts against the plan's limits. The full-size p
 
 ## The look
 
-The home page and the pages around the games are Don Quijote in ink on paper, with a wash of colour (`hola.css`, classes `q-`; the drawings are in `art.tsx`, roughened by the filters in `ui.tsx`). The user has asked for the travel-poster style throughout, so the ink drawings give way to paintings as they are made: Don Quijote's chapters, and the picture at the top of the home page, which, once all four paintings are made, is La Mancha as a travel poster that follows the player's clock (`sky.tsx`, with the time of day and the moon in `lib/sky.ts`): the paintings crossfade around sunrise and sunset, and the moon in its real phase, the stars, the clouds and the birds are drawn over them in the same flat colours, still with reduced motion. `?time=21:30` (or `?date=2027-02-06&time=20:00`) shows another hour; until the paintings are made, the ink drawing stays. Each game has a look of its own, with its own fonts (`useFont`) and a CSS file whose classes have a prefix of their own (`g5-`, `d4-`, `r6-`, `c6-`, …). The first four are drawn freely after moods from Salvador Dalí's world. The later ones follow the user's taste in flat graphic printmaking and posters (woodcut, linocut, hand-coloured woodcut, paper-cut, ligne claire, 1930s travel posters) in Spanish forms such as azulejos, aleluyas, the baraja española and feria posters, after the sketches in `design/sketches/`, painted with ChatGPT, which the user allows freely. The user dislikes glossy 3D, photographs, neon, painterly oil, crowds and kitsch. Dalí's works are protected until the end of 2059, so draw anew and never copy a painting, and leave out the Chupa Chups logo. No emoji in the graphics; lucide icons for plain controls.
+The home page and the pages around the games are Don Quijote in ink on paper, with a wash of colour (`hola.css`, classes `q-`; the drawings are in `art.tsx`, roughened by the filters in `ui.tsx`). The user has asked for the travel-poster style throughout, so the ink drawings give way to paintings as they are made: Don Quijote's chapters, and the picture at the top of the home page, which, once all four paintings are made, is La Mancha as a travel poster that follows the player's clock (`sky.tsx`, with the time of day and the moon in `lib/sky.ts`): the paintings crossfade around sunrise and sunset, and the moon in its real phase, the stars, the clouds and the birds are drawn over them in the same flat colours, still with reduced motion. `?time=21:30` (or `?date=2027-02-06&time=20:00`) shows another hour; until the paintings are made, the ink drawing stays. Each game has a look of its own, with its own fonts (`useFont`) and a CSS file whose classes have a prefix of their own (`g5-`, `d4-`, `r6-`, `c6-`, …), and takes its ground and colours from its painted tile (`games/<game>`), in the posters' flat colours (sea green, mustard, terracotta, slate blue, cream, deep blue) on grained paper, never gloss or glow. They follow the user's taste in flat graphic printmaking and posters (woodcut, linocut, hand-coloured woodcut, paper-cut, ligne claire, 1930s travel posters) in Spanish forms such as azulejos, aleluyas, the baraja española and feria posters, after the sketches in `design/sketches/`, painted with ChatGPT, which the user allows freely. The user dislikes glossy 3D, photographs, neon, painterly oil, crowds and kitsch. Dalí's works are protected until the end of 2059, so draw anew and never copy a painting, and leave out the Chupa Chups logo. No emoji in the graphics; lucide icons for plain controls.
 
 Astro puts the games' CSS before `hola.css`, so a rule in `hola.css` beats a game's rule of the same weight. Keep the shell's rules on elements weak (`:where(…)`), and never style bare elements there.
 
