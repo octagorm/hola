@@ -109,7 +109,10 @@ export default function Hoy() {
           return (
             <li key={i} className={s.done ? 'done' : i === at ? 'at' : ''}>
               <span className="n">{roman(i + 1)}.</span>
-              <b>{STEP[s.k].es}</b>
+              <b>
+                <span className="full">{STEP[s.k].es}</span>
+                <span className="short">{STEP[s.k].short ?? STEP[s.k].es}</span>
+              </b>
               <span className="no">{stepName(s)}</span>
               <em>
                 {s.done ? (
@@ -320,7 +323,10 @@ function Summary({ p }: { p: Path }) {
                   <span
                     title={`${LINK_NAME[x.link].es}: hvor lenge det sitter`}
                   >
-                    {lasts(x.before)} → <strong>{lasts(x.after)}</strong>
+                    {lasts(x.before)} →{' '}
+                    <strong className={x.after < x.before ? 'down' : ''}>
+                      {lasts(x.after)}
+                    </strong>
                   </span>
                 </li>
               )

@@ -2013,6 +2013,10 @@ a.q-box:hover {
   border-bottom: 1px solid var(--line);
 }
 
+.q-steps .short {
+  display: none;
+}
+
 .q-steps .n {
   font-family: var(--display);
   text-transform: none;
@@ -2120,8 +2124,13 @@ a.q-box:hover {
     font-size: 11px;
   }
 
-  .q-hoy.busy .q-steps .no {
+  .q-hoy.busy .q-steps .no,
+  .q-hoy.busy .q-steps .full {
     display: none;
+  }
+
+  .q-hoy.busy .q-steps .short {
+    display: inline;
   }
 
   .q-hoy.busy .q-steps em {
@@ -2247,6 +2256,11 @@ a.q-box:hover {
 .q-gains strong {
   font-weight: 600;
   color: var(--blue);
+}
+
+/* A word got wrong today: shorter now */
+.q-gains strong.down {
+  color: var(--red);
 }
 
 .q-sum-counts {
