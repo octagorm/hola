@@ -16,10 +16,6 @@ import { DICT, findMoves, keyOf } from '../src/app/lib/palabras.ts'
 import { dictable } from '../src/app/lib/sonidos.ts'
 import { kindOfWord, untilde, wordItem } from '../src/app/lib/acento.ts'
 import { DECK, LOTTERY } from '../src/app/lib/numeros.ts'
-import { LESSONS } from '../src/app/data/words.ts'
-
-// (the library's texts' words have no drawer)
-const LESSON_COUNT = LESSONS.filter((l) => !l.book).length
 
 const proxy = process.env.HTTPS_PROXY
 const browser = await chromium.launch(proxy ? { proxy: { server: proxy } } : {})
@@ -186,8 +182,6 @@ const PAGES = [
   ['#ordbank', 'Tus palabras'],
   ['#ajustes', 'Ajustes'],
   ['#credencial', 'La credencial'],
-  ['#cajones', 'Los cajones'],
-  ['#museo', 'Tu museo'],
   ['/om', 'Om Hola'],
   ['/personvern', 'Personvern i Hola'],
   ['/admin', 'Logg inn som administrator'],
@@ -1462,42 +1456,12 @@ await test(
   { phone: true, learner: true },
 )
 
-for (const learner of [false, true])
-  await test(
-    `the drawers open, on ${learner ? 'a learner’s' : 'a new player’s'} bank`,
-    async (page) => {
-      await go(page, '#cajones')
-      await page.locator('.cj-drawer').first().waitFor()
-      const all = await page.locator('.cj-drawer').count()
-      expect(all === LESSON_COUNT, `${all} drawers`)
-      expect(
-        (await page.locator('.cj-drawer.st1').count()) > 3,
-        'some keepsakes wrapped',
-      )
-      // A shut drawer is empty
-      await page.locator('.cj-drawer.st0').first().click()
-      await page.locator('.cj-open').getByText('Tom ennå').waitFor()
-      await page.keyboard.press('Escape')
-      expect(!(await visible(page, '.cj-open')), 'closed by Escape')
-      // A drawer begun has its keepsake wrapped, and says its word
-      await page.locator('.cj-drawer.st1').first().click()
-      await page.locator('.cj-open .thing').waitFor()
-      await page.locator('.cj-open .cj-word b').waitFor()
-      await page.getByRole('button', { name: 'Neste skuff' }).click()
-      await page.getByRole('button', { name: 'Lukk skuffen' }).click()
-      if (!learner) {
-        // A new player knows the greetings: their keepsake is unwrapped
-        await page.locator('.cj-drawer.st2').first().click()
-        await page.locator('.cj-open.st2').getByText('el pañuelo').waitFor()
-      }
-    },
-    { learner, phone: learner },
-  )
-
 await test(
   'the museum hangs a finished theme’s picture',
   async (page) => {
-    await go(page, '#museo')
+    // On the home page's Ordene, under Tus palabras
+    await go(page, '')
+    await page.getByRole('button', { name: 'Ordene', exact: true }).click()
     await page.locator('.mu-frame').first().waitFor()
     expect(
       !(await visible(page, '.mu-frame.hung')),
@@ -1534,10 +1498,10 @@ await test(
     // On through the doorway to the next room
     await page.getByRole('button', { name: /Neste sal/ }).click()
     await page.locator('.mu-sign').getByText('A la mesa').waitFor()
-    // And from the home page
-    await go(page, '')
-    await page.getByRole('button', { name: 'Ordene', exact: true }).click()
-    await page.locator('.q-coll[href="#museo"]').getByText('1 av').waitFor()
+    expect(
+      (await page.locator('.mu-count b').textContent()) === '1',
+      'one picture hung',
+    )
   },
   { learner: true },
 )
@@ -1676,6 +1640,10 @@ await test(
   'the word bank finds a word and opens it',
   async (page) => {
     await go(page, '#ordbank')
+    // The lessons are shut, and open on a tap
+    expect(!(await visible(page, '.q-lesson .row')), 'lessons shut')
+    await page.getByRole('button', { name: /Saludos/ }).click()
+    await page.locator('.q-lesson.shown .row').first().waitFor()
     await page.getByLabel('Søk').fill('gato')
     await page.locator('.q-lesson .row', { hasText: 'el gato' }).click()
     await page.locator('.q-lesson .more').waitFor()

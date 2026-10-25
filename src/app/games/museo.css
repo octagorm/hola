@@ -16,10 +16,12 @@
   --floor: #c9764a;
   --floor-2: #b5643c;
   --mould: #7a6a4a;
-  min-height: 100vh;
-  min-height: 100dvh;
+  margin-top: 28px;
   overflow-x: hidden;
-  padding-bottom: 40px;
+  padding-bottom: 24px;
+  border: 2.5px solid var(--ink);
+  border-radius: 8px;
+  scroll-margin-top: 12px;
   font-family: 'Libre Caslon Text', Georgia, serif;
   font-size: 17px;
   color: var(--ink);
@@ -40,7 +42,7 @@
 
 .mu-top {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
   max-width: 1120px;
@@ -48,18 +50,17 @@
   padding: 18px 20px 0;
 }
 
-.mu-top h1 {
+.mu-top h2 {
   margin: 0;
-  text-align: center;
   font-family: 'Josefin Sans', sans-serif;
   font-weight: 700;
-  font-size: 40px;
+  font-size: 32px;
   line-height: 1;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.mu-top h1 small {
+.mu-top h2 small {
   display: block;
   margin-top: 6px;
   font-family: 'Libre Caslon Text', Georgia, serif;
@@ -71,27 +72,12 @@
   color: var(--ink-2);
 }
 
-.mu-round,
 .mu-count {
-  display: grid;
-  place-items: center;
   height: 46px;
   border: 2px solid var(--ink);
   border-radius: 999px;
   background: var(--cream);
   color: var(--ink);
-}
-
-.mu-round {
-  width: 46px;
-}
-
-.mu-round svg {
-  width: 22px;
-  height: 22px;
-}
-
-.mu-count {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -106,10 +92,9 @@
 }
 
 .mu-intro {
-  max-width: 600px;
-  margin: 12px auto 0;
+  max-width: 1120px;
+  margin: 10px auto 0;
   padding: 0 20px;
-  text-align: center;
   line-height: 1.5;
   color: var(--ink-2);
 }
@@ -743,13 +728,12 @@
 
 @media (max-width: 640px) {
   .mu-top {
-    grid-template-columns: 44px minmax(0, 1fr) auto;
     gap: 8px;
     padding: 14px 16px 0;
   }
 
-  .mu-top h1 {
-    font-size: 30px;
+  .mu-top h2 {
+    font-size: 26px;
   }
 
   .mu-plan {

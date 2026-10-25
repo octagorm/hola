@@ -1,20 +1,17 @@
 import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { LESSONS, WORD, WORDS } from '../src/app/data/words'
+import { WORDS } from '../src/app/data/words'
 import { THEME, THEME_GROUPS } from '../src/app/data/themes'
-import { KEEPSAKE, KEEPSAKES, keepsakeOf } from '../src/app/data/cajones'
 import { MUSEO, PICTURE } from '../src/app/data/museo'
 import { MUSEO_PICTURES, SCENES } from '../src/app/data/museo-prompts'
 import { DAY, answerCard, emptyBank, merge, newCard } from '../src/app/lib/bank'
 import {
-  chests,
   howFar,
   keep,
   progressOf,
   rooms,
   tally,
 } from '../src/app/lib/colecciones'
-import { speechItems } from '../src/app/lib/spoken'
 import type { Bank, Card } from '../src/app/lib/bank'
 
 const NOW = Date.parse('2026-10-23T12:00:00')
@@ -44,7 +41,7 @@ describe('the rule for a lesson', () => {
     expect(howFar(p)).toMatch(/Ingen av de/)
   })
 
-  it('is begun, its keepsake wrapped, once a word is met', () => {
+  it('is begun once a word is met', () => {
     expect(progressOf(bankWith('tapeo', 1, 0), 'tapeo').stage).toBe(1)
   })
 
@@ -100,45 +97,6 @@ describe('the rule for a lesson', () => {
     const done = keep(bankWith('tapeo', n, n), NOW)
     expect(merge(emptyBank(), done).kept).toEqual({ tapeo: NOW })
     expect(merge(done, emptyBank()).kept).toEqual({ tapeo: NOW })
-  })
-})
-
-describe('the chests of drawers', () => {
-  it('hold every lesson once', () => {
-    const ids = chests().flatMap((c) => c.lessons)
-    expect(ids.sort()).toEqual(
-      LESSONS.filter((l) => !l.book)
-        .map((l) => l.id)
-        .sort(),
-    )
-  })
-
-  it('give every lesson a keepsake of its own', () => {
-    for (const l of LESSONS.filter((x) => !x.book))
-      expect(KEEPSAKE[l.id], l.id).toBeDefined()
-    const lessons = KEEPSAKES.map((k) => k.lesson)
-    expect(new Set(lessons).size).toBe(lessons.length)
-    for (const id of lessons)
-      expect(LESSONS.some((l) => l.id === id)).toBe(true)
-    const arts = KEEPSAKES.map((k) => k.art)
-    expect(new Set(arts).size).toBe(arts.length)
-  })
-
-  it('name a keepsake by its word in the bank, where it is one', () => {
-    for (const k of KEEPSAKES) {
-      if (k.word) expect(WORD[k.word]?.es, k.lesson).toBe(k.es)
-      else expect(WORD[k.es], `${k.es} is in the bank`).toBeUndefined()
-      expect(k.line.length, k.lesson).toBeGreaterThan(20)
-    }
-  })
-
-  it('have a little box for a lesson with no keepsake yet', () => {
-    expect(keepsakeOf('ningunsitio').art).toBe('box')
-  })
-
-  it('say each keepsake aloud', () => {
-    const said = new Set(speechItems().map((s) => s.text))
-    for (const k of KEEPSAKES) expect(said.has(k.es), k.es).toBe(true)
   })
 })
 

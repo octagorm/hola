@@ -5,7 +5,6 @@ import { SENTENCES as ORDEN } from '../data/orden.ts'
 import { LINE_VOICE, SAMPLE, WORD_VOICE } from '../data/voices.ts'
 import { GAPS } from '../data/porpara.ts'
 import { SENTENCES, TIMES } from '../data/tiempos.ts'
-import { KEEPSAKES } from '../data/cajones.ts'
 import { AUDIOBOOKS, spokenText, voiceOf } from '../data/lydbok.ts'
 import { BOOKS, sentencesOf } from '../data/biblioteca.ts'
 import { DECK, spanish } from './cadaver.ts'
@@ -91,9 +90,6 @@ export function speechItems(): Array<SpeechItem> {
   for (const x of TAXI) add(x.voice, x.text, 'line')
   for (const x of TAXI)
     for (const t of tokens(x.line)) if (t.id) add(WORD_VOICE, t.es, 'word')
-  // The keepsakes in Los cajones, said as a drawer is opened, in the
-  // teacher's voice (most are words of the bank already)
-  for (const k of KEEPSAKES) add(WORD_VOICE, k.es, 'word')
   // The audiobooks: the hosts' talk in their voices, each chapter's title
   // in the narrator's, the story's lines in their speakers', and each form
   // in them
