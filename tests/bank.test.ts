@@ -207,6 +207,20 @@ describe('the starting point', () => {
     }
   })
 
+  it('sums up the link answered today, shorter when got wrong', () => {
+    const b = withStart(emptyBank(), now)
+    const p = plan(b, now)
+    const id = p.steps[0].ids?.[0] ?? ''
+    const later = now + 60_000
+    b.cards[id] = answerCard(b.cards[id], ['decir'], false, later)
+    const [row] = summary(p, b, later).words
+    expect(row.id).toBe(id)
+    expect(row.link).toBe('decir')
+    expect(row.after).toBeLessThan(row.before)
+    // and leaves out a word not answered yet
+    expect(summary(p, b, later).words).toHaveLength(1)
+  })
+
   it('touches nothing learnt, and is given once', () => {
     const b = emptyBank()
     b.cards.hola = newCard(now)

@@ -331,7 +331,8 @@ export function Question({
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Speak text={w.es} small />
+            {/* (a word heard has its own button above) */}
+            {kind !== 'oir' && <Speak text={w.es} small />}
             <button
               type="button"
               className="q-btn small"
@@ -555,8 +556,18 @@ function DrillItem({
   const [kind] = useState<Kind>(() => {
     const card = bank.cards[id]
     const hear = canHear() !== false
-    // (by ear, and no voice to hear by: read instead)
-    const link = ear ? 'leer' : card ? weakest(card, Date.now()) : 'leer'
+    // (by ear, and no voice to hear by: read instead). A word from the
+    // starting point, never answered, is asked either way, since its
+    // links were only guessed at.
+    const link: Link = ear
+      ? 'leer'
+      : !card
+        ? 'leer'
+        : card.z
+          ? Math.random() < 0.5
+            ? 'leer'
+            : 'decir'
+          : weakest(card, Date.now())
     return kindFor(link, card, hear && (ear || Math.random() < BY_EAR))
   })
   return (
