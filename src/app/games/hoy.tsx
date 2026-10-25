@@ -18,6 +18,7 @@ import {
   gain,
   inWords,
   lasts,
+  listOf,
   markDone,
   plan,
   playedHere,
@@ -171,9 +172,11 @@ function Part({ p, i }: { p: Path; i: number }) {
     return (
       <section className="q-part">
         <p className="q-part-intro">
-          {s.arg === 'warm'
-            ? 'Ingen ord har bleknet ennå. Disse er de svakeste du har:'
-            : 'Disse ordene holder du på å glemme. Repeter dem:'}
+          {stagesWalked(bank) === 0
+            ? 'Først noen ord du sikkert kan fra før. Se om de sitter:'
+            : s.arg === 'warm'
+              ? 'Ingen ord har bleknet ennå. Disse er de svakeste du har:'
+              : 'Disse ordene holder du på å glemme. Repeter dem:'}
         </p>
         <Drill ids={s.ids ?? []} got={got} onItem={(id) => add([id])} />
       </section>
@@ -183,8 +186,8 @@ function Part({ p, i }: { p: Path; i: number }) {
     return (
       <section className="q-part">
         <p className="q-part-intro">
-          Nye ord fra leksjonen «{lessonOf(s.ids)}»: først ordet, så hva det
-          betyr skrevet og sagt.
+          Nye ord fra {lessonsOf(s.ids)}: først ordet, så hva det betyr skrevet
+          og sagt.
         </p>
         <Learn ids={s.ids ?? []} got={got} onPart={add} />
       </section>
@@ -265,9 +268,14 @@ function Part({ p, i }: { p: Path; i: number }) {
   )
 }
 
-const lessonOf = (ids: Array<string> | undefined) => {
-  const w = ids?.map((id) => WORD[id]).find(Boolean)
-  return w ? (LESSON_NAME[w.lesson] ?? w.lesson) : ''
+// The lessons the words are from, in the order met: from several themes
+// chosen, the new words of a day take turns between them
+const lessonsOf = (ids: Array<string> | undefined) => {
+  const lessons = [
+    ...new Set((ids ?? []).flatMap((id) => WORD[id]?.lesson ?? [])),
+  ]
+  const names = lessons.map((l) => `«${LESSON_NAME[l] ?? l}»`)
+  return `${lessons.length === 1 ? 'leksjonen ' : ''}${listOf(names)}`
 }
 
 const LESSON_NAME: Record<string, string | undefined> = Object.fromEntries(
