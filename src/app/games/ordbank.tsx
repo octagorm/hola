@@ -19,7 +19,7 @@ type Filter = 'alle' | 'over' | 'kjente' | 'nye'
 
 const FILTERS: Array<[Filter, string]> = [
   ['alle', 'Alle'],
-  ['over', 'Øver på'],
+  ['over', 'Lærer'],
   ['kjente', 'Kjente'],
   ['nye', 'Ikke møtt'],
 ]
@@ -31,7 +31,7 @@ const WANT: Record<Filter, Array<Level>> = {
   nye: [0],
 }
 
-const LEVEL_NAME = ['ikke møtt', 'øver på', 'kjent']
+const LEVEL_NAME = ['ikke møtt', 'lærer', 'kjent']
 
 const fold = (s: string) => unaccent(s.toLowerCase())
 
@@ -88,7 +88,7 @@ export default function Ordbank() {
             <b>{c.known}</b>kjente
           </div>
           <div>
-            <b>{c.met - c.known}</b>øver på
+            <b>{c.met - c.known}</b>lærer
           </div>
           <div>
             <b>{c.all - c.met}</b>venter

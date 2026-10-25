@@ -518,7 +518,7 @@ export default function Home() {
                   <b>{c.known}</b>kjente
                 </div>
                 <div>
-                  <b>{c.met - c.known}</b>øver på
+                  <b>{c.met - c.known}</b>lærer
                 </div>
                 <div>
                   <b>{c.all - c.met}</b>venter
@@ -585,16 +585,16 @@ function Memory() {
   const n = (x: number) => x.toLocaleString('nb-NO')
   const parts = [
     { k: 'known', n: m.known, no: 'kjente' },
-    { k: 'learning', n: m.learning, no: 'øver på' },
-    { k: 'fading', n: m.fading, no: 'til repetisjon' },
+    { k: 'learning', n: m.learning, no: 'lærer' },
+    { k: 'fading', n: m.fading, no: 'å øve på' },
     { k: 'waiting', n: m.waiting, no: 'venter' },
   ]
   // (m.week counts tomorrow's too: the rest of the week is what is left)
   const later = m.week - m.tomorrow
   const soon =
     m.tomorrow || later
-      ? `Neste repetisjoner: ${m.tomorrow ? `${n(m.tomorrow)} ord i morgen` : 'ingen i morgen'}, ${later ? `${n(later)} ${m.tomorrow ? '' : 'ord '}senere i uka` : 'ingen flere i uka'}.`
-      : 'Ingen nye repetisjoner den neste uka.'
+      ? `Flere å øve på: ${m.tomorrow ? `${n(m.tomorrow)} ord i morgen` : 'ingen i morgen'}, ${later ? `${n(later)} ${m.tomorrow ? '' : 'ord '}senere i uka` : 'ingen flere i uka'}.`
+      : 'Ingen flere å øve på den neste uka.'
   return (
     <section className="q-frame q-box q-memory">
       <div className="top">
@@ -602,7 +602,7 @@ function Memory() {
           Tu memoria<span>hukommelsen</span>
         </h3>
         <a className={`q-btn ${m.fading ? '' : 'ghost'}`} href="#repaso">
-          {m.fading ? `Repeter ${Math.min(10, m.fading)}` : 'Øv likevel'}
+          {m.fading ? `Øv på ${Math.min(10, m.fading)}` : 'Øv likevel'}
           <ArrowRight />
         </a>
       </div>
@@ -629,8 +629,8 @@ function Memory() {
       <p>
         <span className="why">
           {m.fading
-            ? `${n(m.fading)} ord bør repeteres nå. Repeterer du dem i tide, sitter de lenger hver gang. `
-            : 'Ingen ord skal repeteres nå. '}
+            ? `${n(m.fading)} ord bør du øve på nå. Øver du på dem i tide, sitter de lenger hver gang. `
+            : 'Ingen ord å øve på nå. '}
         </span>
         <span className="soon">{soon}</span>
       </p>

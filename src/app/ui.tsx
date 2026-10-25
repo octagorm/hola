@@ -254,7 +254,7 @@ export function MixedKey({ faint = false }: { faint?: boolean }) {
         <b>
           Spansk med <i style={{ color: 'var(--blue)' }}>blått</i> over
         </b>{' '}
-        · øver på
+        · lærer
       </span>
       <span>
         <b>
@@ -426,7 +426,7 @@ function PeekCard({ t, el, more, onClose }: Peeked & { onClose: () => void }) {
           </button>
         ) : (
           <span className="q-sc text-[15px] text-[var(--ink-3)]">
-            {lv === 1 ? 'Øver på' : 'Kjent'}
+            {lv === 1 ? 'Lærer' : 'Kjent'}
           </span>
         )}
       </div>

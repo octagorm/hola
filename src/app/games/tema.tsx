@@ -9,7 +9,7 @@ import type { PageProps } from '../registry'
 // how far they have got, and the choice of it as the theme, so that today's
 // chapter meets its words before the rest
 
-const LEVEL_NAME = ['ikke møtt', 'øver på', 'kjent']
+const LEVEL_NAME = ['ikke møtt', 'lærer', 'kjent']
 
 export default function Tema({ arg }: PageProps) {
   const { bank, chooseTheme } = useStore()

@@ -386,7 +386,7 @@ export function chapterLine(p: Path): string {
       case 'review':
         return s.arg === 'warm'
           ? `varm opp med ${inWords(n, true)} ord`
-          : `repeter ${inWords(n, true)} ord`
+          : `øv på ${inWords(n, true)} ord`
       case 'new': {
         const lesson = LESSON[lessonOf(s.ids ?? []) ?? '']
         const from = lesson && THEME[lesson.id] ? ` fra «${lesson.no}»` : ''

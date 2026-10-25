@@ -1708,7 +1708,7 @@ function WordCard({ k, onClose }: { k: string; onClose: () => void }) {
                 Lær dette ordet
               </button>
             ) : (
-              <span className="lv">{lv === 1 ? 'Øver på' : 'Kjent'}</span>
+              <span className="lv">{lv === 1 ? 'Lærer' : 'Kjent'}</span>
             )}
           </div>
         )

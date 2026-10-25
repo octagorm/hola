@@ -119,7 +119,7 @@ export default function Ajustes() {
 
         <Group es="Práctica" no="Øving">
           <div className="q-field">
-            <span>Nye ord om dagen, når få ord skal repeteres</span>
+            <span>Nye ord om dagen, når det er få ord å øve på</span>
             <div className="q-stepper">
               <button
                 type="button"
