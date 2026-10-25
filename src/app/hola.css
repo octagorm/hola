@@ -1116,6 +1116,101 @@ a.q-box:hover {
   vertical-align: 5px;
 }
 
+/* How the words stand: one bar, known, being learnt, fading now and still
+   to meet, with the round of repetition beside it */
+.q-memory .top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.q-memory .bar {
+  display: flex;
+  gap: 2px;
+  height: 18px;
+  margin: 16px 0 10px;
+  padding: 2px;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--paper-3);
+}
+
+.q-memory .bar span {
+  min-width: 6px;
+  border-radius: 1px;
+}
+
+.q-memory .known {
+  --c: var(--green);
+}
+
+.q-memory .learning {
+  --c: var(--blue);
+}
+
+.q-memory .fading {
+  --c: var(--red);
+}
+
+.q-memory .waiting {
+  --c: var(--line);
+}
+
+.q-memory .bar span,
+.q-memory .legend i {
+  background: var(--c);
+}
+
+/* the words still to meet, hatched, as the road ahead */
+.q-memory .bar .waiting,
+.q-memory .legend .waiting i {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--line) 0 2px,
+    transparent 2px 6px
+  );
+}
+
+.q-memory .legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.q-memory .legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.q-memory .legend i {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+}
+
+.q-memory .legend b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.q-memory p {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.q-memory .soon {
+  color: var(--ink-2);
+}
+
 /* The story to go on with */
 .q-reading {
   display: grid;
@@ -1903,6 +1998,42 @@ a.q-box:hover {
   .q-shelf h4,
   .q-themes h4 {
     font-size: 28px;
+  }
+
+  /* how the words stand, small enough that today still fits a screen */
+  .q-memory h3 {
+    font-size: 24px;
+  }
+
+  .q-memory h3 span {
+    display: block;
+    margin: 2px 0 0;
+    vertical-align: 0;
+  }
+
+  .q-memory .q-btn {
+    flex: none;
+    padding: 9px 14px;
+    font-size: 14px;
+  }
+
+  .q-memory .bar {
+    height: 14px;
+    margin: 10px 0 8px;
+  }
+
+  .q-memory .legend {
+    gap: 2px 14px;
+    font-size: 14px;
+  }
+
+  .q-memory p {
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  .q-memory .why {
+    display: none;
   }
 
   .q-shelf li > a,

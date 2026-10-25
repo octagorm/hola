@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { WORD } from '../data/words'
 import { pick } from '../lib/bank'
+import { fadingWords } from '../lib/today'
 import { useStore } from '../lib/store'
 import { blip } from '../lib/sound'
 import { Drill } from '../quiz'
 import { Es, Page } from '../ui'
 
-// Practice whenever: ten of the words met, those that need it most, each
-// asked by the link of it that has faded most
+// Practice whenever: ten of the words met, those fading first (the home
+// page counts them), then those that need it most, each asked by the link
+// of it that has faded most
 
 const ROUND = 10
 
@@ -23,7 +25,14 @@ export default function Repaso() {
 
 function Round({ again }: { again: () => void }) {
   const { bank } = useStore()
-  const [ids] = useState(() => pick(bank, ROUND, Date.now()).map((w) => w.id))
+  const [ids] = useState(() => {
+    const now = Date.now()
+    const first = fadingWords(bank, now).slice(0, ROUND)
+    const rest = pick(bank, ROUND + first.length, now).filter(
+      (w) => !first.includes(w),
+    )
+    return [...first, ...rest].slice(0, ROUND).map((w) => w.id)
+  })
   const [got, setGot] = useState<Array<{ id: string; right: boolean }>>([])
 
   if (!ids.length)

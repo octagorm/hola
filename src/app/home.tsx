@@ -29,6 +29,7 @@ import {
   chapterTitle,
   clueCount,
   finished,
+  memory,
   plan,
   ready,
   share,
@@ -376,6 +377,8 @@ export default function Home() {
               </a>
             </section>
 
+            <Memory />
+
             <div className="q-row2">
               {reading && (
                 <a
@@ -592,6 +595,68 @@ export default function Home() {
         </footer>
       </main>
     </div>
+  )
+}
+
+// How the words stand, as one bar: known, being learnt, fading now (the
+// thing to do, with a round of ten to do it) and still to meet, and how
+// many more will fade soon, so that spaced repetition can be seen at work
+function Memory() {
+  const { bank } = useStore()
+  const m = memory(bank, Date.now())
+  if (!m.fading && !m.known && !m.learning) return null
+  const n = (x: number) => x.toLocaleString('nb-NO')
+  const parts = [
+    { k: 'known', n: m.known, no: 'kjente' },
+    { k: 'learning', n: m.learning, no: 'øver på' },
+    { k: 'fading', n: m.fading, no: 'glemmes nå' },
+    { k: 'waiting', n: m.waiting, no: 'venter' },
+  ]
+  const soon = m.week
+    ? m.tomorrow
+      ? `I morgen er det ${n(m.tomorrow)} til, og ${n(m.week)} i løpet av en uke.`
+      : `I morgen ingen flere, men ${n(m.week)} i løpet av en uke.`
+    : 'Ingen flere den neste uka.'
+  return (
+    <section className="q-frame q-box q-memory">
+      <div className="top">
+        <h3>
+          Tu memoria<span>hukommelsen</span>
+        </h3>
+        <a className={`q-btn ${m.fading ? '' : 'ghost'}`} href="#repaso">
+          {m.fading ? `Repeter ${Math.min(10, m.fading)}` : 'Øv likevel'}
+          <ArrowRight />
+        </a>
+      </div>
+      <div
+        className="bar"
+        role="img"
+        aria-label={parts.map((p) => `${n(p.n)} ${p.no}`).join(', ')}
+      >
+        {parts.map(
+          (p) =>
+            p.n > 0 && (
+              <span key={p.k} className={p.k} style={{ flexGrow: p.n }} />
+            ),
+        )}
+      </div>
+      <ul className="legend" aria-hidden="true">
+        {parts.map((p) => (
+          <li key={p.k} className={p.k}>
+            <i />
+            <b>{n(p.n)}</b> {p.no}
+          </li>
+        ))}
+      </ul>
+      <p>
+        <span className="why">
+          {m.fading
+            ? `${n(m.fading)} ord du har øvd på, holder på å glemmes. Repeter dem nå, så sitter de lenger. `
+            : 'Ingen ord holder på å glemmes nå. '}
+        </span>
+        <span className="soon">{soon}</span>
+      </p>
+    </section>
   )
 }
 

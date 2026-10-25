@@ -1,4 +1,4 @@
-import { LESSON, WORD, WORDS, isClue } from '../data/words.ts'
+import { LESSON, TAUGHT, WORD, WORDS, isClue } from '../data/words.ts'
 import { ALL_CHAPTERS, CHAPTER } from '../data/stories.ts'
 import { GAME } from '../data/games.ts'
 import { THEME } from '../data/themes.ts'
@@ -8,13 +8,14 @@ import {
   counts,
   dayKey,
   due,
+  level,
   recallOf,
   streak,
   toMeet,
   unmet,
 } from './bank.ts'
 import type { Word } from '../data/words.ts'
-import type { Bank, Link, Path, PathStep, StepKind } from './bank.ts'
+import type { Bank, Card, Link, Path, PathStep, StepKind } from './bank.ts'
 
 // Today's chapter: a session of about ten minutes, made once a day from
 // the bank and kept in it (bank.path), so it can be taken up again where
@@ -405,3 +406,46 @@ export function chapterLine(p: Path): string {
   })
   return `${capital(listOf(parts))}.`
 }
+
+// --- How the words stand, for the home page ---
+
+// A word answered whose weakest link has fallen below FADING: the starting
+// point's words, never answered, are not, as their memories were guessed
+const fadingAt = (c: Card | undefined, t: number) =>
+  !!c && !c.z && recallOf(c, t) < FADING
+
+// The words by how they stand: fading now, known (read without the
+// Norwegian), being learnt, and still to meet in today's chapters; and of
+// those not fading, how many will be by this time tomorrow and within a
+// week
+export function memory(bank: Bank, now: number) {
+  const m = {
+    fading: 0,
+    known: 0,
+    learning: 0,
+    waiting: 0,
+    tomorrow: 0,
+    week: 0,
+  }
+  for (const w of WORDS) {
+    const c = bank.cards[w.id]
+    if (!c) continue
+    if (fadingAt(c, now)) {
+      m.fading++
+      continue
+    }
+    if (level(c, now) === 2) m.known++
+    else m.learning++
+    if (fadingAt(c, now + DAY)) m.tomorrow++
+    if (fadingAt(c, now + 7 * DAY)) m.week++
+  }
+  m.waiting = unmet(bank, TAUGHT).length
+  return m
+}
+
+// The words fading now, the most faded first, for a round of repetition;
+// those seen in the last minute left out, as pick leaves them to last
+export const fadingWords = (bank: Bank, now: number): Array<Word> =>
+  due(bank, now)
+    .filter((d) => fadingAt(d.c, now) && now - d.c.t >= 60_000)
+    .map((d) => d.w)

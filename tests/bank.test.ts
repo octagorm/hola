@@ -18,15 +18,18 @@ import {
 } from '../src/app/lib/bank'
 import {
   DAILY_GAMES,
+  FADING,
   NEEDS,
   chapterLine,
   clueCount,
+  fadingWords,
+  memory,
   plan,
   ready,
   retheme,
   summary,
 } from '../src/app/lib/today'
-import { WORD, WORDS } from '../src/app/data/words'
+import { TAUGHT, WORD, WORDS } from '../src/app/data/words'
 import {
   KNOWN_AT_START,
   PRACTISED_AT_START,
@@ -449,5 +452,34 @@ describe('the themes', () => {
       'suenos',
       'suenos',
     ])
+  })
+})
+
+describe('how the words stand', () => {
+  it('counts the starting point by how it is read, and none of it fading', () => {
+    const b = withStart(emptyBank(), now)
+    const m = memory(b, now + 3 * DAY)
+    expect(m.fading).toBe(0)
+    expect(m.known + m.learning).toBe(WORDS.filter((w) => b.cards[w.id]).length)
+    expect(m.waiting).toBe(TAUGHT.filter((w) => !b.cards[w.id]).length)
+    expect(fadingWords(b, now + 3 * DAY)).toEqual([])
+  })
+
+  it('counts a word answered as fading once it falls, and soon before', () => {
+    const b = withStart(emptyBank(), now)
+    const gato = answerCard(newCard(now), ['leer', 'decir'], true, now)
+    b.cards['el gato'] = gato
+    // recall reaches FADING after 9s(1/FADING − 1) days
+    const falls = 9 * gato.decir.s * (1 / FADING - 1) * DAY
+    expect(memory(b, now + falls - DAY / 2).tomorrow).toBe(1)
+    expect(memory(b, now + falls - DAY / 2).fading).toBe(0)
+    expect(memory(b, now + falls + 1000).fading).toBe(1)
+    expect(fadingWords(b, now + falls + 1000).map((w) => w.id)).toEqual([
+      'el gato',
+    ])
+    // but not while just seen
+    const seen = { ...b, cards: { ...b.cards } }
+    seen.cards['el gato'] = { ...gato, t: now + falls }
+    expect(fadingWords(seen, now + falls + 1000)).toEqual([])
   })
 })
