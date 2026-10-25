@@ -80,8 +80,9 @@ export const VOICES: Record<string, Voice> = {
     base: 'Algenib',
     style: 'selling old books at a flea market, gruff but kind, at a calm pace',
   },
+  // (Pulcherrima, Rosa's first voice, sounded like a man)
   Rosa: {
-    base: 'Pulcherrima',
+    base: 'Zephyr',
     style: 'selling at a flea market, lively and warm, at a calm pace',
   },
   Julián: {
