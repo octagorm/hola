@@ -1,7 +1,8 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { BankProvider } from './lib/store'
 import { AccountProvider } from './lib/account'
-import { WithAccounts } from './lib/cloud'
+import { CLOUD, WithAccounts } from './lib/cloud'
+import { Reminders } from './reminders'
 import { InkDefs, PeekProvider } from './ui'
 import { Mend } from './mend'
 import Home from './home'
@@ -34,6 +35,7 @@ export default function Hola() {
         <BankProvider>
           <AccountProvider>
             <PeekProvider>
+              {CLOUD && <Reminders />}
               <InkDefs />
               <Router />
             </PeekProvider>

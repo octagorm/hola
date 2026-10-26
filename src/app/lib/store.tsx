@@ -49,6 +49,9 @@ export interface Settings {
   paged: boolean
   // How wide the library's text may be, a step of TEXT_WIDTHS
   textWidth: number
+  // A daily reminder to do Dagens økt (lib/reminder.ts), at 'HH:MM'
+  remind: boolean
+  remindAt: string
 }
 
 // The library's text sizes, in pixels
@@ -72,6 +75,8 @@ export const DEFAULTS: Settings = {
   gloss: 'new',
   paged: true,
   textWidth: 0,
+  remind: false,
+  remindAt: '18:00',
 }
 
 const BANK_KEY = 'hola:bank:v1'

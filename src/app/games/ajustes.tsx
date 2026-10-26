@@ -1,6 +1,9 @@
 import { useRef, useState } from 'react'
-import { Download, Upload, Volume2 } from 'lucide-react'
+import { useMutation, useQuery } from 'convex/react'
+import { Download, Share, Upload, Volume2 } from 'lucide-react'
+import { api } from '../../../convex/_generated/api'
 import { dayKey, merge } from '../lib/bank'
+import { parts, subscribe, support, unsubscribe, zone } from '../lib/reminder'
 import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
@@ -10,8 +13,8 @@ import { Page } from '../ui'
 import type { ReactNode } from 'react'
 import type { Bank } from '../lib/bank'
 
-// Settings: the account, the voice, how the practice goes, sound, and the
-// backup that moves the progress from this browser to another. The
+// Settings: the account, the daily reminder, the voice, how the practice
+// goes, sound, and the backup that moves the progress from this browser to another. The
 // browser's voices are offered only where there are no recordings.
 
 export default function Ajustes() {
@@ -59,6 +62,12 @@ export default function Ajustes() {
         {account.on && (
           <Group es="Cuenta" no="Konto">
             <AccountSettings />
+          </Group>
+        )}
+
+        {account.on && (
+          <Group es="Recordatorio" no="Påminnelse">
+            <Reminder />
           </Group>
         )}
 
@@ -231,6 +240,104 @@ export default function Ajustes() {
   )
 }
 
+// A notification each day at a time of the player's choosing, unless
+// Dagens økt is finished (lib/reminder.ts, reminders.tsx). Only with Convex,
+// which sends it. The permission is asked for from the tap that turns it
+// on, as Safari wants.
+function Reminder() {
+  const { bank, settings, setSettings } = useStore()
+  const key = useQuery(api.reminders.key)
+  const set = useMutation(api.reminders.set)
+  const remove = useMutation(api.reminders.remove)
+  const [busy, setBusy] = useState(false)
+  const [trouble, setTrouble] = useState<string | null>(null)
+  const can = support()
+  const blocked = can === 'yes' && Notification.permission === 'denied'
+
+  const turn = async (on: boolean) => {
+    setBusy(true)
+    setTrouble(null)
+    try {
+      if (on) {
+        if (!key) throw new Error('No key')
+        const allowed = await Notification.requestPermission()
+        if (allowed !== 'granted') {
+          if (allowed === 'default')
+            setTrouble('Da må du tillate varsler fra Hola.')
+          return
+        }
+        const today = dayKey(Date.now())
+        await set({
+          ...parts(await subscribe(key)),
+          time: settings.remindAt,
+          zone: zone(),
+          done: bank.daily[today] ? today : undefined,
+        })
+        setSettings({ remind: true })
+      } else {
+        setSettings({ remind: false })
+        const endpoint = await unsubscribe()
+        // If this fails, the push service will say the subscription is gone
+        if (endpoint) await remove({ endpoint }).catch(() => {})
+      }
+    } catch {
+      setTrouble(
+        on
+          ? 'Det gikk ikke å slå den på akkurat nå. Prøv igjen om litt.'
+          : 'Det gikk ikke å slå den av akkurat nå. Prøv igjen om litt.',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const text =
+    can === 'home-screen' ? (
+      <>
+        På iPhone og iPad virker dette bare i Hola på Hjem-skjermen: trykk på
+        Del <Share size={14} className="inline align-[-2px]" /> i Safari, så
+        Legg til på Hjem-skjerm, og slå det på der.
+      </>
+    ) : can === 'old-ios' ? (
+      'Varsler fra en app på Hjem-skjermen krever iOS 16.4 eller nyere.'
+    ) : can === 'no' ? (
+      'Denne nettleseren kan ikke vise varsler fra en nettside.'
+    ) : blocked ? (
+      'Varsler fra Hola er blokkert. Tillat dem i innstillingene til nettleseren eller telefonen, og slå det på her.'
+    ) : key === null ? (
+      'Påminnelser er ikke klare her ennå.'
+    ) : (
+      'Et varsel på dette klokkeslettet hver dag, om du ikke har gjort dagens økt allerede.'
+    )
+
+  return (
+    <>
+      <p className="q-muted">{trouble ?? text}</p>
+      {can === 'yes' && (
+        <>
+          <label className="q-field">
+            <span>Klokkeslett</span>
+            <input
+              type="time"
+              value={settings.remindAt}
+              onChange={(e) => {
+                if (e.target.value)
+                  setSettings({ remindAt: e.target.value.slice(0, 5) })
+              }}
+            />
+          </label>
+          <Toggle
+            on={settings.remind}
+            set={(on) => void turn(on)}
+            label="Minn meg på dagens økt hver dag"
+            disabled={busy || (!settings.remind && (!key || blocked))}
+          />
+        </>
+      )}
+    </>
+  )
+}
+
 function Group({
   es,
   no,
@@ -255,16 +362,19 @@ function Toggle({
   on,
   set,
   label,
+  disabled,
 }: {
   on: boolean
   set: (on: boolean) => void
   label: string
+  disabled?: boolean
 }) {
   return (
     <label className="q-toggle">
       <input
         type="checkbox"
         checked={on}
+        disabled={disabled}
         onChange={(e) => set(e.target.checked)}
       />
       <i aria-hidden="true" />

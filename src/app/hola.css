@@ -3115,7 +3115,8 @@ img.q-pic {
   color: var(--ink-2);
 }
 
-.q-field select {
+.q-field select,
+.q-field input[type='time'] {
   max-width: 100%;
   padding: 8px 10px;
   border: 2px solid var(--ink);
@@ -3169,6 +3170,11 @@ img.q-pic {
   align-items: center;
   gap: 12px;
   cursor: pointer;
+}
+
+.q-toggle:has(input:disabled) {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .q-toggle input {
