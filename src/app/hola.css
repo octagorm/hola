@@ -1765,6 +1765,136 @@ a.q-box:hover {
   cursor: default;
 }
 
+/* The feedback form at the foot of the home page (feedback.tsx) */
+.q-feedback {
+  width: 100%;
+  max-width: 640px;
+  margin: 10px auto 0;
+}
+
+.q-feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: var(--radius);
+}
+
+.q-feedback-form.over {
+  outline: 3px dashed var(--ochre);
+  outline-offset: 6px;
+}
+
+.q-feedback-form textarea,
+.q-feedback-form input[type='text'] {
+  width: 100%;
+  padding: 9px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  background: var(--paper);
+  font-family: var(--body);
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--ink);
+  outline: none;
+}
+
+.q-feedback-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.q-feedback-form textarea:focus,
+.q-feedback-form input[type='text']:focus {
+  box-shadow: 3px 3px 0 var(--blue);
+}
+
+.q-feedback-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px 16px;
+}
+
+.q-feedback-row.start {
+  justify-content: flex-start;
+}
+
+.q-feedback .q-feedback-row p {
+  margin: 0;
+}
+
+.q-feedback-error {
+  margin-right: auto !important;
+  color: var(--red);
+}
+
+.q-feedback-sent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto !important;
+  font-family: var(--sc);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  color: var(--green);
+}
+
+.q-feedback-sent svg {
+  width: 18px;
+  height: 18px;
+}
+
+.q-feedback-shot {
+  position: relative;
+  display: inline-block;
+}
+
+.q-feedback-shot img {
+  display: block;
+  max-height: 120px;
+  max-width: 240px;
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+.q-feedback-shot button {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.q-feedback-shot button:hover {
+  background: var(--red);
+}
+
+.q-feedback-shot svg {
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 600px) {
+  .q-feedback-paste {
+    display: none;
+  }
+}
+
 .q-foot {
   margin-top: 10px;
   text-align: center;

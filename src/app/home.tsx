@@ -38,6 +38,7 @@ import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
 import { AccountButton } from './account'
 import { PaintedScene, SCENE_PAINTED } from './sky'
 import { useAccount } from './lib/account'
+import { Feedback } from './feedback'
 import {
   InkBar,
   LINK_NAME,
@@ -551,6 +552,8 @@ export default function Home() {
             </Suspense>
           </>
         )}
+
+        {account.on && <Feedback />}
 
         <footer className="q-foot">
           <nav>
