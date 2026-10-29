@@ -1,6 +1,7 @@
 {
   "name": "hola",
   "private": true,
+  "license": "MIT",
   "sideEffects": false,
   "type": "module",
   "engines": {
