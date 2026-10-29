@@ -1100,19 +1100,18 @@ body.q-body {
   border-color: var(--blue);
 }
 
-.q-notice a {
+.q-notice .text {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
-  color: inherit;
-  text-decoration: none;
   font-size: 17px;
   line-height: 1.35;
 }
 
-.q-notice a:hover > span:last-child {
-  text-decoration: underline;
+.q-notice .q-btn {
+  margin-top: 10px;
 }
 
 .q-notice .close {

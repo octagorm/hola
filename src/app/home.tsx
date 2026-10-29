@@ -596,7 +596,7 @@ function StartNotice() {
   const begun = Object.values(bank.cards).some((c) => c && !c.z)
   return (
     <div className="q-frame q-box q-notice">
-      <a href="#ajustes/partida">
+      <div className="text">
         <span className="q-label">
           Punto de partida <span>· Startpunkt</span>
         </span>
@@ -605,7 +605,11 @@ function StartNotice() {
             ? 'Kunne du mer eller mindre spansk fra før? Velg hvor du vil begynne. Det du har øvd på, blir som det er.'
             : 'Hvor mye spansk kan du fra før? Se deg gjerne rundt først, og velg så hvor du vil begynne.'}
         </span>
-      </a>
+        <a className="q-btn small" href="#ajustes/partida">
+          Velg startpunkt
+          <ArrowRight />
+        </a>
+      </div>
       <button
         type="button"
         className="close"
