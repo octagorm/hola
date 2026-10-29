@@ -3295,6 +3295,56 @@ img.q-pic {
   font-size: 30px;
 }
 
+.q-starts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.q-starts button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper-3);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.q-starts button.on {
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 2px var(--blue);
+}
+
+.q-starts b {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.q-starts small {
+  font-family: var(--sc);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+}
+
+.q-starts span {
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
 .q-toggle {
   display: flex;
   align-items: center;

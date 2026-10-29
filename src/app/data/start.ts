@@ -1,9 +1,14 @@
+import { THEME } from './themes.ts'
+import { LESSONS, WORDS } from './words.ts'
+
 // Where a player starts: Hola is made for someone who already knows
 // elementary Spanish, so a new bank begins with the simplest words known
 // and many easy ones understood but still practised, for coming up with
 // them (lib/bank.ts, withStart). Each list holds ids from data/words.ts.
 // Raise START when a list grows, so that banks given the starting point
-// before get the words added too.
+// before get the words added too. A player may choose another starting
+// point (LEVELS, under Innstillinger), from nothing to the first lessons
+// all known; level 1 is the one given to begin with.
 
 export const START = 3
 
@@ -369,4 +374,73 @@ export const PRACTISED_AT_START: Array<string> = [
   'cómo',
   'por qué',
   'cuánto',
+]
+
+// The first lessons, those that are neither themes nor a text's words
+const FIRST_LESSONS = new Set(
+  LESSONS.filter((l) => !l.book && !THEME[l.id]).map((l) => l.id),
+)
+const FIRST_WORDS = WORDS.filter((w) => FIRST_LESSONS.has(w.lesson)).map(
+  (w) => w.id,
+)
+const STARTING_THEMES = new Set(THEMES_AT_START.map((x) => x.id))
+const EVERYDAY_WORDS = WORDS.filter((w) => STARTING_THEMES.has(w.lesson)).map(
+  (w) => w.id,
+)
+
+export type StartLevel = 0 | 1 | 2 | 3
+
+export interface Start {
+  level: StartLevel
+  name: string
+  about: string
+  // Words known, and words understood but still practised
+  known: Array<string>
+  practised: Array<string>
+}
+
+const without = (ids: Array<string>, out: Array<string>) => {
+  const skip = new Set(out)
+  return ids.filter((id) => !skip.has(id))
+}
+
+// The starting points a player can choose, from the least to the most
+export const LEVELS: Array<Start> = [
+  {
+    level: 0,
+    name: 'Helt ny',
+    about: 'Ingen ord kjent fra før. Alt møtes for første gang.',
+    known: [],
+    practised: [],
+  },
+  {
+    level: 1,
+    name: 'Litt spansk',
+    about:
+      'De enkleste ordene kjent, og mange lette ord forstått, men øvd på for å komme på dem selv.',
+    known: KNOWN_AT_START,
+    practised: PRACTISED_AT_START,
+  },
+  {
+    level: 2,
+    name: 'En god del',
+    about:
+      'De lette ordene kjent, og resten av de første leksjonene forstått og øvd på.',
+    known: [...new Set([...KNOWN_AT_START, ...PRACTISED_AT_START])],
+    practised: without(FIRST_WORDS, [...KNOWN_AT_START, ...PRACTISED_AT_START]),
+  },
+  {
+    level: 3,
+    name: 'Mye',
+    about:
+      'Alle de første leksjonene kjent, og ordene fra hverdagstemaene (i baren og butikken, på reise, været, klokka og veien) forstått og øvd på.',
+    known: [
+      ...new Set([...KNOWN_AT_START, ...PRACTISED_AT_START, ...FIRST_WORDS]),
+    ],
+    practised: without(EVERYDAY_WORDS, [
+      ...KNOWN_AT_START,
+      ...PRACTISED_AT_START,
+      ...FIRST_WORDS,
+    ]),
+  },
 ]

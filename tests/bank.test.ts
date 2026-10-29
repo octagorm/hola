@@ -12,6 +12,8 @@ import {
   recall,
   same,
   stable,
+  startAt,
+  startPreview,
   toMeet,
   weakest,
   withStart,
@@ -32,6 +34,7 @@ import {
 import { TAUGHT, WORD, WORDS } from '../src/app/data/words'
 import {
   KNOWN_AT_START,
+  LEVELS,
   PRACTISED_AT_START,
   START,
   THEMES_AT_START,
@@ -292,6 +295,72 @@ describe('the starting point', () => {
     const c = answerCard(b.cards.hola, ['decir'], true, now + DAY)
     expect(c.z).toBeUndefined()
     expect(c.leer).toEqual(b.cards.hola?.leer)
+  })
+})
+
+describe('another starting point', () => {
+  it('has words that exist, each level holding more than the one before', () => {
+    let before = -1
+    for (const x of LEVELS) {
+      for (const id of [...x.known, ...x.practised])
+        expect(WORD[id], `${x.level} ${id}`).toBeDefined()
+      const size = new Set([...x.known, ...x.practised]).size
+      expect(size, x.name).toBeGreaterThan(before)
+      before = size
+    }
+    expect(LEVELS[1].known).toEqual(KNOWN_AT_START)
+    expect(LEVELS[1].practised).toEqual(PRACTISED_AT_START)
+  })
+
+  it('changes only the words never answered', () => {
+    const b = withStart(emptyBank(), now)
+    b.cards.hola = answerCard(b.cards.hola, ['leer'], false, now)
+    b.cards['el gato'] = known(now)
+    const none = startAt(b, 0, now + DAY)
+    expect(none.cards.hola).toBe(b.cards.hola)
+    expect(none.cards['el gato']).toBe(b.cards['el gato'])
+    expect(none.cards.adiós).toBeUndefined()
+    expect(Object.keys(none.cards)).toHaveLength(2)
+    expect(none.base).toEqual({ l: 0, t: now + DAY })
+    const lots = startAt(none, 3, now + 2 * DAY)
+    expect(lots.cards.hola).toBe(b.cards.hola)
+    expect(level(lots.cards.adiós, now + 2 * DAY)).toBe(2)
+    const first = WORDS.find((w) => w.lesson === 'casa' && !lots.cards[w.id]?.n)
+    if (first) expect(level(lots.cards[first.id], now + 2 * DAY)).toBe(2)
+    expect(startPreview(lots, 0)).toEqual({ known: 0, practised: 0, kept: 2 })
+  })
+
+  it('carries over to another device in a merge', () => {
+    const other = withStart(emptyBank(), now)
+    other.cards['el gato'] = answerCard(undefined, ['leer'], true, now)
+    // chosen on this device a day later: nothing
+    const here = startAt(merge(other, emptyBank()), 0, now + DAY)
+    for (const m of [merge(here, other), merge(other, here)]) {
+      expect(Object.keys(m.cards)).toEqual(['el gato'])
+      expect(m.base.l).toBe(0)
+    }
+    // and back to more: the later seeds win over the older ones
+    const more = startAt(here, 2, now + 2 * DAY)
+    const easy = PRACTISED_AT_START[0]
+    expect(level(other.cards[easy], now + 2 * DAY)).toBe(2)
+    const m = merge(other, more)
+    expect(m.cards[easy]).toEqual(more.cards[easy])
+    expect(m.cards['el gato']).toEqual(other.cards['el gato'])
+    // a word met on the other device after the choice stays met
+    const later = { ...other, cards: { ...other.cards } }
+    const w = WORDS.find((x) => x.lesson === 'cuba')
+    if (w) {
+      later.cards[w.id] = newCard(now + 3 * DAY)
+      expect(merge(here, later).cards[w.id]).toBeDefined()
+    }
+    // and a bank saved before a choice could be made is read as the first
+    const { base: _, ...old } = other
+    expect(merge(old, emptyBank()).base).toEqual({ l: 1, t: 0 })
+  })
+
+  it('gives the chosen one when the starting point grows', () => {
+    const b = { ...startAt(emptyBank(), 0, now), start: START - 1 }
+    expect(Object.keys(withStart(b, now + DAY).cards)).toHaveLength(0)
   })
 })
 

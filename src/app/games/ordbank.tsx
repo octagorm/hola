@@ -117,6 +117,10 @@ export default function Ordbank() {
           <i>recordar</i>). Strekene viser hvor godt de sitter nå, i snitt for
           ordene du har møtt.
         </p>
+        <p className="q-muted mt-2 text-[16px] leading-snug">
+          Kunne du mer eller mindre fra før? Velg et annet{' '}
+          <a href="#ajustes">startpunkt under Innstillinger</a>.
+        </p>
       </section>
 
       <div className="q-filter">

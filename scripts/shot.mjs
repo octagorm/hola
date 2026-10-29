@@ -72,6 +72,7 @@ for (const t of targets.length ? targets : ['']) {
     await page
       .getByRole('button', { name: c })
       .or(page.getByRole('link', { name: c }))
+      .or(page.getByRole('radio', { name: c }))
       .first()
       .click()
     await page.waitForTimeout(500)

@@ -15,6 +15,7 @@ import {
   merge,
   newCard,
   stable,
+  startAt,
   withStart,
 } from './bank'
 import { retheme, todays } from './today'
@@ -23,6 +24,7 @@ import { setVoice } from './speech'
 import { setEffects } from './sound'
 import type { ReactNode } from 'react'
 import type { Bank, Level, Link, Path, ThemeChoice } from './bank'
+import type { StartLevel } from '../data/start'
 
 // The word bank and the settings as React state, for every game at once,
 // both kept in this browser's localStorage. Nothing leaves the browser; a
@@ -138,6 +140,8 @@ interface Store {
   finishDay: (day: string, bonus?: number) => void
   // A bank read in from a backup, merged with this one
   absorb: (b: Partial<Bank>) => void
+  // Another starting point, for the words never answered
+  chooseStart: (l: StartLevel) => void
   reset: () => void
 }
 
@@ -385,6 +389,11 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const chooseStart = useCallback(
+    (l: StartLevel) => setBank((b) => startAt(b, l, Date.now())),
+    [],
+  )
+
   const reset = useCallback(
     () => setBank(() => withStart(emptyBank(), Date.now())),
     [],
@@ -415,6 +424,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       chooseTheme,
       finishDay,
       absorb,
+      chooseStart,
       reset,
     }),
     [
@@ -435,6 +445,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       chooseTheme,
       finishDay,
       absorb,
+      chooseStart,
       reset,
     ],
   )

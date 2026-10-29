@@ -2,7 +2,8 @@ import { useRef, useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { Download, Share, Upload, Volume2 } from 'lucide-react'
 import { api } from '../../../convex/_generated/api'
-import { dayKey, merge } from '../lib/bank'
+import { dayKey, merge, startPreview } from '../lib/bank'
+import { LEVELS } from '../data/start'
 import { parts, subscribe, support, unsubscribe, zone } from '../lib/reminder'
 import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
@@ -12,6 +13,7 @@ import { AccountSettings } from '../account'
 import { Page } from '../ui'
 import type { ReactNode } from 'react'
 import type { Bank } from '../lib/bank'
+import type { StartLevel } from '../data/start'
 
 // Settings: the account, the daily reminder, the voice, how the practice
 // goes, sound, and the backup that moves the progress from this browser to another. The
@@ -70,6 +72,10 @@ export default function Ajustes() {
             <Reminder />
           </Group>
         )}
+
+        <Group es="Punto de partida" no="Startpunkt">
+          <StartPoint />
+        </Group>
 
         <Group es="Voz" no="Stemme">
           {hear === false ? (
@@ -334,6 +340,79 @@ function Reminder() {
           />
         </>
       )}
+    </>
+  )
+}
+
+// How much Spanish the player knew before Hola. Another choice changes
+// only the words never answered; what is learnt stays.
+function StartPoint() {
+  const { bank, chooseStart } = useStore()
+  const [pick, setPick] = useState<StartLevel | null>(null)
+  const [done, setDone] = useState(false)
+  const preview = pick === null ? null : startPreview(bank, pick)
+  const answered = startPreview(bank, bank.base.l).kept
+  return (
+    <>
+      <p className="q-muted">
+        Hvor mye spansk du kunne fra før. Du kan bytte når som helst: det endrer
+        bare ordene du ikke har svart på ennå
+        {answered ? `, og de ${answered} du har øvd på, blir som de er` : ''}.
+      </p>
+      <div className="q-starts" role="radiogroup" aria-label="Startpunkt">
+        {LEVELS.map((x) => {
+          const now = bank.base.l === x.level
+          const on = (pick ?? bank.base.l) === x.level
+          return (
+            <button
+              key={x.level}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              className={on ? 'on' : ''}
+              onClick={() => {
+                setPick(now ? null : x.level)
+                setDone(false)
+              }}
+            >
+              <b>
+                {x.name}
+                {now && <small>Valgt nå</small>}
+              </b>
+              <span>{x.about}</span>
+            </button>
+          )
+        })}
+      </div>
+      {preview && pick !== null && (
+        <div className="flex flex-wrap items-center gap-3">
+          <span>
+            Da blir {preview.known} ord kjente og {preview.practised} ord å øve
+            på
+            {preview.kept ? `. De ${preview.kept} du har øvd på, beholdes` : ''}
+            .
+          </span>
+          <button
+            type="button"
+            className="q-btn small"
+            onClick={() => {
+              chooseStart(pick)
+              setPick(null)
+              setDone(true)
+            }}
+          >
+            Bruk dette
+          </button>
+          <button
+            type="button"
+            className="q-link"
+            onClick={() => setPick(null)}
+          >
+            Avbryt
+          </button>
+        </div>
+      )}
+      {done && <p className="q-note">Startpunktet er endret.</p>}
     </>
   )
 }

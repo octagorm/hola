@@ -1,10 +1,6 @@
 import { TAUGHT, WORDS } from '../data/words.ts'
-import {
-  KNOWN_AT_START,
-  PRACTISED_AT_START,
-  START,
-  THEMES_AT_START,
-} from '../data/start.ts'
+import { LEVELS, START, THEMES_AT_START } from '../data/start.ts'
+import type { StartLevel } from '../data/start.ts'
 import type { Word } from '../data/words.ts'
 
 // The word bank: what the player knows, shared by every game. A word is
@@ -76,6 +72,9 @@ export interface Bank {
   path: Path | null
   // The version of the starting point given (data/start.ts), 0 for none
   start: number
+  // The starting point chosen (LEVELS in data/start.ts), and when; 1, at
+  // 0, is the one given to begin with
+  base: { l: StartLevel; t: number }
   // The lessons chosen as themes (data/themes.ts), as many as wanted, in
   // the order chosen, each with its priority (1–3), whose words today's
   // chapter meets before the rest, and when the choice was last changed
@@ -143,6 +142,7 @@ export const emptyBank = (): Bank => ({
   read: {},
   path: null,
   start: 0,
+  base: { l: 1, t: 0 },
   theme: { on: [], t: 0 },
   kept: {},
   place: {},
@@ -227,41 +227,55 @@ function spread(id: string): number {
 }
 
 // A card from the starting point, never seen: each link lasting `s` days
-// from `t`
-const seeded = (t: number, s: Record<Link, number>): Card => ({
+// from `t`, given at `i`
+const seeded = (t: number, s: Record<Link, number>, i = t): Card => ({
   leer: { s: s.leer, t },
   decir: { s: s.decir, t },
   t: 0,
   n: 0,
   x: 0,
-  i: t,
+  i,
   z: 1,
 })
 
-// The starting point (data/start.ts), for a bank that has not had this
-// version of it: cards for its words where the bank has none, so nothing
-// learnt is touched. The known words last for weeks. Those being practised
-// are understood for a week or so, so read without the Norwegian, but
-// coming up with them lasts only half a day or so, spread so that they do
-// not all fade on the same day, and as if last practised half a day ago,
-// so that they come before the known ones from the first day. A bank given
-// the first starting point, when they were not yet understood, has those
-// never answered since understood from now.
+// A known word from the starting point lasts for weeks
+const seedKnown = (now: number) => seeded(now, { leer: 20, decir: 8 })
+
+// A word being practised is understood for a week or so, so read without
+// the Norwegian, but coming up with it lasts only half a day or so, spread
+// so that they do not all fade on the same day, and as if last practised
+// half a day ago, so that they come before the known ones from the first
+// day
+const seedPractised = (id: string, now: number) =>
+  seeded(
+    now - DAY / 2,
+    { leer: 3 + 3 * spread(id), decir: 0.25 + 0.45 * spread(id) },
+    now,
+  )
+
+// What a starting point gives each of its words
+function startOf(l: StartLevel): Map<string, 'known' | 'practised'> {
+  const start = LEVELS.find((x) => x.level === l) ?? LEVELS[1]
+  const out = new Map<string, 'known' | 'practised'>()
+  for (const id of start.practised) out.set(id, 'practised')
+  for (const id of start.known) out.set(id, 'known')
+  return out
+}
+
+// The starting point chosen (data/start.ts), for a bank that has not had
+// this version of it: cards for its words where the bank has none, so
+// nothing learnt is touched. A bank given the first starting point, when
+// the words practised were not yet understood, has those never answered
+// since understood from now.
 export function withStart(bank: Bank, now: number): Bank {
   if (bank.start >= START) return bank
   const cards = { ...bank.cards }
-  for (const id of KNOWN_AT_START)
-    cards[id] ??= seeded(now, { leer: 20, decir: 8 })
-  for (const id of PRACTISED_AT_START) {
-    const leer = 3 + 3 * spread(id)
+  for (const [id, as] of startOf(bank.base.l)) {
     const c = cards[id]
-    if (!c)
-      cards[id] = seeded(now - DAY / 2, {
-        leer,
-        decir: 0.25 + 0.45 * spread(id),
-      })
+    if (as === 'known') cards[id] ??= seedKnown(now)
+    else if (!c) cards[id] = seedPractised(id, now)
     else if (c.z && c.leer.s < KNOWN)
-      cards[id] = { ...c, leer: { s: leer, t: now } }
+      cards[id] = { ...c, leer: { s: seedPractised(id, now).leer.s, t: now } }
   }
   // Themes never chosen (t is 0) are the starting ones, still at 0, so
   // that any choice made since wins in a merge
@@ -270,6 +284,46 @@ export function withStart(bank: Bank, now: number): Bank {
       ? bank.theme
       : { on: THEMES_AT_START.map((x) => ({ ...x })), t: 0 }
   return { ...bank, cards, theme, start: START }
+}
+
+// A word given by a starting point and never answered: only these does
+// another starting point change
+const fromStart = (card: Card | undefined) => !card || !!card.z
+
+// Another starting point chosen, in a bank already in use: the words
+// never answered take what it gives them, or are not met if it gives them
+// nothing, while every word answered, or marked as known, stays as it is
+export function startAt(bank: Bank, l: StartLevel, now: number): Bank {
+  const start = startOf(l)
+  const cards = { ...bank.cards }
+  for (const w of WORDS) {
+    if (!fromStart(cards[w.id])) continue
+    const as = start.get(w.id)
+    if (as === 'known') cards[w.id] = seedKnown(now)
+    else if (as === 'practised') cards[w.id] = seedPractised(w.id, now)
+    else delete cards[w.id]
+  }
+  return { ...bank, cards, base: { l, t: now }, start: START }
+}
+
+// What choosing a starting point would do: the words it would make known
+// and practised, and those answered that it leaves alone
+export function startPreview(bank: Bank, l: StartLevel) {
+  const start = startOf(l)
+  let made = 0
+  let practised = 0
+  let kept = 0
+  for (const w of WORDS) {
+    const c = bank.cards[w.id]
+    if (!fromStart(c)) {
+      kept++
+      continue
+    }
+    const as = start.get(w.id)
+    if (as === 'known') made++
+    else if (as === 'practised') practised++
+  }
+  return { known: made, practised, kept }
 }
 
 // The chance of remembering a word's weakest link, now
@@ -454,6 +508,14 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   }
   out.path = laterPath(a.path ?? null, b.path ?? null)
   out.start = Math.max(a.start ?? 0, b.start ?? 0)
+  out.base = later(baseOf(a.base), baseOf(b.base))
+  // A word the starting point gave before another was chosen, and the new
+  // one does not give, is not met (as it was taken out where it was chosen)
+  if (out.base.t) {
+    const start = startOf(out.base.l)
+    for (const [id, c] of Object.entries(out.cards))
+      if (c?.z && c.i < out.base.t && !start.has(id)) delete out.cards[id]
+  }
   for (const id of keysOf(a.place, b.place)) {
     const x = a.place?.[id]
     const y = b.place?.[id]
@@ -465,6 +527,13 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   const tb = themesOf(b.theme) ?? out.theme
   out.theme = later(ta, tb)
   return out
+}
+
+function baseOf(x: unknown): Bank['base'] {
+  const o = (x ?? {}) as { l?: unknown; t?: unknown }
+  return [0, 1, 2, 3].includes(o.l as number) && typeof o.t === 'number'
+    ? { l: o.l as StartLevel, t: o.t }
+    : { l: 1, t: 0 }
 }
 
 // Of two things, the one answered or changed later, and of two as late,
@@ -491,6 +560,8 @@ function heard(card: Card & { oir?: Memory }): Card {
 function both(x: Card, y: Card): Card {
   if (x.z && !y.z) return y
   if (y.z && !x.z) return x
+  // of two from starting points, the one given last
+  if (x.z && y.z && x.i !== y.i) return x.i > y.i ? x : y
   const last = later(x, y, (c) => [c.n, c.x])
   return {
     ...last,
