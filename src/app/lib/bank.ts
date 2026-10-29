@@ -75,6 +75,9 @@ export interface Bank {
   // The starting point chosen (LEVELS in data/start.ts), and when; 1, at
   // 0, is the one given to begin with
   base: { l: StartLevel; t: number }
+  // Notices shown once and put away, by name → when (the starting point's
+  // on the home page: 'start')
+  seen: Record<string, number | undefined>
   // The lessons chosen as themes (data/themes.ts), as many as wanted, in
   // the order chosen, each with its priority (1–3), whose words today's
   // chapter meets before the rest, and when the choice was last changed
@@ -143,6 +146,7 @@ export const emptyBank = (): Bank => ({
   path: null,
   start: 0,
   base: { l: 1, t: 0 },
+  seen: {},
   theme: { on: [], t: 0 },
   kept: {},
   place: {},
@@ -502,6 +506,7 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
     'palabra',
     'read',
     'kept',
+    'seen',
   ] as const) {
     for (const id of keysOf(a[k], b[k]))
       out[k][id] = Math.max(a[k]?.[id] ?? 0, b[k]?.[id] ?? 0)

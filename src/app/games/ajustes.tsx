@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { Download, Share, Upload, Volume2 } from 'lucide-react'
 import { api } from '../../../convex/_generated/api'
@@ -14,12 +14,13 @@ import { Page } from '../ui'
 import type { ReactNode } from 'react'
 import type { Bank } from '../lib/bank'
 import type { StartLevel } from '../data/start'
+import type { PageProps } from '../registry'
 
 // Settings: the account, the daily reminder, the voice, how the practice
 // goes, sound, and the backup that moves the progress from this browser to another. The
 // browser's voices are offered only where there are no recordings.
 
-export default function Ajustes() {
+export default function Ajustes({ arg }: PageProps) {
   const { settings, setSettings, bank, absorb, reset } = useStore()
   const account = useAccount()
   const kept = !!account.me
@@ -27,6 +28,10 @@ export default function Ajustes() {
   const [sure, setSure] = useState(false)
   const [note, setNote] = useState('')
   const file = useRef<HTMLInputElement>(null)
+  // #ajustes/partida, from the notice on the home page: straight to it
+  useEffect(() => {
+    if (arg) document.getElementById(arg)?.scrollIntoView({ block: 'start' })
+  }, [arg])
 
   const download = () => {
     const data = JSON.stringify({ format: 'hola/1', bank }, null, 1)
@@ -73,7 +78,7 @@ export default function Ajustes() {
           </Group>
         )}
 
-        <Group es="Punto de partida" no="Startpunkt">
+        <Group es="Punto de partida" no="Startpunkt" id="partida">
           <StartPoint />
         </Group>
 
@@ -420,14 +425,16 @@ function StartPoint() {
 function Group({
   es,
   no,
+  id,
   children,
 }: {
   es: string
   no: string
+  id?: string
   children: ReactNode
 }) {
   return (
-    <section className="q-frame q-card q-group">
+    <section className="q-frame q-card q-group" id={id}>
       <h2>
         {es}
         <span>{no}</span>

@@ -1092,6 +1092,41 @@ body.q-body {
   transition: background 0.15s;
 }
 
+.q-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px 14px 20px;
+  border-color: var(--blue);
+}
+
+.q-notice a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.q-notice a:hover > span:last-child {
+  text-decoration: underline;
+}
+
+.q-notice .close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
 a.q-box:hover {
   background: #fffaf0;
 }

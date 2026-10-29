@@ -142,6 +142,8 @@ interface Store {
   absorb: (b: Partial<Bank>) => void
   // Another starting point, for the words never answered
   chooseStart: (l: StartLevel) => void
+  // A notice put away, on every device
+  markSeen: (key: string) => void
   reset: () => void
 }
 
@@ -394,6 +396,14 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const markSeen = useCallback(
+    (key: string) =>
+      setBank((b) =>
+        b.seen[key] ? b : { ...b, seen: { ...b.seen, [key]: Date.now() } },
+      ),
+    [],
+  )
+
   const reset = useCallback(
     () => setBank(() => withStart(emptyBank(), Date.now())),
     [],
@@ -425,6 +435,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       finishDay,
       absorb,
       chooseStart,
+      markSeen,
       reset,
     }),
     [
@@ -446,6 +457,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       finishDay,
       absorb,
       chooseStart,
+      markSeen,
       reset,
     ],
   )

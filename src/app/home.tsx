@@ -9,6 +9,7 @@ import {
   Settings2,
   Shapes,
   Sun,
+  X,
 } from 'lucide-react'
 import { EPIGRAPH } from './data/quijote'
 import { STORY } from './data/stories'
@@ -355,6 +356,8 @@ export default function Home() {
               </a>
             </section>
 
+            <StartNotice />
+
             <Memory />
 
             <div className="q-row2">
@@ -583,6 +586,38 @@ export default function Home() {
 // now lit in their top half, side by side in the middle (the thing to do, with a round
 // of ten to do it), and how many more are due soon, so that spaced
 // repetition can be seen at work
+// The starting point can be chosen under Innstillinger (Punto de
+// partida): said on the home page until one is chosen or this is put away
+// (on every device), so that a new player can look around first and come
+// back to it
+function StartNotice() {
+  const { bank, markSeen } = useStore()
+  if (bank.seen.start || bank.base.t) return null
+  const begun = Object.values(bank.cards).some((c) => c && !c.z)
+  return (
+    <div className="q-frame q-box q-notice">
+      <a href="#ajustes/partida">
+        <span className="q-label">
+          Punto de partida <span>· Startpunkt</span>
+        </span>
+        <span>
+          {begun
+            ? 'Kunne du mer eller mindre spansk fra før? Velg hvor du vil begynne. Det du har øvd på, blir som det er.'
+            : 'Hvor mye spansk kan du fra før? Se deg gjerne rundt først, og velg så hvor du vil begynne.'}
+        </span>
+      </a>
+      <button
+        type="button"
+        className="close"
+        aria-label="Lukk"
+        onClick={() => markSeen('start')}
+      >
+        <X aria-hidden="true" />
+      </button>
+    </div>
+  )
+}
+
 function Memory() {
   const { bank } = useStore()
   const m = memory(bank, Date.now())

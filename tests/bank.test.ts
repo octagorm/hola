@@ -358,6 +358,12 @@ describe('another starting point', () => {
     expect(merge(old, emptyBank()).base).toEqual({ l: 1, t: 0 })
   })
 
+  it('keeps a notice put away on one device put away on every one', () => {
+    const here = { ...emptyBank(), seen: { start: now } }
+    expect(merge(emptyBank(), here).seen.start).toBe(now)
+    expect(merge(here, {}).seen.start).toBe(now)
+  })
+
   it('gives the chosen one when the starting point grows', () => {
     const b = { ...startAt(emptyBank(), 0, now), start: START - 1 }
     expect(Object.keys(withStart(b, now + DAY).cards)).toHaveLength(0)
