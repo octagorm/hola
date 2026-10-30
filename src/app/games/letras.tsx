@@ -101,7 +101,7 @@ function Top({
 }
 
 function Game({ back, onAgain }: { back: string; onAgain: () => void }) {
-  const { bank, record, meet, points, setBest, played } = useStore()
+  const { bank, record, offer, points, setBest, played } = useStore()
   const [done, setDone] = useState<Array<Round>>([])
   const [goal, setGoal] = useState<Form>(() => target(bank, Date.now()))
   const [blocks, setBlocks] = useState<Array<string>>([])
@@ -198,7 +198,7 @@ function Game({ back, onAgain }: { back: string; onAgain: () => void }) {
     // Her word, set from letters she was given: saying it, as when picking
     // the Spanish from a few, since the letters were there to choose from
     if (bank.cards[form.w.id]) record(form.w.id, true, 0.6, 'decir')
-    else meet([form.w.id])
+    else offer([form.w.id])
     finish(form)
   }
 

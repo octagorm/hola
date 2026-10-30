@@ -213,6 +213,39 @@ describe('the starting point', () => {
     }
   })
 
+  it('brings no new words once as many as the cap are being learnt, and puts off words', async () => {
+    const { inWork, room } = await import('../src/app/lib/bank')
+    // the starting point's words, never answered, do not count
+    const b = withStart(emptyBank(), now)
+    expect(inWork(b, now)).toBe(0)
+    // fifty words met an hour ago and answered once, none known yet
+    const met = toMeet(b)
+      .filter((w) => !b.cards[w.id])
+      .slice(0, 50)
+    for (const w of met) b.cards[w.id] = { ...newCard(now - DAY / 24), n: 1 }
+    expect(inWork(b, now)).toBe(50)
+    expect(room(b, now)).toBe(0)
+    expect(room(b, now, 80)).toBe(30)
+    expect(plan(b, now).steps.some((x) => x.k === 'new')).toBe(false)
+    // known words do not count
+    for (const w of met.slice(0, 10)) b.cards[w.id] = known(now)
+    expect(room(b, now)).toBe(10)
+    // a word put off is met after every other, until a month has gone
+    const next = toMeet(b).filter((w) => !b.cards[w.id])[0]
+    const put = { ...b, later: { [next.id]: now } }
+    const order = toMeet(put, now + DAY).filter((w) => !put.cards[w.id])
+    expect(order[0].id).not.toBe(next.id)
+    expect(order.at(-1)?.id).toBe(next.id)
+    // put off on one device, the card met there before is gone on both
+    const a = { ...emptyBank(), cards: { [next.id]: newCard(now - DAY / 24) } }
+    const c = { ...emptyBank(), later: { [next.id]: now } }
+    expect(merge(a, c).cards[next.id]).toBeUndefined()
+    expect(merge(c, a).later[next.id]).toBe(now)
+    // and met again since, it stays
+    const again = { ...emptyBank(), cards: { [next.id]: newCard(now + 1000) } }
+    expect(merge(again, c).cards[next.id]).toBeTruthy()
+  })
+
   it('sums up the link answered today, shorter when got wrong', () => {
     const b = withStart(emptyBank(), now)
     const p = plan(b, now)

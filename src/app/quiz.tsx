@@ -376,11 +376,14 @@ export function WordCard({
   w,
   onNext,
   onKnown,
+  onLater,
 }: {
   w: Word
   onNext: () => void
   // The player knew it already
   onKnown?: () => void
+  // Put off, to be met another time
+  onLater?: () => void
 }) {
   const { settings } = useStore()
   const { hear } = useVoices()
@@ -435,6 +438,11 @@ export function WordCard({
             Kan det fra før
           </button>
         )}
+        {onLater && (
+          <button type="button" className="q-link" onClick={onLater}>
+            Ikke ennå
+          </button>
+        )}
       </div>
     </div>
   )
@@ -468,7 +476,7 @@ export function Learn({
   got: Set<string>
   onPart: (keys: Array<string>) => void
 }) {
-  const { meet, know } = useStore()
+  const { meet, know, putOff } = useStore()
   const { hear } = useVoices()
   const pool = usePool()
   const left = learnQueue(ids.filter((id) => WORD[id])).filter(
@@ -493,6 +501,10 @@ export function Learn({
           }}
           onKnown={() => {
             know([w.id])
+            onPart(['met', 'leer', 'oir'].map((p) => partKey(w.id, p)))
+          }}
+          onLater={() => {
+            putOff(w.id)
             onPart(['met', 'leer', 'oir'].map((p) => partKey(w.id, p)))
           }}
         />

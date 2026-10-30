@@ -147,7 +147,7 @@ function Board({
   start: Array<string>
   onAgain: () => void
 }) {
-  const { bank, setPalabra, played, points, meet, record } = useStore()
+  const { bank, setPalabra, played, points, offer, record } = useStore()
   const answer = letters(w.bare)
   const day = dayKey(Date.now())
   const [guesses, setGuesses] = useState<Array<string>>(start)
@@ -179,7 +179,7 @@ function Board({
       },
       LENGTH * 140 + 200,
     )
-    if (!bank.cards[w.id]) meet([w.id])
+    if (!bank.cards[w.id]) offer([w.id])
     else if (won) record(w.id, true, 0.3, 'decir')
     if (isDaily) {
       setPalabra(day, won ? guesses.length : 0)
@@ -195,7 +195,7 @@ function Board({
     day,
     guesses.length,
     bank.cards,
-    meet,
+    offer,
     record,
     setPalabra,
     played,

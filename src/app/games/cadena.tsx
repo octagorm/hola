@@ -92,7 +92,7 @@ export default function Cadena() {
 }
 
 function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
-  const { bank, record, meet, points, setBest, played } = useStore()
+  const { bank, record, offer, points, setBest, played } = useStore()
   // The words planned, the chain made so far among them
   const [path, setPath] = useState<Array<Word>>(start)
   const [chain, setChain] = useState<Array<Link>>(() => [
@@ -180,7 +180,7 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
       // Typed from its meaning: as much as a word can say; with letters
       // given away, a little
       if (bank.cards[want.id]) record(want.id, true, hint ? 0.3 : 1, 'decir')
-      else meet([want.id])
+      else offer([want.id])
       setNote({ text: `${want.bare} · ${meaning(want)}`, ok: true })
       hang(want, hint ? 'helped' : 'typed')
       return
@@ -215,7 +215,7 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
     // A word of her own that fits, not the one asked for: a lucky find,
     // which says little of how well she knows it
     if (bank.cards[w.id]) record(w.id, true, 0.3, 'decir')
-    else meet([w.id])
+    else offer([w.id])
     setNote({ text: `Det passer også! ${w.bare} · ${meaning(w)}`, ok: true })
     hang(w, hint ? 'helped' : 'typed', rest)
   }
@@ -224,7 +224,7 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
     if (!want || end || shown || wrong.includes(o.id)) return
     if (o.id === want.id) {
       // Picked from four: less than typing it
-      if (!bank.cards[want.id]) meet([want.id])
+      if (!bank.cards[want.id]) offer([want.id])
       else if (!wrong.length) record(want.id, true, 0.6, 'decir')
       setNote({ text: `${want.bare} · ${meaning(want)}`, ok: true })
       hang(want, wrong.length ? 'helped' : 'picked')
@@ -257,7 +257,7 @@ function Game({ start, onAgain }: { start: Array<Word>; onAgain: () => void }) {
   const giveUp = () => {
     if (!want || shown || end) return
     if (bank.cards[want.id]) record(want.id, false, 1, 'decir')
-    else meet([want.id])
+    else offer([want.id])
     blip('wrong')
     void say(want.es)
     setNote(null)

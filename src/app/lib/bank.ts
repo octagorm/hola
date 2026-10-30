@@ -87,6 +87,9 @@ export interface Bank {
   kept: Record<string, number | undefined>
   // How far each text in the library (data/biblioteca.ts) is read, by id
   place: Record<string, Place | undefined>
+  // Words put off when they came up as new («Ikke ennå»), by id → when.
+  // They are met last, after every other word, for LATER days (toMeet)
+  later: Record<string, number | undefined>
 }
 
 export interface ThemeChoice {
@@ -150,6 +153,7 @@ export const emptyBank = (): Bank => ({
   theme: { on: [], t: 0 },
   kept: {},
   place: {},
+  later: {},
 })
 
 export const DAY = 86_400_000
@@ -386,11 +390,47 @@ export function due(
 export const unmet = (bank: Bank, words: Array<Word> = WORDS) =>
   words.filter((w) => !bank.cards[w.id])
 
+// How many words are learnt at a time: once this many met are not yet
+// known, Hola brings no new ones by itself (today's new words, and the
+// games' words found by chance), until some of them hold. What the
+// player picks to learn (a word's «Øv på det») is let through, and so
+// are the words a game cannot be played without (El Rastro's list, the
+// taxi's way). The starting point's words count only once answered. The
+// player sets it under Innstillinger (`cap`); the store passes it on
+// here, so that every game asks the same. Tian does the same.
+export const CAPS = [30, 50, 80]
+let cap = 50
+export const setCap = (n: number) => {
+  cap = n
+}
+
+// Words met and answered, and not yet known
+export function inWork(bank: Bank, now: number): number {
+  let n = 0
+  for (const c of Object.values(bank.cards))
+    if (c && !c.z && level(c, now) < 2) n++
+  return n
+}
+
+// How many new words may be met now
+export const room = (bank: Bank, now: number, of = cap) =>
+  Math.max(0, of - inWork(bank, now))
+
+// Words put off come back to their place after this many days
+const LATER = 30
+
+// The words to meet in order (byTheme), those put off lately last
+export function toMeet(bank: Bank, now = Date.now()): Array<Word> {
+  const put = (w: Word) => now - (bank.later[w.id] ?? -Infinity) < LATER * DAY
+  const order = byTheme(bank)
+  return [...order.filter((w) => !put(w)), ...order.filter(put)]
+}
+
 // The words in the order today's chapter meets them: those not met of the
 // chosen themes first, in rounds of as many from each as its priority, so
 // that a day's new words come from all of them, then the rest in lesson
 // order
-export function toMeet(bank: Bank): Array<Word> {
+function byTheme(bank: Bank): Array<Word> {
   const on = bank.theme.on
   if (!on.length) return TAUGHT
   const lists = on.map((x) => ({
@@ -507,9 +547,15 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
     'read',
     'kept',
     'seen',
+    'later',
   ] as const) {
     for (const id of keysOf(a[k], b[k]))
       out[k][id] = Math.max(a[k]?.[id] ?? 0, b[k]?.[id] ?? 0)
+  }
+  // A word put off, on either device, since it was last seen is not met
+  for (const id of keysOf(out.later)) {
+    const c = out.cards[id]
+    if (c && (out.later[id] ?? 0) >= c.t) delete out.cards[id]
   }
   out.path = laterPath(a.path ?? null, b.path ?? null)
   out.start = Math.max(a.start ?? 0, b.start ?? 0)

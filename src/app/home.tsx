@@ -20,7 +20,7 @@ import { BOOKS, SHELVES } from './data/biblioteca'
 import { MADE, minutes } from './lib/lydbok'
 import { THEME_GROUPS } from './data/themes'
 import { LESSON, WORDS } from './data/words'
-import { LINKS, counts, dayKey, linkShares } from './lib/bank'
+import { LINKS, counts, dayKey, inWork, linkShares } from './lib/bank'
 import { canHear, useVoices } from './lib/speech'
 import { useStore } from './lib/store'
 import {
@@ -623,8 +623,11 @@ function StartNotice() {
 }
 
 function Memory() {
-  const { bank } = useStore()
+  const { bank, settings } = useStore()
   const m = memory(bank, Date.now())
+  // The words she has answered and not yet knows, of as many as she learns
+  // at a time (room in lib/bank.ts)
+  const work = inWork(bank, Date.now())
   if (!m.known && !m.learning) return null
   const n = (x: number) => x.toLocaleString('nb-NO')
   const parts = [
@@ -688,6 +691,11 @@ function Memory() {
             : 'Ingen ord å øve på nå. '}
         </span>
         <span className="soon">{soon}</span>
+      </p>
+      <p className="q-muted">
+        {work >= settings.cap
+          ? `${n(work)} ord er under innlæring, så nye ord venter til noen av dem sitter.`
+          : `${n(work)} av ${n(settings.cap)} ord under innlæring om gangen.`}
       </p>
     </section>
   )

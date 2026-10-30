@@ -10,6 +10,7 @@ import {
   due,
   level,
   recallOf,
+  room,
   streak,
   toMeet,
   unmet,
@@ -135,7 +136,11 @@ export function plan(
     .map((d) => d.w)
   const newCount =
     list.length === 0 ? 5 : behind >= 20 ? 2 : behind >= 10 ? 3 : perDay
-  const fresh = unmet(bank, toMeet(bank)).slice(0, newCount)
+  // none once as many words are being learnt as the player wants at a time
+  const fresh = unmet(bank, toMeet(bank)).slice(
+    0,
+    Math.min(newCount, room(bank, now)),
+  )
   const met = list.length + fresh.length
   const n = dayNumber(now)
   const chapter = ALL_CHAPTERS.find((c) => bank.read[c.id] === undefined)

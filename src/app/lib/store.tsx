@@ -14,6 +14,8 @@ import {
   level,
   merge,
   newCard,
+  room,
+  setCap,
   stable,
   startAt,
   withStart,
@@ -41,6 +43,8 @@ export interface Settings {
   effects: boolean
   // New words a day, when not many are fading
   perDay: number
+  // How many words are learnt at a time (CAPS in lib/bank.ts)
+  cap: number
   // The size of the text in the library's reader, a step of TEXT_SIZES
   textSize: number
   // The Norwegian over the words in the library's texts: none, the lines as
@@ -73,6 +77,7 @@ export const DEFAULTS: Settings = {
   lenient: true,
   effects: true,
   perDay: 4,
+  cap: 50,
   textSize: 1,
   gloss: 'new',
   paged: true,
@@ -118,6 +123,11 @@ interface Store {
   ) => void
   // Words met for the first time
   meet: (ids: Array<string>) => void
+  // Words a game came upon, met only while there is room for new ones
+  // (room in lib/bank.ts)
+  offer: (ids: Array<string>) => void
+  // A word met but not answered yet, put back to be met later («Ikke ennå»)
+  putOff: (id: string) => void
   // Words the player already knows
   know: (ids: Array<string>) => void
   forget: (ids: Array<string>) => void
@@ -175,15 +185,18 @@ export function BankProvider({ children }: { children: ReactNode }) {
     (change: (b: Bank) => Bank) => setRaw(keeping(change)),
     [],
   )
-  const [settings, setAll] = useState<Settings>(() =>
-    load(SETTINGS_KEY, DEFAULTS),
-  )
+  const [settings, setAll] = useState<Settings>(() => {
+    const s = load(SETTINGS_KEY, DEFAULTS)
+    setCap(s.cap)
+    return s
+  })
 
   useEffect(() => save(BANK_KEY, bank), [bank])
   useEffect(() => {
     save(SETTINGS_KEY, settings)
     setVoice(settings.voice, settings.rate)
     setEffects(settings.effects)
+    setCap(settings.cap)
   }, [settings])
 
   // Another tab's changes, so two tabs do not undo each other
@@ -239,6 +252,29 @@ export function BankProvider({ children }: { children: ReactNode }) {
         const cards = { ...b.cards }
         for (const id of fresh) cards[id] = newCard(now)
         return { ...b, cards }
+      }),
+    [],
+  )
+
+  const offer = useCallback(
+    (ids: Array<string>) =>
+      setBank((b) => {
+        const now = Date.now()
+        const fresh = ids.filter((id) => !b.cards[id]).slice(0, room(b, now))
+        if (!fresh.length) return b
+        const cards = { ...b.cards }
+        for (const id of fresh) cards[id] = newCard(now)
+        return { ...b, cards }
+      }),
+    [],
+  )
+
+  const putOff = useCallback(
+    (id: string) =>
+      setBank((b) => {
+        const cards = { ...b.cards }
+        delete cards[id]
+        return { ...b, cards, later: { ...b.later, [id]: Date.now() } }
       }),
     [],
   )
@@ -422,6 +458,8 @@ export function BankProvider({ children }: { children: ReactNode }) {
       levelOf: (id) => level(bank.cards[id], Date.now()),
       record,
       meet,
+      offer,
+      putOff,
       know,
       forget,
       points,
@@ -444,6 +482,8 @@ export function BankProvider({ children }: { children: ReactNode }) {
       setSettings,
       record,
       meet,
+      offer,
+      putOff,
       know,
       forget,
       points,

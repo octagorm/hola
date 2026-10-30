@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { Download, Share, Upload, Volume2 } from 'lucide-react'
 import { api } from '../../../convex/_generated/api'
-import { dayKey, merge, startPreview } from '../lib/bank'
+import { CAPS, dayKey, merge, startPreview } from '../lib/bank'
 import { LEVELS } from '../data/start'
 import { parts, subscribe, support, unsubscribe, zone } from '../lib/reminder'
 import { SAMPLE } from '../data/voices'
@@ -155,6 +155,38 @@ export default function Ajustes({ arg }: PageProps) {
                 aria-label="Flere"
                 disabled={settings.perDay >= 8}
                 onClick={() => setSettings({ perDay: settings.perDay + 1 })}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div className="q-field">
+            <span>Ord under innlæring om gangen</span>
+            <div className="q-stepper">
+              <button
+                type="button"
+                aria-label="Færre"
+                disabled={settings.cap <= CAPS[0]}
+                onClick={() =>
+                  setSettings({
+                    cap:
+                      [...CAPS].reverse().find((c) => c < settings.cap) ??
+                      CAPS[0],
+                  })
+                }
+              >
+                −
+              </button>
+              <b>{settings.cap}</b>
+              <button
+                type="button"
+                aria-label="Flere"
+                disabled={settings.cap >= CAPS[CAPS.length - 1]}
+                onClick={() =>
+                  setSettings({
+                    cap: CAPS.find((c) => c > settings.cap) ?? settings.cap,
+                  })
+                }
               >
                 +
               </button>

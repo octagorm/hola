@@ -309,7 +309,7 @@ function Play({
   back: string
   onNew: () => void
 }) {
-  const { bank, settings, record, meet, points, setBest, played } = useStore()
+  const { bank, settings, record, offer, points, setBest, played } = useStore()
   const [g, setG] = useState(first)
   const bankNow = useRef(bank)
   useEffect(() => {
@@ -706,7 +706,7 @@ function Play({
       tip ? { id: tip.id, shown: tip.shown } : undefined,
     )
     for (const s of c.said) record(s.id, true, s.weight, 'decir')
-    if (c.meet.length) meet(c.meet)
+    if (c.meet.length) offer(c.meet)
     const next: Game = {
       ...play(g, p, r),
       rec: [...g.rec, ...c.said.map((s) => s.id), ...c.meet],
