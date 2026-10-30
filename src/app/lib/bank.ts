@@ -87,7 +87,7 @@ export interface Bank {
   kept: Record<string, number | undefined>
   // How far each text in the library (data/biblioteca.ts) is read, by id
   place: Record<string, Place | undefined>
-  // Words put off when they came up as new («Ikke ennå»), by id → when.
+  // Words put off when they came up as new («Utsett til senere»), by id → when.
   // They are met last, after every other word, for LATER days (toMeet)
   later: Record<string, number | undefined>
 }

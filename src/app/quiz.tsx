@@ -440,7 +440,7 @@ export function WordCard({
         )}
         {onLater && (
           <button type="button" className="q-link" onClick={onLater}>
-            Ikke ennå
+            Utsett til senere
           </button>
         )}
       </div>

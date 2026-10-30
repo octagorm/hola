@@ -126,7 +126,7 @@ interface Store {
   // Words a game came upon, met only while there is room for new ones
   // (room in lib/bank.ts)
   offer: (ids: Array<string>) => void
-  // A word met but not answered yet, put back to be met later («Ikke ennå»)
+  // A word met but not answered yet, put back to be met later («Utsett til senere»)
   putOff: (id: string) => void
   // Words the player already knows
   know: (ids: Array<string>) => void
