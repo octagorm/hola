@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
-import { Download, Share, Upload, Volume2 } from 'lucide-react'
+import {
+  Check,
+  Copy,
+  Download,
+  Ellipsis,
+  EllipsisVertical,
+  Share,
+  SquarePlus,
+  Upload,
+  Volume2,
+} from 'lucide-react'
 import { api } from '../../../convex/_generated/api'
 import { CAPS, dayKey, merge, startPreview } from '../lib/bank'
 import { LEVELS } from '../data/start'
+import { device, useInstall } from '../lib/install'
 import { parts, subscribe, support, unsubscribe, zone } from '../lib/reminder'
 import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
@@ -71,6 +82,10 @@ export default function Ajustes({ arg }: PageProps) {
             <AccountSettings />
           </Group>
         )}
+
+        <Group es="Instalar" no="Installer appen" id="instalar">
+          <Install />
+        </Group>
 
         {account.on && (
           <Group es="Recordatorio" no="Påminnelse">
@@ -451,6 +466,112 @@ function StartPoint() {
       )}
       {done && <p className="q-note">Startpunktet er endret.</p>}
     </>
+  )
+}
+
+// Instalar: how to put Hola on the home screen, for this device. Linked to
+// as hola.ymse.land/#ajustes/instalar
+function Install() {
+  const [where] = useState(device)
+  const { install, done } = useInstall()
+  const [copied, setCopied] = useState(false)
+  const icon = (I: typeof Share) => (
+    <I size={16} className="inline align-[-3px]" aria-hidden />
+  )
+
+  if (where === 'installed' || done)
+    return (
+      <p className="q-muted">
+        {icon(Check)} Hola er installert. Du finner den på Hjem-skjermen.
+      </p>
+    )
+
+  if (install)
+    return (
+      <>
+        <p className="q-muted">
+          Legg Hola på {where === 'android' ? 'startskjermen' : 'skrivebordet'},
+          så åpnes den som en app, uten adressefelt.
+        </p>
+        <div>
+          <button
+            type="button"
+            className="q-btn"
+            onClick={() => void install()}
+          >
+            <Download /> Installer Hola
+          </button>
+        </div>
+      </>
+    )
+
+  if (where === 'ios-safari')
+    return (
+      <>
+        <p className="q-muted">
+          Legg Hola på Hjem-skjermen, så åpnes den som en app, uten adressefelt.
+          I Safari:
+        </p>
+        <ol className="q-install">
+          <li>
+            Trykk på Del {icon(Share)} nederst på skjermen. Ser du den ikke,
+            trykk først på {icon(Ellipsis)}.
+          </li>
+          <li>
+            Velg Legg til på Hjem-skjerm {icon(SquarePlus)}. Bla litt ned hvis
+            du ikke ser det.
+          </li>
+          <li>Trykk på Legg til øverst til høyre.</li>
+        </ol>
+      </>
+    )
+
+  if (where === 'ios-other')
+    return (
+      <>
+        <p className="q-muted">
+          Legg Hola på Hjem-skjermen, så åpnes den som en app. Det går lettest
+          fra Safari: kopier adressen, åpne Safari og lim den inn.
+        </p>
+        <div>
+          <button
+            type="button"
+            className="q-btn ghost small"
+            onClick={() => {
+              navigator.clipboard
+                .writeText('https://hola.ymse.land/#ajustes/instalar')
+                .then(() => setCopied(true))
+                .catch(() => setCopied(false))
+            }}
+          >
+            {copied ? <Check /> : <Copy />}{' '}
+            {copied ? 'Kopiert' : 'Kopier adressen'}
+          </button>
+        </div>
+      </>
+    )
+
+  if (where === 'android')
+    return (
+      <>
+        <p className="q-muted">
+          Legg Hola på startskjermen, så åpnes den som en app, uten adressefelt.
+          I Chrome:
+        </p>
+        <ol className="q-install">
+          <li>Trykk på {icon(EllipsisVertical)} øverst til høyre.</li>
+          <li>Velg Installer app eller Legg til på startsiden.</li>
+          <li>Trykk på Installer.</li>
+        </ol>
+      </>
+    )
+
+  return (
+    <p className="q-muted">
+      På mobilen kan Hola ligge på Hjem-skjermen som en app. Åpne
+      hola.ymse.land/#ajustes/instalar der, så står stegene her. På PC kan
+      Chrome og Edge installere den fra ikonet til høyre i adressefeltet.
+    </p>
   )
 }
 

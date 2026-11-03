@@ -3238,6 +3238,37 @@ img.q-pic {
   gap: 26px;
 }
 
+.q-install {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.q-install li {
+  counter-increment: step;
+  position: relative;
+  padding: 7px 0 7px 34px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.45;
+}
+
+.q-install li::before {
+  content: counter(step);
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.1;
+  color: var(--red);
+}
+
+.q-install svg {
+  color: var(--blue);
+}
+
 .q-group > * + * {
   margin-top: 14px;
 }
