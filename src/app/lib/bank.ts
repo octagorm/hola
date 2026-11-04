@@ -18,9 +18,17 @@ import type { Word } from '../data/words.ts'
 // Each link of a word met has a memory, in the manner of FSRS: the
 // stability `s` is how many days until the chance of remembering it falls
 // to 90 %. A right answer makes it last longer, by more the more it had
-// faded (practice spaced out counts for more than practice crammed); a
-// wrong one cuts it down. Games weigh their evidence: typing a word says
-// more than picking its meaning from four.
+// faded (practice spaced out counts for more than practice crammed), and
+// by more the easier the link has proved (its difficulty `d`, which a
+// miss raises and a right answer lowers); a right answer never shortens
+// it. A miss cuts it down, but a link held for long keeps more than one
+// just learnt, as in FSRS. Games weigh their evidence: typing a word says
+// more than picking its meaning from four, and a pick from fewer choices
+// less than one from more, since it is more often a lucky guess (`luck`).
+// These are FSRS's ideas fitted to games, not FSRS itself, which grades
+// flashcards by hand. Each answer is logged on the card with the chance it
+// was given (`log`), so that the numbers here can one day be checked
+// against what was remembered. Tian does the same; keep the two alike.
 //
 // How a word is shown in mixed text follows from reading it: not met yet,
 // in Norwegian; met, in Spanish with the Norwegian over it; known (read
@@ -36,6 +44,17 @@ export interface Memory {
   s: number
   // Last answered, ms
   t: number
+  // Difficulty, 1–10 (5 middling): how slowly a right answer makes it
+  // last longer. Links from before 2026-11-04 have none until next
+  // answered, and it is then guessed from the word's misses (guessD)
+  d?: number
+  // Times forgotten once it held: a real miss (weight ½ or more) while
+  // lasting KNOWN days or more. LEECH of them make the word one that keeps
+  // slipping
+  l?: number
+  // Missed for real since last got right: not known, however long it
+  // still lasts, so the Norwegian comes back until it is got right again
+  f?: 1
 }
 
 export interface Card {
@@ -52,7 +71,17 @@ export interface Card {
   // says nothing of what the player remembers, so in a merge a card with
   // answers wins over it, however old
   z?: 1
+  // The last LOG answers, oldest first
+  log?: Array<LogEntry>
 }
+
+// An answer about one link: when (minutes since 1970), the link, the
+// weight in tenths (negative for a miss), and the link's stability (days)
+// and chance of remembering (%) just before. The chance beside what
+// happened is what the numbers here can be checked against.
+export type LogEntry = [min: number, how: Link, w: number, s: number, r: number]
+
+export const LOG = 8
 
 export interface Bank {
   cards: Record<string, Card | undefined>
@@ -169,9 +198,20 @@ export function recall(m: Memory, now: number): number {
   return 1 / (1 + days / (9 * m.s))
 }
 
-// A link known: lasting a day and a half or more, and not faded much
+// A link known: lasting a day and a half or more, not faded much, and
+// not missed since last got right
 export const holds = (m: Memory, now: number) =>
-  m.s >= KNOWN && recall(m, now) >= 0.8
+  !m.f && m.s >= KNOWN && recall(m, now) >= 0.8
+
+// A word missed this many times once it held keeps slipping (a leech, in
+// FSRS's words): worth a closer look, or putting off
+export const LEECH = 4
+
+// Times the word's links were forgotten once they held: the most of them
+export const lapses = (card: Card | undefined) =>
+  card ? Math.max(...LINKS.map((l) => card[l].l ?? 0)) : 0
+
+export const slipping = (card: Card | undefined) => lapses(card) >= LEECH
 
 // Spanish alone once the written word brings back its meaning
 export function level(card: Card | undefined, now: number): Level {
@@ -179,25 +219,84 @@ export function level(card: Card | undefined, now: number): Level {
   return holds(card.leer, now) ? 2 : 1
 }
 
+const clamp = (x: number, lo: number, hi: number) =>
+  Math.min(hi, Math.max(lo, x))
+const round3 = (n: number) => Math.round(n * 1000) / 1000
+
+// How much a right answer grows a link of difficulty `d`, against a
+// middling one: half as much again at 1, a little over a third at 10.
+// FSRS's (11 − d), made gentler, since a game's answer says less than a
+// flashcard graded by hand.
+export const ease = (d: number) => (13 - d) / 8
+
+// Difficulty after an answer, by its weight. A miss raises it a good deal
+// and a right answer lowers it a little, so it settles at 5 for a link
+// missed about one time in five.
+export function nextD(d: number, right: boolean, weight: number): number {
+  return right
+    ? clamp(d - (0.6 * weight * (d - 1)) / 9, 1, 10)
+    : clamp(d + (2 * weight * (10 - d)) / 9, 1, 10)
+}
+
+// The stability after a full miss, as FSRS has it: more is kept the longer
+// it had lasted, and the more it had faded when missed (forgetting after
+// a long while says less than forgetting soon). Never more than it had.
+export function fallTo(s: number, r: number): number {
+  const kept = 1.5 * (Math.pow(s + 1, 0.26) - 1) * Math.exp(1.6 * (1 - r))
+  return clamp(kept, MIN, s)
+}
+
+// A link's difficulty from before difficulty was kept: from how often the
+// word was missed, leaning on one in five while there are few answers
+export function guessD(card: Card | undefined): number {
+  const rate = ((card?.x ?? 0) + 0.4) / ((card?.n ?? 0) + 2)
+  return round3(clamp(5 + 12 * (rate - 0.2), 1, 10))
+}
+
 // A memory after an answer. `weight` (0–1] is how much the answer says.
+// `d` is the difficulty to go by when the memory has none yet.
 export function answer(
   m: Memory,
   right: boolean,
   now: number,
   weight = 1,
+  d = 5,
 ): Memory {
   const r = recall(m, now)
+  const d0 = m.d ?? d
+  const keep = m.l ? { l: m.l } : {}
   if (right) {
     const gain = Math.min(8, 1.1 + 15 * (1 - r))
-    return { s: m.s * (1 + (gain - 1) * weight), t: now }
+    return {
+      s: round3(m.s * (1 + (gain - 1) * weight * ease(d0))),
+      t: now,
+      d: round3(nextD(d0, true, weight)),
+      ...keep,
+    }
   }
-  // A real slip (not a weak hint of one) also takes a known link back
-  // below known, until it has been got right again
-  const cut = m.s * (1 - 0.7 * weight)
+  // A weak hint of a slip cuts it a little, a real miss down to what a
+  // full miss leaves. A real miss also takes a known link back below
+  // known until it is got right again, and counts as a lapse when the
+  // link had held.
+  const real = weight >= 0.5
+  const lapse = real && !m.f && m.s >= KNOWN
+  const s = m.s - (m.s - fallTo(m.s, r)) * weight
   return {
-    s: Math.max(MIN, weight >= 0.5 ? Math.min(cut, KNOWN * 0.6) : cut),
+    s: round3(Math.max(MIN, s)),
     t: now,
+    d: round3(nextD(d0, false, weight)),
+    ...(lapse ? { l: (m.l ?? 0) + 1 } : keep),
+    ...(real || m.f ? { f: 1 as const } : {}),
   }
+}
+
+// How much a right pick says, by how many choices it was picked from:
+// the weights the games give are for four, a pick from two says a third
+// less (half of them are luck), and one from more a little more. A miss
+// says as much whatever the choices. Typed answers have no choices.
+export function luck(weight: number, right: boolean, choices?: number) {
+  if (!right || !choices || choices < 2) return weight
+  return Math.min(1, (weight * (1 - 1 / choices)) / (1 - 1 / 4))
 }
 
 export const newCard = (now: number, s = FIRST): Card => ({
@@ -219,8 +318,20 @@ export function answerCard(
 ): Card {
   const c = { ...(card ?? newCard(now)), t: now, n: (card?.n ?? 0) + 1 }
   delete c.z
+  const log = [...(c.log ?? [])]
+  for (const l of links) {
+    const m = c[l]
+    log.push([
+      Math.round(now / 60_000),
+      l,
+      Math.round(weight * 10) * (right ? 1 : -1),
+      Math.round(m.s * 100) / 100,
+      Math.round(recall(m, now) * 100),
+    ])
+    c[l] = answer(m, right, now, weight, guessD(card))
+  }
   if (!right) c.x++
-  for (const l of links) c[l] = answer(c[l], right, now, weight)
+  c.log = log.slice(-LOG)
   return c
 }
 
@@ -608,17 +719,36 @@ function heard(card: Card & { oir?: Memory }): Card {
   return recall(oir, t) > recall(c.leer, t) ? { ...c, leer: oir } : c
 }
 
+// The answers logged on either device, each once, the last LOG of them,
+// the same whichever bank is merged into which
+function bothLogs(x: Card, y: Card): Card['log'] {
+  if (!x.log || !y.log) return x.log ?? y.log
+  const seen = new Map<string, LogEntry>()
+  for (const e of [...x.log, ...y.log]) {
+    const k = `${e[0]} ${e[1]}`
+    const had = seen.get(k)
+    if (!had || JSON.stringify(e) > JSON.stringify(had)) seen.set(k, e)
+  }
+  return [...seen.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([, e]) => e)
+    .sort((a, b) => a[0] - b[0])
+    .slice(-LOG)
+}
+
 function both(x: Card, y: Card): Card {
   if (x.z && !y.z) return y
   if (y.z && !x.z) return x
   // of two from starting points, the one given last
   if (x.z && y.z && x.i !== y.i) return x.i > y.i ? x : y
   const last = later(x, y, (c) => [c.n, c.x])
+  const log = bothLogs(x, y)
   return {
     ...last,
     leer: later(x.leer, y.leer),
     decir: later(x.decir, y.decir),
     i: Math.min(x.i, y.i),
+    ...(log ? { log } : {}),
   }
 }
 

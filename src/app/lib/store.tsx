@@ -12,6 +12,7 @@ import {
   emptyBank,
   known,
   level,
+  luck,
   merge,
   newCard,
   room,
@@ -120,6 +121,8 @@ interface Store {
     right: boolean,
     weight: number,
     links: Link | Array<Link>,
+    // how many a right answer was picked from, if any (luck)
+    choices?: number,
   ) => void
   // Words met for the first time
   meet: (ids: Array<string>) => void
@@ -222,7 +225,13 @@ export function BankProvider({ children }: { children: ReactNode }) {
   const today = () => dayKey(Date.now())
 
   const record = useCallback(
-    (id: string, right: boolean, weight: number, links: Link | Array<Link>) =>
+    (
+      id: string,
+      right: boolean,
+      weight: number,
+      links: Link | Array<Link>,
+      choices?: number,
+    ) =>
       setBank((b) => {
         const now = Date.now()
         const cards = {
@@ -232,7 +241,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
             typeof links === 'string' ? [links] : links,
             right,
             now,
-            weight,
+            luck(weight, right, choices),
           ),
         }
         const days = right

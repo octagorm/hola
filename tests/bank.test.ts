@@ -595,3 +595,85 @@ describe('how the words stand', () => {
     expect(fadingWords(seen, now + falls + 1000)).toEqual([])
   })
 })
+
+describe('memory, after FSRS', () => {
+  const H = DAY / 24
+
+  it('grows a hard link more slowly, and never shortens it on a right answer', async () => {
+    const { ease, nextD } = await import('../src/app/lib/bank')
+    const m = { s: 4, t: 0 }
+    const easy = answer({ ...m, d: 2 }, true, 4 * DAY)
+    const hard = answer({ ...m, d: 9 }, true, 4 * DAY)
+    expect(easy.s).toBeGreaterThan(hard.s)
+    expect(hard.s).toBeGreaterThan(m.s)
+    expect(answer({ ...m, d: 10 }, true, H, 0.2).s).toBeGreaterThanOrEqual(m.s)
+    expect(ease(5)).toBe(1)
+    let d = 5
+    for (let i = 0; i < 100; i++) d = nextD(d, i % 5 !== 0, 0.6)
+    expect(d).toBeGreaterThan(4)
+    expect(d).toBeLessThan(6)
+  })
+
+  it('keeps more of a link held long after a miss, and shows the Norwegian until it is right again', () => {
+    const long = answer({ s: 60, t: 0 }, false, 60 * DAY)
+    const short = answer({ s: 3, t: 0 }, false, 3 * DAY)
+    expect(long.s).toBeGreaterThan(2)
+    expect(long.s).toBeLessThan(60)
+    expect(short.s).toBeLessThan(long.s)
+    expect(long.f).toBe(1)
+    expect(long.l).toBe(1)
+    const c = { ...newCard(0, 60), leer: long }
+    expect(level(c, 60 * DAY)).toBe(1)
+    const again = answerCard(c, ['leer'], true, 61 * DAY)
+    expect(again.leer.f).toBeUndefined()
+    expect(level(again, 61 * DAY)).toBe(2)
+    expect(answer({ s: 60, t: 0 }, false, DAY, 0.3).l).toBeUndefined()
+  })
+
+  it('marks words missed again and again once known', async () => {
+    const { slipping, LEECH } = await import('../src/app/lib/bank')
+    let c = newCard(0, 10)
+    for (let i = 0; i < LEECH; i++) {
+      expect(slipping(c)).toBe(false)
+      c = answerCard(c, ['leer'], false, (i * 20 + 1) * DAY)
+      for (let j = 1; j <= 6; j++)
+        c = answerCard(c, ['leer'], true, (i * 20 + 1 + j * 3) * DAY)
+    }
+    expect(slipping(c)).toBe(true)
+  })
+
+  it('weighs a right pick by how many it was picked from', async () => {
+    const { luck } = await import('../src/app/lib/bank')
+    expect(luck(0.6, true, 4)).toBeCloseTo(0.6)
+    expect(luck(0.6, true, 2)).toBeCloseTo(0.4)
+    expect(luck(0.6, false, 2)).toBe(0.6)
+    expect(luck(1, true)).toBe(1)
+  })
+
+  it('logs answers with the chance they were given, merged the same either way', async () => {
+    const { LOG } = await import('../src/app/lib/bank')
+    let c = newCard(0, 2)
+    for (let i = 1; i <= 12; i++)
+      c = answerCard(c, ['leer'], i % 3 > 0, i * DAY, 0.6)
+    expect(c.log).toHaveLength(LOG)
+    const [min, how, w, s, r] = c.log!.at(-1)!
+    expect(min).toBe(Math.round((12 * DAY) / 60_000))
+    expect(how).toBe('leer')
+    expect(w).toBe(-6)
+    expect(s).toBeGreaterThan(0)
+    expect(r).toBeLessThanOrEqual(100)
+    const a = answerCard(c, ['decir'], true, 13 * DAY)
+    const b = answerCard(c, ['leer'], true, 14 * DAY)
+    const ab = merge({ cards: { x: a } }, { cards: { x: b } }).cards.x!
+    const ba = merge({ cards: { x: b } }, { cards: { x: a } }).cards.x!
+    expect(ab.log).toEqual(ba.log)
+    expect(ab.log!.slice(-2).map((e) => e[1])).toEqual(['decir', 'leer'])
+  })
+
+  it('leaves starting words and old links alone until answered', () => {
+    const old = { ...newCard(0, 5), z: 1 as const }
+    const m = merge({ cards: { x: old } }, emptyBank())
+    expect(m.cards.x).toEqual(old)
+    expect(answerCard(old, ['leer'], true, DAY).leer.d).toBeDefined()
+  })
+})

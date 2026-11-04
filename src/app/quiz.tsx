@@ -115,7 +115,13 @@ export function Question({
   }, [w, kind])
 
   const finish = (a: Answered, weight: number) => {
-    record(w.id, a.right, weight, LINK_OF[kind])
+    record(
+      w.id,
+      a.right,
+      weight,
+      LINK_OF[kind],
+      kind === 'escribir' ? undefined : choices.length,
+    )
     blip(a.right ? 'right' : 'wrong')
     setAnswered(a)
     // (a word heard was said as the question opened, and is said again

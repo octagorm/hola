@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ChevronRight, Search } from 'lucide-react'
 import { THEME, THEME_GROUPS } from '../data/themes'
 import { LESSON, LESSONS, WORDS, meaning } from '../data/words'
-import { LINKS, counts, level, linkShares, recall } from '../lib/bank'
+import { LINKS, counts, level, linkShares, recall, slipping } from '../lib/bank'
 import { unaccent } from '../lib/spanish'
 import { lasts } from '../lib/today'
 import { useStore } from '../lib/store'
@@ -15,13 +15,16 @@ import type { Level } from '../lib/bank'
 // of contents in groups (the first lessons, the themes' groups, the
 // library's texts), and open one by one; a search opens those it finds.
 
-type Filter = 'alle' | 'over' | 'kjente' | 'nye'
+// 'glipper': the words forgotten again and again once known (LEECH in
+// lib/bank.ts), offered only when there are any
+type Filter = 'alle' | 'over' | 'kjente' | 'nye' | 'glipper'
 
 const FILTERS: Array<[Filter, string]> = [
   ['alle', 'Alle'],
   ['over', 'Lærer'],
   ['kjente', 'Kjente'],
   ['nye', 'Ikke møtt'],
+  ['glipper', 'Glipper ofte'],
 ]
 
 const WANT: Record<Filter, Array<Level>> = {
@@ -29,6 +32,7 @@ const WANT: Record<Filter, Array<Level>> = {
   over: [1],
   kjente: [2],
   nye: [0],
+  glipper: [1, 2],
 }
 
 const LEVEL_NAME = ['ikke møtt', 'lærer', 'kjent']
@@ -70,6 +74,7 @@ export default function Ordbank() {
   const [shown, setShown] = useState<Set<string>>(() => new Set())
   const [sure, setSure] = useState<string | null>(null)
   const c = counts(bank, now)
+  const slips = WORDS.filter((w) => slipping(bank.cards[w.id])).length
   const shares = linkShares(bank, now)
   const query = fold(q.trim())
   const toggle = (id: string) =>
@@ -125,7 +130,9 @@ export default function Ordbank() {
 
       <div className="q-filter">
         <div className="chips" role="group" aria-label="Vis">
-          {FILTERS.map(([f, label]) => (
+          {FILTERS.filter(
+            ([f]) => f !== 'glipper' || slips > 0 || filter === f,
+          ).map(([f, label]) => (
             <button
               key={f}
               type="button"
@@ -155,6 +162,7 @@ export default function Ordbank() {
           const words = all.filter(
             (w) =>
               WANT[filter].includes(level(bank.cards[w.id], now)) &&
+              (filter !== 'glipper' || slipping(bank.cards[w.id])) &&
               (!query ||
                 fold(w.es).includes(query) ||
                 fold(w.no).includes(query)),
@@ -174,7 +182,8 @@ export default function Ordbank() {
                 (w) => level(bank.cards[w.id], now) === 2,
               )
               const left = all.filter((w) => !bank.cards[w.id])
-              const isShown = !!query || shown.has(lesson.id)
+              const isShown =
+                !!query || filter === 'glipper' || shown.has(lesson.id)
               return (
                 <section
                   key={lesson.id}
