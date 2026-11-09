@@ -4,7 +4,7 @@ import { LESSON, WORD } from '../data/words'
 import { CHAPTER } from '../data/stories'
 import { fromOf, stageOf } from '../data/camino'
 import { GAME } from '../data/games'
-import { dayKey, pick } from '../lib/bank'
+import { dayKey } from '../lib/bank'
 import { canHear, useVoices } from '../lib/speech'
 import { useStore } from '../lib/store'
 import { blip } from '../lib/sound'
@@ -20,12 +20,14 @@ import {
   lasts,
   listOf,
   markDone,
+  minutesFor,
   plan,
   playedHere,
   progressOf,
   share,
   stagesWalked,
   summary,
+  toHear,
   todays,
 } from '../lib/today'
 import { Drill, Learn } from '../quiz'
@@ -124,7 +126,7 @@ export default function Hoy() {
                 ) : i === at && of ? (
                   `${n} / ${of}`
                 ) : (
-                  `${STEP[s.k].minutes} min`
+                  `${minutesFor(s)} min`
                 )}
               </em>
             </li>
@@ -160,7 +162,7 @@ function Part({ p, i }: { p: Path; i: number }) {
   // The words to hear, picked once: those whose meaning has faded most
   const [heard] = useState(() => {
     if (s.k !== 'listen') return []
-    const fresh = pick(bank, LISTEN + 4, Date.now(), { link: 'leer' })
+    const fresh = toHear(bank, Date.now(), LISTEN + 4)
       .map((w) => w.id)
       .filter((id) => !got.has(id))
     return [...got, ...fresh].slice(0, LISTEN)

@@ -38,8 +38,7 @@ export function kindFor(
   card: Card | undefined,
   byEar = false,
 ): Kind {
-  if (link === 'decir')
-    return card && card.decir.s >= 0.5 ? 'escribir' : 'elegir'
+  if (link === 'decir') return card && card.decir.s >= 1 ? 'escribir' : 'elegir'
   return byEar ? 'oir' : 'leer'
 }
 

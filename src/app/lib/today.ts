@@ -9,6 +9,7 @@ import {
   dayKey,
   due,
   level,
+  pick,
   recallOf,
   room,
   streak,
@@ -105,12 +106,32 @@ export const clueCount = (bank: Bank, extra: Array<Word> = []) =>
 export const ready = (game: string, met: number, clues: number) =>
   (BY_CLUES.has(game) ? clues : met) >= (NEEDS[game] ?? 0)
 
-// Words to review: those fading, the most faded first
+// Words to review: those fading, the most faded first; more of them, up to
+// REVIEW_MOST, when the player is further behind than REVIEW words
 const REVIEW = 8
+const REVIEW_MOST = 16
 // Below this chance of remembering, a word is fading
 export const FADING = 0.85
 // Words heard in the listening step
 export const LISTEN = 4
+
+// How many fewer new words a day for `behind` words being learnt and
+// fading: none fewer up to three days' worth of new words (those met the
+// last few days are always among them), then one fewer for every four more
+const over = (behind: number, perDay: number) =>
+  Math.max(0, Math.ceil((behind - 3 * perDay) / 4))
+
+// The words heard in the listening step: those whose meaning has faded
+// most, of the words answered while there are enough of them, so that the
+// starting point's words are not all brought in by ear
+export function toHear(bank: Bank, now: number, n = LISTEN): Array<Word> {
+  const answered = (w: Word) => !bank.cards[w.id]?.z
+  const some = WORDS.filter((w) => bank.cards[w.id] && answered(w)).length
+  return pick(bank, n, now, {
+    link: 'leer',
+    ...(some >= 2 * LISTEN ? { fit: answered } : {}),
+  })
+}
 
 // Days since 1970 on the player's clock, to take turns by
 export const dayNumber = (now: number) => {
@@ -126,16 +147,33 @@ export function plan(
   { hear = true, perDay = 4 }: { hear?: boolean; perDay?: number } = {},
 ): Path {
   const list = due(bank, now)
-  const fading = list.filter((d) => d.r < FADING)
-  // Fewer new words when many the player has answered are fading; the
-  // starting point's words, never answered, hold none back
-  const behind = fading.filter((d) => !d.c.z).length
+  // The words fading, in the order they are practised: those being learnt
+  // first (so that a word met yesterday is not kept waiting by the many a
+  // player has known for long), then the known ones whose saying has faded,
+  // then the starting point's, never answered, as there is time for them
+  const faded = list.filter((d) => d.r < FADING)
+  const learning = faded.filter((d) => !d.c.z && level(d.c, now) < 2)
+  const known = faded.filter((d) => !d.c.z && level(d.c, now) === 2)
+  const fading = [...learning, ...known, ...faded.filter((d) => d.c.z)]
+  // How far behind the player is: the words being learnt that are fading,
+  // and a third of the known ones whose saying has faded. Fewer new words
+  // the further behind, so that the pile never grows past what a day's
+  // session can take; but while the words being learnt keep up, there is
+  // always one new word, so that the known words' backlog (as when a game
+  // has brought in many of the starting point's) never stops the new ones
+  const behind = learning.length + Math.floor(known.length / 3)
   // At least a few words to warm up with, even when none are fading
   const review = (fading.length >= 4 ? fading : list.slice(0, 4))
-    .slice(0, REVIEW)
+    .slice(0, Math.min(REVIEW_MOST, Math.max(REVIEW, behind)))
     .map((d) => d.w)
   const newCount =
-    list.length === 0 ? 5 : behind >= 20 ? 2 : behind >= 10 ? 3 : perDay
+    list.length === 0
+      ? 5
+      : Math.max(
+          Math.min(1, perDay - over(learning.length, perDay)),
+          perDay - over(behind, perDay),
+          0,
+        )
   // none once as many words are being learnt as the player wants at a time
   const fresh = unmet(bank, toMeet(bank)).slice(
     0,
@@ -297,7 +335,8 @@ export function summary(p: Path, bank: Bank, now: number): Summary {
     // (the links answered today, not one left as it was)
     const each = LINKS.flatMap((link) => {
       const before = p.s0[partKey(id, link)]
-      return before === undefined || c[link].t < p.t
+      // (a link only given its clock by the word's first answer is as it was)
+      return before === undefined || c[link].t < p.t || c[link].s === before
         ? []
         : [{ id, link, before, after: c[link].s }]
     })
@@ -359,6 +398,7 @@ const NUMBERS = [
   'tretten',
   'fjorten',
   'femten',
+  'seksten',
 ]
 
 // A number in words, for a noun that is neuter (ett ord) or not (en del)
@@ -373,8 +413,14 @@ export const listOf = (xs: Array<string>) =>
     ? (xs[0] ?? '')
     : `${xs.slice(0, -1).join(', ')} og ${xs[xs.length - 1]}`
 
+// A step's minutes: a long repetition takes more than a short one
+export const minutesFor = (s: PathStep) =>
+  s.k === 'review'
+    ? Math.max(STEP.review.minutes, Math.round((s.ids?.length ?? 0) / 3))
+    : STEP[s.k].minutes
+
 export const minutesOf = (p: Path) =>
-  p.steps.reduce((n, s) => n + STEP[s.k].minutes, 0)
+  p.steps.reduce((n, s) => n + minutesFor(s), 0)
 
 // «Ti minutter, fire deler»
 export function chapterTitle(p: Path): string {

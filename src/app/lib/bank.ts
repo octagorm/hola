@@ -186,7 +186,10 @@ export const emptyBank = (): Bank => ({
 })
 
 export const DAY = 86_400_000
-const FIRST = 0.05 // about an hour
+// A word just met lasts half a day: it is asked again the day after, when
+// most of it is still there. (It was an hour until 2026-11-10, which left a
+// new word nearly gone by the next day and asked for a review more of each.)
+const FIRST = 0.5
 const MIN = 0.02
 export const KNOWN = 1.5
 
@@ -213,9 +216,12 @@ export const lapses = (card: Card | undefined) =>
 
 export const slipping = (card: Card | undefined) => lapses(card) >= LEECH
 
-// Spanish alone once the written word brings back its meaning
+// Spanish alone once the written word brings back its meaning. A word from
+// the starting point, never answered, is known or not as it was given: its
+// memories were guessed at, and no time passing says she has forgotten it.
 export function level(card: Card | undefined, now: number): Level {
   if (!card) return 0
+  if (card.z) return card.leer.s >= KNOWN ? 2 : 1
   return holds(card.leer, now) ? 2 : 1
 }
 
@@ -308,7 +314,18 @@ export const newCard = (now: number, s = FIRST): Card => ({
   i: now,
 })
 
-// A card after an answer about some of its links
+// A link whose memory was guessed at and never answered: given by the
+// starting point, or by «Kan det». (A new word's links start at FIRST, and
+// are no guess.)
+const guessed = (card: Card, l: Link) =>
+  card[l].t < card.i || (card[l].t === card.i && card[l].s >= 1)
+
+// A card after an answer about some of its links. A link only guessed at
+// starts its clock at the word's first answer, as nothing was known of it
+// before: so a word from the starting point does not come out of its first
+// answer with its other link long forgotten. And coming up with a word says
+// it is understood too (the Spanish was read, or written), so a right
+// answer about `decir` counts for `leer` as well; a miss says nothing of it.
 export function answerCard(
   card: Card | undefined,
   links: Array<Link>,
@@ -318,6 +335,11 @@ export function answerCard(
 ): Card {
   const c = { ...(card ?? newCard(now)), t: now, n: (card?.n ?? 0) + 1 }
   delete c.z
+  for (const l of LINKS)
+    if (card && !links.includes(l) && guessed(card, l))
+      c[l] = { ...c[l], t: now }
+  if (right && links.includes('decir') && !links.includes('leer'))
+    c.leer = answer(c.leer, true, now, weight, guessD(card))
   const log = [...(c.log ?? [])]
   for (const l of links) {
     const m = c[l]
@@ -644,11 +666,8 @@ export function merge(a: Partial<Bank>, b: Partial<Bank>): Bank {
   for (const id of keysOf(a.cards, b.cards)) {
     const x = a.cards?.[id]
     const y = b.cards?.[id]
-    out.cards[id] = !x
-      ? y && heard(y)
-      : !y
-        ? heard(x)
-        : both(heard(x), heard(y))
+    const c = !x ? y && heard(y) : !y ? heard(x) : both(heard(x), heard(y))
+    out.cards[id] = c && settled(c)
   }
   for (const k of [
     'days',
@@ -717,6 +736,17 @@ function heard(card: Card & { oir?: Memory }): Card {
   if (!oir) return card
   const t = Math.max(oir.t, c.leer.t) + 7 * DAY
   return recall(oir, t) > recall(c.leer, t) ? { ...c, leer: oir } : c
+}
+
+// A card answered before a guessed link's clock started at the first answer
+// (answerCard): such a link, never answered itself, is taken as last sure
+// when the word was last answered, not when the starting point was given
+function settled(card: Card): Card {
+  if (card.z || !card.n) return card
+  const c = { ...card }
+  for (const l of LINKS)
+    if (guessed(card, l) && card[l].t < card.t) c[l] = { ...card[l], t: card.t }
+  return c
 }
 
 // The answers logged on either device, each once, the last LOG of them,

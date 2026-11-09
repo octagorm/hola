@@ -4,6 +4,7 @@ import {
   KNOWN,
   answer,
   answerCard,
+  counts,
   emptyBank,
   known,
   level,
@@ -15,6 +16,7 @@ import {
   startAt,
   startPreview,
   toMeet,
+  unmet,
   weakest,
   withStart,
 } from '../src/app/lib/bank'
@@ -26,10 +28,12 @@ import {
   clueCount,
   fadingWords,
   memory,
+  minutesFor,
   plan,
   ready,
   retheme,
   summary,
+  toHear,
 } from '../src/app/lib/today'
 import { TAUGHT, WORD, WORDS } from '../src/app/data/words'
 import {
@@ -40,7 +44,7 @@ import {
   THEMES_AT_START,
 } from '../src/app/data/start'
 import { THEME } from '../src/app/data/themes'
-import type { Bank } from '../src/app/lib/bank'
+import type { Bank, Card } from '../src/app/lib/bank'
 
 const now = Date.UTC(2026, 9, 22, 12)
 
@@ -68,9 +72,20 @@ describe('a card', () => {
     expect(level(known(now), now)).toBe(2)
   })
 
-  it('learns only the links asked about', () => {
+  it('learns only the link asked about when it is understanding', () => {
+    const c = answerCard(newCard(now), ['leer'], true, now + DAY)
+    expect(c.leer.s).toBeGreaterThan(c.decir.s)
+    expect(c.decir).toEqual(newCard(now).decir)
+  })
+
+  it('counts a word come up with as understood too, but not a miss', () => {
     const c = answerCard(newCard(now), ['decir'], true, now + DAY)
-    expect(c.decir.s).toBeGreaterThan(c.leer.s)
+    expect(c.leer.s).toBe(c.decir.s)
+    expect(c.leer.t).toBe(now + DAY)
+    // (one answer, logged once)
+    expect(c.log).toHaveLength(1)
+    const x = answerCard(newCard(now), ['decir'], false, now + DAY)
+    expect(x.leer).toEqual(newCard(now).leer)
   })
 
   it('has its most faded link practised', () => {
@@ -327,7 +342,54 @@ describe('the starting point', () => {
     const b = withStart(emptyBank(), now)
     const c = answerCard(b.cards.hola, ['decir'], true, now + DAY)
     expect(c.z).toBeUndefined()
-    expect(c.leer).toEqual(b.cards.hola?.leer)
+    expect(c.leer.s).toBeGreaterThan(b.cards.hola?.leer.s ?? 0)
+  })
+
+  it('stays known while never answered, however long ago it was given', () => {
+    const b = withStart(emptyBank(), now)
+    const [easy] = PRACTISED_AT_START
+    expect(level(b.cards.hola, now + 200 * DAY)).toBe(2)
+    expect(level(b.cards[easy], now + 200 * DAY)).toBe(2)
+    expect(counts(b, now + 200 * DAY).known).toBe(counts(b, now).known)
+  })
+
+  it('starts the clock of a link guessed at when the word is first answered', () => {
+    const b = withStart(emptyBank(), now)
+    const [easy] = PRACTISED_AT_START
+    const seed = b.cards[easy] as Card
+    const at = now + 30 * DAY
+    // heard and understood a month on: coming up with it is as it was
+    // given, from now, not a month forgotten
+    const c = answerCard(seed, ['leer'], true, at, 0.6)
+    expect(c.decir).toEqual({ s: seed.decir.s, t: at })
+    // and missed: understanding it is as it was given, from now
+    const x = answerCard(seed, ['decir'], false, at)
+    expect(x.leer).toEqual({ s: seed.leer.s, t: at })
+    expect(level(x, at + DAY)).toBe(2)
+    // a new word's other link is no guess, and is left alone
+    const n = answerCard(newCard(now), ['leer'], true, at)
+    expect(n.decir.t).toBe(now)
+  })
+
+  it('mends a bank answered before that, the same on every device', () => {
+    const b = withStart(emptyBank(), now)
+    const [easy] = PRACTISED_AT_START
+    const seed = b.cards[easy] as Card
+    const at = now + 10 * DAY
+    const { z: _, ...rest } = seed
+    // as an answer about `decir` left it before: `leer` still on the
+    // starting point's clock
+    const old: Card = { ...rest, decir: { s: 2, t: at }, t: at, n: 1 }
+    const mended = merge({ cards: { [easy]: old } }, emptyBank()).cards[easy]
+    expect(mended?.leer).toEqual({ s: seed.leer.s, t: at })
+    expect(mended?.decir).toEqual(old.decir)
+    const again = merge(
+      { cards: { [easy]: mended } },
+      { cards: { [easy]: old } },
+    )
+    expect(again.cards[easy]).toEqual(mended)
+    // a seed never answered is left as it was given
+    expect(merge(b, emptyBank()).cards[easy]).toEqual(seed)
   })
 })
 
@@ -415,8 +477,75 @@ describe('the day’s chapter', () => {
     for (const w of WORDS.slice(0, 30)) b.cards[w.id] = newCard(now - 5 * DAY)
     const p = plan(b, now, { hear: false })
     expect(p.steps[0].k).toBe('review')
-    expect(p.steps[0].ids).toHaveLength(8)
+    // (thirty being learnt are fading: the longest repetition, and no new
+    // words until they are fewer)
+    expect(p.steps[0].ids).toHaveLength(16)
+    expect(p.steps.some((s) => s.k === 'new')).toBe(false)
     expect(p.steps.some((s) => s.k === 'listen')).toBe(false)
+  })
+
+  it('practises the words being learnt before the known and the starting point’s', () => {
+    const b = withStart(emptyBank(), now - 20 * DAY)
+    const fresh = unmet(b).slice(0, 3)
+    for (const w of fresh) b.cards[w.id] = newCard(now - DAY)
+    // a known word whose saying has faded
+    const [easy] = PRACTISED_AT_START
+    b.cards[easy] = {
+      ...newCard(now - 30 * DAY),
+      leer: { s: 40, t: now - DAY },
+      decir: { s: 1, t: now - 5 * DAY },
+      n: 3,
+    }
+    const p = plan(b, now)
+    const ids = p.steps[0].ids ?? []
+    expect(ids).toHaveLength(8)
+    expect(ids.slice(0, 3).sort()).toEqual(fresh.map((w) => w.id).sort())
+    expect(ids[3]).toBe(easy)
+    for (const id of ids.slice(4)) expect(b.cards[id]?.z).toBe(1)
+  })
+
+  it('meets fewer new words the further behind, but one while the learning keeps up', () => {
+    const news = (b: Bank) =>
+      plan(b, now).steps.find((s) => s.k === 'new')?.ids?.length ?? 0
+    const b = withStart(emptyBank(), now - DAY)
+    const rest = unmet(b)
+    const behind = (n: number) => {
+      const x = { ...b, cards: { ...b.cards } }
+      for (const w of rest.slice(0, n)) x.cards[w.id] = newCard(now - DAY)
+      return x
+    }
+    expect(news(behind(0))).toBe(4)
+    expect(news(behind(12))).toBe(4)
+    expect(news(behind(16))).toBe(3)
+    expect(news(behind(24))).toBe(1)
+    expect(news(behind(28))).toBe(0)
+    // ninety known words whose saying has faded hold the new ones back to
+    // one a day, never to none
+    const old = { ...b, cards: { ...b.cards } }
+    for (const w of rest.slice(0, 90))
+      old.cards[w.id] = {
+        ...newCard(now - 30 * DAY),
+        leer: { s: 40, t: now - DAY },
+        decir: { s: 1, t: now - 5 * DAY },
+        n: 3,
+      }
+    expect(news(old)).toBe(1)
+  })
+
+  it('hears the words answered, once there are enough of them', () => {
+    const b = withStart(emptyBank(), now)
+    expect(toHear(b, now).every((w) => b.cards[w.id]?.z)).toBe(true)
+    for (const w of unmet(b).slice(0, 8)) b.cards[w.id] = newCard(now - DAY)
+    expect(toHear(b, now)).toHaveLength(4)
+    expect(toHear(b, now).some((w) => b.cards[w.id]?.z)).toBe(false)
+  })
+
+  it('says a long repetition takes longer', () => {
+    expect(minutesFor({ k: 'review', ids: Array<string>(8).fill('a') })).toBe(3)
+    expect(minutesFor({ k: 'review', ids: Array<string>(16).fill('a') })).toBe(
+      5,
+    )
+    expect(minutesFor({ k: 'listen' })).toBe(1)
   })
 
   it('waits for words that make clues before the crossword, the ring and the chain', () => {
@@ -472,7 +601,7 @@ describe('the themes', () => {
   it('goes on in lesson order once its words are all met', () => {
     const b = theme('mancha')
     for (const w of WORDS.filter((x) => x.lesson === 'mancha'))
-      b.cards[w.id] = newCard(now - DAY)
+      b.cards[w.id] = known(now - DAY)
     const fresh = plan(b, now).steps.find((s) => s.k === 'new')?.ids ?? []
     expect(fresh.length).toBeGreaterThan(0)
     for (const id of fresh) expect(WORD[id]?.lesson).not.toBe('mancha')
