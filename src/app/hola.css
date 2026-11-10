@@ -1160,7 +1160,8 @@ a.q-box:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 
 .q-memory .bar {
@@ -1785,7 +1786,8 @@ a.q-box:hover {
 
 .q-theme .pick {
   display: inline-flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   align-items: center;
   font-family: var(--sc);
   text-transform: uppercase;
