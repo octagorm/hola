@@ -12,7 +12,7 @@ export const DAMA7: Book = {
   source: DAMA,
   text: [
     [
-      'El_viernes=fredag por_la_tarde>la_tarde=ettermiddag , alguien=noen llama>llamar=banker a=på la_puerta=døra de=til ^Pilar .',
+      'El_sábado=lørdag por_la_tarde>la_tarde=ettermiddag , alguien=noen llama>llamar=banker a=på la_puerta=døra de=til ^Pilar .',
       'Es>ser=det_er el_inspector=inspektør ^Ramírez , con=med un_ramo_de_flores>el_ramo_de_flores=en_blomsterbukett .',
       '^Lucía y ^Marit están>estar=er en=på la_cocina=kjøkkenet .',
     ],
