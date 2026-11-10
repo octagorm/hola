@@ -359,7 +359,7 @@ export default function Home() {
 
             <StartNotice />
             {/* (one notice at a time) */}
-            {(bank.seen.start || bank.base.t) && <AccountNotice />}
+            {!!(bank.seen.start || bank.base.t) && <AccountNotice />}
 
             <Memory />
 
