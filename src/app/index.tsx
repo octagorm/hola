@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { BankProvider, SIZES, useStore } from './lib/store'
 import { GAME } from './data/games'
 import { AccountProvider } from './lib/account'
+import { MergeAsk } from './account'
 import { CLOUD, WithAccounts } from './lib/cloud'
 import { Reminders } from './reminders'
 import './lib/install'
@@ -47,6 +48,7 @@ export default function Hola() {
           <AccountProvider>
             <PeekProvider>
               {CLOUD && <Reminders />}
+              {CLOUD && <MergeAsk />}
               <InkDefs />
               <Router />
             </PeekProvider>

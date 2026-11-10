@@ -367,6 +367,58 @@ body.q-body {
   color: var(--ink);
 }
 
+/* A question that has to be answered before anything else (signing in
+   where two word banks meet) */
+.q-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(40, 28, 12, 0.45);
+}
+
+.q-merge {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 18px 20px 20px;
+  background: var(--paper);
+  box-shadow: 5px 5px 0 var(--red);
+  animation: q-rise 0.16s ease-out;
+}
+
+.q-merge h2 {
+  margin: 0;
+  font-family: var(--display);
+  text-transform: none;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.q-merge h2 span {
+  margin-left: 8px;
+  font-family: var(--body);
+  text-transform: none;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-2);
+}
+
+.q-merge p {
+  margin: 12px 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.q-merge .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 /* The article in its gender's colour */
 .g-m {
   color: var(--blue);

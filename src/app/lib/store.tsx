@@ -108,8 +108,13 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
+// Another tab has put a different bank in place (swapBank): this one
+// writes nothing more and loads again
+let frozen = false
+
 // (only when it changes: each write tells the other tabs, and they answer)
 function save(key: string, value: unknown) {
+  if (frozen) return
   try {
     const text = stable(value)
     if (localStorage.getItem(key) !== text) localStorage.setItem(key, text)
@@ -117,6 +122,49 @@ function save(key: string, value: unknown) {
     // private mode, or full
   }
 }
+
+// Whose bank this browser holds: the account it was last joined with
+// (lib/account.tsx), and a bank set aside while somebody else is signed in
+const OWNER_KEY = 'hola:owner:v1'
+const ASIDE_KEY = 'hola:aside:v1'
+const SWAP_KEY = 'hola:swap:v1'
+
+const read = (key: string) => {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+const write = (key: string, value: string | null) => {
+  try {
+    if (value === null) localStorage.removeItem(key)
+    else localStorage.setItem(key, value)
+  } catch {
+    // private mode, or full
+  }
+}
+
+export const owner = () => read(OWNER_KEY)
+export const setOwner = (email: string | null) => write(OWNER_KEY, email)
+
+export interface Aside {
+  bank: Partial<Bank>
+  owner: string | null
+}
+
+export function aside(): Aside | null {
+  try {
+    const raw = read(ASIDE_KEY)
+    return raw ? (JSON.parse(raw) as Aside) : null
+  } catch {
+    return null
+  }
+}
+
+export const setAside = (a: Aside | null) =>
+  write(ASIDE_KEY, a && JSON.stringify(a))
 
 interface Store {
   bank: Bank
@@ -162,6 +210,8 @@ interface Store {
   finishDay: (day: string, bonus?: number) => void
   // A bank read in from a backup, merged with this one
   absorb: (b: Partial<Bank>) => void
+  // Another bank in place of this one, not merged with it
+  swapBank: (b: Partial<Bank>) => void
   // Another starting point, for the words never answered
   chooseStart: (l: StartLevel) => void
   // A notice put away, on every device
@@ -214,7 +264,11 @@ export function BankProvider({ children }: { children: ReactNode }) {
   // Another tab's changes, so two tabs do not undo each other
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key !== BANK_KEY || !e.newValue) return
+      if (e.key === SWAP_KEY && e.newValue) {
+        frozen = true
+        location.reload()
+      }
+      if (frozen || e.key !== BANK_KEY || !e.newValue) return
       try {
         const other = JSON.parse(e.newValue) as Partial<Bank>
         // Nothing new keeps the bank as it is, or the tabs would answer each
@@ -445,6 +499,15 @@ export function BankProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const swapBank = useCallback((other: Partial<Bank>) => {
+    const now = Date.now()
+    const next = withStart(merge(other, emptyBank()), now)
+    // Told to the other tabs first, so that none merges its own back in
+    write(SWAP_KEY, String(now))
+    write(BANK_KEY, stable(next))
+    setRaw(next)
+  }, [])
+
   const chooseStart = useCallback(
     (l: StartLevel) => setBank((b) => startAt(b, l, Date.now())),
     [],
@@ -488,6 +551,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       chooseTheme,
       finishDay,
       absorb,
+      swapBank,
       chooseStart,
       markSeen,
       reset,
@@ -512,6 +576,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
       chooseTheme,
       finishDay,
       absorb,
+      swapBank,
       chooseStart,
       markSeen,
       reset,

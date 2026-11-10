@@ -657,6 +657,39 @@ export const stable = (value: unknown): string =>
   )
 
 // Whether two banks hold the same, whatever the order of their keys
+// The words answered: what a bank holds that is somebody's own
+export const answered = (b: Partial<Bank>) =>
+  Object.values(b.cards ?? {}).filter((c) => c && !c.z).length
+
+// Whether two banks have been one before: a word answered at the very
+// same moment in both, as only a merge leaves it
+export const akin = (a: Partial<Bank>, b: Partial<Bank>) =>
+  Object.entries(a.cards ?? {}).some(([id, x]) => {
+    const y = b.cards?.[id]
+    return (
+      !!x &&
+      !!y &&
+      !x.z &&
+      !y.z &&
+      x.leer.t === y.leer.t &&
+      x.decir.t === y.decir.t
+    )
+  })
+
+// Whether signing in should ask before the browser's bank and the
+// account's become one: both may be somebody's, and they need not be the
+// same person's (a son signing in on his mother's iPad). `owner` is the
+// account this browser's bank was last joined with, if any
+export const strangers = (
+  here: Partial<Bank>,
+  account: Partial<Bank>,
+  owner: string | null,
+  me: string,
+) =>
+  answered(here) > 0 &&
+  !akin(here, account) &&
+  (owner ? owner !== me : answered(account) > 0)
+
 export const same = (a: Partial<Bank>, b: Partial<Bank>) =>
   stable(merge(a, emptyBank())) === stable(merge(b, emptyBank()))
 

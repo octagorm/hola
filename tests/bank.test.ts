@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DAY,
   KNOWN,
+  akin,
   answer,
   answerCard,
   counts,
@@ -16,6 +17,7 @@ import {
   stable,
   startAt,
   startPreview,
+  strangers,
   streak,
   toMeet,
   unmet,
@@ -840,5 +842,48 @@ describe('the day', () => {
     // none yet today: up to yesterday
     expect(streak(b, new Date(2027, 3, 2, 9).getTime())).toBe(6)
     expect(streak(b, new Date(2027, 3, 3, 9).getTime())).toBe(0)
+  })
+})
+
+describe('two banks meeting at sign-in', () => {
+  const noon = Date.UTC(2026, 10, 10, 12)
+  const practised = (ids: Array<string>, at: number) => {
+    const b = withStart(emptyBank(), at)
+    for (const id of ids)
+      b.cards[id] = answerCard(b.cards[id], ['leer'], true, at)
+    return b
+  }
+  const hers = practised(['hola', 'gracias'], noon - 5 * DAY)
+  const his = practised(['hola', 'adiós'], noon - 3 * DAY - 1234)
+  const fresh = withStart(emptyBank(), noon)
+
+  it('asks when both hold answers that were never joined', () => {
+    expect(strangers(hers, his, null, 'son@example.com')).toBe(true)
+  })
+
+  it('does not ask when either side has no answers and no owner', () => {
+    expect(strangers(fresh, his, null, 'son@example.com')).toBe(false)
+    expect(strangers(hers, fresh, null, 'mor@example.com')).toBe(false)
+    expect(strangers(hers, {}, null, 'mor@example.com')).toBe(false)
+  })
+
+  it('does not ask for banks joined before', () => {
+    const both = merge(hers, his)
+    expect(akin(both, hers)).toBe(true)
+    expect(strangers(both, hers, null, 'mor@example.com')).toBe(false)
+    expect(akin(hers, his)).toBe(false)
+  })
+
+  it('asks when the bank here belongs to another account, even an empty one', () => {
+    expect(strangers(hers, fresh, 'mor@example.com', 'son@example.com')).toBe(
+      true,
+    )
+    expect(strangers(hers, his, 'mor@example.com', 'mor@example.com')).toBe(
+      false,
+    )
+  })
+
+  it("counts the starting point as nobody's", () => {
+    expect(akin(fresh, withStart(emptyBank(), noon))).toBe(false)
   })
 })

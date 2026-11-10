@@ -215,6 +215,57 @@ export function AccountButton() {
   )
 }
 
+// Asked on signing in when this browser and the account both hold
+// answers that may be two people's (lib/account.tsx): nothing is joined
+// until it is answered
+export function MergeAsk() {
+  const { ask, decide } = useAccount()
+  if (!ask) return null
+  const ord = (n: number) => `${n} ord`
+  return (
+    <div className="q-veil">
+      <div
+        className="q-frame q-merge"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="q-merge-h"
+      >
+        <h2 id="q-merge-h">
+          ¿Es tuyo?<span>Er dette ditt?</span>
+        </h2>
+        <p>
+          I denne nettleseren er det øvd på {ord(ask.here)} fra før.{' '}
+          {ask.account
+            ? `På kontoen din er det øvd på ${ord(ask.account)}.`
+            : 'På kontoen din er det ikke øvd på noen ennå.'}{' '}
+          Er det du som har øvd her?
+        </p>
+        <div className="acts">
+          <button
+            type="button"
+            className="q-btn small"
+            autoFocus
+            onClick={() => decide(true)}
+          >
+            Ja, slå sammen
+          </button>
+          <button
+            type="button"
+            className="q-btn ghost small"
+            onClick={() => decide(false)}
+          >
+            Nei, bruk bare kontoens
+          </button>
+        </div>
+        <p className="q-note">
+          Svarer du nei, blir det som ligger her, tatt vare på. Det kommer
+          tilbake når du logger ut.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 // How long the notice stays away once put away, and how many days of
 // practice before it is shown
 const AGAIN = 14 * 86_400_000
