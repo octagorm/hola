@@ -1,3 +1,4 @@
+import { WORDS, meaning } from '../data/words.ts'
 import type { Word } from '../data/words.ts'
 
 // Spanish spelling for comparing answers and filling grids: accents can be
@@ -47,6 +48,7 @@ export type Verdict =
   | 'wrong'
 
 const ARTICLES = ['el', 'la', 'los', 'las']
+const A = ['un', 'una', 'unos', 'unas']
 
 // An answer typed for a word, which is said with its article
 export function judge(
@@ -65,11 +67,38 @@ export function judge(
     const noun = rest.join(' ')
     const same = (a: string) =>
       a === bare || (lenient && unaccent(a) === unaccent(bare))
-    if (same(t)) return 'bare'
+    // (un gato: the noun is right, and its gender is not shown to be known)
+    if (same(t) || (A.includes(art) && same(noun))) return 'bare'
     if (ARTICLES.includes(art) && same(noun)) return 'gender'
   }
   return 'wrong'
 }
+
+// The words asked for by the same Norwegian: «ektemann» is el marido and
+// el esposo, «tre» both tres and el árbol
+const SAME = new Map<string, Array<Word>>()
+for (const w of WORDS)
+  SAME.set(meaning(w), [...(SAME.get(meaning(w)) ?? []), w])
+
+// Another word than the one asked for that a typed answer is right for:
+// one with the same Norwegian, which the question cannot tell from it. It
+// is no miss, and the player is asked for the other word.
+export function alsoRight(
+  typed: string,
+  w: Word,
+  opts: { lenient?: boolean } = {},
+): Word | undefined {
+  return (SAME.get(meaning(w)) ?? []).find(
+    (o) => o.id !== w.id && VERDICT[judge(typed, o, opts)].right,
+  )
+}
+
+// Whether a word is short enough to be asked for typed: at most three
+// words, the article among them. A whole phrase or a proverb (la cuenta,
+// por favor; poco a poco se va lejos) is picked, however well it is
+// known: typed on a phone, it tests the typing more than the Spanish.
+export const typable = (w: Word) =>
+  w.es.length <= 20 && w.es.split(' ').length <= 3
 
 // How much an answer says about the word, for the bank, and whether it
 // counts as right

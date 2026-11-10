@@ -49,7 +49,7 @@ export const DAMA3: Book = {
       '— Tres=tre personas>la_persona=personer : mi=min tío>el_tío=onkel , yo=jeg y ^Beatriz — ^Lucía la=henne mira>mirar=ser_på ~ .',
       'Hay=det_er algo=noe más=mer .',
       'El_miércoles=onsdag , ^Beatriz llevó>llevar=tok la_dama=damen al>a=til taller>el_taller=verkstedet para=for_å limpiarla>limpiar=rense_det .',
-      'El_sábado=lørdag la=det colgó>colgar=hang_hun otra_vez=igjen en=på la_pared=veggen .',
+      'El_sábado=lørdag la=det colgó>colgar=hengte_hun otra_vez=igjen en=på la_pared=veggen .',
     ],
     [
       '^Marit abre>abrir=åpner su=sin cuaderno>el_cuaderno=skissebok y le=henne enseña>enseñar=viser el_dibujo=tegningen del=fra primer>primero=første domingo>el_domingo=søndag .',

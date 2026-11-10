@@ -4,7 +4,13 @@ import { ANSWERS, daily, marks } from '../src/app/lib/wordle'
 import { build, squares } from '../src/app/lib/crossword'
 import { isRight, ring } from '../src/app/lib/rosco'
 import { emptyBank, known, newCard } from '../src/app/lib/bank'
-import { judge, letters, plural } from '../src/app/lib/spanish'
+import {
+  alsoRight,
+  judge,
+  letters,
+  plural,
+  typable,
+} from '../src/app/lib/spanish'
 import { others, spanishChoices } from '../src/app/lib/choices'
 
 const now = Date.UTC(2026, 9, 22, 12)
@@ -41,6 +47,29 @@ describe('Spanish spelling', () => {
     const arbol = WORD['el árbol']!
     expect(judge('el arbol', arbol)).toBe('accent')
     expect(judge('el arbol', arbol, { lenient: false })).toBe('wrong')
+    // un gato: the noun is right, as without its article
+    expect(judge('un gato', gato)).toBe('bare')
+    expect(judge('una gato', gato)).toBe('bare')
+  })
+
+  it('takes another word with the same Norwegian as no miss', () => {
+    const marido = WORD['el marido']!
+    expect(alsoRight('el esposo', marido)?.id).toBe('el esposo')
+    expect(alsoRight('esposo', marido)?.id).toBe('el esposo')
+    expect(alsoRight('el marido', marido)).toBeUndefined()
+    expect(alsoRight('el perro', marido)).toBeUndefined()
+    // «tre» is both tres and el árbol
+    expect(alsoRight('el árbol', WORD.tres!)?.id).toBe('el árbol')
+    expect(alsoRight('tres', WORD['el árbol']!)?.id).toBe('tres')
+  })
+
+  it('asks for a long phrase picked, never typed', () => {
+    expect(typable(WORD['poco a poco se va lejos']!)).toBe(false)
+    expect(typable(WORD['la cuenta, por favor']!)).toBe(false)
+    expect(typable(WORD['el carrito de la compra']!)).toBe(false)
+    expect(typable(WORD['el gato']!)).toBe(true)
+    expect(typable(WORD['buenas noches']!)).toBe(true)
+    expect(typable(WORD['muchas gracias']!)).toBe(true)
   })
 })
 

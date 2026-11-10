@@ -1,5 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
-import { BankProvider } from './lib/store'
+import { BankProvider, SIZES, useStore } from './lib/store'
+import { GAME } from './data/games'
 import { AccountProvider } from './lib/account'
 import { CLOUD, WithAccounts } from './lib/cloud'
 import { Reminders } from './reminders'
@@ -22,8 +23,17 @@ interface Route {
   arg?: string
 }
 
+// (a hash that cannot be read, as /#%, is the home page)
+const decoded = (s: string) => {
+  try {
+    return decodeURIComponent(s)
+  } catch {
+    return ''
+  }
+}
+
 const fromHash = (): Route => {
-  const [id, arg] = decodeURIComponent(window.location.hash.slice(1)).split('/')
+  const [id, arg] = decoded(window.location.hash.slice(1)).split('/')
   const found = PAGES.find((p) => p.id === id)
   return found ? { id: found.id, arg: arg || undefined } : { id: null }
 }
@@ -67,6 +77,13 @@ function Router() {
     window.addEventListener('hashchange', change)
     return () => window.removeEventListener('hashchange', change)
   }, [])
+  // The pages around the games are drawn larger when asked for
+  // (Innstillinger, Størrelse); a game is laid out to fit its screen
+  const { settings } = useStore()
+  const zoom = route.id && GAME[route.id] ? 1 : (SIZES[settings.size] ?? 1)
+  useEffect(() => {
+    document.documentElement.style.setProperty('zoom', String(zoom))
+  }, [zoom])
   const found = PAGES.find((p) => p.id === route.id)
   return (
     <div className="q-page">

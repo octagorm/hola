@@ -321,13 +321,10 @@ export default function Ordbank() {
                                     </button>
                                   )}
                                   {card && (
-                                    <button
-                                      type="button"
-                                      className="q-link"
-                                      onClick={() => forget([w.id])}
-                                    >
-                                      Glem ordet
-                                    </button>
+                                    <Forget
+                                      es={w.es}
+                                      onForget={() => forget([w.id])}
+                                    />
                                   )}
                                 </div>
                               </div>
@@ -344,5 +341,30 @@ export default function Ordbank() {
         )
       })}
     </Page>
+  )
+}
+
+// «Glem ordet» asks first: it takes away all that is learnt of the word,
+// and stands beside «Jeg kan det»
+function Forget({ es, onForget }: { es: string; onForget: () => void }) {
+  const [asked, setAsked] = useState(false)
+  if (!asked)
+    return (
+      <button type="button" className="q-link" onClick={() => setAsked(true)}>
+        Glem ordet
+      </button>
+    )
+  return (
+    <span className="flex flex-wrap items-center gap-3" role="group">
+      <span className="q-muted">
+        Glemme <b lang="es">{es}</b>? Det du har øvd på det, blir borte.
+      </span>
+      <button type="button" className="q-btn ghost small" onClick={onForget}>
+        Ja, glem det
+      </button>
+      <button type="button" className="q-link" onClick={() => setAsked(false)}>
+        Nei
+      </button>
+    </span>
   )
 }

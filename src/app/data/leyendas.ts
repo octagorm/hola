@@ -14,7 +14,7 @@ export const CHAPTERS: Array<Chapter> = [
     no: 'Sjelenes fjell',
     from: 'El monte de las ánimas',
     lines: [
-      '« La_noche_de_difuntos me=meg despertó>despertar=vekket a=på no_sé>saber=jeg_vet_ikke qué=hvilken hora>la_hora=tid el_doble=sjeleringen de=av las_campanas>la_campana=klokkene » , escribe>escribir=skriver ^Bécquer .',
+      '« La_noche_de_difuntos me=meg despertó>despertar=vekket a=på no_sé>saber=jeg_vet_ikke qué=hvilken hora>la_hora=tid el_doble=sjeleringingen de=av las_campanas>la_campana=klokkene » , escribe>escribir=skriver ^Bécquer .',
       'Al_oír>oír=da_han_hører las_campanas>la_campana=klokkene , se_acuerda>acordarse=husker_han de=på una_leyenda>la_leyenda=et_sagn de=fra ^Soria .',
       '^Alonso y su=hans prima>la_prima=kusine ^Beatriz vuelven>volver=kommer_tilbake de=fra cazar=jakt en=på el_monte=fjellet , cerca_de>cerca=nær ^Soria .',
       'Es>ser=det_er tarde=sent , hace_frío , y los_árboles>el_árbol=trærne se_mueven>moverse=beveger_seg con=i el_viento=vinden .',

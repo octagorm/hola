@@ -15,7 +15,7 @@ export const DAMA6: Book = {
       'La_estación=stasjonen de=i ^Toledo es>ser=er antigua>antiguo=gammel y muy=veldig bonita>bonito=vakker , con=med una_torre>la_torre=et_tårn y un_reloj>el_reloj=ei_klokke .',
       'Es>ser=det_er jueves>el_jueves=torsdag , a=klokka las_cinco_y_media>cinco=halv_seks .',
       '^Marit , ^Pilar y ^Lucía esperan>esperar=venter en=på un_banco>el_banco=en_benk , cerca_de=nær la_puerta=døra .',
-      '^Pilar tiene>tener=har su=sin carrito_de_la_compra>el_carrito_de_la_compra=handlevogn , como=som siempre=alltid .',
+      '^Pilar tiene>tener=har su=sin carrito_de_la_compra>el_carrito_de_la_compra=handletralle , como=som siempre=alltid .',
     ],
     [
       '^Marit ha_llamado>llamar=har_ringt otra_vez=igjen al>a=til inspector>el_inspector=inspektøren .',
@@ -60,7 +60,7 @@ export const DAMA6: Book = {
     ],
     [
       'Pero=men ^Pilar es>ser=er más=mer rápida>rápido=rask de_lo_que=enn parece>parecer=det_ser_ut_til .',
-      'Pone>poner=hun_setter su=sin carrito>el_carrito_de_la_compra=handlevogn delante_de=foran ^Beatriz , y ^Beatriz cae>caer=faller al>a=i suelo>el_suelo=bakken .',
+      'Pone>poner=hun_setter su=sin carrito>el_carrito_de_la_compra=handletralle delante_de=foran ^Beatriz , y ^Beatriz cae>caer=faller al>a=i suelo>el_suelo=bakken .',
       'El_paquete=pakken cae>caer=faller también=også .',
     ],
     [

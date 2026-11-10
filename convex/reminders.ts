@@ -4,6 +4,9 @@ import { internalMutation, mutation, query } from './_generated/server'
 import { internal } from './_generated/api'
 import type { MutationCtx, QueryCtx } from './_generated/server'
 
+// The page's day turns at three in the night (TURN in src/app/lib/bank.ts)
+const TURN = 3 * 3_600_000
+
 // The daily reminder: a notification at a time of day the player chooses,
 // unless Dagens økt (today's chapter)
 // is finished already. A web page cannot ask for a
@@ -118,7 +121,8 @@ export const due = internalMutation({
       .take(500)
     const to = []
     for (const r of rows) {
-      const day = localDay(r.next, r.zone)
+      // (the page's day turns at three in the night: dayKey)
+      const day = localDay(r.next - TURN, r.zone)
       if (fresh(day, r.done) && now - r.next < LATE)
         to.push({ endpoint: r.endpoint, p256dh: r.p256dh, auth: r.auth })
       await ctx.db.patch('reminders', r._id, {

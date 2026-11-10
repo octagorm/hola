@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuthActions } from '@convex-dev/auth/react'
-import { Cloud, LogIn, LogOut } from 'lucide-react'
+import { Cloud, LogIn, LogOut, X } from 'lucide-react'
 import { useAccount } from './lib/account'
+import { useStore } from './lib/store'
 import type { Me } from './lib/account'
 
 // Signing in with Google, at the top of the home page and in Settings: the
@@ -210,6 +211,60 @@ export function AccountButton() {
           <AccountBody />
         </div>
       )}
+    </div>
+  )
+}
+
+// How long the notice stays away once put away, and how many days of
+// practice before it is shown
+const AGAIN = 14 * 86_400_000
+const DAYS_FIRST = 3
+
+// A notice on the home page for a player some days in and not signed in
+// (the user's wish): the bank lies only in this browser, which may clear it
+// (Safari does after a week without a visit), and signing in moves it to
+// the account. Put away, it comes back after two weeks.
+export function AccountNotice() {
+  const { on, me, loading } = useAccount()
+  const { bank, markSeen } = useStore()
+  if (!on || me || loading) return null
+  const days = Object.values(bank.days).filter(Boolean).length
+  if (days < DAYS_FIRST) return null
+  if (Date.now() - (bank.seen.account ?? 0) < AGAIN) return null
+  return <Notice onClose={() => markSeen('account')} />
+}
+
+function Notice({ onClose }: { onClose: () => void }) {
+  const { busy, error, signIn } = useSignIn()
+  return (
+    <div className="q-frame q-box q-notice">
+      <div className="text">
+        <span className="q-label">
+          Cuenta <span>· Ta vare på fremgangen</span>
+        </span>
+        <span>
+          Det du har lært, ligger bare i denne nettleseren, og kan bli borte om
+          den rydder opp. Logg inn med Google, så flyttes fremgangen din til
+          kontoen og følger deg til mobil, nettbrett og PC.
+        </span>
+        <button
+          type="button"
+          className="q-btn small"
+          disabled={busy}
+          onClick={signIn}
+        >
+          <LogIn /> Logg inn med Google
+        </button>
+        {error && <span className="q-note bad">{error}</span>}
+      </div>
+      <button
+        type="button"
+        className="close"
+        aria-label="Lukk"
+        onClick={onClose}
+      >
+        <X aria-hidden="true" />
+      </button>
     </div>
   )
 }

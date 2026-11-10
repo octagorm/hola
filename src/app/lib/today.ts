@@ -5,6 +5,7 @@ import { THEME } from '../data/themes.ts'
 import {
   DAY,
   LINKS,
+  TURN,
   counts,
   dayKey,
   due,
@@ -135,7 +136,7 @@ export function toHear(bank: Bank, now: number, n = LISTEN): Array<Word> {
 
 // Days since 1970 on the player's clock, to take turns by
 export const dayNumber = (now: number) => {
-  const d = new Date(now)
+  const d = new Date(now - TURN)
   return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY)
 }
 

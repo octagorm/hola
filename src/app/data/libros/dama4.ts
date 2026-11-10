@@ -69,7 +69,7 @@ export const DAMA4: Book = {
     [
       'Saca>sacar=han_tar_fram su=sin móvil>el_móvil=mobil y les=dem enseña>enseñar=viser la_foto=bildet .',
       'Es>ser=det_er la_dama=damen , con=med el_abanico=vifta en=i la_mano=hånda izquierda>izquierdo=venstre .',
-      'Y=og en=i el_borde=kanten de=av la_foto=bildet , a=til la_derecha>derecho=høyre , hay=er_det algo=noe rojo=rødt : un_poco>poco=litt de=av una_manga>la_manga=ei_erme .',
+      'Y=og en=i el_borde=kanten de=av la_foto=bildet , a=til la_derecha>derecho=høyre , hay=er_det algo=noe rojo=rødt : un_poco>poco=litt de=av una_manga>la_manga=et_erme .',
     ],
     [
       'Entonces=da ^Marit lo=det entiende>entender=forstår .',

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, Snail, Volume2 } from 'lucide-react'
 import { WORD, WORDS, meaning } from './data/words'
 import { others, shuffle, spanishChoices } from './lib/choices'
-import { VERDICT, judge } from './lib/spanish'
+import { VERDICT, alsoRight, judge, typable } from './lib/spanish'
 import { canHear, say, useVoices } from './lib/speech'
 import { blip } from './lib/sound'
 import { useStore } from './lib/store'
@@ -32,13 +32,18 @@ export const LINK_OF: Record<Kind, Link> = {
 
 // The question for a link of a word: understanding it is the word read,
 // or heard when asked `byEar`; coming up with it is picked from four until
-// it has held a while, then typed
+// it has held a while, then typed, unless it is too long to type
 export function kindFor(
   link: Link,
   card: Card | undefined,
   byEar = false,
+  // (a long phrase is always picked: typable)
+  w?: Word,
 ): Kind {
-  if (link === 'decir') return card && card.decir.s >= 1 ? 'escribir' : 'elegir'
+  if (link === 'decir')
+    return card && card.decir.s >= 1 && (!w || typable(w))
+      ? 'escribir'
+      : 'elegir'
   return byEar ? 'oir' : 'leer'
 }
 
@@ -84,6 +89,8 @@ export function Question({
   const [answered, setAnswered] = useState<Answered | null>(null)
   const [typed, setTyped] = useState('')
   const [hint, setHint] = useState(0)
+  // Another word typed that the same Norwegian asks for: no miss
+  const [also, setAlso] = useState<Word | null>(null)
   const input = useRef<HTMLInputElement>(null)
   const next = useRef(() => {})
   const praise = useMemo(
@@ -138,6 +145,15 @@ export function Question({
     if (answered) return
     const verdict = judge(typed, w, { lenient: settings.lenient })
     const v = VERDICT[verdict]
+    const other = v.right
+      ? undefined
+      : alsoRight(typed, w, { lenient: settings.lenient })
+    if (other) {
+      setAlso(other)
+      setTyped('')
+      input.current?.focus()
+      return
+    }
     finish(
       { right: v.right, verdict },
       v.right && hint > 0 ? Math.min(HINTED, v.weight) : v.weight,
@@ -243,6 +259,17 @@ export function Question({
             lang="es"
             aria-label="Svaret ditt"
           />
+          {!answered && also && (
+            <p className="q-note fx-rise" role="status">
+              <b lang="es">{also.es}</b> er også riktig. Her er det et annet ord
+              for det samme. Prøv en gang til.
+            </p>
+          )}
+          {!answered && shown && (
+            <p className="q-note" aria-label="Hint">
+              Begynner med <b lang="es">{shown}</b>
+            </p>
+          )}
           {!answered && (
             <>
               <div className="q-accents">
@@ -585,7 +612,7 @@ function DrillItem({
             ? 'leer'
             : 'decir'
           : weakest(card, Date.now())
-    return kindFor(link, card, hear && (ear || Math.random() < BY_EAR))
+    return kindFor(link, card, hear && (ear || Math.random() < BY_EAR), w)
   })
   return (
     <Question

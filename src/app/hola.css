@@ -648,12 +648,16 @@ body.q-body {
 .q-link {
   background: none;
   border: 0;
-  padding: 4px 2px;
+  /* (a finger's width to hit: these stand side by side) */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 8px;
   font-family: var(--sc);
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.08em;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink-2) !important;
   text-decoration: underline dotted;
   text-underline-offset: 4px;

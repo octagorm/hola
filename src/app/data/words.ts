@@ -608,7 +608,7 @@ const LIST: Array<Lesson & { words: string }> = [
       el cielo | himmel
       la nube | sky
       el fuego | ild
-      la langosta | hummer
+      la langosta | langust, hummer
       el caracol | snegle
       la mariposa | sommerfugl
       el pájaro | fugl
@@ -1010,7 +1010,7 @@ const LIST: Array<Lesson & { words: string }> = [
       la sobrasada | smørbar pølse fra Mallorca
       el fuet | tynn spekepølse
       la salchicha | pølse
-      el queso manchego | sauost fra La Mancha
+      el queso manchego | saueost fra La Mancha
       la oveja | sau
       la cabra | geit
       la vaca | ku
@@ -1717,7 +1717,7 @@ const LIST: Array<Lesson & { words: string }> = [
     no: 'San Fermín i Pamplona',
     words: `
       el toro | okse
-      el encierro | oksesløp, innestenging
+      el encierro | okseløp, innestenging
       el corredor | løper
       la carrera | løp, karriere, studier
       la cuesta | bakke
@@ -1935,7 +1935,7 @@ const LIST: Array<Lesson & { words: string }> = [
     words: `
       la noche de difuntos | de dødes natt, natt til allesjelersdag
       despertar | vekke | v
-      el doble | det dobbelte, sjelering
+      el doble | det dobbelte, sjeleringing
       la campana | kirkeklokke, klokke
       cazar | jakte | v
       el monte | fjell, skogsås
@@ -1980,7 +1980,7 @@ const LIST: Array<Lesson & { words: string }> = [
       el mirador | utsiktspunkt
       el bombero | brannmann
       la roca | klippe, berg
-      la tramontana | nordavind (i Katalonia)
+      la tramontana | nordavind (i Catalonia)
     `,
   },
   {

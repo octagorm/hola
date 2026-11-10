@@ -46,6 +46,10 @@ export interface Settings {
   perDay: number
   // How many words are learnt at a time (CAPS in lib/bank.ts)
   cap: number
+  // The size of the pages around the games, a step of SIZES: the page is
+  // made larger, as when a browser zooms, for reading without glasses
+  // (index.tsx; a game is laid out to fit its screen, and stays as it is)
+  size: number
   // The size of the text in the library's reader, a step of TEXT_SIZES
   textSize: number
   // The Norwegian over the words in the library's texts: none, the lines as
@@ -79,6 +83,7 @@ export const DEFAULTS: Settings = {
   effects: true,
   perDay: 4,
   cap: 50,
+  size: 0,
   textSize: 1,
   gloss: 'new',
   paged: true,
@@ -86,6 +91,10 @@ export const DEFAULTS: Settings = {
   remind: false,
   remindAt: '18:00',
 }
+
+// How much larger a page is drawn, by the setting `size`
+export const SIZES = [1, 1.15, 1.3]
+export const SIZE_NAMES = ['Vanlig', 'Stor', 'Større']
 
 const BANK_KEY = 'hola:bank:v1'
 const SETTINGS_KEY = 'hola:settings:v1'
@@ -443,9 +452,7 @@ export function BankProvider({ children }: { children: ReactNode }) {
 
   const markSeen = useCallback(
     (key: string) =>
-      setBank((b) =>
-        b.seen[key] ? b : { ...b, seen: { ...b.seen, [key]: Date.now() } },
-      ),
+      setBank((b) => ({ ...b, seen: { ...b.seen, [key]: Date.now() } })),
     [],
   )
 

@@ -5,6 +5,7 @@ import {
   answer,
   answerCard,
   counts,
+  dayKey,
   emptyBank,
   known,
   level,
@@ -15,6 +16,7 @@ import {
   stable,
   startAt,
   startPreview,
+  streak,
   toMeet,
   unmet,
   weakest,
@@ -26,6 +28,7 @@ import {
   NEEDS,
   chapterLine,
   clueCount,
+  dayNumber,
   fadingWords,
   memory,
   minutesFor,
@@ -804,5 +807,38 @@ describe('memory, after FSRS', () => {
     const m = merge({ cards: { x: old } }, emptyBank())
     expect(m.cards.x).toEqual(old)
     expect(answerCard(old, ['leer'], true, DAY).leer.d).toBeDefined()
+  })
+})
+
+describe('the day', () => {
+  // (on the clock the tests run by)
+  const at = (h: number, min = 0, day = 10) =>
+    new Date(2026, 10, day, h, min).getTime()
+
+  it('turns at three in the night', () => {
+    expect(dayKey(at(23, 59))).toBe('2026-11-10')
+    expect(dayKey(at(2, 59, 11))).toBe('2026-11-10')
+    expect(dayKey(at(3, 0, 11))).toBe('2026-11-11')
+    expect(dayNumber(at(2, 59, 11))).toBe(dayNumber(at(12)))
+    expect(dayNumber(at(3, 0, 11))).toBe(dayNumber(at(12)) + 1)
+  })
+
+  it('counts days in a row by the calendar, over months and summer time', () => {
+    const b = emptyBank()
+    // 27 to 29 March 2027, over the change to summer time, and on to April
+    for (const d of [
+      '2027-03-27',
+      '2027-03-28',
+      '2027-03-29',
+      '2027-03-30',
+      '2027-03-31',
+      '2027-04-01',
+    ])
+      b.days[d] = 3
+    expect(streak(b, new Date(2027, 3, 1, 12).getTime())).toBe(6)
+    expect(streak(b, new Date(2027, 2, 29, 3, 30).getTime())).toBe(3)
+    // none yet today: up to yesterday
+    expect(streak(b, new Date(2027, 3, 2, 9).getTime())).toBe(6)
+    expect(streak(b, new Date(2027, 3, 3, 9).getTime())).toBe(0)
   })
 })

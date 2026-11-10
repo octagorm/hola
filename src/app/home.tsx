@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import {
   ArrowRight,
   BookOpen,
@@ -36,7 +36,7 @@ import {
   todays,
 } from './lib/today'
 import { EmptyStamp, GameIcon, Scene, Stamp, TocArt } from './art'
-import { AccountButton } from './account'
+import { AccountButton, AccountNotice } from './account'
 import { PaintedScene, SCENE_PAINTED } from './sky'
 import { useAccount } from './lib/account'
 import { Feedback } from './feedback'
@@ -179,6 +179,7 @@ export default function Home() {
   const { hear, recorded } = useVoices()
   const narrow = useMedia('(max-width: 860px)')
   const account = useAccount()
+  useDay()
   const now = Date.now()
 
   const today = todays(bank, now)
@@ -357,6 +358,8 @@ export default function Home() {
             </section>
 
             <StartNotice />
+            {/* (one notice at a time) */}
+            {(bank.seen.start || bank.base.t) && <AccountNotice />}
 
             <Memory />
 
@@ -590,6 +593,33 @@ export default function Home() {
 // partida): said on the home page until one is chosen or this is put away
 // (on every device), so that a new player can look around first and come
 // back to it
+// The home page drawn again when the app is taken up again (a home-screen
+// app is resumed, not reloaded, the morning after) and when the day turns
+// while it is open, so that it never shows yesterday as today
+function useDay() {
+  const [, again] = useState(0)
+  useEffect(() => {
+    let day = dayKey(Date.now())
+    const look = () => {
+      if (document.visibilityState !== 'visible') return
+      const d = dayKey(Date.now())
+      if (d !== day) again((n) => n + 1)
+      day = d
+    }
+    const shown = () => {
+      if (document.visibilityState === 'visible') again((n) => n + 1)
+    }
+    const timer = setInterval(look, 60_000)
+    document.addEventListener('visibilitychange', shown)
+    window.addEventListener('pageshow', shown)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', shown)
+      window.removeEventListener('pageshow', shown)
+    }
+  }, [])
+}
+
 function StartNotice() {
   const { bank, markSeen } = useStore()
   if (bank.seen.start || bank.base.t) return null

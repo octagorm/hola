@@ -483,21 +483,35 @@ export function weakest(
   return by.reduce((a, b) => (b.r < a.r ? b : a)).l
 }
 
-export const dayKey = (now: number) => {
-  const d = new Date(now)
+// A day turns at three in the night, not at midnight (the user's choice),
+// so that a session late in the evening is not cut in two, and one finished
+// at half past twelve counts for the day it was begun
+export const TURN = 3 * 3_600_000
+
+// The day an instant belongs to, as a date on the player's clock at noon
+const dayOf = (now: number) => {
+  const d = new Date(now - TURN)
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12)
+}
+
+const keyOf = (d: Date) => {
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
+export const dayKey = (now: number) => keyOf(dayOf(now))
+
 // Days in a row with points, up to today (or yesterday, if today has none
-// yet)
+// yet). Counted by the calendar, so that a change to or from summer time
+// neither skips a day nor counts one twice.
 export function streak(bank: Bank, now: number): number {
+  const d = dayOf(now)
+  const back = () => d.setDate(d.getDate() - 1)
   let n = 0
-  let t = now
-  if (!bank.days[dayKey(t)]) t -= DAY
-  while (bank.days[dayKey(t)]) {
+  if (!bank.days[keyOf(d)]) back()
+  while (bank.days[keyOf(d)]) {
     n++
-    t -= DAY
+    back()
   }
   return n
 }

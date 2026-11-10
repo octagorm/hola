@@ -18,7 +18,7 @@ import { device, useInstall } from '../lib/install'
 import { parts, subscribe, support, unsubscribe, zone } from '../lib/reminder'
 import { SAMPLE } from '../data/voices'
 import { say, useVoices } from '../lib/speech'
-import { useStore } from '../lib/store'
+import { SIZE_NAMES, useStore } from '../lib/store'
 import { useAccount } from '../lib/account'
 import { AccountSettings } from '../account'
 import { Page } from '../ui'
@@ -150,6 +150,25 @@ export default function Ajustes({ arg }: PageProps) {
               />
             </>
           )}
+        </Group>
+
+        <Group es="Tamaño" no="Størrelse">
+          <div className="q-field">
+            <span>Tekst og knapper på sidene rundt spillene</span>
+            <div className="flex flex-wrap gap-2">
+              {SIZE_NAMES.map((name, i) => (
+                <button
+                  key={name}
+                  type="button"
+                  className={`q-btn small ${settings.size === i ? '' : 'ghost'}`}
+                  aria-pressed={settings.size === i}
+                  onClick={() => setSettings({ size: i })}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          </div>
         </Group>
 
         <Group es="Práctica" no="Øving">
