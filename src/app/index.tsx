@@ -83,6 +83,7 @@ function Router() {
   const zoom = route.id && GAME[route.id] ? 1 : (SIZES[settings.size] ?? 1)
   useEffect(() => {
     document.documentElement.style.setProperty('zoom', String(zoom))
+    document.documentElement.style.setProperty('--zoom', String(zoom))
   }, [zoom])
   const found = PAGES.find((p) => p.id === route.id)
   return (

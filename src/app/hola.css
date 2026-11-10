@@ -1982,6 +1982,8 @@ a.q-box:hover {
     border-bottom: 0;
     background: var(--paper);
     box-shadow: 0 -6px 18px rgba(60, 40, 10, 0.08);
+    /* Five tabs have to fit a narrow phone, so the bar grows less than the page */
+    zoom: calc(min(var(--zoom, 1), 1.15) / var(--zoom, 1));
   }
 
   .q-tabs button {
