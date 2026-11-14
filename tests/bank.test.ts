@@ -197,6 +197,82 @@ describe('two banks merged', () => {
       expect(same(devices[0], devices[1])).toBe(true)
     }
   })
+
+  // The same, for banks of every kind: whatever merge comes to keep, two
+  // or three devices must stop saving. Random banks from a seed, small
+  // numbers so that ties are many, each as the page holds it (read
+  // through merge, lib/store.tsx)
+  it('settle whatever the banks hold', () => {
+    let seed = 11
+    const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+    const n = (k: number) => Math.floor(r() * k)
+    const maybe = <T extends object>(p: number, x: T) => (r() < p ? x : {})
+    const ids = [KNOWN_AT_START[0], PRACTISED_AT_START[0], 'zz otro']
+    const link = () => ({
+      s: n(3),
+      t: n(4),
+      ...maybe(0.4, { d: n(3) + 4 }),
+      ...maybe(0.2, { l: n(3) }),
+      ...maybe(0.2, { f: 1 as const }),
+    })
+    const log = () =>
+      Array.from({ length: n(10) }, () => [
+        n(4),
+        n(2) ? 'leer' : 'decir',
+        n(3) - 1,
+        n(3),
+        n(3),
+      ]).sort((a, b) => Number(a[0]) - Number(b[0]))
+    const some = (): Bank => {
+      const b = emptyBank()
+      for (const id of ids) {
+        if (r() < 0.8)
+          b.cards[id] = {
+            leer: link(),
+            decir: link(),
+            t: n(4),
+            n: n(3),
+            x: n(2),
+            i: n(4),
+            ...maybe(0.3, { z: 1 as const }),
+            ...maybe(0.6, { log: log() as Card['log'] }),
+          }
+        if (r() < 0.25) b.later[id] = n(4)
+      }
+      if (r() < 0.8)
+        b.path = { ...path('abc'[n(3)]), d: `2026-10-2${n(2)}` } as Bank['path']
+      if (r() < 0.8)
+        b.place.cuento = { p: n(3), t: n(2), ...maybe(0.5, { w: n(3) }) }
+      b.theme = { on: [{ id: 'mancha', p: (n(3) + 1) as 1 | 2 | 3 }], t: n(2) }
+      if (r() < 0.6) b.base = { l: n(4) as 0 | 1 | 2 | 3, t: n(4) }
+      b.days.d = n(5)
+      // (half of them with their keys in order, as localStorage keeps them)
+      return merge(n(2) ? (JSON.parse(stable(b)) as Bank) : b, emptyBank())
+    }
+    for (let k = 0; k < 400; k++) {
+      const devices = k % 2 ? [some(), some()] : [some(), some(), some()]
+      const account: { bank: Bank | null } = { bank: null }
+      let saves = 0
+      const queue = devices.map((_, i) => i)
+      const save = (b: Bank) => {
+        account.bank = merge(JSON.parse(JSON.stringify(b)) as Bank, emptyBank())
+        saves++
+        queue.push(...devices.map((_, i) => i))
+      }
+      while (queue.length && saves < 40) {
+        const i = queue.shift() ?? 0
+        const theirs = account.bank
+        const both = merge(devices[i], theirs ?? emptyBank())
+        if (!same(both, devices[i])) devices[i] = merge(devices[i], both)
+        if (!theirs || !same(both, theirs)) save(both)
+        // (the save two seconds after a change)
+        else if (!same(devices[i], theirs)) save(devices[i])
+      }
+      expect(saves, `banks ${k}`).toBeLessThan(40)
+      for (const d of devices)
+        expect(same(d, devices[0]), `banks ${k}`).toBe(true)
+    }
+  })
 })
 
 describe('the starting point', () => {
